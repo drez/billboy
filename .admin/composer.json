@@ -1,0 +1,10 @@
+{
+    "autoload": {
+        "psr-4": {
+            "ApiGoat\\": "src/ApiGoat"
+        }
+    },
+    "config": {
+        "vendor-dir": "vendor"
+    }
+}
