@@ -1,10 +1,51 @@
 {
+    "name": "apigoat/%PROJECTNAME%",
+    "type": "project",
+    "description": "cryptolead interface",
     "autoload": {
         "psr-4": {
-            "ApiGoat\\": "src/ApiGoat"
+            "ApiGoat\\": "vendor/apigoat/runtime/src",
+            "App\\om\\": [
+                "src/App/Models/Built/om",
+                "src/App/Models/Built"
+            ]
         }
     },
     "config": {
         "vendor-dir": "vendor"
-    }
+    },
+     "require": {
+        "slim/slim": "^4.0",
+        "php-di/slim-bridge": "^3.0",
+        "php-di/php-di": "^6.0",
+        "components/jquery": "2.*",
+        "components/jqueryui": "1.10.*",
+        "ckeditor/ckeditor": "dev-standard/stable",
+        "moxiecode/plupload": "^3.1",
+        "slim/psr7": "^1.0",
+        "symfony/filesystem": "^5.0",
+        "apigoat/runtime": "dev-master",
+        "propel/propel1": "dev-master"
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://git.apigoat.com/fred/propel1.git"
+        },
+        {
+            "type": "git",
+            "url": "https://git.apigoat.com/fred/APIgoat-runtime.git"
+        },
+         {
+            "type": "git",
+            "url": "https://github.com/drez/conditional-middleware"
+        }
+    ],
+    "http-basic": {
+        "https://git.apigoat.com": {
+            "username": "{username}",
+            "password": "{password}"
+        }
+    },
+  "minimum-stability": "dev"
 }

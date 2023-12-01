@@ -1,16 +1,7 @@
 {
     "name": "apigoat/template",
-    "description": "",
+    "description": "Goatcheese builder template",
     "homepage": "https://apigoat.com/",
     "type": "library",
-    "license": "MIT",
-    "require": {
-        "slim/slim": "^4.0",
-        "tuupola/slim-jwt-auth": "^3.4",
-        "tuupola/base62": "^2.0",
-        "tuupola/cors-middleware": "^1.0",
-        "tuupola/slim-basic-auth": "^3.2",
-        "selective/config": "^1.0",
-        "symfony/filesystem": "^6.0"
-    }
+    "license": "MIT"
 }
