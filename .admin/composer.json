@@ -1,5 +1,5 @@
 {
-    "name": "apigoat/%PROJECTNAME%",
+    "name": "apigoat/%PROJECT_NAME%",
     "type": "project",
     "description": "cryptolead interface",
     "autoload": {
@@ -25,7 +25,8 @@
         "slim/psr7": "^1.0",
         "symfony/filesystem": "^5.0",
         "apigoat/runtime": "dev-master",
-        "propel/propel1": "dev-master"
+        "propel/propel1": "dev-master",
+        "apigoat/phing-copy2": "dev-master"
     },
     "repositories": [
         {
@@ -39,6 +40,9 @@
          {
             "type": "git",
             "url": "https://github.com/drez/conditional-middleware"
+        },{
+            "type": "git",
+            "url": "https://git.apigoat.com/APIgoat/phing-copy2.git"
         }
     ],
     "http-basic": {
