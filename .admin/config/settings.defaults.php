@@ -9,8 +9,6 @@ use PHPMailer\PHPMailer\SMTP;
 ini_set("error_reporting", E_ALL ^ E_DEPRECATED ^ E_NOTICE);
 ini_set('display_errors', true);
 
-// Timezone
-date_default_timezone_set('America/Montreal');
 
 // Settings
 $settings = [
