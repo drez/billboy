@@ -6,7 +6,7 @@ use PHPMailer\PHPMailer\SMTP;
 // Configure defaults for the whole application.
 
 // Error reporting
-error_reporting(E_ALL ^ E_NOTICE);
+ini_set("error_reporting", E_ALL ^ E_DEPRECATED ^ E_NOTICE);
 ini_set('display_errors', true);
 
 // Timezone

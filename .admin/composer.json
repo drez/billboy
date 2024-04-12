@@ -20,7 +20,7 @@
         "php-di/php-di": "^6.0",
         "components/jquery": "2.*",
         "components/jqueryui": "1.10.*",
-        "ckeditor/ckeditor": "dev-standard/stable",
+        "ckeditor/ckeditor": "4.22.1",
         "moxiecode/plupload": "^3.1",
         "slim/psr7": "^1.0",
         "symfony/filesystem": "^5.0",

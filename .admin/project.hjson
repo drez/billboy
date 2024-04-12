@@ -1,6 +1,10 @@
 {
     %PROJECT_NAME%:
     {
+        set_config:{
+            project_url:"%ADMIN_URL%",
+            project_root:"%ADMIN_ROOT%"
+        },
         add_validator:true,
         add_tablestamp:true,
         set_debug_level:3,

@@ -2,18 +2,15 @@
   width: calc(100% - 40px);
   margin-left: 20px;
 }
-
 .custom-controls.save-button div {
   position: relative;
   width: calc(50% - 40px);
   display: inline-block;
   vertical-align: top;
 }
-
 .custom-controls.save-button div:first-of-type {
   margin-right: 40px;
 }
-
 .custom-controls.save-button div:first-of-type:after {
   content: "";
   position: absolute;
@@ -23,11 +20,9 @@
   background: #CCC;
   bottom: 0;
 }
-
 .custom-controls.save-button div:last-of-type {
   margin-right: 40px;
 }
-
 .custom-controls.save-button div a {
   margin-top: 20px;
   text-transform: uppercase;
@@ -41,7 +36,6 @@
   margin-right: 0px;
   padding: 20px;
 }
-
 .custom-controls.save-button div a span.image-wrapper {
   margin-top: 0;
   height: 110px;
@@ -49,11 +43,9 @@
   position: relative;
   display: block;
 }
-
 .custom-controls.save-button div a img {
   position: absolute;
   left: 50%;
-  -webkit-transform: translate(-50%, 0);
   transform: translate(-50%, 0);
   bottom: 0;
   display: block;
@@ -61,14 +53,11 @@
   max-width: 100%;
   max-height: 100%;
 }
-
 .custom-controls.save-button div a:hover {
-  -webkit-filter: sepia(35%);
-          filter: sepia(35%);
+  filter: sepia(35%);
 }
 
 #pannelProjects .ui-tabs-nav {
   width: 50%;
   float: left;
-}
-/*# sourceMappingURL=apigoat.css.map */
+}/*# sourceMappingURL=apigoat.css.map */
