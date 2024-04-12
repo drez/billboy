@@ -1,0 +1,194 @@
+<database name="myproject1" defaultIdMethod="native" namespace="App" >
+	<table name="client" description="Client" >
+		<behavior name="GoatCheese" >
+			<parameter name="set_menu_priority" value="1" />
+			<parameter name="with_child_tables" value='["billing"]' />
+		</behavior>
+		<column name="id_client" description="" type="INTEGER" size="10" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="name" description="Name" type="VARCHAR" size="100" />
+		<column name="id_country" description="Country" type="INTEGER" size="11" required="true" />
+		<foreign-key foreignTable="country" onDelete="restrict" onUpdate="restrict" >
+			<reference local="id_country" foreign="id_country" />
+		</foreign-key>
+		<column name="phone" description="Phone" type="VARCHAR" size="20" />
+		<column name="phone_work" description="Phone work" type="VARCHAR" size="20" />
+		<column name="ext" description="Extension" type="VARCHAR" size="10" />
+		<column name="phone_mobile" description="Mobile" type="VARCHAR" size="20" />
+		<column name="email" description="Email" type="VARCHAR" size="100" />
+		<column name="email2" description="Email (secondary)" type="VARCHAR" size="100" />
+		<column name="website" description="" type="VARCHAR" size="100" />
+		<column name="address_1" description="Address 1" type="LONGVARCHAR" required="false" size="10" />
+		<column name="address_2" description="Address 2" type="LONGVARCHAR" required="false" size="10" />
+		<column name="address_3" description="Address 3" type="LONGVARCHAR" required="false" size="10" />
+		<column name="zip" description="Zip" type="VARCHAR" size="12" />
+		<validator column="phone" >
+			<rule name="unique" message="client_phone_not_unique" />
+			<rule name="minLength" message="client_phone_required" value="7" />
+		</validator>
+		<validator column="name" >
+			<rule name="minLength" message="client_name_required" value="1" />
+		</validator>
+		<validator column="id_country" >
+			<rule name="required" message="client_country_required" />
+		</validator>
+	</table>
+	<table name="billing" description="Billing" >
+		<behavior name="GoatCheese" >
+			<parameter name="set_menu_priority" value="5" />
+			<parameter name="set_parent_table" value="client" />
+			<parameter name="with_child_tables" value='["billing_line","cost_line","payment_line"]' />
+			<parameter name="add_child_search_columns" value='{"billing_line":{"Assigned to":[["id_assign","%val"]]}}' />
+			<parameter name="add_tab_columns" value='{"Note":"note_billing","Paiement":"date_paid"}' />
+			<parameter name="is_wysiwyg_colunms" value='["note_billing"]' />
+			<parameter name="add_search_columns" value='{"Type":[["type","%val","multiple"]],"Client":[["id_client","%val","multiple"]],"Date":[["date","%val"]],"Title":[["title","%val"]],"State":[["state","%val","multiple"]]}' />
+			<parameter name="set_readonly_columns" value='["gross"]' />
+			<parameter name="set_list_hide_columns" value='["note_billing","reference"]' />
+			<parameter name="set_order_list_columns" value='[["date","DESC"]]' />
+			<parameter name="set_order_child_list_columns" value='{"billing_line":[["work_date","DESC"]]}' />
+			<parameter name="add_total" value='{"billing":[["gross"],["net"]],"billing_line":[["total"]]}' />
+		</behavior>
+		<column name="id_billing" description="" type="INTEGER" size="10" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="calc_id" description="" type="VARCHAR" size="20" />
+		<column name="title" description="Title" type="VARCHAR" size="100" />
+		<column name="id_client" description="Client" type="INTEGER" size="11" required="true" />
+		<foreign-key foreignTable="client" onDelete="restrict" onUpdate="restrict" >
+			<reference local="id_client" foreign="id_client" />
+		</foreign-key>
+		<column name="id_project" description="Project" type="INTEGER" size="11" required="false" />
+		<foreign-key foreignTable="project" onDelete="restrict" onUpdate="restrict" >
+			<reference local="id_project" foreign="id_project" />
+		</foreign-key>
+		<column name="date" description="Date" type="DATE" required="false" />
+		<column name="type" description="Type" type="ENUM" valueSet="Quote, Bill" required="false" />
+		<column name="state" description="State" type="ENUM" valueSet="New,Approved,Sent,Partial paiement,Paid,Cancelled, To send" required="false" />
+		<column name="gross" description="Gross" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="net" description="Net" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="note_billing" description="Note" type="LONGVARCHAR" required="false" size="400" />
+		<column name="date_due" description="Due date" type="DATE" required="false" />
+		<column name="date_paid" description="Paid date" type="DATE" required="false" />
+		<column name="reference" description="Paiement Reference" type="VARCHAR" size="100" />
+		<validator column="title" >
+			<rule name="required" message="billing_title_required" />
+		</validator>
+	</table>
+	<table name="billing_line" description="Entries" >
+		<behavior name="GoatCheese" >
+			<parameter name="set_parent_table" value="billing" />
+			<parameter name="set_readonly_columns" value='["total"]' />
+			<parameter name="set_selectbox_filters" value='{"id_project":[["id_client","%billing%.id_client"]]}' />
+			<parameter name="set_child_colunms" value='{"id_creation":["fullname"],"id_assign":["fullname"]}' />
+			<parameter name="is_wysiwyg_colunms" value='["note_billing_ligne"]' />
+			<parameter name="add_tab_columns" value='{"Note":"note_billing_ligne"}' />
+			<parameter name="set_order_list_columns" value='[["work_date","DESC"]]' />
+		</behavior>
+		<column name="id_billing_line" description="" type="INTEGER" size="10" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="id_billing" description="" type="INTEGER" size="11" required="true" />
+		<foreign-key foreignTable="billing" onDelete="cascade" onUpdate="restrict" >
+			<reference local="id_billing" foreign="id_billing" />
+		</foreign-key>
+		<column name="calc_id" description="" type="VARCHAR" size="20" />
+		<column name="id_assign" description="Assigned to" type="INTEGER" size="11" required="false" />
+		<foreign-key foreignTable="authy" onDelete="restrict" onUpdate="restrict" >
+			<reference local="id_assign" foreign="id_creation" />
+		</foreign-key>
+		<column name="id_project" description="Project" type="INTEGER" size="11" required="false" />
+		<foreign-key foreignTable="project" onDelete="restrict" onUpdate="restrict" >
+			<reference local="id_project" foreign="id_project" />
+		</foreign-key>
+		<column name="title" description="Title" type="VARCHAR" size="100" />
+		<column name="work_date" description="Date" type="DATE" required="false" />
+		<column name="quantity" description="Quantity" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="amount" description="Amount" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="total" description="Total" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="note_billing_ligne" description="Note" type="LONGVARCHAR" required="false" size="500" />
+		<validator column="amount" >
+			<rule name="required" message="billing_line_amount_required" />
+		</validator>
+	</table>
+	<table name="payment_line" description="Payment entry" >
+		<behavior name="GoatCheese" >
+			<parameter name="set_parent_table" value="billing" />
+			<parameter name="set_selectbox_filters" value='{"id_project":[["id_client","%billing%.id_client"]]}' />
+		</behavior>
+		<column name="id_payment_line" description="" type="INTEGER" size="10" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="id_billing" description="" type="INTEGER" size="11" required="true" />
+		<foreign-key foreignTable="billing" onDelete="cascade" onUpdate="restrict" >
+			<reference local="id_billing" foreign="id_billing" />
+		</foreign-key>
+		<column name="Reference" description="" type="VARCHAR" size="40" />
+		<column name="date" description="Date" type="DATE" required="false" />
+		<column name="note" description="Note" type="LONGVARCHAR" required="false" size="500" />
+		<column name="amount" description="Amount" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<validator column="amount" >
+			<rule name="required" message="billing_line_amount_required" />
+		</validator>
+	</table>
+	<table name="cost_line" description="Cost entry" >
+		<behavior name="GoatCheese" >
+			<parameter name="set_parent_table" value="billing" />
+			<parameter name="set_readonly_columns" value='["total"]' />
+		</behavior>
+		<column name="id_cost_line" description="" type="INTEGER" size="10" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="id_billing" description="" type="INTEGER" size="11" required="true" />
+		<foreign-key foreignTable="billing" onDelete="cascade" onUpdate="restrict" >
+			<reference local="id_billing" foreign="id_billing" />
+		</foreign-key>
+		<column name="calc_id" description="" type="VARCHAR" size="20" />
+		<column name="title" description="Title" type="VARCHAR" size="100" />
+		<column name="spend_date" description="Date" type="DATE" required="false" />
+		<column name="note_billing_ligne" description="Note" type="LONGVARCHAR" required="false" size="500" />
+		<column name="quantity" description="Quantity" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="amount" description="Amount" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="total" description="Total" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<validator column="amount" >
+			<rule name="required" message="cost_line_amount_required" />
+		</validator>
+	</table>
+	<table name="project" description="Project" >
+		<behavior name="GoatCheese" >
+			<parameter name="set_menu_priority" value="5" />
+			<parameter name="with_child_tables" value='["time_line","billing_line"]' />
+			<parameter name="add_tab_columns" value='{"Note":"note_billing","Paiement":"date_paid"}' />
+			<parameter name="is_wysiwyg_colunms" value='["note_billing"]' />
+			<parameter name="add_search_columns" value='{"Client":[["id_client","%val"]],"Date":[["date","%val"]],"Title":[["title","%val"]]}' />
+			<parameter name="set_readonly_columns" value='["spent"]' />
+		</behavior>
+		<column name="id_project" description="" type="INTEGER" size="10" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="calc_id" description="" type="VARCHAR" size="20" />
+		<column name="name" description="Name" type="VARCHAR" size="100" />
+		<column name="id_client" description="Client" type="INTEGER" size="11" required="false" />
+		<foreign-key foreignTable="client" onDelete="restrict" onUpdate="restrict" >
+			<reference local="id_client" foreign="id_client" />
+		</foreign-key>
+		<column name="date" description="Start date" type="DATE" required="false" />
+		<column name="type" description="Type" type="ENUM" valueSet="Quote, Bill" required="false" />
+		<column name="state" description="State" type="ENUM" valueSet="New, Approved, Cancelled, Closed" required="false" />
+		<column name="budget" description="Budget" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="spent" description="Spent" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="reference" description="Paiement Reference" type="VARCHAR" size="100" />
+		<validator column="name" >
+			<rule name="required" message="project_name__required" />
+		</validator>
+	</table>
+	<table name="time_line" description="Time" >
+		<behavior name="GoatCheese" >
+			<parameter name="set_parent_table" value="project" />
+			<parameter name="set_readonly_columns" value='["total"]' />
+		</behavior>
+		<column name="id_cost_line" description="" type="INTEGER" size="10" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="id_project" description="" type="INTEGER" size="11" required="true" />
+		<foreign-key foreignTable="project" onDelete="cascade" onUpdate="restrict" >
+			<reference local="id_project" foreign="id_project" />
+		</foreign-key>
+		<column name="calc_id" description="" type="VARCHAR" size="20" />
+		<column name="Name" description="Title" type="VARCHAR" size="100" />
+		<column name="date" description="Date" type="DATE" required="false" />
+		<column name="note" description="Note" type="LONGVARCHAR" required="false" size="500" />
+		<column name="quantity" description="Quantity" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="amount" description="Amount" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="total" description="Total" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<validator column="amount" >
+			<rule name="required" message="cost_line_amount_required" />
+		</validator>
+	</table>
+</database>

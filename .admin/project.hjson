@@ -1,10 +1,18 @@
 {
-    %PROJECT_NAME%:
+    myproject1:
     {
+        set_config:{
+            project_url:"https://gc.local/myproject1/.admin/",
+            project_root:"/var/www/gc/p/myproject1/.admin/"
+        },
         add_validator:true,
         add_tablestamp:true,
         set_debug_level:3,
-        add_hooks:{"afterFormObj":["template"]},
+        add_hooks:{ "afterFormObj":["template", "billing_line", "payment_line", "cost_line", "billing"], 
+                    "beforeSave":["billing_line", "cost_line"], 
+                    "afterSave":["billing_line"],
+                    "beforeList":["billing"]
+                },
         with_api:true,
 
         "authy('User')":{
@@ -37,6 +45,18 @@
                     required:"authy_password_required"
                 }
             }
-        }
+        },
+        "country('Country')": {
+            set_parent_menu:"Settings",
+			"id_country()": ["primary()"],
+			"name('Name')": ["varchar(100)"],
+			"code('Code')": ["varchar(3)"],
+			"timezone('Timezone')": ["varchar(20)"],
+			"timezone_code('Timezone code')": ["varchar(50)"],
+			"priority('Priority')": ["integer()"],
+			"validator": {"name":{"required":{"msg":"name_required","value":null}}},
+		}
+
+
     }
 }

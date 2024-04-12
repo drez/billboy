@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
   <propel>
-    <datasources default="%PROJECT_NAME%">
-      <datasource id="%PROJECT_NAME%">
+    <datasources default="myproject1">
+      <datasource id="myproject1">
 
         <adapter>mysql</adapter>
         <connection>
-          <dsn>mysql:host=localhost;dbname=%DB_NAME%;charset=utf8;</dsn>
-          <user>%DB_USER%</user>
+          <dsn>mysql:host=localhost;dbname=gc_myproject1;charset=utf8;</dsn>
+          <user>gc_myproject1</user>
 
-          <password>%DB_PASS%</password>
+          <password>njhghqmfyczbwwbmvxymfl</password>
         </connection>
       </datasource>
     </datasources>

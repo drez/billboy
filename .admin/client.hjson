@@ -1,0 +1,166 @@
+{
+    myproject1:
+    {
+    "client('Client')": {
+            set_menu_priority: 1,
+            "with_child_tables": ["billing"],
+
+			"id_client()": ["primary()"],
+			"name('Name')": ["varchar(100)"],
+			"id_country('Country')": ["integer()","foreign(country)",null,"foreign:id_country"],
+			"phone('Phone')": ["varchar(20)"],
+			"phone_work('Phone work')": ["varchar(20)"],
+			"ext('Extension')": ["varchar(10)"],
+			"phone_mobile('Mobile')": ["varchar(20)"],
+			"email('Email')": ["varchar(100)"],
+			"email2('Email (secondary)')": ["varchar(100)"],
+			"website()": ["varchar(100)"],
+			"address_1('Address 1')": ["longvarchar()"],
+			"address_2('Address 2')": ["longvarchar()"],
+			"address_3('Address 3')": ["longvarchar()"],
+			"zip('Zip')": ["varchar(12)"],
+			
+			"validator": {
+                    "phone":{"unique":{"msg":"client_phone_not_unique"},
+                    "minLength":{"msg":"client_phone_required","value":"7"}},
+                    "name":{"minLength":{"msg":"client_name_required","value":"1"}},
+                    "id_country":{"required":{"msg":"client_country_required"}}},
+		},
+
+        "billing('Billing')": {
+            set_menu_priority: 5,
+            "set_parent_table": 'client',
+            "with_child_tables": ["billing_line", "cost_line", "payment_line"],
+			"add_child_search_columns":{ "billing_line":{"Assigned to": [["id_assign", "%val"]]} },
+            "add_tab_columns": {"Note":"note_billing", "Paiement":"date_paid"},
+            is_wysiwyg_colunms: ["note_billing"],
+            add_search_columns:{"Type": [["type", "%val", "multiple"]], "Client": [["id_client", "%val", "multiple"]], "Date": [["date", "%val"]], "Title": [["title", "%val"]], "State": [["state", "%val", "multiple"]],},
+			"set_readonly_columns":["gross"],
+			"set_list_hide_columns":["note_billing", "reference"],
+			set_order_list_columns:[["date", "DESC"]],
+			set_order_child_list_columns:{"billing_line":[["work_date", "DESC"]]},
+			#add_child_bulk:{"billing_line": ["id_project"]},
+			#checkbox_all_child:{"billing_line": ["id_project"]}
+			add_total:{"billing":[["gross"], ["net"]], "billing_line":[["total"]]},
+
+			"id_billing()": ["primary()"],
+			"calc_id()": ["varchar(20)"],
+			"title('Title')": ["varchar(100)"],
+			"id_client('Client')": ["integer()","foreign(client)",null,"foreign:id_client"],
+			"id_project('Project')": ["integer()","foreign(project)",'not-required', 'default:null',"foreign:id_project"],
+
+			"date('Date')": ["date()"],
+			//"id_project('Project')": ["integer()","foreign(project)",null,"foreign:id_project"],
+			"type('Type')": ["enum(Quote, Bill)"],
+			"state('State')": ["enum(New,Approved,Sent,Partial paiement,Paid,Cancelled, To send)"],
+			"gross('Gross')": ["decimal(8, 2)"],
+			"net('Net')": ["decimal(8, 2)"],
+			
+			"note_billing('Note')": ["longvarchar(400)"],
+            "date_due('Due date')": ["date()"],
+            "date_paid('Paid date')": ["date()"],
+			"reference('Paiement Reference')": ["varchar(100)"],
+			"validator": {"title":{"required":{"msg":"billing_title_required"}}},
+		},
+		"billing_line('Entries')": {
+            "set_parent_table": 'billing',
+            "set_readonly_columns":["total"],
+			"set_selectbox_filters":{
+					"id_project":[ ["id_client", "%billing%.id_client"]]
+					}
+			"set_child_colunms":{"id_creation":["fullname"], "id_assign":["fullname"]}
+			is_wysiwyg_colunms: ["note_billing_ligne"],
+			"add_tab_columns": {"Note":"note_billing_ligne"},
+			set_order_list_columns:[["work_date", "DESC"]],
+		
+
+			"id_billing_line()": ["primary()"],
+			"id_billing()": ["integer()","foreign(billing)","onDelete:cascade","foreign:id_billing"],
+			"calc_id()": ["varchar(20)"],
+			"id_assign('Assigned to')": ["integer()","foreign(authy)",'not-required', 'default:null',"foreign:id_creation"],
+			//"prod_id('Produit')": ["integer()","foreign(product)","onDelete:restrict","foreign:id_product"],
+			"id_project('Project')": ["integer()","foreign(project)",'not-required', 'default:null',"foreign:id_project"],
+			"title('Title')": ["varchar(100)"],
+			"work_date('Date')": ["date()"],
+			
+            "quantity('Quantity')": ["decimal(8, 2)"],
+			"amount('Amount')": ["decimal(8, 2)"],
+			"total('Total')": ["decimal(8, 2)"],
+			"note_billing_ligne('Note')": ["longvarchar(500)"],
+			
+			"validator": {"amount":{"required":{"msg":"billing_line_amount_required"}}},
+		},
+		"payment_line('Payment entry')": {
+            "set_parent_table": 'billing',
+			"set_selectbox_filters":{
+					"id_project":[ ["id_client", "%billing%.id_client"]]
+					}
+			"id_payment_line()": ["primary()"],
+			"id_billing()": ["integer()","foreign(billing)","onDelete:cascade","foreign:id_billing"],
+			"Reference()": ["varchar(40)"],
+			//"prod_id('Produit')": ["integer()","foreign(product)","onDelete:restrict","foreign:id_product"],
+			"date('Date')": ["date()"],
+			"note('Note')": ["longvarchar(500)"],
+			"amount('Amount')": ["decimal(8, 2)"],
+			
+			"validator": {"amount":{"required":{"msg":"billing_line_amount_required"}}},
+		},
+        "cost_line('Cost entry')": {
+            "set_parent_table": 'billing',
+            "set_readonly_columns":["total"],
+
+			"id_cost_line()": ["primary()"],
+			"id_billing()": ["integer()","foreign(billing)","onDelete:cascade","foreign:id_billing"],
+			"calc_id()": ["varchar(20)"],
+			//"prod_id('Produit')": ["integer()","foreign(product)","onDelete:restrict","foreign:id_product"],
+			"title('Title')": ["varchar(100)"],
+			"spend_date('Date')": ["date()"],
+			"note_billing_ligne('Note')": ["longvarchar(500)"],
+            "quantity('Quantity')": ["decimal(8, 2)"],
+			"amount('Amount')": ["decimal(8, 2)"],
+            "total('Total')": ["decimal(8, 2)"],
+			
+			"validator": {"amount":{"required":{"msg":"cost_line_amount_required"}}},
+		},
+		"project('Project')": {
+            set_menu_priority: 5,
+            "with_child_tables": ["time_line", "billing_line"],
+            "add_tab_columns": {"Note":"note_billing", "Paiement":"date_paid"},
+            is_wysiwyg_colunms: ["note_billing"],
+            add_search_columns:{"Client": [["id_client", "%val"]], "Date": [["date", "%val"]], "Title": [["title", "%val"]],},
+			"set_readonly_columns":["spent"],
+
+			"id_project()": ["primary()"],
+			"calc_id()": ["varchar(20)"],
+			"name('Name')": ["varchar(100)"],
+			"id_client('Client')": ["integer()","foreign(client)","foreign:id_client",'not-required', 'default:null'],
+
+			"date('Start date')": ["date()"],
+			//"id_project('Project')": ["integer()","foreign(project)",null,"foreign:id_project"],
+			"type('Type')": ["enum(Quote, Bill)"],
+			"state('State')": ["enum(New, Approved, Cancelled, Closed)"],
+			"budget('Budget')": ["decimal(8, 2)"],
+			"spent('Spent')": ["decimal(8, 2)"],
+			
+			"reference('Paiement Reference')": ["varchar(100)"],
+			"validator": {"name":{"required":{"msg":"project_name__required"}}},
+		},
+        "time_line('Time')": {
+            "set_parent_table": 'project',
+            "set_readonly_columns":["total"],
+
+			"id_cost_line()": ["primary()"],
+			"id_project()": ["integer()","foreign(project)","onDelete:cascade","foreign:id_project"],
+			"calc_id()": ["varchar(20)"],
+			//"prod_id('Produit')": ["integer()","foreign(product)","onDelete:restrict","foreign:id_product"],
+			"Name('Title')": ["varchar(100)"],
+			"date('Date')": ["date()"],
+			"note('Note')": ["longvarchar(500)"],
+            "quantity('Quantity')": ["decimal(8, 2)"],
+			"amount('Amount')": ["decimal(8, 2)"],
+            "total('Total')": ["decimal(8, 2)"],
+			
+			"validator": {"amount":{"required":{"msg":"cost_line_amount_required"}}},
+		}
+    }
+}

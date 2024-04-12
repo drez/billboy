@@ -1,14 +1,12 @@
 {
-    "name": "apigoat/%PROJECT_NAME%",
+    "name": "apigoat/myproject1",
     "type": "project",
     "description": "cryptolead interface",
     "autoload": {
         "psr-4": {
             "ApiGoat\\": "vendor/apigoat/runtime/src",
-            "App\\om\\": [
-                "src/App/Models/Built/om",
-                "src/App/Models/Built"
-            ]
+            "App\\om\\": "src/App/Models/Built/om",
+            "App\\Domains\\": "src/App/Domains"
         }
     },
     "config": {
@@ -20,7 +18,7 @@
         "php-di/php-di": "^6.0",
         "components/jquery": "2.*",
         "components/jqueryui": "1.10.*",
-        "ckeditor/ckeditor": "dev-standard/stable",
+        "ckeditor/ckeditor": "4.22.1",
         "moxiecode/plupload": "^3.1",
         "slim/psr7": "^1.0",
         "symfony/filesystem": "^5.0",

@@ -3,7 +3,7 @@
 use ApiGoat\Sessions\AuthySession;
 
 ini_set('default_charset', 'utf-8');
-require __DIR__ . '/Built/config.php';
+//require __DIR__ . '/Built/config.php';
 set_include_path(_BASE_DIR . "/src/" . PATH_SEPARATOR . get_include_path());
 require __DIR__ . '/Built/propel.php';
 require _VENDOR_DIR . 'apigoat/runtime/src/Utility/Legacy/html_helper.php';

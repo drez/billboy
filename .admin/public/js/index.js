@@ -33,6 +33,29 @@ function sleep(milliseconds) {
     }
 }
 
+$(function() {
+  $(window).focus(function () {
+      checkAlive();
+    });
+
+  $(window).blur(function () {
+      checkAlive();
+    });
+});
+
+let checkedAlive = false;
+checkAlive = () => {
+  if (!checkedAlive) { 
+      $.post(_SITE_URL + 'GuiManager', { a: 'alive' }, function (data) {
+          if (data['status'] == 'success') { } else { 
+              location.reload();
+          }
+    }, 'json') .fail(function(error) {  location.reload(); });;
+  }
+  checkedAlive = true;
+  setTimeout(function(){ checkedAlive=false; }, 10000);
+}
+
 $(document).keypress(function (e) {
     /* Backspace */
     if (e.keyCode === 8 && !$(document.activeElement).is('input') && !$(document.activeElement).is('textarea')) {
@@ -1051,4 +1074,23 @@ function sw_message_remove(id) {
         }
     }, 750);
     $('body').css('cursor', 'default');
+}
+
+/**
+ * Get timezone data (offset and dst)
+ *
+ *  Inspired by: http://goo.gl/E41sTi
+ *
+ * @returns {{offset: number, dst: number}}
+ */
+function getTimeZoneData() {
+	var today = new Date();
+  	var jan = new Date(today.getFullYear(), 0, 1);
+  	var jul = new Date(today.getFullYear(), 6, 1);
+  	var dst = today.getTimezoneOffset() < Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+  
+  	return {
+    	offset: -today.getTimezoneOffset() / 60,
+    	dst: +dst
+  	};
 }

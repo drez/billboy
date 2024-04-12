@@ -3,9 +3,10 @@
 use ApiGoat\Utility\Assets;
 
 $Assets = new Assets(['deployment_type' => _DEPLOYMENT_TYPE, 'pipeline' => true]);
-$Assets->add('public/img/remix/remixicon.css');
+$Assets->add('public/css/remix/remixicon.css');
 $Assets->add('public/js/index.js');
 $Assets->add(_SITE_URL . 'public/css/main.css');
+$Assets->add(_SITE_URL . 'public/css/apigoat.css');
 $Assets->add('public/js/selectbox.js');
 $Assets->add('vendor/components/jqueryui/ui/minified/jquery-ui.min.js');
 

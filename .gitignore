@@ -1,0 +1,8 @@
+.admin/vendor/*
+.admin/.build/*
+.admin/tmp/*
+.env
+composer.lock
+gc
+.admin/auth.json
+.admin/config/Built/basedata.sql
