@@ -17,11 +17,11 @@ if (!isset($_SESSION[_AUTH_VAR]) || !is_object($_SESSION[_AUTH_VAR]) || (get_cla
     $_SESSION[_AUTH_VAR] = new AuthySession();
 }
 
-require _BASE_DIR . 'config/Built/config.db.php';
-
 if (!empty($_SESSION[_AUTH_VAR]->sessVar['Timezone'])) {
     date_default_timezone_set($_SESSION[_AUTH_VAR]->sessVar['Timezone']);
 }
+
+require _BASE_DIR . 'config/Built/config.db.php';
 
 setlocale(LC_NUMERIC, 'en_CA');
 setlocale(LC_ALL, "en_US");
