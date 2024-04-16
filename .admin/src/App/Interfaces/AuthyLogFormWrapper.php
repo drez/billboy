@@ -23,7 +23,7 @@ class AuthyLogFormWrapper extends AuthyLogForm
 
     /**
      * Hook form after the data getter
-     * @param Array $data
+     * @param array $data
      * @param AuthyLog $dataObj
      * @return void
     **/

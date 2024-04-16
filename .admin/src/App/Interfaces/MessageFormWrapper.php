@@ -23,7 +23,7 @@ class MessageFormWrapper extends MessageForm
 
     /**
      * Hook form after the data getter
-     * @param Array $data
+     * @param array $data
      * @param Message $dataObj
      * @return void
     **/

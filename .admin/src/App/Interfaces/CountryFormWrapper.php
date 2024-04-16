@@ -23,7 +23,7 @@ class CountryFormWrapper extends CountryForm
 
     /**
      * Hook form after the data getter
-     * @param Array $data
+     * @param array $data
      * @param Country $dataObj
      * @return void
     **/

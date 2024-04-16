@@ -23,7 +23,7 @@ class ProjectFormWrapper extends ProjectForm
 
     /**
      * Hook form after the data getter
-     * @param Array $data
+     * @param array $data
      * @param Project $dataObj
      * @return void
     **/

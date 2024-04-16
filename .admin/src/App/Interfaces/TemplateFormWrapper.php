@@ -24,7 +24,7 @@ class TemplateFormWrapper extends TemplateForm
      * Hook form after the data getter
      *
      * @param AuthyForm $obj
-     * @param Array $data
+     * @param array $data
      * @param Template $dataObj
      * @return void
      */

@@ -23,7 +23,7 @@ class TemplateFileFormWrapper extends TemplateFileForm
 
     /**
      * Hook form after the data getter
-     * @param Array $data
+     * @param array $data
      * @param TemplateFile $dataObj
      * @return void
     **/

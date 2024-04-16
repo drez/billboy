@@ -23,7 +23,7 @@ class AuthyGroupXFormWrapper extends AuthyGroupXForm
 
     /**
      * Hook form after the data getter
-     * @param Array $data
+     * @param array $data
      * @param AuthyGroupX $dataObj
      * @return void
     **/

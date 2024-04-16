@@ -23,7 +23,7 @@ class AuthyFormWrapper extends AuthyForm
 
     /**
      * Hook form after the data getter
-     * @param Array $data
+     * @param array $data
      * @param Authy $dataObj
      * @return void
     **/

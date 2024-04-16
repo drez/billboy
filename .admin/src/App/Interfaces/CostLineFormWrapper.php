@@ -23,7 +23,7 @@ class CostLineFormWrapper extends CostLineForm
 
     /**
      * Hook form after the data getter
-     * @param Array $data
+     * @param array $data
      * @param CostLine $dataObj
      * @return void
     **/

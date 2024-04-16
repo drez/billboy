@@ -23,7 +23,7 @@ class ConfigFormWrapper extends ConfigForm
 
     /**
      * Hook form after the data getter
-     * @param Array $data
+     * @param array $data
      * @param Config $dataObj
      * @return void
     **/

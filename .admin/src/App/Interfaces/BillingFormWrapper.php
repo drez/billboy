@@ -23,7 +23,7 @@ class BillingFormWrapper extends BillingForm
 
     /**
      * Hook form after the data getter
-     * @param Array $data
+     * @param array $data
      * @param Billing $dataObj
      * @return void
     **/

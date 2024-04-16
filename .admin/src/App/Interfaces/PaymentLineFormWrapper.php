@@ -23,7 +23,7 @@ class PaymentLineFormWrapper extends PaymentLineForm
 
     /**
      * Hook form after the data getter
-     * @param Array $data
+     * @param array $data
      * @param PaymentLine $dataObj
      * @return void
     **/
