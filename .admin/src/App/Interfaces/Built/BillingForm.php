@@ -246,22 +246,22 @@ class BillingForm extends Billing
 .th(_("Type"), " th='sorted' c='Type' title='" . _('Type')."' ")
 .th(_("State"), " th='sorted' c='State' title='" . _('State')."' ")
 .th(_("Gross"), " th='sorted' c='Gross' title='" . _('Gross')."' ")
-.th(_("Net"), " th='sorted' c='Net' title='" . _('Net')."' ")
 .th(_("Due date"), " th='sorted' c='DateDue' title='" . _('Due date')."' ")
 .th(_("Paid date"), " th='sorted' c='DatePaid' title='" . _('Paid date')."' ")
+.th(_("Net"), " th='sorted' c='Net' title='" . _('Net')."' ")
 . $this->cCmoreColsHeader;
                 if(!$this->setReadOnly){
                     $trHead .= th('&nbsp;',' class="actionrow delete" ');
                 }
                 $trHead = thead(tr($trHead));
                 return $trHead;
-            break;
+
             case 'list-button':
                 $listButton = '';
                 
                 
                 return $listButton;
-            break;
+
             case 'search':
                 
         $this->arrayIdClientOptions = $this->selectBoxBilling_IdClient($this, $emptyVar, $data);
@@ -281,7 +281,7 @@ class BillingForm extends Billing
                     ,"id='formMsBilling'")
             ,"", "  class='msSearchCtnr'");;
                 return $trSearch;
-            break;
+
             case 'add':
             ###### ADD
                 if($_SESSION[_AUTH_VAR]->hasRights('Billing', 'a') && !$this->setReadOnly){
@@ -293,7 +293,8 @@ class BillingForm extends Billing
 
             return $this->listAddButton;
             break;
-            case 'quickadd': return $trHeadMod; break;
+            case 'quickadd': 
+                return $trHeadMod;
         }
     }
 
@@ -325,10 +326,10 @@ class BillingForm extends Billing
   'Type' => '',
   'State' => '',
   'Gross' => '',
-  'Net' => '',
-  'NoteBilling' => '',
   'DateDue' => '',
+  'NoteBilling' => '',
   'DatePaid' => '',
+  'Net' => '',
   'Reference' => '',
   'DateCreation' => '',
   'DateModification' => '',
@@ -407,7 +408,7 @@ class BillingForm extends Billing
             foreach($pcData as $data) {
                 $this->listActionCell = '';
                     $total[6] += $data->getGross();
-$total[7] += $data->getNet();
+$total[9] += $data->getNet();
 
                 
                 
@@ -432,9 +433,9 @@ $total[7] += $data->getNet();
                 td(span(\htmlentities((($altValue['Type']) ? $altValue['Type'] : isntPo($data->getType())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editBilling'") . 
                 td(span(\htmlentities((($altValue['State']) ? $altValue['State'] : isntPo($data->getState())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='State' class='center'  j='editBilling'") . 
                 td(span(\htmlentities((($altValue['Gross']) ? $altValue['Gross'] : str_replace(',', '.', $data->getGross())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Gross' class='right'  j='editBilling'") . 
-                td(span(\htmlentities((($altValue['Net']) ? $altValue['Net'] : str_replace(',', '.', $data->getNet())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Net' class='right'  j='editBilling'") . 
                 td(span(\htmlentities((($altValue['DateDue']) ? $altValue['DateDue'] : $data->getDateDue()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DateDue' class=''  j='editBilling'") . 
-                td(span(\htmlentities((($altValue['DatePaid']) ? $altValue['DatePaid'] : $data->getDatePaid()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DatePaid' class=''  j='editBilling'") . $cCmoreCols.$actionCell
+                td(span(\htmlentities((($altValue['DatePaid']) ? $altValue['DatePaid'] : $data->getDatePaid()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DatePaid' class=''  j='editBilling'") . 
+                td(span(\htmlentities((($altValue['Net']) ? $altValue['Net'] : str_replace(',', '.', $data->getNet())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Net' class='right'  j='editBilling'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -446,7 +447,7 @@ $total[7] += $data->getNet();
             $tr .= input('hidden', 'rowCountBilling', $i);
         }
 
-            $tr .= "".td('').td('').td('').td('').td('').td('').td(number_format($total[6], 2), "class='right total'").td(number_format($total[7], 2), "class='right total'").td('').td('');
+            $tr .= "".td('').td('').td('').td('').td('').td('').td(number_format($total[6], 2), "class='right total'").td('').td('').td(number_format($total[9], 2), "class='right total'");
 
         ## @Paging
         $pagerRow = $this->getPager($pmpoData, $resultsCount, $search);
@@ -509,8 +510,8 @@ $total[7] += $data->getNet();
 
         if(!isMobile()) {
             $jqueryDatePicker = "
-                $(\".BillingListForm [j='date']\").attr('type', 'input');
-                $(\".BillingListForm [j='date']\").each(function(){
+                $(\"#formMsBilling [j='date']\").attr('type', 'input');
+                $(\"#formMsBilling [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
@@ -602,12 +603,12 @@ $total[7] += $data->getNet();
         $e->setState(($data['State'] == '' ) ? null : $data['State']);
         //integer not required
         $e->setGross( ($data['Gross'] == '' ) ? null : $data['Gross']);
-        //integer not required
-        $e->setNet( ($data['Net'] == '' ) ? null : $data['Net']);
+        $e->setDateDue( ($data['DateDue'] == '' || $data['DateDue'] == 'null' || substr($data['DateDue'],0,10) == '-0001-11-30') ? null : $data['DateDue'] );
         //integer not required
         $e->setNoteBilling( ($data['NoteBilling'] == '' ) ? null : $data['NoteBilling']);
-        $e->setDateDue( ($data['DateDue'] == '' || $data['DateDue'] == 'null' || substr($data['DateDue'],0,10) == '-0001-11-30') ? null : $data['DateDue'] );
         $e->setDatePaid( ($data['DatePaid'] == '' || $data['DatePaid'] == 'null' || substr($data['DatePaid'],0,10) == '-0001-11-30') ? null : $data['DatePaid'] );
+        //integer not required
+        $e->setNet( ($data['Net'] == '' ) ? null : $data['Net']);
         $e->setDateCreation( ($data['DateCreation'] == '' || $data['DateCreation'] == 'null' || substr($data['DateCreation'],0,10) == '-0001-11-30') ? null : $data['DateCreation'] );
         $e->setDateModification( ($data['DateModification'] == '' || $data['DateModification'] == 'null' || substr($data['DateModification'],0,10) == '-0001-11-30') ? null : $data['DateModification'] );
         //foreign
@@ -652,14 +653,14 @@ $total[7] += $data->getNet();
         if(isset($data['Gross'])){
             $e->setGross( ($data['Gross'] == '' ) ? null : $data['Gross']);
         }
-        if(isset($data['Net'])){
-            $e->setNet( ($data['Net'] == '' ) ? null : $data['Net']);
-        }
         if(isset($data['DateDue'])){
             $e->setDateDue( ($data['DateDue'] == '' || $data['DateDue'] == 'null' || substr($data['DateDue'],0,10) == '-0001-11-30') ? null : $data['DateDue'] );
         }
         if(isset($data['DatePaid'])){
             $e->setDatePaid( ($data['DatePaid'] == '' || $data['DatePaid'] == 'null' || substr($data['DatePaid'],0,10) == '-0001-11-30') ? null : $data['DatePaid'] );
+        }
+        if(isset($data['Net'])){
+            $e->setNet( ($data['Net'] == '' ) ? null : $data['Net']);
         }
         if(isset($data['DateCreation'])){
             $e->setDateCreation( ($data['DateCreation'] == '' || $data['DateCreation'] == 'null' || substr($data['DateCreation'],0,10) == '-0001-11-30') ? null : $data['DateCreation'] );
@@ -831,10 +832,10 @@ $this->fields['Billing']['Date']['html'] = stdFieldRow(_("Date"), input('date', 
 $this->fields['Billing']['Type']['html'] = stdFieldRow(_("Type"), selectboxCustomArray('Type', array( '0' => array('0'=>_("Quote"), '1'=>"Quote"),'1' => array('0'=>_("Bill"), '1'=>"Bill"), ), _('Type'), "s='d'  ", $dataObj->getType(), '', true), 'Type', "", $this->commentsType, $this->commentsType_css, '', ' ', 'no');
 $this->fields['Billing']['State']['html'] = stdFieldRow(_("State"), selectboxCustomArray('State', array( '0' => array('0'=>_("New"), '1'=>"New"),'1' => array('0'=>_("Approved"), '1'=>"Approved"),'2' => array('0'=>_("Sent"), '1'=>"Sent"),'3' => array('0'=>_("Partial paiement"), '1'=>"Partial paiement"),'4' => array('0'=>_("Paid"), '1'=>"Paid"),'5' => array('0'=>_("Cancelled"), '1'=>"Cancelled"),'6' => array('0'=>_("To send"), '1'=>"To send"), ), _('State'), "s='d'  ", $dataObj->getState(), '', true), 'State', "", $this->commentsState, $this->commentsState_css, '', ' ', 'no');
 $this->fields['Billing']['Gross']['html'] = stdFieldRow(_("Gross"), input('text', 'Gross', $dataObj->getGross(), "  placeholder='".str_replace("'","&#39;",_('Gross'))."'  v='GROSS' size='5' s='d' class=''"), 'Gross', "", $this->commentsGross, $this->commentsGross_css, '', ' ', 'no');
-$this->fields['Billing']['Net']['html'] = stdFieldRow(_("Net"), input('text', 'Net', $dataObj->getNet(), "  placeholder='".str_replace("'","&#39;",_('Net'))."'  v='NET' size='5' s='d' class=''"), 'Net', "", $this->commentsNet, $this->commentsNet_css, '', ' ', 'no');
-$this->fields['Billing']['NoteBilling']['html'] = stdFieldRow(_("Note"), textarea('NoteBilling', htmlentities($dataObj->getNoteBilling()) ,"placeholder='".str_replace("'","&#39;",_('Note'))."' cols='71' v='NOTE_BILLING' s='d'  class=' tinymce ' style='' spellcheck='false'"), 'NoteBilling', "", $this->commentsNoteBilling, $this->commentsNoteBilling_css, 'istinymce', ' ', 'no');
 $this->fields['Billing']['DateDue']['html'] = stdFieldRow(_("Due date"), input('date', 'DateDue', $dataObj->getDateDue(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'DateDue', "", $this->commentsDateDue, $this->commentsDateDue_css, '', ' ', 'no');
+$this->fields['Billing']['NoteBilling']['html'] = stdFieldRow(_("Note"), textarea('NoteBilling', htmlentities($dataObj->getNoteBilling()) ,"placeholder='".str_replace("'","&#39;",_('Note'))."' cols='71' v='NOTE_BILLING' s='d'  class=' tinymce ' style='' spellcheck='false'"), 'NoteBilling', "", $this->commentsNoteBilling, $this->commentsNoteBilling_css, 'istinymce', ' ', 'no');
 $this->fields['Billing']['DatePaid']['html'] = stdFieldRow(_("Paid date"), input('date', 'DatePaid', $dataObj->getDatePaid(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'DatePaid', "", $this->commentsDatePaid, $this->commentsDatePaid_css, '', ' ', 'no');
+$this->fields['Billing']['Net']['html'] = stdFieldRow(_("Net"), input('text', 'Net', $dataObj->getNet(), "  placeholder='".str_replace("'","&#39;",_('Net'))."'  v='NET' size='5' s='d' class=''"), 'Net', "", $this->commentsNet, $this->commentsNet_css, '', ' ', 'no');
 $this->fields['Billing']['Reference']['html'] = stdFieldRow(_("Paiement Reference"), input('text', 'Reference', htmlentities($dataObj->getReference()), "   placeholder='".str_replace("'","&#39;",_('Paiement Reference'))."' size='35'  v='REFERENCE' s='d' class=''  ")."", 'Reference', "", $this->commentsReference, $this->commentsReference_css, '', ' ', 'no');
 
 
@@ -955,12 +956,12 @@ $this->fields['Billing']['Title']['html']
 .$this->fields['Billing']['Type']['html']
 .$this->fields['Billing']['State']['html']
 .$this->fields['Billing']['Gross']['html']
-.$this->fields['Billing']['Net']['html']
+.$this->fields['Billing']['DateDue']['html']
 .'</div><div id="ogf_note_billing"  class=" ui-tabs-panel">'
 .$this->fields['Billing']['NoteBilling']['html']
-.$this->fields['Billing']['DateDue']['html']
 .'</div><div id="ogf_date_paid"  class=" ui-tabs-panel">'
 .$this->fields['Billing']['DatePaid']['html']
+.$this->fields['Billing']['Net']['html']
 .$this->fields['Billing']['Reference']['html'].'</div>'
                 
                 .$this->formSaveBar
@@ -1056,17 +1057,17 @@ $this->fields['Billing']['Title']['html']
         $this->fieldsRo['Billing']['Gross']['html'] = stdFieldRow(_("Gross"), div( $dataObj->getGross(), 'Gross_label' , "class='readonly' s='d'")
                 .input('hidden', 'Gross', $dataObj->getGross(), "s='d'"), 'Gross', "", $this->commentsGross, $this->commentsGross_css, 'readonly', ' ', 'no');
 
-        $this->fieldsRo['Billing']['Net']['html'] = stdFieldRow(_("Net"), div( $dataObj->getNet(), 'Net_label' , "class='readonly' s='d'")
-                .input('hidden', 'Net', $dataObj->getNet(), "s='d'"), 'Net', "", $this->commentsNet, $this->commentsNet_css, 'readonly', ' ', 'no');
+        $this->fieldsRo['Billing']['DateDue']['html'] = stdFieldRow(_("Due date"), div( $dataObj->getDateDue(), 'DateDue_label' , "class='readonly' s='d'")
+                .input('hidden', 'DateDue', $dataObj->getDateDue(), "s='d'"), 'DateDue', "", $this->commentsDateDue, $this->commentsDateDue_css, 'readonly', ' ', 'no');
 
         $this->fieldsRo['Billing']['NoteBilling']['html'] = stdFieldRow(_("Note"), div( $dataObj->getNoteBilling(), 'NoteBilling_label' , "class='readonly' s='d'")
                 .input('hidden', 'NoteBilling', $dataObj->getNoteBilling(), "s='d'"), 'NoteBilling', "", $this->commentsNoteBilling, $this->commentsNoteBilling_css, 'readonly', ' ', 'no');
 
-        $this->fieldsRo['Billing']['DateDue']['html'] = stdFieldRow(_("Due date"), div( $dataObj->getDateDue(), 'DateDue_label' , "class='readonly' s='d'")
-                .input('hidden', 'DateDue', $dataObj->getDateDue(), "s='d'"), 'DateDue', "", $this->commentsDateDue, $this->commentsDateDue_css, 'readonly', ' ', 'no');
-
         $this->fieldsRo['Billing']['DatePaid']['html'] = stdFieldRow(_("Paid date"), div( $dataObj->getDatePaid(), 'DatePaid_label' , "class='readonly' s='d'")
                 .input('hidden', 'DatePaid', $dataObj->getDatePaid(), "s='d'"), 'DatePaid', "", $this->commentsDatePaid, $this->commentsDatePaid_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['Billing']['Net']['html'] = stdFieldRow(_("Net"), div( $dataObj->getNet(), 'Net_label' , "class='readonly' s='d'")
+                .input('hidden', 'Net', $dataObj->getNet(), "s='d'"), 'Net', "", $this->commentsNet, $this->commentsNet_css, 'readonly', ' ', 'no');
 
         $this->fieldsRo['Billing']['Reference']['html'] = stdFieldRow(_("Paiement Reference"), div( $dataObj->getReference(), 'Reference_label' , "class='readonly' s='d'")
                 .input('hidden', 'Reference', $dataObj->getReference(), "s='d'"), 'Reference', "", $this->commentsReference, $this->commentsReference_css, 'readonly', ' ', 'no');

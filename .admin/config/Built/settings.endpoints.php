@@ -27,17 +27,21 @@ $table['client'] = [
         'type' => 'VARCHAR',
         'description' => 'Extension',
     ],
-    'phone_mobile' => [
-        'type' => 'VARCHAR',
-        'description' => 'Mobile',
-    ],
     'email' => [
         'type' => 'VARCHAR',
         'description' => 'Email',
     ],
+    'contact' => [
+        'type' => 'VARCHAR',
+        'description' => 'Contact',
+    ],
     'email2' => [
         'type' => 'VARCHAR',
-        'description' => 'Email (secondary)',
+        'description' => 'Email (contact)',
+    ],
+    'phone_mobile' => [
+        'type' => 'VARCHAR',
+        'description' => 'contact',
     ],
     'website' => [
         'type' => 'VARCHAR',
@@ -120,21 +124,21 @@ $table['billing'] = [
         'type' => 'DECIMAL',
         'description' => 'Gross',
     ],
-    'net' => [
-        'type' => 'DECIMAL',
-        'description' => 'Net',
+    'date_due' => [
+        'type' => 'DATE',
+        'description' => 'Due date',
     ],
     'note_billing' => [
         'type' => 'LONGVARCHAR',
         'description' => 'Note',
     ],
-    'date_due' => [
-        'type' => 'DATE',
-        'description' => 'Due date',
-    ],
     'date_paid' => [
         'type' => 'DATE',
         'description' => 'Paid date',
+    ],
+    'net' => [
+        'type' => 'DECIMAL',
+        'description' => 'Net',
     ],
     'reference' => [
         'type' => 'VARCHAR',

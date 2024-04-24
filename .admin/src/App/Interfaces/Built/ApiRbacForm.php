@@ -216,13 +216,13 @@ class ApiRbacForm extends ApiRbac
                 }
                 $trHead = thead(tr($trHead));
                 return $trHead;
-            break;
+
             case 'list-button':
                 $listButton = '';
                 
                 
                 return $listButton;
-            break;
+
             case 'search':
                 
                 unset($data);
@@ -240,7 +240,7 @@ class ApiRbacForm extends ApiRbac
                     ,"id='formMsApiRbac'")
             ,"", "  class='msSearchCtnr'");;
                 return $trSearch;
-            break;
+
             case 'add':
             ###### ADD
                 if($_SESSION[_AUTH_VAR]->hasRights('ApiRbac', 'a') && !$this->setReadOnly){
@@ -252,7 +252,8 @@ class ApiRbacForm extends ApiRbac
 
             return $this->listAddButton;
             break;
-            case 'quickadd': return $trHeadMod; break;
+            case 'quickadd': 
+                return $trHeadMod;
         }
     }
 
@@ -453,8 +454,8 @@ class ApiRbacForm extends ApiRbac
 
         if(!isMobile()) {
             $jqueryDatePicker = "
-                $(\".ApiRbacListForm [j='date']\").attr('type', 'input');
-                $(\".ApiRbacListForm [j='date']\").each(function(){
+                $(\"#formMsApiRbac [j='date']\").attr('type', 'input');
+                $(\"#formMsApiRbac [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";

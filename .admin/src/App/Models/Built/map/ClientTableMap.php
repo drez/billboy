@@ -48,9 +48,10 @@ class ClientTableMap extends TableMap
         $this->addColumn('phone', 'Phone', 'VARCHAR', false, 20, null);
         $this->addColumn('phone_work', 'PhoneWork', 'VARCHAR', false, 20, null);
         $this->addColumn('ext', 'Ext', 'VARCHAR', false, 10, null);
-        $this->addColumn('phone_mobile', 'PhoneMobile', 'VARCHAR', false, 20, null);
         $this->addColumn('email', 'Email', 'VARCHAR', false, 100, null);
+        $this->addColumn('contact', 'Contact', 'VARCHAR', false, 150, null);
         $this->addColumn('email2', 'Email2', 'VARCHAR', false, 100, null);
+        $this->addColumn('phone_mobile', 'PhoneMobile', 'VARCHAR', false, 20, null);
         $this->addColumn('website', 'Website', 'VARCHAR', false, 100, null);
         $this->addColumn('address_1', 'Address1', 'LONGVARCHAR', false, 10, null);
         $this->addColumn('address_2', 'Address2', 'LONGVARCHAR', false, 10, null);
@@ -73,9 +74,10 @@ class ClientTableMap extends TableMap
         $this->addValidator('phone', 'type', 'propel.validator.TypeValidator', 'string', ('Client_Phone_type_string'));
         $this->addValidator('phone_work', 'type', 'propel.validator.TypeValidator', 'string', ('Client_PhoneWork_type_string'));
         $this->addValidator('ext', 'type', 'propel.validator.TypeValidator', 'string', ('Client_Ext_type_string'));
-        $this->addValidator('phone_mobile', 'type', 'propel.validator.TypeValidator', 'string', ('Client_PhoneMobile_type_string'));
         $this->addValidator('email', 'type', 'propel.validator.TypeValidator', 'string', ('Client_Email_type_string'));
+        $this->addValidator('contact', 'type', 'propel.validator.TypeValidator', 'string', ('Client_Contact_type_string'));
         $this->addValidator('email2', 'type', 'propel.validator.TypeValidator', 'string', ('Client_Email2_type_string'));
+        $this->addValidator('phone_mobile', 'type', 'propel.validator.TypeValidator', 'string', ('Client_PhoneMobile_type_string'));
         $this->addValidator('website', 'type', 'propel.validator.TypeValidator', 'string', ('Client_Website_type_string'));
         $this->addValidator('address_1', 'type', 'propel.validator.TypeValidator', 'string', ('Client_Address1_type_string'));
         $this->addValidator('address_2', 'type', 'propel.validator.TypeValidator', 'string', ('Client_Address2_type_string'));

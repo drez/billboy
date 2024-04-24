@@ -64,10 +64,10 @@ class BillingTableMap extends TableMap
   6 => 'To send',
 ));
         $this->addColumn('gross', 'Gross', 'DECIMAL', false, 8, null);
-        $this->addColumn('net', 'Net', 'DECIMAL', false, 8, null);
-        $this->addColumn('note_billing', 'NoteBilling', 'LONGVARCHAR', false, 400, null);
         $this->addColumn('date_due', 'DateDue', 'DATE', false, null, null);
+        $this->addColumn('note_billing', 'NoteBilling', 'LONGVARCHAR', false, 400, null);
         $this->addColumn('date_paid', 'DatePaid', 'DATE', false, null, null);
+        $this->addColumn('net', 'Net', 'DECIMAL', false, 8, null);
         $this->addColumn('reference', 'Reference', 'VARCHAR', false, 100, null);
         $this->addColumn('date_creation', 'DateCreation', 'TIMESTAMP', false, null, null);
         $this->addColumn('date_modification', 'DateModification', 'TIMESTAMP', false, null, null);
@@ -86,8 +86,8 @@ class BillingTableMap extends TableMap
         $this->addValidator('date', 'match', 'propel.validator.MatchValidator', '', ('Billing_Date_match'));
         $this->addValidator('type', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_Type_type_string'));
         $this->addValidator('state', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_State_type_string'));
-        $this->addValidator('note_billing', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_NoteBilling_type_string'));
         $this->addValidator('date_due', 'match', 'propel.validator.MatchValidator', '', ('Billing_DateDue_match'));
+        $this->addValidator('note_billing', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_NoteBilling_type_string'));
         $this->addValidator('date_paid', 'match', 'propel.validator.MatchValidator', '', ('Billing_DatePaid_match'));
         $this->addValidator('reference', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_Reference_type_string'));
     } // initialize()

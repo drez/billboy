@@ -39,13 +39,13 @@ abstract class BaseClientPeer
     const TM_CLASS = 'App\\map\\ClientTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 19;
+    const NUM_COLUMNS = 20;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 19;
+    const NUM_HYDRATE_COLUMNS = 20;
 
     /** the column name for the id_client field */
     const ID_CLIENT = 'client.id_client';
@@ -65,14 +65,17 @@ abstract class BaseClientPeer
     /** the column name for the ext field */
     const EXT = 'client.ext';
 
-    /** the column name for the phone_mobile field */
-    const PHONE_MOBILE = 'client.phone_mobile';
-
     /** the column name for the email field */
     const EMAIL = 'client.email';
 
+    /** the column name for the contact field */
+    const CONTACT = 'client.contact';
+
     /** the column name for the email2 field */
     const EMAIL2 = 'client.email2';
+
+    /** the column name for the phone_mobile field */
+    const PHONE_MOBILE = 'client.phone_mobile';
 
     /** the column name for the website field */
     const WEBSITE = 'client.website';
@@ -123,12 +126,12 @@ abstract class BaseClientPeer
      * e.g. ClientPeer::$fieldNames[ClientPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('IdClient', 'Name', 'IdCountry', 'Phone', 'PhoneWork', 'Ext', 'PhoneMobile', 'Email', 'Email2', 'Website', 'Address1', 'Address2', 'Address3', 'Zip', 'DateCreation', 'DateModification', 'IdGroupCreation', 'IdCreation', 'IdModification', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idClient', 'name', 'idCountry', 'phone', 'phoneWork', 'ext', 'phoneMobile', 'email', 'email2', 'website', 'address1', 'address2', 'address3', 'zip', 'dateCreation', 'dateModification', 'idGroupCreation', 'idCreation', 'idModification', ),
-        BasePeer::TYPE_COLNAME => array (ClientPeer::ID_CLIENT, ClientPeer::NAME, ClientPeer::ID_COUNTRY, ClientPeer::PHONE, ClientPeer::PHONE_WORK, ClientPeer::EXT, ClientPeer::PHONE_MOBILE, ClientPeer::EMAIL, ClientPeer::EMAIL2, ClientPeer::WEBSITE, ClientPeer::ADDRESS_1, ClientPeer::ADDRESS_2, ClientPeer::ADDRESS_3, ClientPeer::ZIP, ClientPeer::DATE_CREATION, ClientPeer::DATE_MODIFICATION, ClientPeer::ID_GROUP_CREATION, ClientPeer::ID_CREATION, ClientPeer::ID_MODIFICATION, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_CLIENT', 'NAME', 'ID_COUNTRY', 'PHONE', 'PHONE_WORK', 'EXT', 'PHONE_MOBILE', 'EMAIL', 'EMAIL2', 'WEBSITE', 'ADDRESS_1', 'ADDRESS_2', 'ADDRESS_3', 'ZIP', 'DATE_CREATION', 'DATE_MODIFICATION', 'ID_GROUP_CREATION', 'ID_CREATION', 'ID_MODIFICATION', ),
-        BasePeer::TYPE_FIELDNAME => array ('id_client', 'name', 'id_country', 'phone', 'phone_work', 'ext', 'phone_mobile', 'email', 'email2', 'website', 'address_1', 'address_2', 'address_3', 'zip', 'date_creation', 'date_modification', 'id_group_creation', 'id_creation', 'id_modification', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, )
+        BasePeer::TYPE_PHPNAME => array ('IdClient', 'Name', 'IdCountry', 'Phone', 'PhoneWork', 'Ext', 'Email', 'Contact', 'Email2', 'PhoneMobile', 'Website', 'Address1', 'Address2', 'Address3', 'Zip', 'DateCreation', 'DateModification', 'IdGroupCreation', 'IdCreation', 'IdModification', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idClient', 'name', 'idCountry', 'phone', 'phoneWork', 'ext', 'email', 'contact', 'email2', 'phoneMobile', 'website', 'address1', 'address2', 'address3', 'zip', 'dateCreation', 'dateModification', 'idGroupCreation', 'idCreation', 'idModification', ),
+        BasePeer::TYPE_COLNAME => array (ClientPeer::ID_CLIENT, ClientPeer::NAME, ClientPeer::ID_COUNTRY, ClientPeer::PHONE, ClientPeer::PHONE_WORK, ClientPeer::EXT, ClientPeer::EMAIL, ClientPeer::CONTACT, ClientPeer::EMAIL2, ClientPeer::PHONE_MOBILE, ClientPeer::WEBSITE, ClientPeer::ADDRESS_1, ClientPeer::ADDRESS_2, ClientPeer::ADDRESS_3, ClientPeer::ZIP, ClientPeer::DATE_CREATION, ClientPeer::DATE_MODIFICATION, ClientPeer::ID_GROUP_CREATION, ClientPeer::ID_CREATION, ClientPeer::ID_MODIFICATION, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_CLIENT', 'NAME', 'ID_COUNTRY', 'PHONE', 'PHONE_WORK', 'EXT', 'EMAIL', 'CONTACT', 'EMAIL2', 'PHONE_MOBILE', 'WEBSITE', 'ADDRESS_1', 'ADDRESS_2', 'ADDRESS_3', 'ZIP', 'DATE_CREATION', 'DATE_MODIFICATION', 'ID_GROUP_CREATION', 'ID_CREATION', 'ID_MODIFICATION', ),
+        BasePeer::TYPE_FIELDNAME => array ('id_client', 'name', 'id_country', 'phone', 'phone_work', 'ext', 'email', 'contact', 'email2', 'phone_mobile', 'website', 'address_1', 'address_2', 'address_3', 'zip', 'date_creation', 'date_modification', 'id_group_creation', 'id_creation', 'id_modification', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, )
     );
 
     /**
@@ -138,12 +141,12 @@ abstract class BaseClientPeer
      * e.g. ClientPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('IdClient' => 0, 'Name' => 1, 'IdCountry' => 2, 'Phone' => 3, 'PhoneWork' => 4, 'Ext' => 5, 'PhoneMobile' => 6, 'Email' => 7, 'Email2' => 8, 'Website' => 9, 'Address1' => 10, 'Address2' => 11, 'Address3' => 12, 'Zip' => 13, 'DateCreation' => 14, 'DateModification' => 15, 'IdGroupCreation' => 16, 'IdCreation' => 17, 'IdModification' => 18, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idClient' => 0, 'name' => 1, 'idCountry' => 2, 'phone' => 3, 'phoneWork' => 4, 'ext' => 5, 'phoneMobile' => 6, 'email' => 7, 'email2' => 8, 'website' => 9, 'address1' => 10, 'address2' => 11, 'address3' => 12, 'zip' => 13, 'dateCreation' => 14, 'dateModification' => 15, 'idGroupCreation' => 16, 'idCreation' => 17, 'idModification' => 18, ),
-        BasePeer::TYPE_COLNAME => array (ClientPeer::ID_CLIENT => 0, ClientPeer::NAME => 1, ClientPeer::ID_COUNTRY => 2, ClientPeer::PHONE => 3, ClientPeer::PHONE_WORK => 4, ClientPeer::EXT => 5, ClientPeer::PHONE_MOBILE => 6, ClientPeer::EMAIL => 7, ClientPeer::EMAIL2 => 8, ClientPeer::WEBSITE => 9, ClientPeer::ADDRESS_1 => 10, ClientPeer::ADDRESS_2 => 11, ClientPeer::ADDRESS_3 => 12, ClientPeer::ZIP => 13, ClientPeer::DATE_CREATION => 14, ClientPeer::DATE_MODIFICATION => 15, ClientPeer::ID_GROUP_CREATION => 16, ClientPeer::ID_CREATION => 17, ClientPeer::ID_MODIFICATION => 18, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_CLIENT' => 0, 'NAME' => 1, 'ID_COUNTRY' => 2, 'PHONE' => 3, 'PHONE_WORK' => 4, 'EXT' => 5, 'PHONE_MOBILE' => 6, 'EMAIL' => 7, 'EMAIL2' => 8, 'WEBSITE' => 9, 'ADDRESS_1' => 10, 'ADDRESS_2' => 11, 'ADDRESS_3' => 12, 'ZIP' => 13, 'DATE_CREATION' => 14, 'DATE_MODIFICATION' => 15, 'ID_GROUP_CREATION' => 16, 'ID_CREATION' => 17, 'ID_MODIFICATION' => 18, ),
-        BasePeer::TYPE_FIELDNAME => array ('id_client' => 0, 'name' => 1, 'id_country' => 2, 'phone' => 3, 'phone_work' => 4, 'ext' => 5, 'phone_mobile' => 6, 'email' => 7, 'email2' => 8, 'website' => 9, 'address_1' => 10, 'address_2' => 11, 'address_3' => 12, 'zip' => 13, 'date_creation' => 14, 'date_modification' => 15, 'id_group_creation' => 16, 'id_creation' => 17, 'id_modification' => 18, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, )
+        BasePeer::TYPE_PHPNAME => array ('IdClient' => 0, 'Name' => 1, 'IdCountry' => 2, 'Phone' => 3, 'PhoneWork' => 4, 'Ext' => 5, 'Email' => 6, 'Contact' => 7, 'Email2' => 8, 'PhoneMobile' => 9, 'Website' => 10, 'Address1' => 11, 'Address2' => 12, 'Address3' => 13, 'Zip' => 14, 'DateCreation' => 15, 'DateModification' => 16, 'IdGroupCreation' => 17, 'IdCreation' => 18, 'IdModification' => 19, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idClient' => 0, 'name' => 1, 'idCountry' => 2, 'phone' => 3, 'phoneWork' => 4, 'ext' => 5, 'email' => 6, 'contact' => 7, 'email2' => 8, 'phoneMobile' => 9, 'website' => 10, 'address1' => 11, 'address2' => 12, 'address3' => 13, 'zip' => 14, 'dateCreation' => 15, 'dateModification' => 16, 'idGroupCreation' => 17, 'idCreation' => 18, 'idModification' => 19, ),
+        BasePeer::TYPE_COLNAME => array (ClientPeer::ID_CLIENT => 0, ClientPeer::NAME => 1, ClientPeer::ID_COUNTRY => 2, ClientPeer::PHONE => 3, ClientPeer::PHONE_WORK => 4, ClientPeer::EXT => 5, ClientPeer::EMAIL => 6, ClientPeer::CONTACT => 7, ClientPeer::EMAIL2 => 8, ClientPeer::PHONE_MOBILE => 9, ClientPeer::WEBSITE => 10, ClientPeer::ADDRESS_1 => 11, ClientPeer::ADDRESS_2 => 12, ClientPeer::ADDRESS_3 => 13, ClientPeer::ZIP => 14, ClientPeer::DATE_CREATION => 15, ClientPeer::DATE_MODIFICATION => 16, ClientPeer::ID_GROUP_CREATION => 17, ClientPeer::ID_CREATION => 18, ClientPeer::ID_MODIFICATION => 19, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_CLIENT' => 0, 'NAME' => 1, 'ID_COUNTRY' => 2, 'PHONE' => 3, 'PHONE_WORK' => 4, 'EXT' => 5, 'EMAIL' => 6, 'CONTACT' => 7, 'EMAIL2' => 8, 'PHONE_MOBILE' => 9, 'WEBSITE' => 10, 'ADDRESS_1' => 11, 'ADDRESS_2' => 12, 'ADDRESS_3' => 13, 'ZIP' => 14, 'DATE_CREATION' => 15, 'DATE_MODIFICATION' => 16, 'ID_GROUP_CREATION' => 17, 'ID_CREATION' => 18, 'ID_MODIFICATION' => 19, ),
+        BasePeer::TYPE_FIELDNAME => array ('id_client' => 0, 'name' => 1, 'id_country' => 2, 'phone' => 3, 'phone_work' => 4, 'ext' => 5, 'email' => 6, 'contact' => 7, 'email2' => 8, 'phone_mobile' => 9, 'website' => 10, 'address_1' => 11, 'address_2' => 12, 'address_3' => 13, 'zip' => 14, 'date_creation' => 15, 'date_modification' => 16, 'id_group_creation' => 17, 'id_creation' => 18, 'id_modification' => 19, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, )
     );
 
     /**
@@ -223,9 +226,10 @@ abstract class BaseClientPeer
             $criteria->addSelectColumn(ClientPeer::PHONE);
             $criteria->addSelectColumn(ClientPeer::PHONE_WORK);
             $criteria->addSelectColumn(ClientPeer::EXT);
-            $criteria->addSelectColumn(ClientPeer::PHONE_MOBILE);
             $criteria->addSelectColumn(ClientPeer::EMAIL);
+            $criteria->addSelectColumn(ClientPeer::CONTACT);
             $criteria->addSelectColumn(ClientPeer::EMAIL2);
+            $criteria->addSelectColumn(ClientPeer::PHONE_MOBILE);
             $criteria->addSelectColumn(ClientPeer::WEBSITE);
             $criteria->addSelectColumn(ClientPeer::ADDRESS_1);
             $criteria->addSelectColumn(ClientPeer::ADDRESS_2);
@@ -243,9 +247,10 @@ abstract class BaseClientPeer
             $criteria->addSelectColumn($alias . '.phone');
             $criteria->addSelectColumn($alias . '.phone_work');
             $criteria->addSelectColumn($alias . '.ext');
-            $criteria->addSelectColumn($alias . '.phone_mobile');
             $criteria->addSelectColumn($alias . '.email');
+            $criteria->addSelectColumn($alias . '.contact');
             $criteria->addSelectColumn($alias . '.email2');
+            $criteria->addSelectColumn($alias . '.phone_mobile');
             $criteria->addSelectColumn($alias . '.website');
             $criteria->addSelectColumn($alias . '.address_1');
             $criteria->addSelectColumn($alias . '.address_2');
@@ -2142,14 +2147,17 @@ abstract class BaseClientPeer
         if ($obj->isNew() || $obj->isColumnModified(ClientPeer::EXT))
             $columns[ClientPeer::EXT] = $obj->getExt();
 
-        if ($obj->isNew() || $obj->isColumnModified(ClientPeer::PHONE_MOBILE))
-            $columns[ClientPeer::PHONE_MOBILE] = $obj->getPhoneMobile();
-
         if ($obj->isNew() || $obj->isColumnModified(ClientPeer::EMAIL))
             $columns[ClientPeer::EMAIL] = $obj->getEmail();
 
+        if ($obj->isNew() || $obj->isColumnModified(ClientPeer::CONTACT))
+            $columns[ClientPeer::CONTACT] = $obj->getContact();
+
         if ($obj->isNew() || $obj->isColumnModified(ClientPeer::EMAIL2))
             $columns[ClientPeer::EMAIL2] = $obj->getEmail2();
+
+        if ($obj->isNew() || $obj->isColumnModified(ClientPeer::PHONE_MOBILE))
+            $columns[ClientPeer::PHONE_MOBILE] = $obj->getPhoneMobile();
 
         if ($obj->isNew() || $obj->isColumnModified(ClientPeer::WEBSITE))
             $columns[ClientPeer::WEBSITE] = $obj->getWebsite();

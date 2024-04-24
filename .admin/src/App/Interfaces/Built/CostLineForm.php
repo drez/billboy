@@ -198,19 +198,19 @@ class CostLineForm extends CostLine
                 }
                 $trHead = thead(tr($trHead));
                 return $trHead;
-            break;
+
             case 'list-button':
                 $listButton = '';
                 
                 
                 return $listButton;
-            break;
+
             case 'search':
                 
                 
                 ;
                 return $trSearch;
-            break;
+
             case 'add':
             ###### ADD
                 if($_SESSION[_AUTH_VAR]->hasRights('CostLine', 'a') && !$this->setReadOnly){
@@ -222,7 +222,8 @@ class CostLineForm extends CostLine
 
             return $this->listAddButton;
             break;
-            case 'quickadd': return $trHeadMod; break;
+            case 'quickadd': 
+                return $trHeadMod;
         }
     }
 
@@ -415,8 +416,8 @@ class CostLineForm extends CostLine
 
         if(!isMobile()) {
             $jqueryDatePicker = "
-                $(\".CostLineListForm [j='date']\").attr('type', 'input');
-                $(\".CostLineListForm [j='date']\").each(function(){
+                $(\"#formMsCostLine [j='date']\").attr('type', 'input');
+                $(\"#formMsCostLine [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";

@@ -195,19 +195,19 @@ class PaymentLineForm extends PaymentLine
                 }
                 $trHead = thead(tr($trHead));
                 return $trHead;
-            break;
+
             case 'list-button':
                 $listButton = '';
                 
                 
                 return $listButton;
-            break;
+
             case 'search':
                 
                 
                 ;
                 return $trSearch;
-            break;
+
             case 'add':
             ###### ADD
                 if($_SESSION[_AUTH_VAR]->hasRights('PaymentLine', 'a') && !$this->setReadOnly){
@@ -219,7 +219,8 @@ class PaymentLineForm extends PaymentLine
 
             return $this->listAddButton;
             break;
-            case 'quickadd': return $trHeadMod; break;
+            case 'quickadd': 
+                return $trHeadMod;
         }
     }
 
@@ -406,8 +407,8 @@ class PaymentLineForm extends PaymentLine
 
         if(!isMobile()) {
             $jqueryDatePicker = "
-                $(\".PaymentLineListForm [j='date']\").attr('type', 'input');
-                $(\".PaymentLineListForm [j='date']\").each(function(){
+                $(\"#formMsPaymentLine [j='date']\").attr('type', 'input');
+                $(\"#formMsPaymentLine [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";

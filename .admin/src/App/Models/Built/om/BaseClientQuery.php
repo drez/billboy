@@ -32,9 +32,10 @@ use App\Project;
  * @method ClientQuery orderByPhone($order = Criteria::ASC) Order by the phone column
  * @method ClientQuery orderByPhoneWork($order = Criteria::ASC) Order by the phone_work column
  * @method ClientQuery orderByExt($order = Criteria::ASC) Order by the ext column
- * @method ClientQuery orderByPhoneMobile($order = Criteria::ASC) Order by the phone_mobile column
  * @method ClientQuery orderByEmail($order = Criteria::ASC) Order by the email column
+ * @method ClientQuery orderByContact($order = Criteria::ASC) Order by the contact column
  * @method ClientQuery orderByEmail2($order = Criteria::ASC) Order by the email2 column
+ * @method ClientQuery orderByPhoneMobile($order = Criteria::ASC) Order by the phone_mobile column
  * @method ClientQuery orderByWebsite($order = Criteria::ASC) Order by the website column
  * @method ClientQuery orderByAddress1($order = Criteria::ASC) Order by the address_1 column
  * @method ClientQuery orderByAddress2($order = Criteria::ASC) Order by the address_2 column
@@ -52,9 +53,10 @@ use App\Project;
  * @method ClientQuery groupByPhone() Group by the phone column
  * @method ClientQuery groupByPhoneWork() Group by the phone_work column
  * @method ClientQuery groupByExt() Group by the ext column
- * @method ClientQuery groupByPhoneMobile() Group by the phone_mobile column
  * @method ClientQuery groupByEmail() Group by the email column
+ * @method ClientQuery groupByContact() Group by the contact column
  * @method ClientQuery groupByEmail2() Group by the email2 column
+ * @method ClientQuery groupByPhoneMobile() Group by the phone_mobile column
  * @method ClientQuery groupByWebsite() Group by the website column
  * @method ClientQuery groupByAddress1() Group by the address_1 column
  * @method ClientQuery groupByAddress2() Group by the address_2 column
@@ -102,9 +104,10 @@ use App\Project;
  * @method Client findOneByPhone(string $phone) Return the first Client filtered by the phone column
  * @method Client findOneByPhoneWork(string $phone_work) Return the first Client filtered by the phone_work column
  * @method Client findOneByExt(string $ext) Return the first Client filtered by the ext column
- * @method Client findOneByPhoneMobile(string $phone_mobile) Return the first Client filtered by the phone_mobile column
  * @method Client findOneByEmail(string $email) Return the first Client filtered by the email column
+ * @method Client findOneByContact(string $contact) Return the first Client filtered by the contact column
  * @method Client findOneByEmail2(string $email2) Return the first Client filtered by the email2 column
+ * @method Client findOneByPhoneMobile(string $phone_mobile) Return the first Client filtered by the phone_mobile column
  * @method Client findOneByWebsite(string $website) Return the first Client filtered by the website column
  * @method Client findOneByAddress1(string $address_1) Return the first Client filtered by the address_1 column
  * @method Client findOneByAddress2(string $address_2) Return the first Client filtered by the address_2 column
@@ -122,9 +125,10 @@ use App\Project;
  * @method array findByPhone(string $phone) Return Client objects filtered by the phone column
  * @method array findByPhoneWork(string $phone_work) Return Client objects filtered by the phone_work column
  * @method array findByExt(string $ext) Return Client objects filtered by the ext column
- * @method array findByPhoneMobile(string $phone_mobile) Return Client objects filtered by the phone_mobile column
  * @method array findByEmail(string $email) Return Client objects filtered by the email column
+ * @method array findByContact(string $contact) Return Client objects filtered by the contact column
  * @method array findByEmail2(string $email2) Return Client objects filtered by the email2 column
+ * @method array findByPhoneMobile(string $phone_mobile) Return Client objects filtered by the phone_mobile column
  * @method array findByWebsite(string $website) Return Client objects filtered by the website column
  * @method array findByAddress1(string $address_1) Return Client objects filtered by the address_1 column
  * @method array findByAddress2(string $address_2) Return Client objects filtered by the address_2 column
@@ -243,7 +247,7 @@ abstract class BaseClientQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_client`, `name`, `id_country`, `phone`, `phone_work`, `ext`, `phone_mobile`, `email`, `email2`, `website`, `address_1`, `address_2`, `address_3`, `zip`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `client` WHERE `id_client` = :p0';
+        $sql = 'SELECT `id_client`, `name`, `id_country`, `phone`, `phone_work`, `ext`, `email`, `contact`, `email2`, `phone_mobile`, `website`, `address_1`, `address_2`, `address_3`, `zip`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `client` WHERE `id_client` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -538,35 +542,6 @@ abstract class BaseClientQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the phone_mobile column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByPhoneMobile('fooValue');   // WHERE phone_mobile = 'fooValue'
-     * $query->filterByPhoneMobile('%fooValue%'); // WHERE phone_mobile LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $phoneMobile The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ClientQuery The current query, for fluid interface
-     */
-    public function filterByPhoneMobile($phoneMobile = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($phoneMobile)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $phoneMobile)) {
-                $phoneMobile = str_replace('*', '%', $phoneMobile);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(ClientPeer::PHONE_MOBILE, $phoneMobile, $comparison);
-    }
-
-    /**
      * Filter the query on the email column
      *
      * Example usage:
@@ -596,6 +571,35 @@ abstract class BaseClientQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the contact column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByContact('fooValue');   // WHERE contact = 'fooValue'
+     * $query->filterByContact('%fooValue%'); // WHERE contact LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $contact The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ClientQuery The current query, for fluid interface
+     */
+    public function filterByContact($contact = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($contact)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $contact)) {
+                $contact = str_replace('*', '%', $contact);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ClientPeer::CONTACT, $contact, $comparison);
+    }
+
+    /**
      * Filter the query on the email2 column
      *
      * Example usage:
@@ -622,6 +626,35 @@ abstract class BaseClientQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ClientPeer::EMAIL2, $email2, $comparison);
+    }
+
+    /**
+     * Filter the query on the phone_mobile column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByPhoneMobile('fooValue');   // WHERE phone_mobile = 'fooValue'
+     * $query->filterByPhoneMobile('%fooValue%'); // WHERE phone_mobile LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $phoneMobile The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ClientQuery The current query, for fluid interface
+     */
+    public function filterByPhoneMobile($phoneMobile = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($phoneMobile)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $phoneMobile)) {
+                $phoneMobile = str_replace('*', '%', $phoneMobile);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(ClientPeer::PHONE_MOBILE, $phoneMobile, $comparison);
     }
 
     /**

@@ -188,19 +188,19 @@ class AuthyLogForm extends AuthyLog
                 }
                 $trHead = thead(tr($trHead));
                 return $trHead;
-            break;
+
             case 'list-button':
                 $listButton = '';
                 
                 
                 return $listButton;
-            break;
+
             case 'search':
                 
                 
                 ;
                 return $trSearch;
-            break;
+
             case 'add':
             ###### ADD
                 if($_SESSION[_AUTH_VAR]->hasRights('AuthyLog', 'a') && !$this->setReadOnly){
@@ -212,7 +212,8 @@ class AuthyLogForm extends AuthyLog
 
             return $this->listAddButton;
             break;
-            case 'quickadd': return $trHeadMod; break;
+            case 'quickadd': 
+                return $trHeadMod;
         }
     }
 
@@ -401,8 +402,8 @@ class AuthyLogForm extends AuthyLog
 
         if(!isMobile()) {
             $jqueryDatePicker = "
-                $(\".AuthyLogListForm [j='date']\").attr('type', 'input');
-                $(\".AuthyLogListForm [j='date']\").each(function(){
+                $(\"#formMsAuthyLog [j='date']\").attr('type', 'input');
+                $(\"#formMsAuthyLog [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";

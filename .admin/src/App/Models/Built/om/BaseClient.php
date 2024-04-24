@@ -94,22 +94,28 @@ abstract class BaseClient extends BaseObject implements Persistent
     protected $ext;
 
     /**
-     * The value for the phone_mobile field.
-     * @var        string
-     */
-    protected $phone_mobile;
-
-    /**
      * The value for the email field.
      * @var        string
      */
     protected $email;
 
     /**
+     * The value for the contact field.
+     * @var        string
+     */
+    protected $contact;
+
+    /**
      * The value for the email2 field.
      * @var        string
      */
     protected $email2;
+
+    /**
+     * The value for the phone_mobile field.
+     * @var        string
+     */
+    protected $phone_mobile;
 
     /**
      * The value for the website field.
@@ -309,18 +315,6 @@ abstract class BaseClient extends BaseObject implements Persistent
 
     /**
      * @Field()
-     * Get the [phone_mobile] column value.
-     * Mobile
-     * @return string
-     */
-    public function getPhoneMobile()
-    {
-
-        return $this->phone_mobile;
-    }
-
-    /**
-     * @Field()
      * Get the [email] column value.
      * Email
      * @return string
@@ -333,14 +327,38 @@ abstract class BaseClient extends BaseObject implements Persistent
 
     /**
      * @Field()
+     * Get the [contact] column value.
+     * Contact
+     * @return string
+     */
+    public function getContact()
+    {
+
+        return $this->contact;
+    }
+
+    /**
+     * @Field()
      * Get the [email2] column value.
-     * Email (secondary)
+     * Email (contact)
      * @return string
      */
     public function getEmail2()
     {
 
         return $this->email2;
+    }
+
+    /**
+     * @Field()
+     * Get the [phone_mobile] column value.
+     * contact
+     * @return string
+     */
+    public function getPhoneMobile()
+    {
+
+        return $this->phone_mobile;
     }
 
     /**
@@ -652,27 +670,6 @@ abstract class BaseClient extends BaseObject implements Persistent
     } // setExt()
 
     /**
-     * Set the value of [phone_mobile] column.
-     * Mobile
-     * @param  string $v new value
-     * @return Client The current object (for fluent API support)
-     */
-    public function setPhoneMobile($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->phone_mobile !== $v) {
-            $this->phone_mobile = $v;
-            $this->modifiedColumns[] = ClientPeer::PHONE_MOBILE;
-        }
-
-
-        return $this;
-    } // setPhoneMobile()
-
-    /**
      * Set the value of [email] column.
      * Email
      * @param  string $v new value
@@ -694,8 +691,29 @@ abstract class BaseClient extends BaseObject implements Persistent
     } // setEmail()
 
     /**
+     * Set the value of [contact] column.
+     * Contact
+     * @param  string $v new value
+     * @return Client The current object (for fluent API support)
+     */
+    public function setContact($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->contact !== $v) {
+            $this->contact = $v;
+            $this->modifiedColumns[] = ClientPeer::CONTACT;
+        }
+
+
+        return $this;
+    } // setContact()
+
+    /**
      * Set the value of [email2] column.
-     * Email (secondary)
+     * Email (contact)
      * @param  string $v new value
      * @return Client The current object (for fluent API support)
      */
@@ -713,6 +731,27 @@ abstract class BaseClient extends BaseObject implements Persistent
 
         return $this;
     } // setEmail2()
+
+    /**
+     * Set the value of [phone_mobile] column.
+     * contact
+     * @param  string $v new value
+     * @return Client The current object (for fluent API support)
+     */
+    public function setPhoneMobile($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->phone_mobile !== $v) {
+            $this->phone_mobile = $v;
+            $this->modifiedColumns[] = ClientPeer::PHONE_MOBILE;
+        }
+
+
+        return $this;
+    } // setPhoneMobile()
 
     /**
      * Set the value of [website] column.
@@ -978,19 +1017,20 @@ abstract class BaseClient extends BaseObject implements Persistent
             $this->phone = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
             $this->phone_work = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
             $this->ext = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
-            $this->phone_mobile = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-            $this->email = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+            $this->email = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+            $this->contact = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
             $this->email2 = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
-            $this->website = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
-            $this->address_1 = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
-            $this->address_2 = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-            $this->address_3 = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-            $this->zip = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
-            $this->date_creation = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
-            $this->date_modification = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
-            $this->id_group_creation = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
-            $this->id_creation = ($row[$startcol + 17] !== null) ? (int) $row[$startcol + 17] : null;
-            $this->id_modification = ($row[$startcol + 18] !== null) ? (int) $row[$startcol + 18] : null;
+            $this->phone_mobile = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
+            $this->website = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
+            $this->address_1 = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
+            $this->address_2 = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+            $this->address_3 = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
+            $this->zip = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
+            $this->date_creation = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
+            $this->date_modification = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
+            $this->id_group_creation = ($row[$startcol + 17] !== null) ? (int) $row[$startcol + 17] : null;
+            $this->id_creation = ($row[$startcol + 18] !== null) ? (int) $row[$startcol + 18] : null;
+            $this->id_modification = ($row[$startcol + 19] !== null) ? (int) $row[$startcol + 19] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -1000,7 +1040,7 @@ abstract class BaseClient extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 19; // 19 = ClientPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 20; // 20 = ClientPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Client object", $e);
@@ -1338,14 +1378,17 @@ abstract class BaseClient extends BaseObject implements Persistent
         if ($this->isColumnModified(ClientPeer::EXT)) {
             $modifiedColumns[':p' . $index++]  = '`ext`';
         }
-        if ($this->isColumnModified(ClientPeer::PHONE_MOBILE)) {
-            $modifiedColumns[':p' . $index++]  = '`phone_mobile`';
-        }
         if ($this->isColumnModified(ClientPeer::EMAIL)) {
             $modifiedColumns[':p' . $index++]  = '`email`';
         }
+        if ($this->isColumnModified(ClientPeer::CONTACT)) {
+            $modifiedColumns[':p' . $index++]  = '`contact`';
+        }
         if ($this->isColumnModified(ClientPeer::EMAIL2)) {
             $modifiedColumns[':p' . $index++]  = '`email2`';
+        }
+        if ($this->isColumnModified(ClientPeer::PHONE_MOBILE)) {
+            $modifiedColumns[':p' . $index++]  = '`phone_mobile`';
         }
         if ($this->isColumnModified(ClientPeer::WEBSITE)) {
             $modifiedColumns[':p' . $index++]  = '`website`';
@@ -1406,14 +1449,17 @@ abstract class BaseClient extends BaseObject implements Persistent
                     case '`ext`':
                         $stmt->bindValue($identifier, $this->ext, PDO::PARAM_STR);
                         break;
-                    case '`phone_mobile`':
-                        $stmt->bindValue($identifier, $this->phone_mobile, PDO::PARAM_STR);
-                        break;
                     case '`email`':
                         $stmt->bindValue($identifier, $this->email, PDO::PARAM_STR);
                         break;
+                    case '`contact`':
+                        $stmt->bindValue($identifier, $this->contact, PDO::PARAM_STR);
+                        break;
                     case '`email2`':
                         $stmt->bindValue($identifier, $this->email2, PDO::PARAM_STR);
+                        break;
+                    case '`phone_mobile`':
+                        $stmt->bindValue($identifier, $this->phone_mobile, PDO::PARAM_STR);
                         break;
                     case '`website`':
                         $stmt->bindValue($identifier, $this->website, PDO::PARAM_STR);
@@ -1644,19 +1690,20 @@ abstract class BaseClient extends BaseObject implements Persistent
             $keys[3] => $this->getPhone(),
             $keys[4] => $this->getPhoneWork(),
             $keys[5] => $this->getExt(),
-            $keys[6] => $this->getPhoneMobile(),
-            $keys[7] => $this->getEmail(),
+            $keys[6] => $this->getEmail(),
+            $keys[7] => $this->getContact(),
             $keys[8] => $this->getEmail2(),
-            $keys[9] => $this->getWebsite(),
-            $keys[10] => $this->getAddress1(),
-            $keys[11] => $this->getAddress2(),
-            $keys[12] => $this->getAddress3(),
-            $keys[13] => $this->getZip(),
-            $keys[14] => $this->getDateCreation(),
-            $keys[15] => $this->getDateModification(),
-            $keys[16] => $this->getIdGroupCreation(),
-            $keys[17] => $this->getIdCreation(),
-            $keys[18] => $this->getIdModification(),
+            $keys[9] => $this->getPhoneMobile(),
+            $keys[10] => $this->getWebsite(),
+            $keys[11] => $this->getAddress1(),
+            $keys[12] => $this->getAddress2(),
+            $keys[13] => $this->getAddress3(),
+            $keys[14] => $this->getZip(),
+            $keys[15] => $this->getDateCreation(),
+            $keys[16] => $this->getDateModification(),
+            $keys[17] => $this->getIdGroupCreation(),
+            $keys[18] => $this->getIdCreation(),
+            $keys[19] => $this->getIdModification(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1735,42 +1782,45 @@ abstract class BaseClient extends BaseObject implements Persistent
                 $this->setExt($value);
                 break;
             case 6:
-                $this->setPhoneMobile($value);
+                $this->setEmail($value);
                 break;
             case 7:
-                $this->setEmail($value);
+                $this->setContact($value);
                 break;
             case 8:
                 $this->setEmail2($value);
                 break;
             case 9:
-                $this->setWebsite($value);
+                $this->setPhoneMobile($value);
                 break;
             case 10:
-                $this->setAddress1($value);
+                $this->setWebsite($value);
                 break;
             case 11:
-                $this->setAddress2($value);
+                $this->setAddress1($value);
                 break;
             case 12:
-                $this->setAddress3($value);
+                $this->setAddress2($value);
                 break;
             case 13:
-                $this->setZip($value);
+                $this->setAddress3($value);
                 break;
             case 14:
-                $this->setDateCreation($value);
+                $this->setZip($value);
                 break;
             case 15:
-                $this->setDateModification($value);
+                $this->setDateCreation($value);
                 break;
             case 16:
-                $this->setIdGroupCreation($value);
+                $this->setDateModification($value);
                 break;
             case 17:
-                $this->setIdCreation($value);
+                $this->setIdGroupCreation($value);
                 break;
             case 18:
+                $this->setIdCreation($value);
+                break;
+            case 19:
                 $this->setIdModification($value);
                 break;
         } // switch()
@@ -1803,19 +1853,20 @@ abstract class BaseClient extends BaseObject implements Persistent
         if (array_key_exists($keys[3], $arr)) $this->setPhone($arr[$keys[3]]);
         if (array_key_exists($keys[4], $arr)) $this->setPhoneWork($arr[$keys[4]]);
         if (array_key_exists($keys[5], $arr)) $this->setExt($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setPhoneMobile($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setEmail($arr[$keys[7]]);
+        if (array_key_exists($keys[6], $arr)) $this->setEmail($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setContact($arr[$keys[7]]);
         if (array_key_exists($keys[8], $arr)) $this->setEmail2($arr[$keys[8]]);
-        if (array_key_exists($keys[9], $arr)) $this->setWebsite($arr[$keys[9]]);
-        if (array_key_exists($keys[10], $arr)) $this->setAddress1($arr[$keys[10]]);
-        if (array_key_exists($keys[11], $arr)) $this->setAddress2($arr[$keys[11]]);
-        if (array_key_exists($keys[12], $arr)) $this->setAddress3($arr[$keys[12]]);
-        if (array_key_exists($keys[13], $arr)) $this->setZip($arr[$keys[13]]);
-        if (array_key_exists($keys[14], $arr)) $this->setDateCreation($arr[$keys[14]]);
-        if (array_key_exists($keys[15], $arr)) $this->setDateModification($arr[$keys[15]]);
-        if (array_key_exists($keys[16], $arr)) $this->setIdGroupCreation($arr[$keys[16]]);
-        if (array_key_exists($keys[17], $arr)) $this->setIdCreation($arr[$keys[17]]);
-        if (array_key_exists($keys[18], $arr)) $this->setIdModification($arr[$keys[18]]);
+        if (array_key_exists($keys[9], $arr)) $this->setPhoneMobile($arr[$keys[9]]);
+        if (array_key_exists($keys[10], $arr)) $this->setWebsite($arr[$keys[10]]);
+        if (array_key_exists($keys[11], $arr)) $this->setAddress1($arr[$keys[11]]);
+        if (array_key_exists($keys[12], $arr)) $this->setAddress2($arr[$keys[12]]);
+        if (array_key_exists($keys[13], $arr)) $this->setAddress3($arr[$keys[13]]);
+        if (array_key_exists($keys[14], $arr)) $this->setZip($arr[$keys[14]]);
+        if (array_key_exists($keys[15], $arr)) $this->setDateCreation($arr[$keys[15]]);
+        if (array_key_exists($keys[16], $arr)) $this->setDateModification($arr[$keys[16]]);
+        if (array_key_exists($keys[17], $arr)) $this->setIdGroupCreation($arr[$keys[17]]);
+        if (array_key_exists($keys[18], $arr)) $this->setIdCreation($arr[$keys[18]]);
+        if (array_key_exists($keys[19], $arr)) $this->setIdModification($arr[$keys[19]]);
     }
 
     /**
@@ -1833,9 +1884,10 @@ abstract class BaseClient extends BaseObject implements Persistent
         if ($this->isColumnModified(ClientPeer::PHONE)) $criteria->add(ClientPeer::PHONE, $this->phone);
         if ($this->isColumnModified(ClientPeer::PHONE_WORK)) $criteria->add(ClientPeer::PHONE_WORK, $this->phone_work);
         if ($this->isColumnModified(ClientPeer::EXT)) $criteria->add(ClientPeer::EXT, $this->ext);
-        if ($this->isColumnModified(ClientPeer::PHONE_MOBILE)) $criteria->add(ClientPeer::PHONE_MOBILE, $this->phone_mobile);
         if ($this->isColumnModified(ClientPeer::EMAIL)) $criteria->add(ClientPeer::EMAIL, $this->email);
+        if ($this->isColumnModified(ClientPeer::CONTACT)) $criteria->add(ClientPeer::CONTACT, $this->contact);
         if ($this->isColumnModified(ClientPeer::EMAIL2)) $criteria->add(ClientPeer::EMAIL2, $this->email2);
+        if ($this->isColumnModified(ClientPeer::PHONE_MOBILE)) $criteria->add(ClientPeer::PHONE_MOBILE, $this->phone_mobile);
         if ($this->isColumnModified(ClientPeer::WEBSITE)) $criteria->add(ClientPeer::WEBSITE, $this->website);
         if ($this->isColumnModified(ClientPeer::ADDRESS_1)) $criteria->add(ClientPeer::ADDRESS_1, $this->address_1);
         if ($this->isColumnModified(ClientPeer::ADDRESS_2)) $criteria->add(ClientPeer::ADDRESS_2, $this->address_2);
@@ -1914,9 +1966,10 @@ abstract class BaseClient extends BaseObject implements Persistent
         $copyObj->setPhone($this->getPhone());
         $copyObj->setPhoneWork($this->getPhoneWork());
         $copyObj->setExt($this->getExt());
-        $copyObj->setPhoneMobile($this->getPhoneMobile());
         $copyObj->setEmail($this->getEmail());
+        $copyObj->setContact($this->getContact());
         $copyObj->setEmail2($this->getEmail2());
+        $copyObj->setPhoneMobile($this->getPhoneMobile());
         $copyObj->setWebsite($this->getWebsite());
         $copyObj->setAddress1($this->getAddress1());
         $copyObj->setAddress2($this->getAddress2());
@@ -2804,9 +2857,10 @@ abstract class BaseClient extends BaseObject implements Persistent
         $this->phone = null;
         $this->phone_work = null;
         $this->ext = null;
-        $this->phone_mobile = null;
         $this->email = null;
+        $this->contact = null;
         $this->email2 = null;
+        $this->phone_mobile = null;
         $this->website = null;
         $this->address_1 = null;
         $this->address_2 = null;

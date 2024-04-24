@@ -190,20 +190,20 @@ class ApiLogForm extends ApiLog
                 }
                 $trHead = thead(tr($trHead));
                 return $trHead;
-            break;
+
             case 'list-button':
                 $listButton = '';
                 
                 
                 return $listButton;
-            break;
+
             case 'search':
                 
         $this->arrayIdApiRbacOptions = $this->selectBoxApiLog_IdApiRbac($this, $emptyVar, $data);
                 
                 ;
                 return $trSearch;
-            break;
+
             case 'add':
             ###### ADD
                 if($_SESSION[_AUTH_VAR]->hasRights('ApiLog', 'a') && !$this->setReadOnly){
@@ -215,7 +215,8 @@ class ApiLogForm extends ApiLog
 
             return $this->listAddButton;
             break;
-            case 'quickadd': return $trHeadMod; break;
+            case 'quickadd': 
+                return $trHeadMod;
         }
     }
 
@@ -408,8 +409,8 @@ class ApiLogForm extends ApiLog
 
         if(!isMobile()) {
             $jqueryDatePicker = "
-                $(\".ApiLogListForm [j='date']\").attr('type', 'input');
-                $(\".ApiLogListForm [j='date']\").each(function(){
+                $(\"#formMsApiLog [j='date']\").attr('type', 'input');
+                $(\"#formMsApiLog [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";

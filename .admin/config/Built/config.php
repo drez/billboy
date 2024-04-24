@@ -4,7 +4,12 @@ namespace App;
 
 ini_set('memory_limit', '128M');
 
-$subdir_url = str_replace((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http').'://' . $_SERVER['SERVER_NAME'], '', "https://gc.local/myproject1/.admin/") ;
+if (php_sapi_name() != 'cli') {
+    $subdir_url = str_replace((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http').'://' . $_SERVER['SERVER_NAME'], '', "https://gc.local/myproject1/.admin/") ;
+} else {
+    $subdir_url = "";
+}
+
 $project_root = "/var/www/gc/p/myproject1/.admin/";
 
 $defines = [
@@ -34,7 +39,12 @@ if(!isset($skipConfig)){
         define($define, $val);
     }
 
-    define("_SITE_URL", "https://" . $_SERVER['SERVER_NAME'] . _SUB_DIR_URL);
+    if (php_sapi_name() != 'cli') {
+            define("_SITE_URL", "https://" . $_SERVER['SERVER_NAME'] . _SUB_DIR_URL);
+    } else {
+        define("_SITE_URL", "");
+    }
+    
     define("_SRC_URL", _SITE_URL);
 
     define("_INSTALL_PATH", "/var/www/gc/p/myproject1/.admin/");

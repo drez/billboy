@@ -222,13 +222,13 @@ class ProjectForm extends Project
                 }
                 $trHead = thead(tr($trHead));
                 return $trHead;
-            break;
+
             case 'list-button':
                 $listButton = '';
                 
                 
                 return $listButton;
-            break;
+
             case 'search':
                 
         $this->arrayIdClientOptions = $this->selectBoxProject_IdClient($this, $emptyVar, $data);
@@ -247,7 +247,7 @@ class ProjectForm extends Project
                     ,"id='formMsProject'")
             ,"", "  class='msSearchCtnr'");;
                 return $trSearch;
-            break;
+
             case 'add':
             ###### ADD
                 if($_SESSION[_AUTH_VAR]->hasRights('Project', 'a') && !$this->setReadOnly){
@@ -259,7 +259,8 @@ class ProjectForm extends Project
 
             return $this->listAddButton;
             break;
-            case 'quickadd': return $trHeadMod; break;
+            case 'quickadd': 
+                return $trHeadMod;
         }
     }
 
@@ -459,8 +460,8 @@ class ProjectForm extends Project
 
         if(!isMobile()) {
             $jqueryDatePicker = "
-                $(\".ProjectListForm [j='date']\").attr('type', 'input');
-                $(\".ProjectListForm [j='date']\").each(function(){
+                $(\"#formMsProject [j='date']\").attr('type', 'input');
+                $(\"#formMsProject [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";

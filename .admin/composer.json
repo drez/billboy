@@ -1,7 +1,7 @@
 {
     "name": "apigoat/myproject1",
     "type": "project",
-    "description": "cryptolead interface",
+    "description": "App",
     "autoload": {
         "psr-4": {
             "ApiGoat\\": "vendor/apigoat/runtime/src",
@@ -24,7 +24,10 @@
         "symfony/filesystem": "^5.0",
         "apigoat/runtime": "dev-master",
         "propel/propel1": "dev-master",
-        "apigoat/phing-copy2": "dev-master"
+        "apigoat/phing-copy2": "dev-master",
+        "peppeocchi/php-cron-scheduler": "dev-master",
+        "adhocore/env": "^0.1.0",
+        "thingengineer/mysqli-database-class": "dev-master"
     },
     "repositories": [
         {

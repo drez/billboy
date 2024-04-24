@@ -116,10 +116,10 @@ abstract class BaseBilling extends BaseObject implements Persistent
     protected $gross;
 
     /**
-     * The value for the net field.
+     * The value for the date_due field.
      * @var        string
      */
-    protected $net;
+    protected $date_due;
 
     /**
      * The value for the note_billing field.
@@ -128,16 +128,16 @@ abstract class BaseBilling extends BaseObject implements Persistent
     protected $note_billing;
 
     /**
-     * The value for the date_due field.
-     * @var        string
-     */
-    protected $date_due;
-
-    /**
      * The value for the date_paid field.
      * @var        string
      */
     protected $date_paid;
+
+    /**
+     * The value for the net field.
+     * @var        string
+     */
+    protected $net;
 
     /**
      * The value for the reference field.
@@ -411,30 +411,6 @@ abstract class BaseBilling extends BaseObject implements Persistent
 
     /**
      * @Field()
-     * Get the [net] column value.
-     * Net
-     * @return string
-     */
-    public function getNet()
-    {
-
-        return $this->net;
-    }
-
-    /**
-     * @Field()
-     * Get the [note_billing] column value.
-     * Note
-     * @return string
-     */
-    public function getNoteBilling()
-    {
-
-        return $this->note_billing;
-    }
-
-    /**
-     * @Field()
      * Get the [optionally formatted] temporal [date_due] column value.
      * Due date
      *
@@ -476,6 +452,18 @@ abstract class BaseBilling extends BaseObject implements Persistent
 
     /**
      * @Field()
+     * Get the [note_billing] column value.
+     * Note
+     * @return string
+     */
+    public function getNoteBilling()
+    {
+
+        return $this->note_billing;
+    }
+
+    /**
+     * @Field()
      * Get the [optionally formatted] temporal [date_paid] column value.
      * Paid date
      *
@@ -513,6 +501,18 @@ abstract class BaseBilling extends BaseObject implements Persistent
 
         return $dt->format($format);
 
+    }
+
+    /**
+     * @Field()
+     * Get the [net] column value.
+     * Net
+     * @return string
+     */
+    public function getNet()
+    {
+
+        return $this->net;
     }
 
     /**
@@ -855,48 +855,6 @@ abstract class BaseBilling extends BaseObject implements Persistent
     } // setGross()
 
     /**
-     * Set the value of [net] column.
-     * Net
-     * @param  string $v new value
-     * @return Billing The current object (for fluent API support)
-     */
-    public function setNet($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (string) $v;
-        }
-
-        if ($this->net !== $v) {
-            $this->net = $v;
-            $this->modifiedColumns[] = BillingPeer::NET;
-        }
-
-
-        return $this;
-    } // setNet()
-
-    /**
-     * Set the value of [note_billing] column.
-     * Note
-     * @param  string $v new value
-     * @return Billing The current object (for fluent API support)
-     */
-    public function setNoteBilling($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->note_billing !== $v) {
-            $this->note_billing = $v;
-            $this->modifiedColumns[] = BillingPeer::NOTE_BILLING;
-        }
-
-
-        return $this;
-    } // setNoteBilling()
-
-    /**
      * Sets the value of [date_due] column to a normalized version of the date/time value specified.
      * Due date
      * @param mixed $v string, integer (timestamp), or DateTime value.
@@ -920,6 +878,27 @@ abstract class BaseBilling extends BaseObject implements Persistent
     } // setDateDue()
 
     /**
+     * Set the value of [note_billing] column.
+     * Note
+     * @param  string $v new value
+     * @return Billing The current object (for fluent API support)
+     */
+    public function setNoteBilling($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->note_billing !== $v) {
+            $this->note_billing = $v;
+            $this->modifiedColumns[] = BillingPeer::NOTE_BILLING;
+        }
+
+
+        return $this;
+    } // setNoteBilling()
+
+    /**
      * Sets the value of [date_paid] column to a normalized version of the date/time value specified.
      * Paid date
      * @param mixed $v string, integer (timestamp), or DateTime value.
@@ -941,6 +920,27 @@ abstract class BaseBilling extends BaseObject implements Persistent
 
         return $this;
     } // setDatePaid()
+
+    /**
+     * Set the value of [net] column.
+     * Net
+     * @param  string $v new value
+     * @return Billing The current object (for fluent API support)
+     */
+    public function setNet($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (string) $v;
+        }
+
+        if ($this->net !== $v) {
+            $this->net = $v;
+            $this->modifiedColumns[] = BillingPeer::NET;
+        }
+
+
+        return $this;
+    } // setNet()
 
     /**
      * Set the value of [reference] column.
@@ -1125,10 +1125,10 @@ abstract class BaseBilling extends BaseObject implements Persistent
             $this->type = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
             $this->state = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
             $this->gross = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
-            $this->net = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
+            $this->date_due = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
             $this->note_billing = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
-            $this->date_due = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-            $this->date_paid = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+            $this->date_paid = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
+            $this->net = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
             $this->reference = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
             $this->date_creation = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
             $this->date_modification = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
@@ -1520,17 +1520,17 @@ abstract class BaseBilling extends BaseObject implements Persistent
         if ($this->isColumnModified(BillingPeer::GROSS)) {
             $modifiedColumns[':p' . $index++]  = '`gross`';
         }
-        if ($this->isColumnModified(BillingPeer::NET)) {
-            $modifiedColumns[':p' . $index++]  = '`net`';
+        if ($this->isColumnModified(BillingPeer::DATE_DUE)) {
+            $modifiedColumns[':p' . $index++]  = '`date_due`';
         }
         if ($this->isColumnModified(BillingPeer::NOTE_BILLING)) {
             $modifiedColumns[':p' . $index++]  = '`note_billing`';
         }
-        if ($this->isColumnModified(BillingPeer::DATE_DUE)) {
-            $modifiedColumns[':p' . $index++]  = '`date_due`';
-        }
         if ($this->isColumnModified(BillingPeer::DATE_PAID)) {
             $modifiedColumns[':p' . $index++]  = '`date_paid`';
+        }
+        if ($this->isColumnModified(BillingPeer::NET)) {
+            $modifiedColumns[':p' . $index++]  = '`net`';
         }
         if ($this->isColumnModified(BillingPeer::REFERENCE)) {
             $modifiedColumns[':p' . $index++]  = '`reference`';
@@ -1588,17 +1588,17 @@ abstract class BaseBilling extends BaseObject implements Persistent
                     case '`gross`':
                         $stmt->bindValue($identifier, $this->gross, PDO::PARAM_STR);
                         break;
-                    case '`net`':
-                        $stmt->bindValue($identifier, $this->net, PDO::PARAM_STR);
+                    case '`date_due`':
+                        $stmt->bindValue($identifier, $this->date_due, PDO::PARAM_STR);
                         break;
                     case '`note_billing`':
                         $stmt->bindValue($identifier, $this->note_billing, PDO::PARAM_STR);
                         break;
-                    case '`date_due`':
-                        $stmt->bindValue($identifier, $this->date_due, PDO::PARAM_STR);
-                        break;
                     case '`date_paid`':
                         $stmt->bindValue($identifier, $this->date_paid, PDO::PARAM_STR);
+                        break;
+                    case '`net`':
+                        $stmt->bindValue($identifier, $this->net, PDO::PARAM_STR);
                         break;
                     case '`reference`':
                         $stmt->bindValue($identifier, $this->reference, PDO::PARAM_STR);
@@ -1834,10 +1834,10 @@ abstract class BaseBilling extends BaseObject implements Persistent
             $keys[6] => $this->getType(),
             $keys[7] => $this->getState(),
             $keys[8] => $this->getGross(),
-            $keys[9] => $this->getNet(),
+            $keys[9] => $this->getDateDue(),
             $keys[10] => $this->getNoteBilling(),
-            $keys[11] => $this->getDateDue(),
-            $keys[12] => $this->getDatePaid(),
+            $keys[11] => $this->getDatePaid(),
+            $keys[12] => $this->getNet(),
             $keys[13] => $this->getReference(),
             $keys[14] => $this->getDateCreation(),
             $keys[15] => $this->getDateModification(),
@@ -1945,16 +1945,16 @@ abstract class BaseBilling extends BaseObject implements Persistent
                 $this->setGross($value);
                 break;
             case 9:
-                $this->setNet($value);
+                $this->setDateDue($value);
                 break;
             case 10:
                 $this->setNoteBilling($value);
                 break;
             case 11:
-                $this->setDateDue($value);
+                $this->setDatePaid($value);
                 break;
             case 12:
-                $this->setDatePaid($value);
+                $this->setNet($value);
                 break;
             case 13:
                 $this->setReference($value);
@@ -2007,10 +2007,10 @@ abstract class BaseBilling extends BaseObject implements Persistent
         if (array_key_exists($keys[6], $arr)) $this->setType($arr[$keys[6]]);
         if (array_key_exists($keys[7], $arr)) $this->setState($arr[$keys[7]]);
         if (array_key_exists($keys[8], $arr)) $this->setGross($arr[$keys[8]]);
-        if (array_key_exists($keys[9], $arr)) $this->setNet($arr[$keys[9]]);
+        if (array_key_exists($keys[9], $arr)) $this->setDateDue($arr[$keys[9]]);
         if (array_key_exists($keys[10], $arr)) $this->setNoteBilling($arr[$keys[10]]);
-        if (array_key_exists($keys[11], $arr)) $this->setDateDue($arr[$keys[11]]);
-        if (array_key_exists($keys[12], $arr)) $this->setDatePaid($arr[$keys[12]]);
+        if (array_key_exists($keys[11], $arr)) $this->setDatePaid($arr[$keys[11]]);
+        if (array_key_exists($keys[12], $arr)) $this->setNet($arr[$keys[12]]);
         if (array_key_exists($keys[13], $arr)) $this->setReference($arr[$keys[13]]);
         if (array_key_exists($keys[14], $arr)) $this->setDateCreation($arr[$keys[14]]);
         if (array_key_exists($keys[15], $arr)) $this->setDateModification($arr[$keys[15]]);
@@ -2037,10 +2037,10 @@ abstract class BaseBilling extends BaseObject implements Persistent
         if ($this->isColumnModified(BillingPeer::TYPE)) $criteria->add(BillingPeer::TYPE, $this->type);
         if ($this->isColumnModified(BillingPeer::STATE)) $criteria->add(BillingPeer::STATE, $this->state);
         if ($this->isColumnModified(BillingPeer::GROSS)) $criteria->add(BillingPeer::GROSS, $this->gross);
-        if ($this->isColumnModified(BillingPeer::NET)) $criteria->add(BillingPeer::NET, $this->net);
-        if ($this->isColumnModified(BillingPeer::NOTE_BILLING)) $criteria->add(BillingPeer::NOTE_BILLING, $this->note_billing);
         if ($this->isColumnModified(BillingPeer::DATE_DUE)) $criteria->add(BillingPeer::DATE_DUE, $this->date_due);
+        if ($this->isColumnModified(BillingPeer::NOTE_BILLING)) $criteria->add(BillingPeer::NOTE_BILLING, $this->note_billing);
         if ($this->isColumnModified(BillingPeer::DATE_PAID)) $criteria->add(BillingPeer::DATE_PAID, $this->date_paid);
+        if ($this->isColumnModified(BillingPeer::NET)) $criteria->add(BillingPeer::NET, $this->net);
         if ($this->isColumnModified(BillingPeer::REFERENCE)) $criteria->add(BillingPeer::REFERENCE, $this->reference);
         if ($this->isColumnModified(BillingPeer::DATE_CREATION)) $criteria->add(BillingPeer::DATE_CREATION, $this->date_creation);
         if ($this->isColumnModified(BillingPeer::DATE_MODIFICATION)) $criteria->add(BillingPeer::DATE_MODIFICATION, $this->date_modification);
@@ -2118,10 +2118,10 @@ abstract class BaseBilling extends BaseObject implements Persistent
         $copyObj->setType($this->getType());
         $copyObj->setState($this->getState());
         $copyObj->setGross($this->getGross());
-        $copyObj->setNet($this->getNet());
-        $copyObj->setNoteBilling($this->getNoteBilling());
         $copyObj->setDateDue($this->getDateDue());
+        $copyObj->setNoteBilling($this->getNoteBilling());
         $copyObj->setDatePaid($this->getDatePaid());
+        $copyObj->setNet($this->getNet());
         $copyObj->setReference($this->getReference());
         $copyObj->setDateCreation($this->getDateCreation());
         $copyObj->setDateModification($this->getDateModification());
@@ -3362,10 +3362,10 @@ abstract class BaseBilling extends BaseObject implements Persistent
         $this->type = null;
         $this->state = null;
         $this->gross = null;
-        $this->net = null;
-        $this->note_billing = null;
         $this->date_due = null;
+        $this->note_billing = null;
         $this->date_paid = null;
+        $this->net = null;
         $this->reference = null;
         $this->date_creation = null;
         $this->date_modification = null;

@@ -196,13 +196,13 @@ class TemplateForm extends Template
                 }
                 $trHead = thead(tr($trHead));
                 return $trHead;
-            break;
+
             case 'list-button':
                 $listButton = '';
                 
                 
                 return $listButton;
-            break;
+
             case 'search':
                 
                 unset($data);
@@ -220,7 +220,7 @@ class TemplateForm extends Template
                     ,"id='formMsTemplate'")
             ,"", "  class='msSearchCtnr'");;
                 return $trSearch;
-            break;
+
             case 'add':
             ###### ADD
                 if($_SESSION[_AUTH_VAR]->hasRights('Template', 'a') && !$this->setReadOnly){
@@ -232,7 +232,8 @@ class TemplateForm extends Template
 
             return $this->listAddButton;
             break;
-            case 'quickadd': return $trHeadMod; break;
+            case 'quickadd': 
+                return $trHeadMod;
         }
     }
 
@@ -425,8 +426,8 @@ class TemplateForm extends Template
 
         if(!isMobile()) {
             $jqueryDatePicker = "
-                $(\".TemplateListForm [j='date']\").attr('type', 'input');
-                $(\".TemplateListForm [j='date']\").each(function(){
+                $(\"#formMsTemplate [j='date']\").attr('type', 'input');
+                $(\"#formMsTemplate [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";

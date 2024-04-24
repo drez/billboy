@@ -186,19 +186,19 @@ class TemplateFileForm extends TemplateFile
                 }
                 $trHead = thead(tr($trHead));
                 return $trHead;
-            break;
+
             case 'list-button':
                 $listButton = '';
                 
                 
                 return $listButton;
-            break;
+
             case 'search':
                 
                 
                 ;
                 return $trSearch;
-            break;
+
             case 'add':
             ###### ADD
                 if($_SESSION[_AUTH_VAR]->hasRights('TemplateFile', 'a') && !$this->setReadOnly){
@@ -216,7 +216,8 @@ class TemplateFileForm extends TemplateFile
 
             return $this->listAddButton;
             break;
-            case 'quickadd': return $trHeadMod; break;
+            case 'quickadd': 
+                return $trHeadMod;
         }
     }
 
@@ -400,8 +401,8 @@ class TemplateFileForm extends TemplateFile
 
         if(!isMobile()) {
             $jqueryDatePicker = "
-                $(\".TemplateFileListForm [j='date']\").attr('type', 'input');
-                $(\".TemplateFileListForm [j='date']\").each(function(){
+                $(\"#formMsTemplateFile [j='date']\").attr('type', 'input');
+                $(\"#formMsTemplateFile [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";

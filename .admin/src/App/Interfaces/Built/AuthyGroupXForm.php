@@ -189,20 +189,20 @@ class AuthyGroupXForm extends AuthyGroupX
                 }
                 $trHead = thead(tr($trHead));
                 return $trHead;
-            break;
+
             case 'list-button':
                 $listButton = '';
                 
                 
                 return $listButton;
-            break;
+
             case 'search':
                 
         $this->arrayIdAuthyGroupOptions = $this->selectBoxAuthyGroupX_IdAuthyGroup($this, $emptyVar, $data);
                 
                 ;
                 return $trSearch;
-            break;
+
             case 'add':
             ###### ADD
                 if($_SESSION[_AUTH_VAR]->hasRights('AuthyGroupX', 'a') && !$this->setReadOnly){
@@ -214,7 +214,8 @@ class AuthyGroupXForm extends AuthyGroupX
 
             return $this->listAddButton;
             break;
-            case 'quickadd': return $trHeadMod; break;
+            case 'quickadd': 
+                return $trHeadMod;
         }
     }
 
@@ -394,8 +395,8 @@ class AuthyGroupXForm extends AuthyGroupX
 
         if(!isMobile()) {
             $jqueryDatePicker = "
-                $(\".AuthyGroupXListForm [j='date']\").attr('type', 'input');
-                $(\".AuthyGroupXListForm [j='date']\").each(function(){
+                $(\"#formMsAuthyGroupX [j='date']\").attr('type', 'input');
+                $(\"#formMsAuthyGroupX [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";

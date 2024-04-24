@@ -78,17 +78,17 @@ abstract class BaseBillingPeer
     /** the column name for the gross field */
     const GROSS = 'billing.gross';
 
-    /** the column name for the net field */
-    const NET = 'billing.net';
+    /** the column name for the date_due field */
+    const DATE_DUE = 'billing.date_due';
 
     /** the column name for the note_billing field */
     const NOTE_BILLING = 'billing.note_billing';
 
-    /** the column name for the date_due field */
-    const DATE_DUE = 'billing.date_due';
-
     /** the column name for the date_paid field */
     const DATE_PAID = 'billing.date_paid';
+
+    /** the column name for the net field */
+    const NET = 'billing.net';
 
     /** the column name for the reference field */
     const REFERENCE = 'billing.reference';
@@ -140,11 +140,11 @@ abstract class BaseBillingPeer
      * e.g. BillingPeer::$fieldNames[BillingPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('IdBilling', 'CalcId', 'Title', 'IdClient', 'IdProject', 'Date', 'Type', 'State', 'Gross', 'Net', 'NoteBilling', 'DateDue', 'DatePaid', 'Reference', 'DateCreation', 'DateModification', 'IdGroupCreation', 'IdCreation', 'IdModification', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idBilling', 'calcId', 'title', 'idClient', 'idProject', 'date', 'type', 'state', 'gross', 'net', 'noteBilling', 'dateDue', 'datePaid', 'reference', 'dateCreation', 'dateModification', 'idGroupCreation', 'idCreation', 'idModification', ),
-        BasePeer::TYPE_COLNAME => array (BillingPeer::ID_BILLING, BillingPeer::CALC_ID, BillingPeer::TITLE, BillingPeer::ID_CLIENT, BillingPeer::ID_PROJECT, BillingPeer::DATE, BillingPeer::TYPE, BillingPeer::STATE, BillingPeer::GROSS, BillingPeer::NET, BillingPeer::NOTE_BILLING, BillingPeer::DATE_DUE, BillingPeer::DATE_PAID, BillingPeer::REFERENCE, BillingPeer::DATE_CREATION, BillingPeer::DATE_MODIFICATION, BillingPeer::ID_GROUP_CREATION, BillingPeer::ID_CREATION, BillingPeer::ID_MODIFICATION, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_BILLING', 'CALC_ID', 'TITLE', 'ID_CLIENT', 'ID_PROJECT', 'DATE', 'TYPE', 'STATE', 'GROSS', 'NET', 'NOTE_BILLING', 'DATE_DUE', 'DATE_PAID', 'REFERENCE', 'DATE_CREATION', 'DATE_MODIFICATION', 'ID_GROUP_CREATION', 'ID_CREATION', 'ID_MODIFICATION', ),
-        BasePeer::TYPE_FIELDNAME => array ('id_billing', 'calc_id', 'title', 'id_client', 'id_project', 'date', 'type', 'state', 'gross', 'net', 'note_billing', 'date_due', 'date_paid', 'reference', 'date_creation', 'date_modification', 'id_group_creation', 'id_creation', 'id_modification', ),
+        BasePeer::TYPE_PHPNAME => array ('IdBilling', 'CalcId', 'Title', 'IdClient', 'IdProject', 'Date', 'Type', 'State', 'Gross', 'DateDue', 'NoteBilling', 'DatePaid', 'Net', 'Reference', 'DateCreation', 'DateModification', 'IdGroupCreation', 'IdCreation', 'IdModification', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idBilling', 'calcId', 'title', 'idClient', 'idProject', 'date', 'type', 'state', 'gross', 'dateDue', 'noteBilling', 'datePaid', 'net', 'reference', 'dateCreation', 'dateModification', 'idGroupCreation', 'idCreation', 'idModification', ),
+        BasePeer::TYPE_COLNAME => array (BillingPeer::ID_BILLING, BillingPeer::CALC_ID, BillingPeer::TITLE, BillingPeer::ID_CLIENT, BillingPeer::ID_PROJECT, BillingPeer::DATE, BillingPeer::TYPE, BillingPeer::STATE, BillingPeer::GROSS, BillingPeer::DATE_DUE, BillingPeer::NOTE_BILLING, BillingPeer::DATE_PAID, BillingPeer::NET, BillingPeer::REFERENCE, BillingPeer::DATE_CREATION, BillingPeer::DATE_MODIFICATION, BillingPeer::ID_GROUP_CREATION, BillingPeer::ID_CREATION, BillingPeer::ID_MODIFICATION, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_BILLING', 'CALC_ID', 'TITLE', 'ID_CLIENT', 'ID_PROJECT', 'DATE', 'TYPE', 'STATE', 'GROSS', 'DATE_DUE', 'NOTE_BILLING', 'DATE_PAID', 'NET', 'REFERENCE', 'DATE_CREATION', 'DATE_MODIFICATION', 'ID_GROUP_CREATION', 'ID_CREATION', 'ID_MODIFICATION', ),
+        BasePeer::TYPE_FIELDNAME => array ('id_billing', 'calc_id', 'title', 'id_client', 'id_project', 'date', 'type', 'state', 'gross', 'date_due', 'note_billing', 'date_paid', 'net', 'reference', 'date_creation', 'date_modification', 'id_group_creation', 'id_creation', 'id_modification', ),
         BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, )
     );
 
@@ -155,11 +155,11 @@ abstract class BaseBillingPeer
      * e.g. BillingPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('IdBilling' => 0, 'CalcId' => 1, 'Title' => 2, 'IdClient' => 3, 'IdProject' => 4, 'Date' => 5, 'Type' => 6, 'State' => 7, 'Gross' => 8, 'Net' => 9, 'NoteBilling' => 10, 'DateDue' => 11, 'DatePaid' => 12, 'Reference' => 13, 'DateCreation' => 14, 'DateModification' => 15, 'IdGroupCreation' => 16, 'IdCreation' => 17, 'IdModification' => 18, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idBilling' => 0, 'calcId' => 1, 'title' => 2, 'idClient' => 3, 'idProject' => 4, 'date' => 5, 'type' => 6, 'state' => 7, 'gross' => 8, 'net' => 9, 'noteBilling' => 10, 'dateDue' => 11, 'datePaid' => 12, 'reference' => 13, 'dateCreation' => 14, 'dateModification' => 15, 'idGroupCreation' => 16, 'idCreation' => 17, 'idModification' => 18, ),
-        BasePeer::TYPE_COLNAME => array (BillingPeer::ID_BILLING => 0, BillingPeer::CALC_ID => 1, BillingPeer::TITLE => 2, BillingPeer::ID_CLIENT => 3, BillingPeer::ID_PROJECT => 4, BillingPeer::DATE => 5, BillingPeer::TYPE => 6, BillingPeer::STATE => 7, BillingPeer::GROSS => 8, BillingPeer::NET => 9, BillingPeer::NOTE_BILLING => 10, BillingPeer::DATE_DUE => 11, BillingPeer::DATE_PAID => 12, BillingPeer::REFERENCE => 13, BillingPeer::DATE_CREATION => 14, BillingPeer::DATE_MODIFICATION => 15, BillingPeer::ID_GROUP_CREATION => 16, BillingPeer::ID_CREATION => 17, BillingPeer::ID_MODIFICATION => 18, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_BILLING' => 0, 'CALC_ID' => 1, 'TITLE' => 2, 'ID_CLIENT' => 3, 'ID_PROJECT' => 4, 'DATE' => 5, 'TYPE' => 6, 'STATE' => 7, 'GROSS' => 8, 'NET' => 9, 'NOTE_BILLING' => 10, 'DATE_DUE' => 11, 'DATE_PAID' => 12, 'REFERENCE' => 13, 'DATE_CREATION' => 14, 'DATE_MODIFICATION' => 15, 'ID_GROUP_CREATION' => 16, 'ID_CREATION' => 17, 'ID_MODIFICATION' => 18, ),
-        BasePeer::TYPE_FIELDNAME => array ('id_billing' => 0, 'calc_id' => 1, 'title' => 2, 'id_client' => 3, 'id_project' => 4, 'date' => 5, 'type' => 6, 'state' => 7, 'gross' => 8, 'net' => 9, 'note_billing' => 10, 'date_due' => 11, 'date_paid' => 12, 'reference' => 13, 'date_creation' => 14, 'date_modification' => 15, 'id_group_creation' => 16, 'id_creation' => 17, 'id_modification' => 18, ),
+        BasePeer::TYPE_PHPNAME => array ('IdBilling' => 0, 'CalcId' => 1, 'Title' => 2, 'IdClient' => 3, 'IdProject' => 4, 'Date' => 5, 'Type' => 6, 'State' => 7, 'Gross' => 8, 'DateDue' => 9, 'NoteBilling' => 10, 'DatePaid' => 11, 'Net' => 12, 'Reference' => 13, 'DateCreation' => 14, 'DateModification' => 15, 'IdGroupCreation' => 16, 'IdCreation' => 17, 'IdModification' => 18, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idBilling' => 0, 'calcId' => 1, 'title' => 2, 'idClient' => 3, 'idProject' => 4, 'date' => 5, 'type' => 6, 'state' => 7, 'gross' => 8, 'dateDue' => 9, 'noteBilling' => 10, 'datePaid' => 11, 'net' => 12, 'reference' => 13, 'dateCreation' => 14, 'dateModification' => 15, 'idGroupCreation' => 16, 'idCreation' => 17, 'idModification' => 18, ),
+        BasePeer::TYPE_COLNAME => array (BillingPeer::ID_BILLING => 0, BillingPeer::CALC_ID => 1, BillingPeer::TITLE => 2, BillingPeer::ID_CLIENT => 3, BillingPeer::ID_PROJECT => 4, BillingPeer::DATE => 5, BillingPeer::TYPE => 6, BillingPeer::STATE => 7, BillingPeer::GROSS => 8, BillingPeer::DATE_DUE => 9, BillingPeer::NOTE_BILLING => 10, BillingPeer::DATE_PAID => 11, BillingPeer::NET => 12, BillingPeer::REFERENCE => 13, BillingPeer::DATE_CREATION => 14, BillingPeer::DATE_MODIFICATION => 15, BillingPeer::ID_GROUP_CREATION => 16, BillingPeer::ID_CREATION => 17, BillingPeer::ID_MODIFICATION => 18, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_BILLING' => 0, 'CALC_ID' => 1, 'TITLE' => 2, 'ID_CLIENT' => 3, 'ID_PROJECT' => 4, 'DATE' => 5, 'TYPE' => 6, 'STATE' => 7, 'GROSS' => 8, 'DATE_DUE' => 9, 'NOTE_BILLING' => 10, 'DATE_PAID' => 11, 'NET' => 12, 'REFERENCE' => 13, 'DATE_CREATION' => 14, 'DATE_MODIFICATION' => 15, 'ID_GROUP_CREATION' => 16, 'ID_CREATION' => 17, 'ID_MODIFICATION' => 18, ),
+        BasePeer::TYPE_FIELDNAME => array ('id_billing' => 0, 'calc_id' => 1, 'title' => 2, 'id_client' => 3, 'id_project' => 4, 'date' => 5, 'type' => 6, 'state' => 7, 'gross' => 8, 'date_due' => 9, 'note_billing' => 10, 'date_paid' => 11, 'net' => 12, 'reference' => 13, 'date_creation' => 14, 'date_modification' => 15, 'id_group_creation' => 16, 'id_creation' => 17, 'id_modification' => 18, ),
         BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, )
     );
 
@@ -305,10 +305,10 @@ abstract class BaseBillingPeer
             $criteria->addSelectColumn(BillingPeer::TYPE);
             $criteria->addSelectColumn(BillingPeer::STATE);
             $criteria->addSelectColumn(BillingPeer::GROSS);
-            $criteria->addSelectColumn(BillingPeer::NET);
-            $criteria->addSelectColumn(BillingPeer::NOTE_BILLING);
             $criteria->addSelectColumn(BillingPeer::DATE_DUE);
+            $criteria->addSelectColumn(BillingPeer::NOTE_BILLING);
             $criteria->addSelectColumn(BillingPeer::DATE_PAID);
+            $criteria->addSelectColumn(BillingPeer::NET);
             $criteria->addSelectColumn(BillingPeer::REFERENCE);
             $criteria->addSelectColumn(BillingPeer::DATE_CREATION);
             $criteria->addSelectColumn(BillingPeer::DATE_MODIFICATION);
@@ -325,10 +325,10 @@ abstract class BaseBillingPeer
             $criteria->addSelectColumn($alias . '.type');
             $criteria->addSelectColumn($alias . '.state');
             $criteria->addSelectColumn($alias . '.gross');
-            $criteria->addSelectColumn($alias . '.net');
-            $criteria->addSelectColumn($alias . '.note_billing');
             $criteria->addSelectColumn($alias . '.date_due');
+            $criteria->addSelectColumn($alias . '.note_billing');
             $criteria->addSelectColumn($alias . '.date_paid');
+            $criteria->addSelectColumn($alias . '.net');
             $criteria->addSelectColumn($alias . '.reference');
             $criteria->addSelectColumn($alias . '.date_creation');
             $criteria->addSelectColumn($alias . '.date_modification');
@@ -2705,11 +2705,11 @@ abstract class BaseBillingPeer
         if ($obj->isNew() || $obj->isColumnModified(BillingPeer::STATE))
             $columns[BillingPeer::STATE] = $obj->getState();
 
-        if ($obj->isNew() || $obj->isColumnModified(BillingPeer::NOTE_BILLING))
-            $columns[BillingPeer::NOTE_BILLING] = $obj->getNoteBilling();
-
         if ($obj->isNew() || $obj->isColumnModified(BillingPeer::DATE_DUE))
             $columns[BillingPeer::DATE_DUE] = $obj->getDateDue();
+
+        if ($obj->isNew() || $obj->isColumnModified(BillingPeer::NOTE_BILLING))
+            $columns[BillingPeer::NOTE_BILLING] = $obj->getNoteBilling();
 
         if ($obj->isNew() || $obj->isColumnModified(BillingPeer::DATE_PAID))
             $columns[BillingPeer::DATE_PAID] = $obj->getDatePaid();

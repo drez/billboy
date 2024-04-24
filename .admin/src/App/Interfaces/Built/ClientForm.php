@@ -188,9 +188,10 @@ class ClientForm extends Client
 .th(_("Phone"), " th='sorted' c='Phone' title='" . _('Phone')."' ")
 .th(_("Phone work"), " th='sorted' c='PhoneWork' title='" . _('Phone work')."' ")
 .th(_("Extension"), " th='sorted' c='Ext' title='" . _('Extension')."' ")
-.th(_("Mobile"), " th='sorted' c='PhoneMobile' title='" . _('Mobile')."' ")
 .th(_("Email"), " th='sorted' c='Email' title='" . _('Email')."' ")
-.th(_("Email (secondary)"), " th='sorted' c='Email2' title='" . _('Email (secondary)')."' ")
+.th(_("Contact"), " th='sorted' c='Contact' title='" . _('Contact')."' ")
+.th(_("Email (contact)"), " th='sorted' c='Email2' title='" . _('Email (contact)')."' ")
+.th(_("contact"), " th='sorted' c='PhoneMobile' title='" . _('contact')."' ")
 .th(_("Address 1"), " th='sorted' c='Address1' title='" . _('Address 1')."' ")
 .th(_("Address 2"), " th='sorted' c='Address2' title='" . _('Address 2')."' ")
 .th(_("Address 3"), " th='sorted' c='Address3' title='" . _('Address 3')."' ")
@@ -201,20 +202,20 @@ class ClientForm extends Client
                 }
                 $trHead = thead(tr($trHead));
                 return $trHead;
-            break;
+
             case 'list-button':
                 $listButton = '';
                 
                 
                 return $listButton;
-            break;
+
             case 'search':
                 
         $this->arrayIdCountryOptions = $this->selectBoxClient_IdCountry($this, $emptyVar, $data);
                 
                 ;
                 return $trSearch;
-            break;
+
             case 'add':
             ###### ADD
                 if($_SESSION[_AUTH_VAR]->hasRights('Client', 'a') && !$this->setReadOnly){
@@ -226,7 +227,8 @@ class ClientForm extends Client
 
             return $this->listAddButton;
             break;
-            case 'quickadd': return $trHeadMod; break;
+            case 'quickadd': 
+                return $trHeadMod;
         }
     }
 
@@ -255,9 +257,10 @@ class ClientForm extends Client
   'Phone' => '',
   'PhoneWork' => '',
   'Ext' => '',
-  'PhoneMobile' => '',
   'Email' => '',
+  'Contact' => '',
   'Email2' => '',
+  'PhoneMobile' => '',
   'Website' => '',
   'Address1' => '',
   'Address2' => '',
@@ -353,9 +356,10 @@ class ClientForm extends Client
                 td(span(\htmlentities((($altValue['Phone']) ? $altValue['Phone'] : $data->getPhone()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Phone' class=''  j='editClient'") . 
                 td(span(\htmlentities((($altValue['PhoneWork']) ? $altValue['PhoneWork'] : $data->getPhoneWork()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='PhoneWork' class=''  j='editClient'") . 
                 td(span(\htmlentities((($altValue['Ext']) ? $altValue['Ext'] : $data->getExt()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Ext' class=''  j='editClient'") . 
-                td(span(\htmlentities((($altValue['PhoneMobile']) ? $altValue['PhoneMobile'] : $data->getPhoneMobile()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='PhoneMobile' class=''  j='editClient'") . 
                 td(span(\htmlentities((($altValue['Email']) ? $altValue['Email'] : $data->getEmail()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Email' class=''  j='editClient'") . 
+                td(span(\htmlentities((($altValue['Contact']) ? $altValue['Contact'] : $data->getContact()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Contact' class=''  j='editClient'") . 
                 td(span(\htmlentities((($altValue['Email2']) ? $altValue['Email2'] : $data->getEmail2()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Email2' class=''  j='editClient'") . 
+                td(span(\htmlentities((($altValue['PhoneMobile']) ? $altValue['PhoneMobile'] : $data->getPhoneMobile()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='PhoneMobile' class=''  j='editClient'") . 
                 td(span(\htmlentities((($altValue['Address1']) ? $altValue['Address1'] : substr(strip_tags($data->getAddress1()), 0, 100)) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Address1' class=''  j='editClient'") . 
                 td(span(\htmlentities((($altValue['Address2']) ? $altValue['Address2'] : substr(strip_tags($data->getAddress2()), 0, 100)) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Address2' class=''  j='editClient'") . 
                 td(span(\htmlentities((($altValue['Address3']) ? $altValue['Address3'] : substr(strip_tags($data->getAddress3()), 0, 100)) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Address3' class=''  j='editClient'") . 
@@ -434,8 +438,8 @@ class ClientForm extends Client
 
         if(!isMobile()) {
             $jqueryDatePicker = "
-                $(\".ClientListForm [j='date']\").attr('type', 'input');
-                $(\".ClientListForm [j='date']\").each(function(){
+                $(\"#formMsClient [j='date']\").attr('type', 'input');
+                $(\"#formMsClient [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
@@ -678,9 +682,10 @@ $this->fields['Client']['IdCountry']['html'] = stdFieldRow(_("Country"), selectb
 $this->fields['Client']['Phone']['html'] = stdFieldRow(_("Phone"), input('text', 'Phone', htmlentities($dataObj->getPhone()), "   placeholder='".str_replace("'","&#39;",_('Phone'))."' size='35'  v='PHONE' s='d' class=''  ")."", 'Phone', "", $this->commentsPhone, $this->commentsPhone_css, '', ' ', 'no');
 $this->fields['Client']['PhoneWork']['html'] = stdFieldRow(_("Phone work"), input('text', 'PhoneWork', htmlentities($dataObj->getPhoneWork()), "   placeholder='".str_replace("'","&#39;",_('Phone work'))."' size='35'  v='PHONE_WORK' s='d' class=''  ")."", 'PhoneWork', "", $this->commentsPhoneWork, $this->commentsPhoneWork_css, '', ' ', 'no');
 $this->fields['Client']['Ext']['html'] = stdFieldRow(_("Extension"), input('text', 'Ext', htmlentities($dataObj->getExt()), "   placeholder='".str_replace("'","&#39;",_('Extension'))."' size='15'  v='EXT' s='d' class=''  ")."", 'Ext', "", $this->commentsExt, $this->commentsExt_css, '', ' ', 'no');
-$this->fields['Client']['PhoneMobile']['html'] = stdFieldRow(_("Mobile"), input('text', 'PhoneMobile', htmlentities($dataObj->getPhoneMobile()), "   placeholder='".str_replace("'","&#39;",_('Mobile'))."' size='35'  v='PHONE_MOBILE' s='d' class=''  ")."", 'PhoneMobile', "", $this->commentsPhoneMobile, $this->commentsPhoneMobile_css, '', ' ', 'no');
 $this->fields['Client']['Email']['html'] = stdFieldRow(_("Email"), input('text', 'Email', htmlentities($dataObj->getEmail()), "   placeholder='".str_replace("'","&#39;",_('Email'))."' size='35'  v='EMAIL' s='d' class=''  ")."", 'Email', "", $this->commentsEmail, $this->commentsEmail_css, '', ' ', 'no');
-$this->fields['Client']['Email2']['html'] = stdFieldRow(_("Email (secondary)"), input('text', 'Email2', htmlentities($dataObj->getEmail2()), "   placeholder='".str_replace("'","&#39;",_('Email (secondary)'))."' size='35'  v='EMAIL2' s='d' class=''  ")."", 'Email2', "", $this->commentsEmail2, $this->commentsEmail2_css, '', ' ', 'no');
+$this->fields['Client']['Contact']['html'] = stdFieldRow(_("Contact"), input('text', 'Contact', htmlentities($dataObj->getContact()), "   placeholder='".str_replace("'","&#39;",_('Contact'))."' size='35'  v='CONTACT' s='d' class=''  ")."", 'Contact', "", $this->commentsContact, $this->commentsContact_css, '', ' ', 'no');
+$this->fields['Client']['Email2']['html'] = stdFieldRow(_("Email (contact)"), input('text', 'Email2', htmlentities($dataObj->getEmail2()), "   placeholder='".str_replace("'","&#39;",_('Email (contact)'))."' size='35'  v='EMAIL2' s='d' class=''  ")."", 'Email2', "", $this->commentsEmail2, $this->commentsEmail2_css, '', ' ', 'no');
+$this->fields['Client']['PhoneMobile']['html'] = stdFieldRow(_("contact"), input('text', 'PhoneMobile', htmlentities($dataObj->getPhoneMobile()), "   placeholder='".str_replace("'","&#39;",_('contact'))."' size='35'  v='PHONE_MOBILE' s='d' class=''  ")."", 'PhoneMobile', "", $this->commentsPhoneMobile, $this->commentsPhoneMobile_css, '', ' ', 'no');
 $this->fields['Client']['Address1']['html'] = stdFieldRow(_("Address 1"), textarea('Address1', htmlentities($dataObj->getAddress1()) ,"placeholder='".str_replace("'","&#39;",_('Address 1'))."' cols='35' v='ADDRESS_1' s='d'  class=' ' style='' spellcheck='false'"), 'Address1', "", $this->commentsAddress1, $this->commentsAddress1_css, '', ' ', 'no');
 $this->fields['Client']['Address2']['html'] = stdFieldRow(_("Address 2"), textarea('Address2', htmlentities($dataObj->getAddress2()) ,"placeholder='".str_replace("'","&#39;",_('Address 2'))."' cols='35' v='ADDRESS_2' s='d'  class=' ' style='' spellcheck='false'"), 'Address2', "", $this->commentsAddress2, $this->commentsAddress2_css, '', ' ', 'no');
 $this->fields['Client']['Address3']['html'] = stdFieldRow(_("Address 3"), textarea('Address3', htmlentities($dataObj->getAddress3()) ,"placeholder='".str_replace("'","&#39;",_('Address 3'))."' cols='35' v='ADDRESS_3' s='d'  class=' ' style='' spellcheck='false'"), 'Address3', "", $this->commentsAddress3, $this->commentsAddress3_css, '', ' ', 'no');
@@ -785,9 +790,10 @@ $this->fields['Client']['Name']['html']
 .$this->fields['Client']['Phone']['html']
 .$this->fields['Client']['PhoneWork']['html']
 .$this->fields['Client']['Ext']['html']
-.$this->fields['Client']['PhoneMobile']['html']
 .$this->fields['Client']['Email']['html']
+.$this->fields['Client']['Contact']['html']
 .$this->fields['Client']['Email2']['html']
+.$this->fields['Client']['PhoneMobile']['html']
 .$this->fields['Client']['Address1']['html']
 .$this->fields['Client']['Address2']['html']
 .$this->fields['Client']['Address3']['html']
@@ -874,14 +880,17 @@ $this->fields['Client']['Name']['html']
         $this->fieldsRo['Client']['Ext']['html'] = stdFieldRow(_("Extension"), div( $dataObj->getExt(), 'Ext_label' , "class='readonly' s='d'")
                 .input('hidden', 'Ext', $dataObj->getExt(), "s='d'"), 'Ext', "", $this->commentsExt, $this->commentsExt_css, 'readonly', ' ', 'no');
 
-        $this->fieldsRo['Client']['PhoneMobile']['html'] = stdFieldRow(_("Mobile"), div( $dataObj->getPhoneMobile(), 'PhoneMobile_label' , "class='readonly' s='d'")
-                .input('hidden', 'PhoneMobile', $dataObj->getPhoneMobile(), "s='d'"), 'PhoneMobile', "", $this->commentsPhoneMobile, $this->commentsPhoneMobile_css, 'readonly', ' ', 'no');
-
         $this->fieldsRo['Client']['Email']['html'] = stdFieldRow(_("Email"), div( $dataObj->getEmail(), 'Email_label' , "class='readonly' s='d'")
                 .input('hidden', 'Email', $dataObj->getEmail(), "s='d'"), 'Email', "", $this->commentsEmail, $this->commentsEmail_css, 'readonly', ' ', 'no');
 
-        $this->fieldsRo['Client']['Email2']['html'] = stdFieldRow(_("Email (secondary)"), div( $dataObj->getEmail2(), 'Email2_label' , "class='readonly' s='d'")
+        $this->fieldsRo['Client']['Contact']['html'] = stdFieldRow(_("Contact"), div( $dataObj->getContact(), 'Contact_label' , "class='readonly' s='d'")
+                .input('hidden', 'Contact', $dataObj->getContact(), "s='d'"), 'Contact', "", $this->commentsContact, $this->commentsContact_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['Client']['Email2']['html'] = stdFieldRow(_("Email (contact)"), div( $dataObj->getEmail2(), 'Email2_label' , "class='readonly' s='d'")
                 .input('hidden', 'Email2', $dataObj->getEmail2(), "s='d'"), 'Email2', "", $this->commentsEmail2, $this->commentsEmail2_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['Client']['PhoneMobile']['html'] = stdFieldRow(_("contact"), div( $dataObj->getPhoneMobile(), 'PhoneMobile_label' , "class='readonly' s='d'")
+                .input('hidden', 'PhoneMobile', $dataObj->getPhoneMobile(), "s='d'"), 'PhoneMobile', "", $this->commentsPhoneMobile, $this->commentsPhoneMobile_css, 'readonly', ' ', 'no');
 
         $this->fieldsRo['Client']['Address1']['html'] = stdFieldRow(_("Address 1"), div( $dataObj->getAddress1(), 'Address1_label' , "class='readonly' s='d'")
                 .input('hidden', 'Address1', $dataObj->getAddress1(), "s='d'"), 'Address1', "", $this->commentsAddress1, $this->commentsAddress1_css, 'readonly', ' ', 'no');
@@ -1003,10 +1012,10 @@ $this->fields['Client']['Name']['html']
   'Type' => '',
   'State' => '',
   'Gross' => '',
-  'Net' => '',
-  'NoteBilling' => '',
   'DateDue' => '',
+  'NoteBilling' => '',
   'DatePaid' => '',
+  'Net' => '',
   'Reference' => '',
   'DateCreation' => '',
   'DateModification' => '',
@@ -1153,9 +1162,9 @@ $this->fields['Client']['Name']['html']
 .th(_("Type"), " th='sorted' c='Type' title='" . _('Type')."' ")
 .th(_("State"), " th='sorted' c='State' title='" . _('State')."' ")
 .th(_("Gross"), " th='sorted' c='Gross' title='" . _('Gross')."' ")
-.th(_("Net"), " th='sorted' c='Net' title='" . _('Net')."' ")
 .th(_("Due date"), " th='sorted' c='DateDue' title='" . _('Due date')."' ")
 .th(_("Paid date"), " th='sorted' c='DatePaid' title='" . _('Paid date')."' ")
+.th(_("Net"), " th='sorted' c='Net' title='" . _('Net')."' ")
 .'' . $actionRowHeader, " ln='Billing' class=''");
 
         
@@ -1209,9 +1218,9 @@ $this->fields['Client']['Name']['html']
                 td(span(\htmlentities((($altValue['Type']) ? $altValue['Type'] : isntPo($data->getType())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editBilling'") . 
                 td(span(\htmlentities((($altValue['State']) ? $altValue['State'] : isntPo($data->getState())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='State' class='center'  j='editBilling'") . 
                 td(span(\htmlentities((($altValue['Gross']) ? $altValue['Gross'] : str_replace(',', '.', $data->getGross())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Gross' class='right'  j='editBilling'") . 
-                td(span(\htmlentities((($altValue['Net']) ? $altValue['Net'] : str_replace(',', '.', $data->getNet())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Net' class='right'  j='editBilling'") . 
                 td(span(\htmlentities((($altValue['DateDue']) ? $altValue['DateDue'] : $data->getDateDue()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DateDue' class=''  j='editBilling'") . 
                 td(span(\htmlentities((($altValue['DatePaid']) ? $altValue['DatePaid'] : $data->getDatePaid()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DatePaid' class=''  j='editBilling'") . 
+                td(span(\htmlentities((($altValue['Net']) ? $altValue['Net'] : str_replace(',', '.', $data->getNet())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Net' class='right'  j='editBilling'") . 
                             (isset($hookListColumnsBilling)?$hookListColumnsBilling:'').
                             $actionRow
                         ,"id='BillingRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='Billing'  ")

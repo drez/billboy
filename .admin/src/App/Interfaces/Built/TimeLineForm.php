@@ -198,19 +198,19 @@ class TimeLineForm extends TimeLine
                 }
                 $trHead = thead(tr($trHead));
                 return $trHead;
-            break;
+
             case 'list-button':
                 $listButton = '';
                 
                 
                 return $listButton;
-            break;
+
             case 'search':
                 
                 
                 ;
                 return $trSearch;
-            break;
+
             case 'add':
             ###### ADD
                 if($_SESSION[_AUTH_VAR]->hasRights('TimeLine', 'a') && !$this->setReadOnly){
@@ -222,7 +222,8 @@ class TimeLineForm extends TimeLine
 
             return $this->listAddButton;
             break;
-            case 'quickadd': return $trHeadMod; break;
+            case 'quickadd': 
+                return $trHeadMod;
         }
     }
 
@@ -415,8 +416,8 @@ class TimeLineForm extends TimeLine
 
         if(!isMobile()) {
             $jqueryDatePicker = "
-                $(\".TimeLineListForm [j='date']\").attr('type', 'input');
-                $(\".TimeLineListForm [j='date']\").each(function(){
+                $(\"#formMsTimeLine [j='date']\").attr('type', 'input');
+                $(\"#formMsTimeLine [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";

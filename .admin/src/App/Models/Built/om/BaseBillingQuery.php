@@ -37,10 +37,10 @@ use App\Project;
  * @method BillingQuery orderByType($order = Criteria::ASC) Order by the type column
  * @method BillingQuery orderByState($order = Criteria::ASC) Order by the state column
  * @method BillingQuery orderByGross($order = Criteria::ASC) Order by the gross column
- * @method BillingQuery orderByNet($order = Criteria::ASC) Order by the net column
- * @method BillingQuery orderByNoteBilling($order = Criteria::ASC) Order by the note_billing column
  * @method BillingQuery orderByDateDue($order = Criteria::ASC) Order by the date_due column
+ * @method BillingQuery orderByNoteBilling($order = Criteria::ASC) Order by the note_billing column
  * @method BillingQuery orderByDatePaid($order = Criteria::ASC) Order by the date_paid column
+ * @method BillingQuery orderByNet($order = Criteria::ASC) Order by the net column
  * @method BillingQuery orderByReference($order = Criteria::ASC) Order by the reference column
  * @method BillingQuery orderByDateCreation($order = Criteria::ASC) Order by the date_creation column
  * @method BillingQuery orderByDateModification($order = Criteria::ASC) Order by the date_modification column
@@ -57,10 +57,10 @@ use App\Project;
  * @method BillingQuery groupByType() Group by the type column
  * @method BillingQuery groupByState() Group by the state column
  * @method BillingQuery groupByGross() Group by the gross column
- * @method BillingQuery groupByNet() Group by the net column
- * @method BillingQuery groupByNoteBilling() Group by the note_billing column
  * @method BillingQuery groupByDateDue() Group by the date_due column
+ * @method BillingQuery groupByNoteBilling() Group by the note_billing column
  * @method BillingQuery groupByDatePaid() Group by the date_paid column
+ * @method BillingQuery groupByNet() Group by the net column
  * @method BillingQuery groupByReference() Group by the reference column
  * @method BillingQuery groupByDateCreation() Group by the date_creation column
  * @method BillingQuery groupByDateModification() Group by the date_modification column
@@ -115,10 +115,10 @@ use App\Project;
  * @method Billing findOneByType(int $type) Return the first Billing filtered by the type column
  * @method Billing findOneByState(int $state) Return the first Billing filtered by the state column
  * @method Billing findOneByGross(string $gross) Return the first Billing filtered by the gross column
- * @method Billing findOneByNet(string $net) Return the first Billing filtered by the net column
- * @method Billing findOneByNoteBilling(string $note_billing) Return the first Billing filtered by the note_billing column
  * @method Billing findOneByDateDue(string $date_due) Return the first Billing filtered by the date_due column
+ * @method Billing findOneByNoteBilling(string $note_billing) Return the first Billing filtered by the note_billing column
  * @method Billing findOneByDatePaid(string $date_paid) Return the first Billing filtered by the date_paid column
+ * @method Billing findOneByNet(string $net) Return the first Billing filtered by the net column
  * @method Billing findOneByReference(string $reference) Return the first Billing filtered by the reference column
  * @method Billing findOneByDateCreation(string $date_creation) Return the first Billing filtered by the date_creation column
  * @method Billing findOneByDateModification(string $date_modification) Return the first Billing filtered by the date_modification column
@@ -135,10 +135,10 @@ use App\Project;
  * @method array findByType(int $type) Return Billing objects filtered by the type column
  * @method array findByState(int $state) Return Billing objects filtered by the state column
  * @method array findByGross(string $gross) Return Billing objects filtered by the gross column
- * @method array findByNet(string $net) Return Billing objects filtered by the net column
- * @method array findByNoteBilling(string $note_billing) Return Billing objects filtered by the note_billing column
  * @method array findByDateDue(string $date_due) Return Billing objects filtered by the date_due column
+ * @method array findByNoteBilling(string $note_billing) Return Billing objects filtered by the note_billing column
  * @method array findByDatePaid(string $date_paid) Return Billing objects filtered by the date_paid column
+ * @method array findByNet(string $net) Return Billing objects filtered by the net column
  * @method array findByReference(string $reference) Return Billing objects filtered by the reference column
  * @method array findByDateCreation(string $date_creation) Return Billing objects filtered by the date_creation column
  * @method array findByDateModification(string $date_modification) Return Billing objects filtered by the date_modification column
@@ -253,7 +253,7 @@ abstract class BaseBillingQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_billing`, `calc_id`, `title`, `id_client`, `id_project`, `date`, `type`, `state`, `gross`, `net`, `note_billing`, `date_due`, `date_paid`, `reference`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `billing` WHERE `id_billing` = :p0';
+        $sql = 'SELECT `id_billing`, `calc_id`, `title`, `id_client`, `id_project`, `date`, `type`, `state`, `gross`, `date_due`, `note_billing`, `date_paid`, `net`, `reference`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `billing` WHERE `id_billing` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -673,77 +673,6 @@ abstract class BaseBillingQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the net column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByNet(1234); // WHERE net = 1234
-     * $query->filterByNet(array(12, 34)); // WHERE net IN (12, 34)
-     * $query->filterByNet(array('min' => 12)); // WHERE net >= 12
-     * $query->filterByNet(array('max' => 12)); // WHERE net <= 12
-     * </code>
-     *
-     * @param     mixed $net The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return BillingQuery The current query, for fluid interface
-     */
-    public function filterByNet($net = null, $comparison = null)
-    {
-        if (is_array($net)) {
-            $useMinMax = false;
-            if (isset($net['min'])) {
-                $this->addUsingAlias(BillingPeer::NET, $net['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($net['max'])) {
-                $this->addUsingAlias(BillingPeer::NET, $net['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(BillingPeer::NET, $net, $comparison);
-    }
-
-    /**
-     * Filter the query on the note_billing column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByNoteBilling('fooValue');   // WHERE note_billing = 'fooValue'
-     * $query->filterByNoteBilling('%fooValue%'); // WHERE note_billing LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $noteBilling The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return BillingQuery The current query, for fluid interface
-     */
-    public function filterByNoteBilling($noteBilling = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($noteBilling)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $noteBilling)) {
-                $noteBilling = str_replace('*', '%', $noteBilling);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(BillingPeer::NOTE_BILLING, $noteBilling, $comparison);
-    }
-
-    /**
      * Filter the query on the date_due column
      *
      * Example usage:
@@ -787,6 +716,35 @@ abstract class BaseBillingQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the note_billing column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByNoteBilling('fooValue');   // WHERE note_billing = 'fooValue'
+     * $query->filterByNoteBilling('%fooValue%'); // WHERE note_billing LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $noteBilling The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return BillingQuery The current query, for fluid interface
+     */
+    public function filterByNoteBilling($noteBilling = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($noteBilling)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $noteBilling)) {
+                $noteBilling = str_replace('*', '%', $noteBilling);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(BillingPeer::NOTE_BILLING, $noteBilling, $comparison);
+    }
+
+    /**
      * Filter the query on the date_paid column
      *
      * Example usage:
@@ -827,6 +785,48 @@ abstract class BaseBillingQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(BillingPeer::DATE_PAID, $datePaid, $comparison);
+    }
+
+    /**
+     * Filter the query on the net column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByNet(1234); // WHERE net = 1234
+     * $query->filterByNet(array(12, 34)); // WHERE net IN (12, 34)
+     * $query->filterByNet(array('min' => 12)); // WHERE net >= 12
+     * $query->filterByNet(array('max' => 12)); // WHERE net <= 12
+     * </code>
+     *
+     * @param     mixed $net The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return BillingQuery The current query, for fluid interface
+     */
+    public function filterByNet($net = null, $comparison = null)
+    {
+        if (is_array($net)) {
+            $useMinMax = false;
+            if (isset($net['min'])) {
+                $this->addUsingAlias(BillingPeer::NET, $net['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($net['max'])) {
+                $this->addUsingAlias(BillingPeer::NET, $net['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(BillingPeer::NET, $net, $comparison);
     }
 
     /**

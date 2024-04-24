@@ -1,0 +1,803 @@
+**************** 
+2024-04-23 22:44:36
+
+***********  
+debug
+***********  
+
+-> Classes
+
+/var/www/gc/vendor/propel/propel1/generator/bin/propel-gen /var/www/gc/p/myproject1/.admin/  om  2>&1
+Code 0
+Buildfile: /var/www/gc/vendor/propel/propel1/generator/build.xml
+propel-project-builder > check-project-or-dir-set:
+propel-project-builder > check-project-set:
+propel-project-builder > set-project-dir:
+propel-project-builder > check-buildprops-exists:
+propel-project-builder > check-buildprops-for-propel-gen:
+propel-project-builder > check-buildprops:
+propel-project-builder > configure:
+     [echo] Loading project-specific props from /var/www/gc/p/myproject1/.admin/build.properties
+ [property] Loading /var/www/gc/p/myproject1/.admin/build.properties
+propel-project-builder > om:
+ [property] Loading /var/www/gc/vendor/propel/propel1/generator/./default.properties
+propel > check-run-only-on-schema-change:
+propel > om-check:
+propel > mysqli-check:
+propel > om:
+     [echo] +------------------------------------------+
+     [echo] |                                          |
+     [echo] | Generating Peer-based Object Model for   |
+     [echo] | YOUR Propel project!                     |
+     [echo] |                                          |
+     [echo] +------------------------------------------+
+ [property] Loading /var/www/gc/vendor/propel/propel1/generator/./default.properties
+propel > om-template:
+[propel-om] Loading XML schema files...
+[propel-om] 14 tables found in 3 schema files.
+[propel-om] Generating PHP files...
+[propel-om] 	-> Updating interface/ClientForm.php (table: client, builder: Form)
+[propel-om] 	-> Updating config/basedata.sql.php (table: client, builder: BaseData)
+[propel-om] 	-> Updating interface/BillingForm.php (table: billing, builder: Form)
+[propel-om] 	-> Updating interface/BillingLineForm.php (table: billing_line, builder: Form)
+[propel-om] 	-> Updating interface/PaymentLineForm.php (table: payment_line, builder: Form)
+[propel-om] 	-> Updating interface/CostLineForm.php (table: cost_line, builder: Form)
+[propel-om] 	-> Updating interface/ProjectForm.php (table: project, builder: Form)
+[propel-om] 	-> Updating interface/TimeLineForm.php (table: time_line, builder: Form)
+[propel-om] 	-> Updating interface/AuthyForm.php (table: authy, builder: Form)
+[propel-om] 	-> Updating interface/CountryForm.php (table: country, builder: Form)
+[propel-om] 	-> Updating interface/AuthyGroupForm.php (table: authy_group, builder: Form)
+[propel-om] 	-> Updating interface/AuthyGroupXForm.php (table: authy_group_x, builder: Form)
+[propel-om] 	-> Updating interface/AuthyLogForm.php (table: authy_log, builder: Form)
+[propel-om] 	-> Updating interface/MessageForm.php (table: message, builder: Form)
+[propel-om] 	-> Updating interface/ConfigForm.php (table: config, builder: Form)
+[propel-om] 	-> Updating interface/ApiRbacForm.php (table: api_rbac, builder: Form)
+[propel-om] 	-> Updating interface/ApiLogForm.php (table: api_log, builder: Form)
+[propel-om] 	-> Updating interface/TemplateForm.php (table: template, builder: Form)
+[propel-om] 	-> Updating interface/TemplateFileForm.php (table: template_file, builder: Form)
+[propel-om] Object model generation complete - 19 files written
+BUILD FINISHED
+Total time: 0.2985 seconds
+Buildfile: /var/www/gc/vendor/propel/propel1/generator/build.xml
+propel-project-builder > check-project-or-dir-set:
+propel-project-builder > check-project-set:
+propel-project-builder > set-project-dir:
+propel-project-builder > check-buildprops-exists:
+propel-project-builder > check-buildprops-for-propel-gen:
+propel-project-builder > check-buildprops:
+propel-project-builder > configure:
+     [echo] Loading project-specific props from /var/www/gc/p/myproject1/.admin/build.properties
+ [property] Loading /var/www/gc/p/myproject1/.admin/build.properties
+propel-project-builder > om:
+ [property] Loading /var/www/gc/vendor/propel/propel1/generator/./default.properties
+propel > check-run-only-on-schema-change:
+propel > om-check:
+propel > mysqli-check:
+propel > om:
+     [echo] +------------------------------------------+
+     [echo] |                                          |
+     [echo] | Generating Peer-based Object Model for   |
+     [echo] | YOUR Propel project!                     |
+     [echo] |                                          |
+     [echo] +------------------------------------------+
+ [property] Loading /var/www/gc/vendor/propel/propel1/generator/./default.properties
+propel > om-template:
+[propel-om] Loading XML schema files...
+[propel-om] 14 tables found in 3 schema files.
+[propel-om] Generating PHP files...
+[propel-om] 	-> Updating interface/ClientForm.php (table: client, builder: Form)
+[propel-om] 	-> Updating config/basedata.sql.php (table: client, builder: BaseData)
+[propel-om] 	-> Updating interface/BillingForm.php (table: billing, builder: Form)
+[propel-om] 	-> Updating interface/BillingLineForm.php (table: billing_line, builder: Form)
+[propel-om] 	-> Updating interface/PaymentLineForm.php (table: payment_line, builder: Form)
+[propel-om] 	-> Updating interface/CostLineForm.php (table: cost_line, builder: Form)
+[propel-om] 	-> Updating interface/ProjectForm.php (table: project, builder: Form)
+[propel-om] 	-> Updating interface/TimeLineForm.php (table: time_line, builder: Form)
+[propel-om] 	-> Updating interface/AuthyForm.php (table: authy, builder: Form)
+[propel-om] 	-> Updating interface/CountryForm.php (table: country, builder: Form)
+[propel-om] 	-> Updating interface/AuthyGroupForm.php (table: authy_group, builder: Form)
+[propel-om] 	-> Updating interface/AuthyGroupXForm.php (table: authy_group_x, builder: Form)
+[propel-om] 	-> Updating interface/AuthyLogForm.php (table: authy_log, builder: Form)
+[propel-om] 	-> Updating interface/MessageForm.php (table: message, builder: Form)
+[propel-om] 	-> Updating interface/ConfigForm.php (table: config, builder: Form)
+[propel-om] 	-> Updating interface/ApiRbacForm.php (table: api_rbac, builder: Form)
+[propel-om] 	-> Updating interface/ApiLogForm.php (table: api_log, builder: Form)
+[propel-om] 	-> Updating interface/TemplateForm.php (table: template, builder: Form)
+[propel-om] 	-> Updating interface/TemplateFileForm.php (table: template_file, builder: Form)
+[propel-om] Object model generation complete - 19 files written
+BUILD FINISHED
+Total time: 0.2985 seconds
+
+-> Configs
+
+/var/www/gc/vendor/propel/propel1/generator/bin/propel-gen /var/www/gc/p/myproject1/.admin/  convert-conf  2>&1
+Code 0
+Buildfile: /var/www/gc/vendor/propel/propel1/generator/build.xml
+propel-project-builder > check-project-or-dir-set:
+propel-project-builder > check-project-set:
+propel-project-builder > set-project-dir:
+propel-project-builder > check-buildprops-exists:
+propel-project-builder > check-buildprops-for-propel-gen:
+propel-project-builder > check-buildprops:
+propel-project-builder > configure:
+     [echo] Loading project-specific props from /var/www/gc/p/myproject1/.admin/build.properties
+ [property] Loading /var/www/gc/p/myproject1/.admin/build.properties
+propel-project-builder > convert-conf:
+ [property] Loading /var/www/gc/vendor/propel/propel1/generator/./default.properties
+propel > convert-conf:
+     [echo] +------------------------------------------+
+     [echo] |                                          |
+     [echo] | Converting runtime config file to an     |
+     [echo] | array dump for improved performance.     |
+     [echo] |                                          |
+     [echo] +------------------------------------------+
+[propel-convert-conf] Loading XML configuration file...
+[propel-convert-conf] Loading XML schema files...
+[propel-convert-conf] 14 tables found in 3 schema files.
+[propel-convert-conf] Updating PHP classmap file "/var/www/gc/p/myproject1/.admin/.build/conf/classmap.php"
+BUILD FINISHED
+Total time: 0.0453 seconds
+Buildfile: /var/www/gc/vendor/propel/propel1/generator/build.xml
+propel-project-builder > check-project-or-dir-set:
+propel-project-builder > check-project-set:
+propel-project-builder > set-project-dir:
+propel-project-builder > check-buildprops-exists:
+propel-project-builder > check-buildprops-for-propel-gen:
+propel-project-builder > check-buildprops:
+propel-project-builder > configure:
+     [echo] Loading project-specific props from /var/www/gc/p/myproject1/.admin/build.properties
+ [property] Loading /var/www/gc/p/myproject1/.admin/build.properties
+propel-project-builder > convert-conf:
+ [property] Loading /var/www/gc/vendor/propel/propel1/generator/./default.properties
+propel > convert-conf:
+     [echo] +------------------------------------------+
+     [echo] |                                          |
+     [echo] | Converting runtime config file to an     |
+     [echo] | array dump for improved performance.     |
+     [echo] |                                          |
+     [echo] +------------------------------------------+
+[propel-convert-conf] Loading XML configuration file...
+[propel-convert-conf] Loading XML schema files...
+[propel-convert-conf] 14 tables found in 3 schema files.
+[propel-convert-conf] Updating PHP classmap file "/var/www/gc/p/myproject1/.admin/.build/conf/classmap.php"
+BUILD FINISHED
+Total time: 0.0453 seconds
+
+-> Sql
+
+/var/www/gc/vendor/propel/propel1/generator/bin/propel-gen /var/www/gc/p/myproject1/.admin/  sql 2>&1
+Code 0
+Buildfile: /var/www/gc/vendor/propel/propel1/generator/build.xml
+propel-project-builder > check-project-or-dir-set:
+propel-project-builder > check-project-set:
+propel-project-builder > set-project-dir:
+propel-project-builder > check-buildprops-exists:
+propel-project-builder > check-buildprops-for-propel-gen:
+propel-project-builder > check-buildprops:
+propel-project-builder > configure:
+     [echo] Loading project-specific props from /var/www/gc/p/myproject1/.admin/build.properties
+ [property] Loading /var/www/gc/p/myproject1/.admin/build.properties
+propel-project-builder > sql:
+ [property] Loading /var/www/gc/vendor/propel/propel1/generator/./default.properties
+propel > check-run-only-on-schema-change:
+propel > sql-check:
+propel > pgsql-quoting-check:
+propel > mysqli-check:
+propel > sql:
+     [echo] +------------------------------------------+
+     [echo] |                                          |
+     [echo] | Generating SQL for YOUR Propel project!  |
+     [echo] |                                          |
+     [echo] +------------------------------------------+
+ [property] Loading /var/www/gc/vendor/propel/propel1/generator/./default.properties
+propel > sql-template:
+[propel-sql] Loading XML schema files...
+[propel-sql] 14 tables found in 3 schema files.
+[propel-sql] [Unchanged] schema.sql
+BUILD FINISHED
+Total time: 0.0444 seconds
+Buildfile: /var/www/gc/vendor/propel/propel1/generator/build.xml
+propel-project-builder > check-project-or-dir-set:
+propel-project-builder > check-project-set:
+propel-project-builder > set-project-dir:
+propel-project-builder > check-buildprops-exists:
+propel-project-builder > check-buildprops-for-propel-gen:
+propel-project-builder > check-buildprops:
+propel-project-builder > configure:
+     [echo] Loading project-specific props from /var/www/gc/p/myproject1/.admin/build.properties
+ [property] Loading /var/www/gc/p/myproject1/.admin/build.properties
+propel-project-builder > sql:
+ [property] Loading /var/www/gc/vendor/propel/propel1/generator/./default.properties
+propel > check-run-only-on-schema-change:
+propel > sql-check:
+propel > pgsql-quoting-check:
+propel > mysqli-check:
+propel > sql:
+     [echo] +------------------------------------------+
+     [echo] |                                          |
+     [echo] | Generating SQL for YOUR Propel project!  |
+     [echo] |                                          |
+     [echo] +------------------------------------------+
+ [property] Loading /var/www/gc/vendor/propel/propel1/generator/./default.properties
+propel > sql-template:
+[propel-sql] Loading XML schema files...
+[propel-sql] 14 tables found in 3 schema files.
+[propel-sql] [Unchanged] schema.sql
+BUILD FINISHED
+Total time: 0.0444 seconds
+
+-> Insert sql
+
+/var/www/gc/vendor/propel/propel1/generator/bin/propel-gen /var/www/gc/p/myproject1/.admin/  insert-sql 2>&1
+Code 0
+Buildfile: /var/www/gc/vendor/propel/propel1/generator/build.xml
+propel-project-builder > check-project-or-dir-set:
+propel-project-builder > check-project-set:
+propel-project-builder > set-project-dir:
+propel-project-builder > check-buildprops-exists:
+propel-project-builder > check-buildprops-for-propel-gen:
+propel-project-builder > check-buildprops:
+propel-project-builder > configure:
+     [echo] Loading project-specific props from /var/www/gc/p/myproject1/.admin/build.properties
+ [property] Loading /var/www/gc/p/myproject1/.admin/build.properties
+propel-project-builder > insert-sql:
+ [property] Loading /var/www/gc/vendor/propel/propel1/generator/./default.properties
+propel > insert-sql:
+[propel-sql-exec] Reading SQL files...
+[propel-sql-exec]   Loading statements from "/var/www/gc/p/myproject1/.admin/.build/sql/schema.sql"
+[propel-sql-exec] Executing SQL statements...
+[propel-sql-exec]   Connecting to database "myproject1" using DSN "mysql:host=localhost;dbname=gc_myproject1"
+[propel-sql-exec]   40 of 40 SQL statements executed successfully
+[propel-sql-exec] SQL execution complete. 40 statements successfully executed.
+BUILD FINISHED
+Total time: 0.4249 seconds
+Buildfile: /var/www/gc/vendor/propel/propel1/generator/build.xml
+propel-project-builder > check-project-or-dir-set:
+propel-project-builder > check-project-set:
+propel-project-builder > set-project-dir:
+propel-project-builder > check-buildprops-exists:
+propel-project-builder > check-buildprops-for-propel-gen:
+propel-project-builder > check-buildprops:
+propel-project-builder > configure:
+     [echo] Loading project-specific props from /var/www/gc/p/myproject1/.admin/build.properties
+ [property] Loading /var/www/gc/p/myproject1/.admin/build.properties
+propel-project-builder > insert-sql:
+ [property] Loading /var/www/gc/vendor/propel/propel1/generator/./default.properties
+propel > insert-sql:
+[propel-sql-exec] Reading SQL files...
+[propel-sql-exec]   Loading statements from "/var/www/gc/p/myproject1/.admin/.build/sql/schema.sql"
+[propel-sql-exec] Executing SQL statements...
+[propel-sql-exec]   Connecting to database "myproject1" using DSN "mysql:host=localhost;dbname=gc_myproject1"
+[propel-sql-exec]   40 of 40 SQL statements executed successfully
+[propel-sql-exec] SQL execution complete. 40 statements successfully executed.
+BUILD FINISHED
+Total time: 0.4249 seconds
+
+-> Install
+
+cd /var/www/gc/p/myproject1/.admin/ && /var/www/gc/vendor/phing/phing/bin/phing -f build.xml -verbose -propertyfile build.properties build 2>&1
+Code 0
+Buildfile: /var/www/gc/p/myproject1/.admin/build.xml
+Override ignored for user property phing.file
+Override ignored for user property phing.dir
+Overriding previous definition of reference to phing.file
+parsing buildfile build.xml
+Project base dir set to: /var/www/gc/p/myproject1/.admin
+Overriding previous definition of reference to phingclasses
+Property ${vendor} => vendor/
+  [taskdef] Task copy2 will be handled by class Copy2Task
+Build sequence for target 'build' is: build
+Complete build sequence is: build  clean prepare fix-perm dist
+build > build:
+     [echo] Copying files to build directory...
+     [copy] Copying 6 files to /var/www/gc/p/myproject1/.admin/config/Built
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/routes.php to /var/www/gc/p/myproject1/.admin/config/Built/routes.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/settings.endpoints.php to /var/www/gc/p/myproject1/.admin/config/Built/settings.endpoints.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/permissions.defaults.php to /var/www/gc/p/myproject1/.admin/config/Built/permissions.defaults.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/settings.routes.php to /var/www/gc/p/myproject1/.admin/config/Built/settings.routes.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/settings.menus.php to /var/www/gc/p/myproject1/.admin/config/Built/settings.menus.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/propel.php to /var/www/gc/p/myproject1/.admin/config/Built/propel.php
+    [copy2] Copying 1 file to /var/www/gc/p/myproject1/.admin/config/Built
+    [copy2] From /var/www/gc/p/myproject1/.admin/.build/classes/config/config.php to /var/www/gc/p/myproject1/.admin/config/Built/config.php
+     [echo] Copying service wrapper files...
+    [copy2] AuthyGroupXServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/AuthyGroupXServiceWrapper.php  is up to date (2).
+    [copy2] ApiRbacServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/ApiRbacServiceWrapper.php  is up to date (2).
+    [copy2] ClientServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/ClientServiceWrapper.php  is up to date (2).
+    [copy2] ProjectServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/ProjectServiceWrapper.php  is up to date (2).
+    [copy2] AuthyLogServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/AuthyLogServiceWrapper.php  is up to date (2).
+    [copy2] CountryServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/CountryServiceWrapper.php  is up to date (2).
+    [copy2] TimeLineServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/TimeLineServiceWrapper.php  is up to date (2).
+    [copy2] CostLineServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/CostLineServiceWrapper.php  is up to date (2).
+    [copy2] ApiLogServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/ApiLogServiceWrapper.php  is up to date (2).
+    [copy2] TemplateFileServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/TemplateFileServiceWrapper.php  is up to date (2).
+    [copy2] MessageServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/MessageServiceWrapper.php  is up to date (2).
+    [copy2] BillingLineServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/BillingLineServiceWrapper.php  is up to date (2).
+    [copy2] PaymentLineServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/PaymentLineServiceWrapper.php  is up to date (2).
+    [copy2] ConfigServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/ConfigServiceWrapper.php  is up to date (2).
+    [copy2] AuthyGroupServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/AuthyGroupServiceWrapper.php  is up to date (2).
+    [copy2] AuthyServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/AuthyServiceWrapper.php  is up to date (2).
+    [copy2] TemplateServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/TemplateServiceWrapper.php  is up to date (2).
+    [copy2] BillingServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/BillingServiceWrapper.php  is up to date (2).
+     [echo] Copying form wrapper files...
+    [copy2] TimeLineFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/TimeLineFormWrapper.php  is up to date (2).
+    [copy2] BillingFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/BillingFormWrapper.php  is up to date (2).
+    [copy2] AuthyFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/AuthyFormWrapper.php  is up to date (2).
+    [copy2] ConfigFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/ConfigFormWrapper.php  is up to date (2).
+    [copy2] AuthyGroupFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/AuthyGroupFormWrapper.php  is up to date (2).
+    [copy2] CostLineFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/CostLineFormWrapper.php  is up to date (2).
+    [copy2] AuthyGroupXFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/AuthyGroupXFormWrapper.php  is up to date (2).
+    [copy2] ApiLogFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/ApiLogFormWrapper.php  is up to date (2).
+    [copy2] ProjectFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/ProjectFormWrapper.php  is up to date (2).
+    [copy2] MessageFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/MessageFormWrapper.php  is up to date (2).
+    [copy2] BillingLineFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/BillingLineFormWrapper.php  is up to date (2).
+    [copy2] ApiRbacFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/ApiRbacFormWrapper.php  is up to date (2).
+    [copy2] PaymentLineFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/PaymentLineFormWrapper.php  is up to date (2).
+    [copy2] CountryFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/CountryFormWrapper.php  is up to date (2).
+    [copy2] ClientFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/ClientFormWrapper.php  is up to date (2).
+    [copy2] AuthyLogFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/AuthyLogFormWrapper.php  is up to date (2).
+    [copy2] TemplateFileFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/TemplateFileFormWrapper.php  is up to date (2).
+    [copy2] TemplateFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/TemplateFormWrapper.php  is up to date (2).
+     [echo] Copying service files...
+     [copy] Copying 18 files to /var/www/gc/p/myproject1/.admin/src/App/Services/Built
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/ConfigService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/ConfigService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/AuthyLogService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/AuthyLogService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/PaymentLineService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/PaymentLineService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/TemplateFileService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/TemplateFileService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/ApiRbacService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/ApiRbacService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/TemplateService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/TemplateService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/BillingService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/BillingService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/ApiLogService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/ApiLogService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/AuthyService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/AuthyService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/MessageService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/MessageService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/BillingLineService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/BillingLineService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/TimeLineService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/TimeLineService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/CountryService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/CountryService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/ProjectService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/ProjectService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/CostLineService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/CostLineService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/AuthyGroupXService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/AuthyGroupXService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/AuthyGroupService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/AuthyGroupService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/ClientService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/ClientService.php
+     [echo] Copying interface files...
+     [copy] Copying 18 files to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/CountryForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/CountryForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/MessageForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/MessageForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/BillingForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/BillingForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/TemplateFileForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/TemplateFileForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/ConfigForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/ConfigForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/AuthyGroupForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/AuthyGroupForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/ApiLogForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/ApiLogForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/BillingLineForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/BillingLineForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/AuthyGroupXForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/AuthyGroupXForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/AuthyLogForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/AuthyLogForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/TemplateForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/TemplateForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/ProjectForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/ProjectForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/TimeLineForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/TimeLineForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/ClientForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/ClientForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/ApiRbacForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/ApiRbacForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/CostLineForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/CostLineForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/AuthyForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/AuthyForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/PaymentLineForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/PaymentLineForm.php
+     [echo] Copying model files...
+     [copy] Copying 57 files to /var/www/gc/p/myproject1/.admin/src/App/Models/Built
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/CostLinePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/CostLinePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/TimeLine.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/TimeLine.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ApiRbacQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ApiRbacQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/Template.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/Template.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ApiLogQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ApiLogQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/Billing.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/Billing.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ClientPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ClientPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ProjectQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ProjectQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ApiRbacPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ApiRbacPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/TemplateFileQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/TemplateFileQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/TimeLineQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/TimeLineQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/PaymentLine.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/PaymentLine.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/TemplateQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/TemplateQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/CountryQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/CountryQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/Country.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/Country.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ClientQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ClientQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/CostLine.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/CostLine.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyGroupXPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyGroupXPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/BillingLinePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/BillingLinePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyGroup.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyGroup.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/MessageI18nQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/MessageI18nQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/Config.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/Config.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ConfigQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ConfigQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/TemplatePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/TemplatePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/Project.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/Project.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/MessagePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/MessagePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/Authy.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/Authy.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/TimeLinePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/TimeLinePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/CountryPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/CountryPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyGroupX.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyGroupX.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ApiRbac.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ApiRbac.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/MessageI18n.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/MessageI18n.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/Message.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/Message.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyLog.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyLog.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyGroupXQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyGroupXQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/MessageI18nPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/MessageI18nPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyGroupQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyGroupQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/PaymentLinePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/PaymentLinePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/PaymentLineQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/PaymentLineQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyLogPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyLogPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/CostLineQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/CostLineQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyLogQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyLogQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ProjectPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ProjectPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ApiLogPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ApiLogPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ConfigPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ConfigPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/BillingLine.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/BillingLine.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/BillingLineQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/BillingLineQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/TemplateFile.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/TemplateFile.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/TemplateFilePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/TemplateFilePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/Client.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/Client.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/BillingPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/BillingPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/MessageQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/MessageQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/BillingQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/BillingQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyGroupPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyGroupPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ApiLog.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ApiLog.php
+     [copy] Copying 57 files to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BasePaymentLinePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BasePaymentLinePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTemplate.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTemplate.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTemplateQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTemplateQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseCountryQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseCountryQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseProjectQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseProjectQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseMessageI18nQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseMessageI18nQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseCostLinePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseCostLinePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseCostLineQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseCostLineQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseProjectPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseProjectPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyGroupX.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyGroupX.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseCountryPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseCountryPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseBillingPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseBillingPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthy.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthy.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseApiLogPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseApiLogPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseMessageI18nPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseMessageI18nPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseApiLog.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseApiLog.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseClientQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseClientQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseMessage.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseMessage.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseBillingQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseBillingQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseBillingLine.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseBillingLine.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyLogPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyLogPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTimeLineQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTimeLineQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTimeLine.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTimeLine.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BasePaymentLine.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BasePaymentLine.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyGroupXQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyGroupXQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseBilling.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseBilling.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseConfig.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseConfig.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyGroupXPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyGroupXPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyGroup.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyGroup.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseApiRbac.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseApiRbac.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseCountry.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseCountry.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyLog.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyLog.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BasePaymentLineQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BasePaymentLineQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseApiRbacQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseApiRbacQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseClient.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseClient.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseConfigQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseConfigQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseConfigPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseConfigPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseMessagePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseMessagePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseBillingLinePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseBillingLinePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTimeLinePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTimeLinePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTemplatePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTemplatePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTemplateFilePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTemplateFilePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyLogQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyLogQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseMessageI18n.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseMessageI18n.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseBillingLineQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseBillingLineQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyGroupQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyGroupQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseApiLogQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseApiLogQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyGroupPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyGroupPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTemplateFileQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTemplateFileQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseMessageQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseMessageQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTemplateFile.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTemplateFile.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseClientPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseClientPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseApiRbacPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseApiRbacPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseProject.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseProject.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseCostLine.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseCostLine.php
+     [copy] Copying 19 files to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/TemplateTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/TemplateTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/TemplateFileTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/TemplateFileTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/BillingTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/BillingTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/BillingLineTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/BillingLineTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/ApiRbacTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/ApiRbacTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/ConfigTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/ConfigTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/ClientTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/ClientTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/PaymentLineTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/PaymentLineTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/TimeLineTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/TimeLineTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/AuthyLogTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/AuthyLogTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/MessageI18nTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/MessageI18nTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/AuthyTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/AuthyTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/ProjectTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/ProjectTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/CostLineTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/CostLineTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/AuthyGroupXTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/AuthyGroupXTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/CountryTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/CountryTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/MessageTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/MessageTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/AuthyGroupTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/AuthyGroupTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/ApiLogTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/ApiLogTableMap.php
+[reflexive] Applying reflexive processing to 0 files.
+     [echo] Moving config files...
+     [copy] Copying 1 file to /var/www/gc/p/myproject1/.admin/config/Built
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/conf/db.php to /var/www/gc/p/myproject1/.admin/config/Built/db.php
+     [echo] Moving config files...
+[reflexive] Applying reflexive processing to 1 files.
+[reflexive] Applying reflexive processing to .build/conf/classmap.php
+     [copy] Copying 1 file to /var/www/gc/p/myproject1/.admin/config/Built
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/conf/classmap.php to /var/www/gc/p/myproject1/.admin/config/Built/classmap.php
+[reflexive] Applying reflexive processing to 1 files.
+[reflexive] Applying reflexive processing to .build/classes/config/basedata.sql.php
+     [copy] Copying 1 file to /var/www/gc/p/myproject1/.admin/config/Built
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/basedata.sql.php to /var/www/gc/p/myproject1/.admin/config/Built/basedata.sql
+BUILD FINISHED
+Total time: 0.0578 seconds
+Buildfile: /var/www/gc/p/myproject1/.admin/build.xml
+Override ignored for user property phing.file
+Override ignored for user property phing.dir
+Overriding previous definition of reference to phing.file
+parsing buildfile build.xml
+Project base dir set to: /var/www/gc/p/myproject1/.admin
+Overriding previous definition of reference to phingclasses
+Property ${vendor} => vendor/
+  [taskdef] Task copy2 will be handled by class Copy2Task
+Build sequence for target 'build' is: build
+Complete build sequence is: build  clean prepare fix-perm dist
+build > build:
+     [echo] Copying files to build directory...
+     [copy] Copying 6 files to /var/www/gc/p/myproject1/.admin/config/Built
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/routes.php to /var/www/gc/p/myproject1/.admin/config/Built/routes.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/settings.endpoints.php to /var/www/gc/p/myproject1/.admin/config/Built/settings.endpoints.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/permissions.defaults.php to /var/www/gc/p/myproject1/.admin/config/Built/permissions.defaults.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/settings.routes.php to /var/www/gc/p/myproject1/.admin/config/Built/settings.routes.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/settings.menus.php to /var/www/gc/p/myproject1/.admin/config/Built/settings.menus.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/propel.php to /var/www/gc/p/myproject1/.admin/config/Built/propel.php
+    [copy2] Copying 1 file to /var/www/gc/p/myproject1/.admin/config/Built
+    [copy2] From /var/www/gc/p/myproject1/.admin/.build/classes/config/config.php to /var/www/gc/p/myproject1/.admin/config/Built/config.php
+     [echo] Copying service wrapper files...
+    [copy2] AuthyGroupXServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/AuthyGroupXServiceWrapper.php  is up to date (2).
+    [copy2] ApiRbacServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/ApiRbacServiceWrapper.php  is up to date (2).
+    [copy2] ClientServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/ClientServiceWrapper.php  is up to date (2).
+    [copy2] ProjectServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/ProjectServiceWrapper.php  is up to date (2).
+    [copy2] AuthyLogServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/AuthyLogServiceWrapper.php  is up to date (2).
+    [copy2] CountryServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/CountryServiceWrapper.php  is up to date (2).
+    [copy2] TimeLineServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/TimeLineServiceWrapper.php  is up to date (2).
+    [copy2] CostLineServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/CostLineServiceWrapper.php  is up to date (2).
+    [copy2] ApiLogServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/ApiLogServiceWrapper.php  is up to date (2).
+    [copy2] TemplateFileServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/TemplateFileServiceWrapper.php  is up to date (2).
+    [copy2] MessageServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/MessageServiceWrapper.php  is up to date (2).
+    [copy2] BillingLineServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/BillingLineServiceWrapper.php  is up to date (2).
+    [copy2] PaymentLineServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/PaymentLineServiceWrapper.php  is up to date (2).
+    [copy2] ConfigServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/ConfigServiceWrapper.php  is up to date (2).
+    [copy2] AuthyGroupServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/AuthyGroupServiceWrapper.php  is up to date (2).
+    [copy2] AuthyServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/AuthyServiceWrapper.php  is up to date (2).
+    [copy2] TemplateServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/TemplateServiceWrapper.php  is up to date (2).
+    [copy2] BillingServiceWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Services/BillingServiceWrapper.php  is up to date (2).
+     [echo] Copying form wrapper files...
+    [copy2] TimeLineFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/TimeLineFormWrapper.php  is up to date (2).
+    [copy2] BillingFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/BillingFormWrapper.php  is up to date (2).
+    [copy2] AuthyFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/AuthyFormWrapper.php  is up to date (2).
+    [copy2] ConfigFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/ConfigFormWrapper.php  is up to date (2).
+    [copy2] AuthyGroupFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/AuthyGroupFormWrapper.php  is up to date (2).
+    [copy2] CostLineFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/CostLineFormWrapper.php  is up to date (2).
+    [copy2] AuthyGroupXFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/AuthyGroupXFormWrapper.php  is up to date (2).
+    [copy2] ApiLogFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/ApiLogFormWrapper.php  is up to date (2).
+    [copy2] ProjectFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/ProjectFormWrapper.php  is up to date (2).
+    [copy2] MessageFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/MessageFormWrapper.php  is up to date (2).
+    [copy2] BillingLineFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/BillingLineFormWrapper.php  is up to date (2).
+    [copy2] ApiRbacFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/ApiRbacFormWrapper.php  is up to date (2).
+    [copy2] PaymentLineFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/PaymentLineFormWrapper.php  is up to date (2).
+    [copy2] CountryFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/CountryFormWrapper.php  is up to date (2).
+    [copy2] ClientFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/ClientFormWrapper.php  is up to date (2).
+    [copy2] AuthyLogFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/AuthyLogFormWrapper.php  is up to date (2).
+    [copy2] TemplateFileFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/TemplateFileFormWrapper.php  is up to date (2).
+    [copy2] TemplateFormWrapper.php omitted as /var/www/gc/p/myproject1/.admin/src/App/Interfaces/TemplateFormWrapper.php  is up to date (2).
+     [echo] Copying service files...
+     [copy] Copying 18 files to /var/www/gc/p/myproject1/.admin/src/App/Services/Built
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/ConfigService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/ConfigService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/AuthyLogService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/AuthyLogService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/PaymentLineService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/PaymentLineService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/TemplateFileService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/TemplateFileService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/ApiRbacService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/ApiRbacService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/TemplateService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/TemplateService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/BillingService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/BillingService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/ApiLogService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/ApiLogService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/AuthyService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/AuthyService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/MessageService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/MessageService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/BillingLineService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/BillingLineService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/TimeLineService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/TimeLineService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/CountryService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/CountryService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/ProjectService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/ProjectService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/CostLineService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/CostLineService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/AuthyGroupXService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/AuthyGroupXService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/AuthyGroupService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/AuthyGroupService.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/services/ClientService.php to /var/www/gc/p/myproject1/.admin/src/App/Services/Built/ClientService.php
+     [echo] Copying interface files...
+     [copy] Copying 18 files to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/CountryForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/CountryForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/MessageForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/MessageForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/BillingForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/BillingForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/TemplateFileForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/TemplateFileForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/ConfigForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/ConfigForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/AuthyGroupForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/AuthyGroupForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/ApiLogForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/ApiLogForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/BillingLineForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/BillingLineForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/AuthyGroupXForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/AuthyGroupXForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/AuthyLogForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/AuthyLogForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/TemplateForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/TemplateForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/ProjectForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/ProjectForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/TimeLineForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/TimeLineForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/ClientForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/ClientForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/ApiRbacForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/ApiRbacForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/CostLineForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/CostLineForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/AuthyForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/AuthyForm.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/interface/PaymentLineForm.php to /var/www/gc/p/myproject1/.admin/src/App/Interfaces/Built/PaymentLineForm.php
+     [echo] Copying model files...
+     [copy] Copying 57 files to /var/www/gc/p/myproject1/.admin/src/App/Models/Built
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/CostLinePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/CostLinePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/TimeLine.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/TimeLine.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ApiRbacQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ApiRbacQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/Template.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/Template.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ApiLogQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ApiLogQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/Billing.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/Billing.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ClientPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ClientPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ProjectQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ProjectQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ApiRbacPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ApiRbacPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/TemplateFileQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/TemplateFileQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/TimeLineQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/TimeLineQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/PaymentLine.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/PaymentLine.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/TemplateQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/TemplateQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/CountryQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/CountryQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/Country.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/Country.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ClientQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ClientQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/CostLine.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/CostLine.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyGroupXPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyGroupXPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/BillingLinePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/BillingLinePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyGroup.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyGroup.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/MessageI18nQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/MessageI18nQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/Config.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/Config.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ConfigQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ConfigQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/TemplatePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/TemplatePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/Project.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/Project.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/MessagePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/MessagePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/Authy.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/Authy.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/TimeLinePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/TimeLinePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/CountryPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/CountryPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyGroupX.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyGroupX.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ApiRbac.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ApiRbac.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/MessageI18n.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/MessageI18n.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/Message.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/Message.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyLog.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyLog.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyGroupXQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyGroupXQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/MessageI18nPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/MessageI18nPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyGroupQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyGroupQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/PaymentLinePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/PaymentLinePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/PaymentLineQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/PaymentLineQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyLogPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyLogPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/CostLineQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/CostLineQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyLogQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyLogQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ProjectPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ProjectPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ApiLogPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ApiLogPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ConfigPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ConfigPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/BillingLine.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/BillingLine.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/BillingLineQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/BillingLineQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/TemplateFile.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/TemplateFile.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/TemplateFilePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/TemplateFilePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/Client.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/Client.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/BillingPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/BillingPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/MessageQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/MessageQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/BillingQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/BillingQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/AuthyGroupPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/AuthyGroupPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/ApiLog.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/ApiLog.php
+     [copy] Copying 57 files to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BasePaymentLinePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BasePaymentLinePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTemplate.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTemplate.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTemplateQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTemplateQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseCountryQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseCountryQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseProjectQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseProjectQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseMessageI18nQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseMessageI18nQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseCostLinePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseCostLinePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseCostLineQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseCostLineQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseProjectPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseProjectPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyGroupX.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyGroupX.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseCountryPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseCountryPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseBillingPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseBillingPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthy.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthy.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseApiLogPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseApiLogPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseMessageI18nPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseMessageI18nPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseApiLog.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseApiLog.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseClientQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseClientQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseMessage.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseMessage.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseBillingQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseBillingQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseBillingLine.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseBillingLine.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyLogPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyLogPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTimeLineQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTimeLineQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTimeLine.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTimeLine.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BasePaymentLine.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BasePaymentLine.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyGroupXQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyGroupXQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseBilling.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseBilling.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseConfig.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseConfig.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyGroupXPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyGroupXPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyGroup.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyGroup.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseApiRbac.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseApiRbac.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseCountry.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseCountry.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyLog.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyLog.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BasePaymentLineQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BasePaymentLineQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseApiRbacQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseApiRbacQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseClient.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseClient.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseConfigQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseConfigQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseConfigPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseConfigPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseMessagePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseMessagePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseBillingLinePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseBillingLinePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTimeLinePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTimeLinePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTemplatePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTemplatePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTemplateFilePeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTemplateFilePeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyLogQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyLogQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseMessageI18n.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseMessageI18n.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseBillingLineQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseBillingLineQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyGroupQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyGroupQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseApiLogQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseApiLogQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyGroupPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyGroupPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTemplateFileQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTemplateFileQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseMessageQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseMessageQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseTemplateFile.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseTemplateFile.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseAuthyQuery.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseAuthyQuery.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseClientPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseClientPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseApiRbacPeer.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseApiRbacPeer.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseProject.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseProject.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/om/BaseCostLine.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/om/BaseCostLine.php
+     [copy] Copying 19 files to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/TemplateTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/TemplateTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/TemplateFileTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/TemplateFileTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/BillingTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/BillingTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/BillingLineTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/BillingLineTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/ApiRbacTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/ApiRbacTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/ConfigTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/ConfigTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/ClientTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/ClientTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/PaymentLineTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/PaymentLineTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/TimeLineTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/TimeLineTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/AuthyLogTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/AuthyLogTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/MessageI18nTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/MessageI18nTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/AuthyTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/AuthyTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/ProjectTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/ProjectTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/CostLineTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/CostLineTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/AuthyGroupXTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/AuthyGroupXTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/CountryTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/CountryTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/MessageTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/MessageTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/AuthyGroupTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/AuthyGroupTableMap.php
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/map/ApiLogTableMap.php to /var/www/gc/p/myproject1/.admin/src/App/Models/Built/map/ApiLogTableMap.php
+[reflexive] Applying reflexive processing to 0 files.
+     [echo] Moving config files...
+     [copy] Copying 1 file to /var/www/gc/p/myproject1/.admin/config/Built
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/conf/db.php to /var/www/gc/p/myproject1/.admin/config/Built/db.php
+     [echo] Moving config files...
+[reflexive] Applying reflexive processing to 1 files.
+[reflexive] Applying reflexive processing to .build/conf/classmap.php
+     [copy] Copying 1 file to /var/www/gc/p/myproject1/.admin/config/Built
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/conf/classmap.php to /var/www/gc/p/myproject1/.admin/config/Built/classmap.php
+[reflexive] Applying reflexive processing to 1 files.
+[reflexive] Applying reflexive processing to .build/classes/config/basedata.sql.php
+     [copy] Copying 1 file to /var/www/gc/p/myproject1/.admin/config/Built
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/basedata.sql.php to /var/www/gc/p/myproject1/.admin/config/Built/basedata.sql
+BUILD FINISHED
+Total time: 0.0578 seconds
+
+-> Restore
+
+/usr/bin/mysql -f -u gc_myproject1 --password=njhghqmfyczbwwbmvxymfl gc_myproject1 < /var/www/gc/p/myproject1/.admin/tmp/db-backup.sql 2>&1
+Code 0
+
+-> Additionnal SQL
+
+/usr/bin/mysql -f -u gc_myproject1 --password=njhghqmfyczbwwbmvxymfl gc_myproject1 < /var/www/gc/p/myproject1/.admin/tmp/custom.sql 2>&1
+Code 0
+
+-> Permissions
+
+find /var/www/gc/p/myproject1/.admin/ -type d -exec chmod 0775 {} +
+Code 1
+chmod: changing permissions of '/var/www/gc/p/myproject1/.admin/public/file': Operation not permitted
+chmod: changing permissions of '/var/www/gc/p/myproject1/.admin/public/file/TemplateFile': Operation not permitted
+chmod: changing permissions of '/var/www/gc/p/myproject1/.admin/public/file': Operation not permitted
+chmod: changing permissions of '/var/www/gc/p/myproject1/.admin/public/file/TemplateFile': Operation not permitted
+

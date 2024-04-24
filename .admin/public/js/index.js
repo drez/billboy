@@ -34,7 +34,7 @@ function sleep(milliseconds) {
 }
 
 $(function() {
-  $(window).focus(function () {
+    $(window).focus(function () {
       checkAlive();
     });
 
@@ -45,6 +45,7 @@ $(function() {
 
 let checkedAlive = false;
 checkAlive = () => {
+
   if (!checkedAlive) { 
       $.post(_SITE_URL + 'GuiManager', { a: 'alive' }, function (data) {
           if (data['status'] == 'success') { } else { 

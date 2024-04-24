@@ -6,3 +6,5 @@ composer.lock
 gc
 .admin/auth.json
 .admin/config/Built/basedata.sql
+.admin/public/css/*.min.css
+.admin/public/js/*.min.js
