@@ -1279,23 +1279,43 @@ a.add-button {
 		height: 40px;
 	}
 
-	button.icon.search {
-		span {
-			width: 25px;
-			height: 25px;
+	button.icon{
+		&.search {
+			span {
+				width: 25px;
+				height: 25px;
 
-			&:after {
-				font-family: "remixicon";
-				content: "\f0cd";
-				color: $colorLight;
-				font-size: 1em;
-				position: absolute;
-				top: -1px;
-				left: 7px;
-				text-indent: 0;
+				&:after {
+					font-family: "remixicon";
+					content: "\f0cd";
+					color: $colorLight;
+					font-size: 1em;
+					position: absolute;
+					top: -1px;
+					left: 7px;
+					text-indent: 0;
+				}
+			}
+		}
+		&.refresh {
+			span {
+				width: 25px;
+				height: 25px;
+
+				&:after {
+					font-family: "remixicon";
+					content: "\F064";
+					color: $colorLight;
+					font-size: 1em;
+					position: absolute;
+					top: -1px;
+					left: 7px;
+					text-indent: 0;
+				}
 			}
 		}
 	}
+	
 
 	button.current {
 		&:before {

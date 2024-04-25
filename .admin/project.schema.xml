@@ -21,8 +21,8 @@
 		<column name="fullname" description="Fullname" type="VARCHAR" size="100" required="false" />
 		<column name="email" description="Email" type="VARCHAR" size="100" required="true" />
 		<column name="passwd_hash" description="Password" type="VARCHAR" size="32" required="true" />
-		<column name="expire" description="Expiration" type="DATE" required="false" />
-		<column name="deactivate" description="Deactivated" type="ENUM" valueSet="Yes, No" required="false" />
+		<column name="expire" description="Expiration" type="DATE" required="false" defaultValue="0000-00-00" />
+		<column name="deactivate" description="Deactivated" type="ENUM" valueSet="Yes, No" required="false" defaultValue="No" />
 		<unique >
 			<unique-column name="username" />
 		</unique>

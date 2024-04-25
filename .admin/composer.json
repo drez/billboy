@@ -1,5 +1,5 @@
 {
-    "name": "apigoat/myproject1",
+    "name": "apigoat/billboy",
     "type": "project",
     "description": "App",
     "autoload": {
@@ -32,25 +32,19 @@
     "repositories": [
         {
             "type": "git",
-            "url": "https://git.apigoat.com/fred/propel1.git"
+            "url": "https://github.com/drez/APIgoat-Propel1.git"
         },
         {
             "type": "git",
-            "url": "https://git.apigoat.com/fred/APIgoat-runtime.git"
+            "url": "https://github.com/drez/APIgoat-runtime.git"
         },
          {
             "type": "git",
             "url": "https://github.com/drez/conditional-middleware"
         },{
             "type": "git",
-            "url": "https://git.apigoat.com/APIgoat/phing-copy2.git"
+            "url": "https://github.com/drez/APIgoat-phing-copy.git"
         }
     ],
-    "http-basic": {
-        "https://git.apigoat.com": {
-            "username": "{username}",
-            "password": "{password}"
-        }
-    },
   "minimum-stability": "dev"
 }

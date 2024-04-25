@@ -48,12 +48,12 @@ class BillingTableMap extends TableMap
         $this->addForeignKey('id_client', 'IdClient', 'INTEGER', 'client', 'id_client', true, 11, null);
         $this->addForeignKey('id_project', 'IdProject', 'INTEGER', 'project', 'id_project', false, 11, null);
         $this->addColumn('date', 'Date', 'DATE', false, null, null);
-        $this->addColumn('type', 'Type', 'ENUM', false, null, null);
+        $this->addColumn('type', 'Type', 'ENUM', true, null, 'Bill');
         $this->getColumn('type', false)->setValueSet(array (
   0 => 'Quote',
   1 => 'Bill',
 ));
-        $this->addColumn('state', 'State', 'ENUM', false, null, null);
+        $this->addColumn('state', 'State', 'ENUM', true, null, null);
         $this->getColumn('state', false)->setValueSet(array (
   0 => 'New',
   1 => 'Approved',
@@ -84,7 +84,9 @@ class BillingTableMap extends TableMap
         $this->addValidator('id_client', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Billing_IdClient_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('id_project', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Billing_IdProject_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('date', 'match', 'propel.validator.MatchValidator', '', ('Billing_Date_match'));
+        $this->addValidator('type', 'required', 'propel.validator.RequiredValidator', '', ('Billing_Type_required'));
         $this->addValidator('type', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_Type_type_string'));
+        $this->addValidator('state', 'required', 'propel.validator.RequiredValidator', '', ('Billing_State_required'));
         $this->addValidator('state', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_State_type_string'));
         $this->addValidator('date_due', 'match', 'propel.validator.MatchValidator', '', ('Billing_DateDue_match'));
         $this->addValidator('note_billing', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_NoteBilling_type_string'));

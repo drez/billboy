@@ -99,6 +99,7 @@ abstract class BaseBilling extends BaseObject implements Persistent
 
     /**
      * The value for the type field.
+     * Note: this column has a database default value of: 1
      * @var        int
      */
     protected $type;
@@ -255,6 +256,27 @@ abstract class BaseBilling extends BaseObject implements Persistent
      * @var		PropelObjectCollection
      */
     protected $costLinesScheduledForDeletion = null;
+
+    /**
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see        __construct()
+     */
+    public function applyDefaultValues()
+    {
+        $this->type = 1;
+    }
+
+    /**
+     * Initializes internal state of BaseBilling object.
+     * @see        applyDefaults()
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->applyDefaultValues();
+    }
 
     /**
      * @Field()
@@ -1094,6 +1116,10 @@ abstract class BaseBilling extends BaseObject implements Persistent
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->type !== 1) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return true
         return true;
     } // hasOnlyDefaultValues()
@@ -3376,6 +3402,7 @@ abstract class BaseBilling extends BaseObject implements Persistent
         $this->alreadyInValidation = false;
         $this->alreadyInClearAllReferencesDeep = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);

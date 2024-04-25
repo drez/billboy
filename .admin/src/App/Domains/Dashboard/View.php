@@ -23,6 +23,8 @@ class View
 		$this->request = $request;
 		$this->args = $args;
 		$this->model_name = 'DashboardView';
+
+		$this::createBreakdownRevenueTable();
 	}
 	public function dashboard()
 	{
@@ -62,6 +64,7 @@ class View
 						.button(span(_("Clear")),' title="'._('Clear search').'" id="msProjectBtClear"')
 						.input('hidden', 'Seq')
 					,'','class="ac-search-item ac-action-buttons"')
+					.div(button(span(_("Refresh")),'id="msRefresh" title="'._('Refresh').'" class="icon refresh"'), '', "class='ac-search-item'")
 					,
 					"id='dashboardSearch'"
 				)
@@ -70,7 +73,7 @@ class View
 				)
 				. div(
 					div(
-						$chartMonthQuote['html'] . $chartMonth['html'] . $chartMonthOpen['html'] . $chartMonthUnpaid['html']
+						$chartMonthQuote['html'].$chartMonthUnpaid['html']  . $chartMonthOpen['html'] . $chartMonth['html'] 
 					),
 					'',
 					"class='content form' style='padding-bottom:50px;'"
@@ -82,6 +85,11 @@ $("#formMsProject [j='date']").each(function(){
 		$(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
 });
 $('.msSearchCtnr .js-select-label').SelectBox();
+$('#msRefresh').click(()=>{
+	$.post(_SITE_URL+'RefreshStats', {}, ()=>{
+
+	});
+});
 JS;
 		
 		$return['onReadyJs'] = $chartMonth['onReadyJs'].$chartMonthOpen['onReadyJs'].$chartMonthUnpaid['onReadyJs'].$chartMonthQuote['onReadyJs'].$readyJs;
@@ -337,7 +345,7 @@ JS;
 		$stmt = $conn->prepare($sql);
 		$stmt->execute();
 
-		$sql = "INSERT INTO `tmp_breakdown_revenue`  (`Pos`, `Date`, `state`, `Year`, `Month`, `Week`, `Total`) VALUES ('Time', now(), NULL, NULL, NULL, NULL, NULL);";
+		$sql = "INSERT INTO `tmp_breakdown_revenue`  (`Pos`, `Date`, `state`, `Year`, `Month`, `Week`, `Total`) VALUES ('Time', now(), 0, NULL, NULL, NULL, NULL);";
 		$stmt = $conn->prepare($sql);
 		$stmt->execute();
 	}

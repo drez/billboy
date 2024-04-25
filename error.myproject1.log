@@ -1,6 +1,10 @@
 **************** 
-2024-04-23 22:44:36
+2024-04-25 02:25:40
 
+***********  
+info
+***********  
+Config saved (/var/www/gc/p/myproject1/.admin/client.schema.xml)
 ***********  
 debug
 ***********  
@@ -36,28 +40,13 @@ propel > om-template:
 [propel-om] Loading XML schema files...
 [propel-om] 14 tables found in 3 schema files.
 [propel-om] Generating PHP files...
-[propel-om] 	-> Updating interface/ClientForm.php (table: client, builder: Form)
 [propel-om] 	-> Updating config/basedata.sql.php (table: client, builder: BaseData)
+[propel-om] 	-> Updating om/BaseBilling.php (table: billing, builder: PHP5ObjectBuilder)
+[propel-om] 	-> Updating map/BillingTableMap.php (table: billing, builder: PHP5TableMapBuilder)
 [propel-om] 	-> Updating interface/BillingForm.php (table: billing, builder: Form)
-[propel-om] 	-> Updating interface/BillingLineForm.php (table: billing_line, builder: Form)
-[propel-om] 	-> Updating interface/PaymentLineForm.php (table: payment_line, builder: Form)
-[propel-om] 	-> Updating interface/CostLineForm.php (table: cost_line, builder: Form)
-[propel-om] 	-> Updating interface/ProjectForm.php (table: project, builder: Form)
-[propel-om] 	-> Updating interface/TimeLineForm.php (table: time_line, builder: Form)
-[propel-om] 	-> Updating interface/AuthyForm.php (table: authy, builder: Form)
-[propel-om] 	-> Updating interface/CountryForm.php (table: country, builder: Form)
-[propel-om] 	-> Updating interface/AuthyGroupForm.php (table: authy_group, builder: Form)
-[propel-om] 	-> Updating interface/AuthyGroupXForm.php (table: authy_group_x, builder: Form)
-[propel-om] 	-> Updating interface/AuthyLogForm.php (table: authy_log, builder: Form)
-[propel-om] 	-> Updating interface/MessageForm.php (table: message, builder: Form)
-[propel-om] 	-> Updating interface/ConfigForm.php (table: config, builder: Form)
-[propel-om] 	-> Updating interface/ApiRbacForm.php (table: api_rbac, builder: Form)
-[propel-om] 	-> Updating interface/ApiLogForm.php (table: api_log, builder: Form)
-[propel-om] 	-> Updating interface/TemplateForm.php (table: template, builder: Form)
-[propel-om] 	-> Updating interface/TemplateFileForm.php (table: template_file, builder: Form)
-[propel-om] Object model generation complete - 19 files written
+[propel-om] Object model generation complete - 4 files written
 BUILD FINISHED
-Total time: 0.2985 seconds
+Total time: 0.3197 seconds
 Buildfile: /var/www/gc/vendor/propel/propel1/generator/build.xml
 propel-project-builder > check-project-or-dir-set:
 propel-project-builder > check-project-set:
@@ -85,28 +74,13 @@ propel > om-template:
 [propel-om] Loading XML schema files...
 [propel-om] 14 tables found in 3 schema files.
 [propel-om] Generating PHP files...
-[propel-om] 	-> Updating interface/ClientForm.php (table: client, builder: Form)
 [propel-om] 	-> Updating config/basedata.sql.php (table: client, builder: BaseData)
+[propel-om] 	-> Updating om/BaseBilling.php (table: billing, builder: PHP5ObjectBuilder)
+[propel-om] 	-> Updating map/BillingTableMap.php (table: billing, builder: PHP5TableMapBuilder)
 [propel-om] 	-> Updating interface/BillingForm.php (table: billing, builder: Form)
-[propel-om] 	-> Updating interface/BillingLineForm.php (table: billing_line, builder: Form)
-[propel-om] 	-> Updating interface/PaymentLineForm.php (table: payment_line, builder: Form)
-[propel-om] 	-> Updating interface/CostLineForm.php (table: cost_line, builder: Form)
-[propel-om] 	-> Updating interface/ProjectForm.php (table: project, builder: Form)
-[propel-om] 	-> Updating interface/TimeLineForm.php (table: time_line, builder: Form)
-[propel-om] 	-> Updating interface/AuthyForm.php (table: authy, builder: Form)
-[propel-om] 	-> Updating interface/CountryForm.php (table: country, builder: Form)
-[propel-om] 	-> Updating interface/AuthyGroupForm.php (table: authy_group, builder: Form)
-[propel-om] 	-> Updating interface/AuthyGroupXForm.php (table: authy_group_x, builder: Form)
-[propel-om] 	-> Updating interface/AuthyLogForm.php (table: authy_log, builder: Form)
-[propel-om] 	-> Updating interface/MessageForm.php (table: message, builder: Form)
-[propel-om] 	-> Updating interface/ConfigForm.php (table: config, builder: Form)
-[propel-om] 	-> Updating interface/ApiRbacForm.php (table: api_rbac, builder: Form)
-[propel-om] 	-> Updating interface/ApiLogForm.php (table: api_log, builder: Form)
-[propel-om] 	-> Updating interface/TemplateForm.php (table: template, builder: Form)
-[propel-om] 	-> Updating interface/TemplateFileForm.php (table: template_file, builder: Form)
-[propel-om] Object model generation complete - 19 files written
+[propel-om] Object model generation complete - 4 files written
 BUILD FINISHED
-Total time: 0.2985 seconds
+Total time: 0.3197 seconds
 
 -> Configs
 
@@ -136,7 +110,7 @@ propel > convert-conf:
 [propel-convert-conf] 14 tables found in 3 schema files.
 [propel-convert-conf] Updating PHP classmap file "/var/www/gc/p/myproject1/.admin/.build/conf/classmap.php"
 BUILD FINISHED
-Total time: 0.0453 seconds
+Total time: 0.0443 seconds
 Buildfile: /var/www/gc/vendor/propel/propel1/generator/build.xml
 propel-project-builder > check-project-or-dir-set:
 propel-project-builder > check-project-set:
@@ -161,7 +135,7 @@ propel > convert-conf:
 [propel-convert-conf] 14 tables found in 3 schema files.
 [propel-convert-conf] Updating PHP classmap file "/var/www/gc/p/myproject1/.admin/.build/conf/classmap.php"
 BUILD FINISHED
-Total time: 0.0453 seconds
+Total time: 0.0443 seconds
 
 -> Sql
 
@@ -193,9 +167,9 @@ propel > sql:
 propel > sql-template:
 [propel-sql] Loading XML schema files...
 [propel-sql] 14 tables found in 3 schema files.
-[propel-sql] [Unchanged] schema.sql
+[propel-sql] Writing to SQL file: /var/www/gc/p/myproject1/.admin/.build/sql/schema.sql
 BUILD FINISHED
-Total time: 0.0444 seconds
+Total time: 0.0462 seconds
 Buildfile: /var/www/gc/vendor/propel/propel1/generator/build.xml
 propel-project-builder > check-project-or-dir-set:
 propel-project-builder > check-project-set:
@@ -222,9 +196,9 @@ propel > sql:
 propel > sql-template:
 [propel-sql] Loading XML schema files...
 [propel-sql] 14 tables found in 3 schema files.
-[propel-sql] [Unchanged] schema.sql
+[propel-sql] Writing to SQL file: /var/www/gc/p/myproject1/.admin/.build/sql/schema.sql
 BUILD FINISHED
-Total time: 0.0444 seconds
+Total time: 0.0462 seconds
 
 -> Insert sql
 
@@ -250,7 +224,7 @@ propel > insert-sql:
 [propel-sql-exec]   40 of 40 SQL statements executed successfully
 [propel-sql-exec] SQL execution complete. 40 statements successfully executed.
 BUILD FINISHED
-Total time: 0.4249 seconds
+Total time: 0.3904 seconds
 Buildfile: /var/www/gc/vendor/propel/propel1/generator/build.xml
 propel-project-builder > check-project-or-dir-set:
 propel-project-builder > check-project-set:
@@ -271,7 +245,7 @@ propel > insert-sql:
 [propel-sql-exec]   40 of 40 SQL statements executed successfully
 [propel-sql-exec] SQL execution complete. 40 statements successfully executed.
 BUILD FINISHED
-Total time: 0.4249 seconds
+Total time: 0.3904 seconds
 
 -> Install
 
@@ -528,7 +502,7 @@ build > build:
      [copy] Copying 1 file to /var/www/gc/p/myproject1/.admin/config/Built
      [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/basedata.sql.php to /var/www/gc/p/myproject1/.admin/config/Built/basedata.sql
 BUILD FINISHED
-Total time: 0.0578 seconds
+Total time: 0.0557 seconds
 Buildfile: /var/www/gc/p/myproject1/.admin/build.xml
 Override ignored for user property phing.file
 Override ignored for user property phing.dir
@@ -780,7 +754,7 @@ build > build:
      [copy] Copying 1 file to /var/www/gc/p/myproject1/.admin/config/Built
      [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/basedata.sql.php to /var/www/gc/p/myproject1/.admin/config/Built/basedata.sql
 BUILD FINISHED
-Total time: 0.0578 seconds
+Total time: 0.0557 seconds
 
 -> Restore
 

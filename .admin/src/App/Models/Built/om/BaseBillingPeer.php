@@ -2702,6 +2702,12 @@ abstract class BaseBillingPeer
         if ($obj->isNew() || $obj->isColumnModified(BillingPeer::TYPE))
             $columns[BillingPeer::TYPE] = $obj->getType();
 
+        if ($obj->isNew() || $obj->isColumnModified(BillingPeer::TYPE))
+            $columns[BillingPeer::TYPE] = $obj->getType();
+
+        if ($obj->isNew() || $obj->isColumnModified(BillingPeer::STATE))
+            $columns[BillingPeer::STATE] = $obj->getState();
+
         if ($obj->isNew() || $obj->isColumnModified(BillingPeer::STATE))
             $columns[BillingPeer::STATE] = $obj->getState();
 

@@ -127,9 +127,6 @@ class BillingForm extends Billing
                 #default
                 ->leftJoinWith('Project');
 
-        if($this->searchMs['Type'] == '_null' || $this->searchMs['Type'] == '_null') {
-            $q->filterByType( null );
-        } else
         if( isset($this->searchMs['Type']) ) {
             $criteria = \Criteria::IN;
             $value = $this->searchMs['Type'];
@@ -158,9 +155,6 @@ class BillingForm extends Billing
 
             $q->filterByTitle($value, $criteria);
         }
-        if($this->searchMs['State'] == '_null' || $this->searchMs['State'] == '_null') {
-            $q->filterByState( null );
-        } else
         if( isset($this->searchMs['State']) ) {
             $criteria = \Criteria::IN;
             $value = $this->searchMs['State'];
@@ -590,8 +584,12 @@ $total[9] += $data->getNet();
         $e = new Billing();
         
         
-        if( $data['Type'] == '' )unset($data['Type']);
-        if( $data['State'] == '' )unset($data['State']);
+        if(!$data['Type']){
+            $data['Type'] = "Bill";
+        } 
+        if(!$data['State']){
+            $data['State'] = "New";
+        } 
         $e->fromArray($data );
         
         #
@@ -599,8 +597,6 @@ $total[9] += $data->getNet();
         //foreign
         $e->setIdProject(( $data['IdProject'] == '' ) ? null : $data['IdProject']);
         $e->setDate( ($data['Date'] == '' || $data['Date'] == 'null' || substr($data['Date'],0,10) == '-0001-11-30') ? null : $data['Date'] );
-        $e->setType(($data['Type'] == '' ) ? null : $data['Type']);
-        $e->setState(($data['State'] == '' ) ? null : $data['State']);
         //integer not required
         $e->setGross( ($data['Gross'] == '' ) ? null : $data['Gross']);
         $e->setDateDue( ($data['DateDue'] == '' || $data['DateDue'] == 'null' || substr($data['DateDue'],0,10) == '-0001-11-30') ? null : $data['DateDue'] );
@@ -632,8 +628,12 @@ $total[9] += $data->getNet();
         $e = BillingQuery::create()->findPk(json_decode($data['i']));
         
         
-        if( $data['Type'] == '' )unset($data['Type']);
-        if( $data['State'] == '' )unset($data['State']);
+        if(!$data['Type']){
+            $data['Type'] = "Bill";
+        } 
+        if(!$data['State']){
+            $data['State'] = "New";
+        } 
         $e->fromArray($data );
         
         
@@ -643,12 +643,6 @@ $total[9] += $data->getNet();
         }
         if(isset($data['Date'])){
             $e->setDate( ($data['Date'] == '' || $data['Date'] == 'null' || substr($data['Date'],0,10) == '-0001-11-30') ? null : $data['Date'] );
-        }
-        if(isset($data['Type'])){
-            $e->setType(($data['Type'] == '' ) ? null : $data['Type']);
-        }
-        if(isset($data['State'])){
-            $e->setState(($data['State'] == '' ) ? null : $data['State']);
         }
         if(isset($data['Gross'])){
             $e->setGross( ($data['Gross'] == '' ) ? null : $data['Gross']);
@@ -829,8 +823,8 @@ $this->fields['Billing']['Title']['html'] = stdFieldRow(_("Title"), input('text'
 $this->fields['Billing']['IdClient']['html'] = stdFieldRow(_("Client"), selectboxCustomArray('IdClient', $this->arrayIdClientOptions, "", "v='ID_CLIENT'  s='d'  val='".$dataObj->getIdClient()."'", $dataObj->getIdClient()), 'IdClient', "", $this->commentsIdClient, $this->commentsIdClient_css, '', ' ', 'no');
 $this->fields['Billing']['IdProject']['html'] = stdFieldRow(_("Project"), selectboxCustomArray('IdProject', $this->arrayIdProjectOptions, _('Project'), "v='ID_PROJECT'  s='d'  val='".$dataObj->getIdProject()."'", $dataObj->getIdProject()), 'IdProject', "", $this->commentsIdProject, $this->commentsIdProject_css, '', ' ', 'no');
 $this->fields['Billing']['Date']['html'] = stdFieldRow(_("Date"), input('date', 'Date', $dataObj->getDate(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'Date', "", $this->commentsDate, $this->commentsDate_css, '', ' ', 'no');
-$this->fields['Billing']['Type']['html'] = stdFieldRow(_("Type"), selectboxCustomArray('Type', array( '0' => array('0'=>_("Quote"), '1'=>"Quote"),'1' => array('0'=>_("Bill"), '1'=>"Bill"), ), _('Type'), "s='d'  ", $dataObj->getType(), '', true), 'Type', "", $this->commentsType, $this->commentsType_css, '', ' ', 'no');
-$this->fields['Billing']['State']['html'] = stdFieldRow(_("State"), selectboxCustomArray('State', array( '0' => array('0'=>_("New"), '1'=>"New"),'1' => array('0'=>_("Approved"), '1'=>"Approved"),'2' => array('0'=>_("Sent"), '1'=>"Sent"),'3' => array('0'=>_("Partial paiement"), '1'=>"Partial paiement"),'4' => array('0'=>_("Paid"), '1'=>"Paid"),'5' => array('0'=>_("Cancelled"), '1'=>"Cancelled"),'6' => array('0'=>_("To send"), '1'=>"To send"), ), _('State'), "s='d'  ", $dataObj->getState(), '', true), 'State', "", $this->commentsState, $this->commentsState_css, '', ' ', 'no');
+$this->fields['Billing']['Type']['html'] = stdFieldRow(_("Type"), selectboxCustomArray('Type', array( '0' => array('0'=>_("Quote"), '1'=>"Quote"),'1' => array('0'=>_("Bill"), '1'=>"Bill"), ), "", "s='d'  ", $dataObj->getType(), '', false), 'Type', "", $this->commentsType, $this->commentsType_css, '', ' ', 'no');
+$this->fields['Billing']['State']['html'] = stdFieldRow(_("State"), selectboxCustomArray('State', array( '0' => array('0'=>_("New"), '1'=>"New"),'1' => array('0'=>_("Approved"), '1'=>"Approved"),'2' => array('0'=>_("Sent"), '1'=>"Sent"),'3' => array('0'=>_("Partial paiement"), '1'=>"Partial paiement"),'4' => array('0'=>_("Paid"), '1'=>"Paid"),'5' => array('0'=>_("Cancelled"), '1'=>"Cancelled"),'6' => array('0'=>_("To send"), '1'=>"To send"), ), "", "s='d'  ", $dataObj->getState(), '', false), 'State', "", $this->commentsState, $this->commentsState_css, '', ' ', 'no');
 $this->fields['Billing']['Gross']['html'] = stdFieldRow(_("Gross"), input('text', 'Gross', $dataObj->getGross(), "  placeholder='".str_replace("'","&#39;",_('Gross'))."'  v='GROSS' size='5' s='d' class=''"), 'Gross', "", $this->commentsGross, $this->commentsGross_css, '', ' ', 'no');
 $this->fields['Billing']['DateDue']['html'] = stdFieldRow(_("Due date"), input('date', 'DateDue', $dataObj->getDateDue(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'DateDue', "", $this->commentsDateDue, $this->commentsDateDue_css, '', ' ', 'no');
 $this->fields['Billing']['NoteBilling']['html'] = stdFieldRow(_("Note"), textarea('NoteBilling', htmlentities($dataObj->getNoteBilling()) ,"placeholder='".str_replace("'","&#39;",_('Note'))."' cols='71' v='NOTE_BILLING' s='d'  class=' tinymce ' style='' spellcheck='false'"), 'NoteBilling', "", $this->commentsNoteBilling, $this->commentsNoteBilling_css, 'istinymce', ' ', 'no');

@@ -52,11 +52,10 @@
 
 			"date('Date')": ["date()"],
 			//"id_project('Project')": ["integer()","foreign(project)",null,"foreign:id_project"],
-			"type('Type')": ["enum(Quote, Bill)"],
-			"state('State')": ["enum(New,Approved,Sent,Partial paiement,Paid,Cancelled, To send)"],
+			"type('Type')": ["enum(Quote, Bill)",'required', "default:'Bill'"],
+			"state('State')": ["enum(New, Approved, Sent, Partial paiement, Paid,Cancelled, To send)",'required'],
 			"gross('Gross')": ["decimal(8, 2)"],
 			"date_due('Due date')": ["date()"],
-			
 			
 			"note_billing('Note')": ["longvarchar(400)"],
             "date_paid('Paid date')": ["date()"],

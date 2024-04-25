@@ -30,10 +30,9 @@ class BillingFormWrapper extends BillingForm
 
     public function afterFormObj( array $data, Billing &$dataObj)
     {
-         if (is_null($dataObj->getDate())) {
+        if (is_null($dataObj->getDate())) {
             $this->hookFormReadyJs = "
         $('#formBilling #Date').val('".date('Y-m-d')."');
-
             ";
         }
 
@@ -49,7 +48,7 @@ class BillingFormWrapper extends BillingForm
     {
 
         if(empty(array_filter($this->searchMs))){
-            $this->searchMs['State'] = 'New';
+            $this->searchMs['State'] = ['New', 'Sent'];
             $this->searchMs['Type'] = 'Bill';
         }
         $this->hookListReadyJs = "

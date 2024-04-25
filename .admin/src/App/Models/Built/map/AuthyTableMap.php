@@ -48,8 +48,8 @@ class AuthyTableMap extends TableMap
         $this->addColumn('fullname', 'Fullname', 'VARCHAR', false, 100, null);
         $this->addColumn('email', 'Email', 'VARCHAR', true, 100, null);
         $this->addColumn('passwd_hash', 'PasswdHash', 'VARCHAR', true, 32, null);
-        $this->addColumn('expire', 'Expire', 'DATE', false, null, null);
-        $this->addColumn('deactivate', 'Deactivate', 'ENUM', false, null, null);
+        $this->addColumn('expire', 'Expire', 'DATE', false, null, '0000-00-00');
+        $this->addColumn('deactivate', 'Deactivate', 'ENUM', false, null, 'No');
         $this->getColumn('deactivate', false)->setValueSet(array (
   0 => 'Yes',
   1 => 'No',

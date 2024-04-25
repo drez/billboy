@@ -119,12 +119,14 @@ abstract class BaseAuthy extends BaseObject implements Persistent
 
     /**
      * The value for the expire field.
+     * Note: this column has a database default value of: NULL
      * @var        string
      */
     protected $expire;
 
     /**
      * The value for the deactivate field.
+     * Note: this column has a database default value of: 1
      * @var        int
      */
     protected $deactivate;
@@ -660,6 +662,8 @@ abstract class BaseAuthy extends BaseObject implements Persistent
      */
     public function applyDefaultValues()
     {
+        $this->expire = NULL;
+        $this->deactivate = 1;
         $this->is_root = 1;
         $this->id_authy_group = 1;
         $this->is_system = 1;
@@ -1165,7 +1169,9 @@ abstract class BaseAuthy extends BaseObject implements Persistent
         if ($this->expire !== null || $dt !== null) {
             $currentDateAsString = ($this->expire !== null && $tmpDt = new DateTime($this->expire)) ? $tmpDt->format('Y-m-d') : null;
             $newDateAsString = $dt ? $dt->format('Y-m-d') : null;
-            if ($currentDateAsString !== $newDateAsString) {
+            if ( ($currentDateAsString !== $newDateAsString) // normalized values don't match
+                || ($dt->format('Y-m-d') === NULL) // or the entered value matches the default
+                 ) {
                 $this->expire = $newDateAsString;
                 $this->modifiedColumns[] = AuthyPeer::EXPIRE;
             }
@@ -1493,6 +1499,14 @@ abstract class BaseAuthy extends BaseObject implements Persistent
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->expire !== NULL) {
+                return false;
+            }
+
+            if ($this->deactivate !== 1) {
+                return false;
+            }
+
             if ($this->is_root !== 1) {
                 return false;
             }

@@ -1278,6 +1278,20 @@ a.add-button:after {
   left: 7px;
   text-indent: 0;
 }
+.msSearchCtnr button.icon.refresh span {
+  width: 25px;
+  height: 25px;
+}
+.msSearchCtnr button.icon.refresh span:after {
+  font-family: "remixicon";
+  content: "\f064";
+  color: #fff;
+  font-size: 1em;
+  position: absolute;
+  top: -1px;
+  left: 7px;
+  text-indent: 0;
+}
 .msSearchCtnr button.current:before {
   transform: scaleY(1);
 }

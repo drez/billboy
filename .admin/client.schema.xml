@@ -55,13 +55,13 @@
 		<foreign-key foreignTable="client" onDelete="restrict" onUpdate="restrict" >
 			<reference local="id_client" foreign="id_client" />
 		</foreign-key>
-		<column name="id_project" description="Project" type="INTEGER" size="11" required="false" />
+		<column name="id_project" description="Project" type="INTEGER" size="11" required="false" defaultValue="null" />
 		<foreign-key foreignTable="project" onDelete="restrict" onUpdate="restrict" >
 			<reference local="id_project" foreign="id_project" />
 		</foreign-key>
 		<column name="date" description="Date" type="DATE" required="false" />
-		<column name="type" description="Type" type="ENUM" valueSet="Quote, Bill" required="false" />
-		<column name="state" description="State" type="ENUM" valueSet="New,Approved,Sent,Partial paiement,Paid,Cancelled, To send" required="false" />
+		<column name="type" description="Type" type="ENUM" valueSet="Quote, Bill" required="true" defaultValue="Bill" />
+		<column name="state" description="State" type="ENUM" valueSet="New, Approved, Sent, Partial paiement, Paid,Cancelled, To send" required="true" />
 		<column name="gross" description="Gross" type="DECIMAL" size="8" scale=" 2" required="false" />
 		<column name="date_due" description="Due date" type="DATE" required="false" />
 		<column name="note_billing" description="Note" type="LONGVARCHAR" required="false" size="400" />
@@ -88,11 +88,11 @@
 			<reference local="id_billing" foreign="id_billing" />
 		</foreign-key>
 		<column name="calc_id" description="" type="VARCHAR" size="20" />
-		<column name="id_assign" description="Assigned to" type="INTEGER" size="11" required="false" />
+		<column name="id_assign" description="Assigned to" type="INTEGER" size="11" required="false" defaultValue="null" />
 		<foreign-key foreignTable="authy" onDelete="restrict" onUpdate="restrict" >
 			<reference local="id_assign" foreign="id_creation" />
 		</foreign-key>
-		<column name="id_project" description="Project" type="INTEGER" size="11" required="false" />
+		<column name="id_project" description="Project" type="INTEGER" size="11" required="false" defaultValue="null" />
 		<foreign-key foreignTable="project" onDelete="restrict" onUpdate="restrict" >
 			<reference local="id_project" foreign="id_project" />
 		</foreign-key>
@@ -157,7 +157,7 @@
 		<column name="id_project" description="" type="INTEGER" size="10" required="true" primaryKey="true" autoIncrement="true" />
 		<column name="calc_id" description="" type="VARCHAR" size="20" />
 		<column name="name" description="Name" type="VARCHAR" size="100" />
-		<column name="id_client" description="Client" type="INTEGER" size="11" required="false" />
+		<column name="id_client" description="Client" type="INTEGER" size="11" required="false" defaultValue="null" />
 		<foreign-key foreignTable="client" onDelete="restrict" onUpdate="restrict" >
 			<reference local="id_client" foreign="id_client" />
 		</foreign-key>
