@@ -2,6 +2,20 @@
     "name": "apigoat/template",
     "description": "Goatcheese builder template",
     "homepage": "https://apigoat.com/",
+    "authors": [{
+        "name": "Frederic Vezina",
+        "homepage": "https://apigoat.com/"
+    }],
     "type": "library",
-    "license": "MIT"
+    "license": "MIT",
+    "require": {
+        "php": ">=8"
+    },
+    "post-install-cmd": "deploy",
+    "scripts": {
+        "deploy": [
+            "composer install -d ./.admin",
+            "php ./.admin/scripts/deploy.php 2>&1"
+        ]
+    }
 }

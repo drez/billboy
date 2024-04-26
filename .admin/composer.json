@@ -26,7 +26,8 @@
         "symfony/filesystem": "^5.0",
         "apigoat/runtime": "dev-master",
         "propel/propel1": "dev-master",
-        "apigoat/phing-copy2": "dev-master"
+        "apigoat/phing-copy2": "dev-master",
+        "adhocore/env": "^0.1.0"
     },
     "repositories": [
         {
