@@ -32,7 +32,7 @@
             </fileset>
         </copy>
 
-        <copy2 todir="./config/Built" overwrite="false" mode="0775">
+        <copy2 todir="./config/Built" overwrite="true" mode="0775">
             <fileset dir=".build/classes/config/">
                 <include name="config.php" />
 

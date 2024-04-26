@@ -6,7 +6,7 @@ use PHPMailer\PHPMailer\SMTP;
 // Configure defaults for the whole application.
 
 // Error reporting
-ini_set("error_reporting", E_ALL ^ E_DEPRECATED ^ E_NOTICE);
+error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING);
 ini_set('display_errors', true);
 
 

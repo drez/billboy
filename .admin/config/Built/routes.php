@@ -14,9 +14,11 @@ use ApiGoat\Utility\BuilderLayout;
 use ApiGoat\Utility\BuilderMenus;
 use ApiGoat\Services\GuiManager;
 use ApiGoat\Routes\RouteHelper;
+
 use ApiGoat\Services\EmailService;
 use ApiGoat\Services\PasswordService;
 use ApiGoat\Services\AccountService;
+use ApiGoat\Services\OauthService;
 
 const API_VERSION = '1';
 $builderRoutes = require _BASE_DIR . '/config/Built/settings.routes.php';
@@ -70,6 +72,13 @@ foreach ($builderRoutes['html']['GET'] as $route => $params) {
         } elseif ($Service->request['a'] == 'open') {
             return $response->withHeader('Content-Type', $Service->contentType);
         } else {
+            if($Service->contentType){
+                $response = $response->withHeader('Content-Type', $Service->contentType);
+            }
+            if ($Service->headers) {
+                foreach($Service->headers as $headers)
+                $response = $response->withHeader($headers[0], $headers[1]);
+            }
             return $response;
         }
     })->setName($route);
@@ -80,37 +89,44 @@ foreach ($builderRoutes['html']['POST'] as $route => $params) {
         $RouteHelper = new RouteHelper($request, $args);
         $Service = $RouteHelper->getService($response);
         $response->getBody()->write($Service->getResponse());
+        if($Service->contentType){
+            $response = $response->withHeader('Content-Type', $Service->contentType);
+        }
+        if ($Service->headers) {
+            foreach($Service->headers as $headers)
+            $response = $response->withHeader($headers[0], $headers[1]);
+        }
         return $response;
     })->setName($route);
 }
 
+$app->map(['GET', 'POST'], _SUB_DIR_URL . 'oauth/{p}[/{c}]', function (Request $request, Response $response, $args) {
+        $RouteHelper = new RouteHelper($request, $args);
+
+        $Service = new OauthService($request, $response, $RouteHelper->getArgs());
+        $result = $Service->getResponse();
+        if ($result['error']) {
+            $response->getBody()->write($result['error']);
+        } else {
+            return $response->withHeader('Location', _SUB_DIR_URL)->withStatus(301);
+        }
+
+        return $response;
+    })->setName('oAuth');
+# API
 $app->options('/api/v' . API_VERSION . '/{routes:.+}', function ($request, $response, $args) {
     return $response;
 });
 
-$app->post(_SUB_DIR_URL . 'api/v' . API_VERSION . '/Authy/auth', function (Request $request, Response $response, $args) {
+$app->post(_SUB_DIR_URL . 'api/v' . API_VERSION . '/Authy/{a:auth|renew}', function (Request $request, Response $response, $args) {
     $RouteHelper = new RouteHelper($request, $args);
     $RouteHelper->setArgs('method', 'AUTH');
     $Service = new \App\AuthyServiceWrapper($request, $response, $RouteHelper->getArgs());
     return $Service->getApiResponse();
 })->setName('api/Auth');
 
-$app->map(['GET', 'POST'], _SUB_DIR_URL . 'oauth/{p}[/{c}]', function (Request $request, Response $response, $args) {
-    $RouteHelper = new RouteHelper($request, $args);
-
-    $Service = new OauthService($request, $response, $RouteHelper->getArgs());
-    $result = $Service->getResponse();
-    if ($result['error']) {
-        $response->getBody()->write($result['error']);
-    } else {
-        return $response->withHeader('Location', _SUB_DIR_URL)->withStatus(301);
-    }
-
-    return $response;
-})->setName('oAuth');
-
 foreach ($builderRoutes['json']['GET'] as $route => $params) {
-    $app->map(['GET', 'DELETE', 'PATCH', 'PUT', 'POST'], _SUB_DIR_URL . "api/v" . API_VERSION . "/{$route}[/{i:[0-9]+}]", function ($request, $response, $args) {
+    $app->map(['GET', 'DELETE', 'PATCH', 'PUT', 'POST'], _SUB_DIR_URL . "api/v" . API_VERSION . "/{$route}[/{i:[A-Za-z0-9_-]+}]", function ($request, $response, $args) {
         $RouteHelper = new RouteHelper($request, $args);
         $Service = $RouteHelper->getService($response);
         return $Service->getApiResponse();

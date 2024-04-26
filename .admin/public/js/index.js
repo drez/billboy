@@ -36,12 +36,10 @@ function sleep(milliseconds) {
 $(function() {
   $(window).focus(function () {
       checkAlive();
-      console.log('Focus');
     });
 
   $(window).blur(function () {
       checkAlive();
-      console.log('Blur');
     });
 });
 

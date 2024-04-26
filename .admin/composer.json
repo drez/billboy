@@ -1,14 +1,12 @@
 {
-    "name": "apigoat/%PROJECT_NAME%",
+    "name": "apigoat/myproject1",
     "type": "project",
     "description": "cryptolead interface",
     "autoload": {
         "psr-4": {
             "ApiGoat\\": "vendor/apigoat/runtime/src",
-            "App\\om\\": [
-                "src/App/Models/Built/om",
-                "src/App/Models/Built"
-            ]
+            "App\\om\\": "src/App/Models/Built/om",
+            "App\\Domains\\": "src/App/Domains"
         }
     },
     "config": {
