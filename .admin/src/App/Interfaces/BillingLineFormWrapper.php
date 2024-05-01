@@ -30,9 +30,13 @@ class BillingLineFormWrapper extends BillingLineForm
 
     public function afterFormObj( array &$data, BillingLine &$dataObj)
     {
-        if (is_null($dataObj->getWorkDate())) {
+        $defaultAmount = (billing_default_unit_amount)?billing_default_unit_amount:'0.00';
+
+        if ($dataObj->isNew()) {
             $this->hookFormReadyJs = "
         $('#formBillingLine #WorkDate').val('".date('Y-m-d')."');
+        $('#formBillingLine #Amount').val('$defaultAmount');
+        $('#formBillingLine #Quantity').val('1');
             ";
         }
     }

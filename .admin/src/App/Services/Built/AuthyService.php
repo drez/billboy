@@ -266,10 +266,10 @@ class AuthyService
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Payment entry'. ", '', true,'User'); die( $error['onReadyJs'] );
             }
             if($obj->countCostLinesRelatedByIdCreation()){
-                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Cost entry'. ", '', true,'User'); die( $error['onReadyJs'] );
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Expense'. ", '', true,'User'); die( $error['onReadyJs'] );
             }
             if($obj->countCostLinesRelatedByIdModification()){
-                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Cost entry'. ", '', true,'User'); die( $error['onReadyJs'] );
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Expense'. ", '', true,'User'); die( $error['onReadyJs'] );
             }
             if($obj->countProjectsRelatedByIdCreation()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Project'. ", '', true,'User'); die( $error['onReadyJs'] );
@@ -282,6 +282,18 @@ class AuthyService
             }
             if($obj->countTimeLinesRelatedByIdModification()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Time'. ", '', true,'User'); die( $error['onReadyJs'] );
+            }
+            if($obj->countBillingCategoriesRelatedByIdCreation()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Category billing'. ", '', true,'User'); die( $error['onReadyJs'] );
+            }
+            if($obj->countBillingCategoriesRelatedByIdModification()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Category billing'. ", '', true,'User'); die( $error['onReadyJs'] );
+            }
+            if($obj->countSuppliersRelatedByIdCreation()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Supplier'. ", '', true,'User'); die( $error['onReadyJs'] );
+            }
+            if($obj->countSuppliersRelatedByIdModification()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Supplier'. ", '', true,'User'); die( $error['onReadyJs'] );
             }
             if($obj->countAuthiesRelatedByIdAuthy0()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'User'. ", '', true,'User'); die( $error['onReadyJs'] );

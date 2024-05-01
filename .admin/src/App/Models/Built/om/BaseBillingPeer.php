@@ -12,6 +12,7 @@ use \PropelPDO;
 use App\AuthyGroupPeer;
 use App\AuthyPeer;
 use App\Billing;
+use App\BillingCategoryPeer;
 use App\BillingLinePeer;
 use App\BillingPeer;
 use App\ClientPeer;
@@ -43,13 +44,13 @@ abstract class BaseBillingPeer
     const TM_CLASS = 'App\\map\\BillingTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 19;
+    const NUM_COLUMNS = 21;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 19;
+    const NUM_HYDRATE_COLUMNS = 21;
 
     /** the column name for the id_billing field */
     const ID_BILLING = 'billing.id_billing';
@@ -66,6 +67,9 @@ abstract class BaseBillingPeer
     /** the column name for the id_project field */
     const ID_PROJECT = 'billing.id_project';
 
+    /** the column name for the id_billing_category field */
+    const ID_BILLING_CATEGORY = 'billing.id_billing_category';
+
     /** the column name for the date field */
     const DATE = 'billing.date';
 
@@ -77,6 +81,9 @@ abstract class BaseBillingPeer
 
     /** the column name for the gross field */
     const GROSS = 'billing.gross';
+
+    /** the column name for the tax field */
+    const TAX = 'billing.tax';
 
     /** the column name for the date_due field */
     const DATE_DUE = 'billing.date_due';
@@ -140,12 +147,12 @@ abstract class BaseBillingPeer
      * e.g. BillingPeer::$fieldNames[BillingPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('IdBilling', 'CalcId', 'Title', 'IdClient', 'IdProject', 'Date', 'Type', 'State', 'Gross', 'DateDue', 'NoteBilling', 'DatePaid', 'Net', 'Reference', 'DateCreation', 'DateModification', 'IdGroupCreation', 'IdCreation', 'IdModification', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idBilling', 'calcId', 'title', 'idClient', 'idProject', 'date', 'type', 'state', 'gross', 'dateDue', 'noteBilling', 'datePaid', 'net', 'reference', 'dateCreation', 'dateModification', 'idGroupCreation', 'idCreation', 'idModification', ),
-        BasePeer::TYPE_COLNAME => array (BillingPeer::ID_BILLING, BillingPeer::CALC_ID, BillingPeer::TITLE, BillingPeer::ID_CLIENT, BillingPeer::ID_PROJECT, BillingPeer::DATE, BillingPeer::TYPE, BillingPeer::STATE, BillingPeer::GROSS, BillingPeer::DATE_DUE, BillingPeer::NOTE_BILLING, BillingPeer::DATE_PAID, BillingPeer::NET, BillingPeer::REFERENCE, BillingPeer::DATE_CREATION, BillingPeer::DATE_MODIFICATION, BillingPeer::ID_GROUP_CREATION, BillingPeer::ID_CREATION, BillingPeer::ID_MODIFICATION, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_BILLING', 'CALC_ID', 'TITLE', 'ID_CLIENT', 'ID_PROJECT', 'DATE', 'TYPE', 'STATE', 'GROSS', 'DATE_DUE', 'NOTE_BILLING', 'DATE_PAID', 'NET', 'REFERENCE', 'DATE_CREATION', 'DATE_MODIFICATION', 'ID_GROUP_CREATION', 'ID_CREATION', 'ID_MODIFICATION', ),
-        BasePeer::TYPE_FIELDNAME => array ('id_billing', 'calc_id', 'title', 'id_client', 'id_project', 'date', 'type', 'state', 'gross', 'date_due', 'note_billing', 'date_paid', 'net', 'reference', 'date_creation', 'date_modification', 'id_group_creation', 'id_creation', 'id_modification', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, )
+        BasePeer::TYPE_PHPNAME => array ('IdBilling', 'CalcId', 'Title', 'IdClient', 'IdProject', 'IdBillingCategory', 'Date', 'Type', 'State', 'Gross', 'Tax', 'DateDue', 'NoteBilling', 'DatePaid', 'Net', 'Reference', 'DateCreation', 'DateModification', 'IdGroupCreation', 'IdCreation', 'IdModification', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idBilling', 'calcId', 'title', 'idClient', 'idProject', 'idBillingCategory', 'date', 'type', 'state', 'gross', 'tax', 'dateDue', 'noteBilling', 'datePaid', 'net', 'reference', 'dateCreation', 'dateModification', 'idGroupCreation', 'idCreation', 'idModification', ),
+        BasePeer::TYPE_COLNAME => array (BillingPeer::ID_BILLING, BillingPeer::CALC_ID, BillingPeer::TITLE, BillingPeer::ID_CLIENT, BillingPeer::ID_PROJECT, BillingPeer::ID_BILLING_CATEGORY, BillingPeer::DATE, BillingPeer::TYPE, BillingPeer::STATE, BillingPeer::GROSS, BillingPeer::TAX, BillingPeer::DATE_DUE, BillingPeer::NOTE_BILLING, BillingPeer::DATE_PAID, BillingPeer::NET, BillingPeer::REFERENCE, BillingPeer::DATE_CREATION, BillingPeer::DATE_MODIFICATION, BillingPeer::ID_GROUP_CREATION, BillingPeer::ID_CREATION, BillingPeer::ID_MODIFICATION, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_BILLING', 'CALC_ID', 'TITLE', 'ID_CLIENT', 'ID_PROJECT', 'ID_BILLING_CATEGORY', 'DATE', 'TYPE', 'STATE', 'GROSS', 'TAX', 'DATE_DUE', 'NOTE_BILLING', 'DATE_PAID', 'NET', 'REFERENCE', 'DATE_CREATION', 'DATE_MODIFICATION', 'ID_GROUP_CREATION', 'ID_CREATION', 'ID_MODIFICATION', ),
+        BasePeer::TYPE_FIELDNAME => array ('id_billing', 'calc_id', 'title', 'id_client', 'id_project', 'id_billing_category', 'date', 'type', 'state', 'gross', 'tax', 'date_due', 'note_billing', 'date_paid', 'net', 'reference', 'date_creation', 'date_modification', 'id_group_creation', 'id_creation', 'id_modification', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, )
     );
 
     /**
@@ -155,12 +162,12 @@ abstract class BaseBillingPeer
      * e.g. BillingPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('IdBilling' => 0, 'CalcId' => 1, 'Title' => 2, 'IdClient' => 3, 'IdProject' => 4, 'Date' => 5, 'Type' => 6, 'State' => 7, 'Gross' => 8, 'DateDue' => 9, 'NoteBilling' => 10, 'DatePaid' => 11, 'Net' => 12, 'Reference' => 13, 'DateCreation' => 14, 'DateModification' => 15, 'IdGroupCreation' => 16, 'IdCreation' => 17, 'IdModification' => 18, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idBilling' => 0, 'calcId' => 1, 'title' => 2, 'idClient' => 3, 'idProject' => 4, 'date' => 5, 'type' => 6, 'state' => 7, 'gross' => 8, 'dateDue' => 9, 'noteBilling' => 10, 'datePaid' => 11, 'net' => 12, 'reference' => 13, 'dateCreation' => 14, 'dateModification' => 15, 'idGroupCreation' => 16, 'idCreation' => 17, 'idModification' => 18, ),
-        BasePeer::TYPE_COLNAME => array (BillingPeer::ID_BILLING => 0, BillingPeer::CALC_ID => 1, BillingPeer::TITLE => 2, BillingPeer::ID_CLIENT => 3, BillingPeer::ID_PROJECT => 4, BillingPeer::DATE => 5, BillingPeer::TYPE => 6, BillingPeer::STATE => 7, BillingPeer::GROSS => 8, BillingPeer::DATE_DUE => 9, BillingPeer::NOTE_BILLING => 10, BillingPeer::DATE_PAID => 11, BillingPeer::NET => 12, BillingPeer::REFERENCE => 13, BillingPeer::DATE_CREATION => 14, BillingPeer::DATE_MODIFICATION => 15, BillingPeer::ID_GROUP_CREATION => 16, BillingPeer::ID_CREATION => 17, BillingPeer::ID_MODIFICATION => 18, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_BILLING' => 0, 'CALC_ID' => 1, 'TITLE' => 2, 'ID_CLIENT' => 3, 'ID_PROJECT' => 4, 'DATE' => 5, 'TYPE' => 6, 'STATE' => 7, 'GROSS' => 8, 'DATE_DUE' => 9, 'NOTE_BILLING' => 10, 'DATE_PAID' => 11, 'NET' => 12, 'REFERENCE' => 13, 'DATE_CREATION' => 14, 'DATE_MODIFICATION' => 15, 'ID_GROUP_CREATION' => 16, 'ID_CREATION' => 17, 'ID_MODIFICATION' => 18, ),
-        BasePeer::TYPE_FIELDNAME => array ('id_billing' => 0, 'calc_id' => 1, 'title' => 2, 'id_client' => 3, 'id_project' => 4, 'date' => 5, 'type' => 6, 'state' => 7, 'gross' => 8, 'date_due' => 9, 'note_billing' => 10, 'date_paid' => 11, 'net' => 12, 'reference' => 13, 'date_creation' => 14, 'date_modification' => 15, 'id_group_creation' => 16, 'id_creation' => 17, 'id_modification' => 18, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, )
+        BasePeer::TYPE_PHPNAME => array ('IdBilling' => 0, 'CalcId' => 1, 'Title' => 2, 'IdClient' => 3, 'IdProject' => 4, 'IdBillingCategory' => 5, 'Date' => 6, 'Type' => 7, 'State' => 8, 'Gross' => 9, 'Tax' => 10, 'DateDue' => 11, 'NoteBilling' => 12, 'DatePaid' => 13, 'Net' => 14, 'Reference' => 15, 'DateCreation' => 16, 'DateModification' => 17, 'IdGroupCreation' => 18, 'IdCreation' => 19, 'IdModification' => 20, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idBilling' => 0, 'calcId' => 1, 'title' => 2, 'idClient' => 3, 'idProject' => 4, 'idBillingCategory' => 5, 'date' => 6, 'type' => 7, 'state' => 8, 'gross' => 9, 'tax' => 10, 'dateDue' => 11, 'noteBilling' => 12, 'datePaid' => 13, 'net' => 14, 'reference' => 15, 'dateCreation' => 16, 'dateModification' => 17, 'idGroupCreation' => 18, 'idCreation' => 19, 'idModification' => 20, ),
+        BasePeer::TYPE_COLNAME => array (BillingPeer::ID_BILLING => 0, BillingPeer::CALC_ID => 1, BillingPeer::TITLE => 2, BillingPeer::ID_CLIENT => 3, BillingPeer::ID_PROJECT => 4, BillingPeer::ID_BILLING_CATEGORY => 5, BillingPeer::DATE => 6, BillingPeer::TYPE => 7, BillingPeer::STATE => 8, BillingPeer::GROSS => 9, BillingPeer::TAX => 10, BillingPeer::DATE_DUE => 11, BillingPeer::NOTE_BILLING => 12, BillingPeer::DATE_PAID => 13, BillingPeer::NET => 14, BillingPeer::REFERENCE => 15, BillingPeer::DATE_CREATION => 16, BillingPeer::DATE_MODIFICATION => 17, BillingPeer::ID_GROUP_CREATION => 18, BillingPeer::ID_CREATION => 19, BillingPeer::ID_MODIFICATION => 20, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_BILLING' => 0, 'CALC_ID' => 1, 'TITLE' => 2, 'ID_CLIENT' => 3, 'ID_PROJECT' => 4, 'ID_BILLING_CATEGORY' => 5, 'DATE' => 6, 'TYPE' => 7, 'STATE' => 8, 'GROSS' => 9, 'TAX' => 10, 'DATE_DUE' => 11, 'NOTE_BILLING' => 12, 'DATE_PAID' => 13, 'NET' => 14, 'REFERENCE' => 15, 'DATE_CREATION' => 16, 'DATE_MODIFICATION' => 17, 'ID_GROUP_CREATION' => 18, 'ID_CREATION' => 19, 'ID_MODIFICATION' => 20, ),
+        BasePeer::TYPE_FIELDNAME => array ('id_billing' => 0, 'calc_id' => 1, 'title' => 2, 'id_client' => 3, 'id_project' => 4, 'id_billing_category' => 5, 'date' => 6, 'type' => 7, 'state' => 8, 'gross' => 9, 'tax' => 10, 'date_due' => 11, 'note_billing' => 12, 'date_paid' => 13, 'net' => 14, 'reference' => 15, 'date_creation' => 16, 'date_modification' => 17, 'id_group_creation' => 18, 'id_creation' => 19, 'id_modification' => 20, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, )
     );
 
     /** The enumerated values for this table */
@@ -301,10 +308,12 @@ abstract class BaseBillingPeer
             $criteria->addSelectColumn(BillingPeer::TITLE);
             $criteria->addSelectColumn(BillingPeer::ID_CLIENT);
             $criteria->addSelectColumn(BillingPeer::ID_PROJECT);
+            $criteria->addSelectColumn(BillingPeer::ID_BILLING_CATEGORY);
             $criteria->addSelectColumn(BillingPeer::DATE);
             $criteria->addSelectColumn(BillingPeer::TYPE);
             $criteria->addSelectColumn(BillingPeer::STATE);
             $criteria->addSelectColumn(BillingPeer::GROSS);
+            $criteria->addSelectColumn(BillingPeer::TAX);
             $criteria->addSelectColumn(BillingPeer::DATE_DUE);
             $criteria->addSelectColumn(BillingPeer::NOTE_BILLING);
             $criteria->addSelectColumn(BillingPeer::DATE_PAID);
@@ -321,10 +330,12 @@ abstract class BaseBillingPeer
             $criteria->addSelectColumn($alias . '.title');
             $criteria->addSelectColumn($alias . '.id_client');
             $criteria->addSelectColumn($alias . '.id_project');
+            $criteria->addSelectColumn($alias . '.id_billing_category');
             $criteria->addSelectColumn($alias . '.date');
             $criteria->addSelectColumn($alias . '.type');
             $criteria->addSelectColumn($alias . '.state');
             $criteria->addSelectColumn($alias . '.gross');
+            $criteria->addSelectColumn($alias . '.tax');
             $criteria->addSelectColumn($alias . '.date_due');
             $criteria->addSelectColumn($alias . '.note_billing');
             $criteria->addSelectColumn($alias . '.date_paid');
@@ -770,6 +781,57 @@ abstract class BaseBillingPeer
 
 
     /**
+     * Returns the number of rows matching criteria, joining the related BillingCategory table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinBillingCategory(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(BillingPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            BillingPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+
+        // Set the correct dbName
+        $criteria->setDbName(BillingPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(BillingPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(BillingPeer::ID_BILLING_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
      * Returns the number of rows matching criteria, joining the related AuthyGroup table
      *
      * @param      Criteria $criteria
@@ -1057,6 +1119,73 @@ abstract class BaseBillingPeer
 
 
     /**
+     * Selects a collection of Billing objects pre-filled with their BillingCategory objects.
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Billing objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinBillingCategory(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(BillingPeer::DATABASE_NAME);
+        }
+
+        BillingPeer::addSelectColumns($criteria);
+        $startcol = BillingPeer::NUM_HYDRATE_COLUMNS;
+        BillingCategoryPeer::addSelectColumns($criteria);
+
+        $criteria->addJoin(BillingPeer::ID_BILLING_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = BillingPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = BillingPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+
+                $cls = BillingPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                BillingPeer::addInstanceToPool($obj1, $key1);
+            } // if $obj1 already loaded
+
+            $key2 = BillingCategoryPeer::getPrimaryKeyHashFromRow($row, $startcol);
+            if ($key2 !== null) {
+                $obj2 = BillingCategoryPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = BillingCategoryPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol);
+                    BillingCategoryPeer::addInstanceToPool($obj2, $key2);
+                } // if obj2 already loaded
+
+                // Add the $obj1 (Billing) to $obj2 (BillingCategory)
+                $obj2->addBilling($obj1);
+
+            } // if joined row was not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
      * Selects a collection of Billing objects pre-filled with their AuthyGroup objects.
      * @param      Criteria  $criteria
      * @param      PropelPDO $con
@@ -1297,6 +1426,8 @@ abstract class BaseBillingPeer
 
         $criteria->addJoin(BillingPeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
 
+        $criteria->addJoin(BillingPeer::ID_BILLING_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
         $criteria->addJoin(BillingPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
         $criteria->addJoin(BillingPeer::ID_CREATION, AuthyPeer::ID_AUTHY, $join_behavior);
@@ -1343,18 +1474,23 @@ abstract class BaseBillingPeer
         ProjectPeer::addSelectColumns($criteria);
         $startcol4 = $startcol3 + ProjectPeer::NUM_HYDRATE_COLUMNS;
 
-        AuthyGroupPeer::addSelectColumns($criteria);
-        $startcol5 = $startcol4 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+        BillingCategoryPeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + BillingCategoryPeer::NUM_HYDRATE_COLUMNS;
 
-        AuthyPeer::addSelectColumns($criteria);
-        $startcol6 = $startcol5 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+        AuthyGroupPeer::addSelectColumns($criteria);
+        $startcol6 = $startcol5 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
 
         AuthyPeer::addSelectColumns($criteria);
         $startcol7 = $startcol6 + AuthyPeer::NUM_HYDRATE_COLUMNS;
 
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol8 = $startcol7 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
         $criteria->addJoin(BillingPeer::ID_CLIENT, ClientPeer::ID_CLIENT, $join_behavior);
 
         $criteria->addJoin(BillingPeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
+
+        $criteria->addJoin(BillingPeer::ID_BILLING_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
 
         $criteria->addJoin(BillingPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
@@ -1415,40 +1551,40 @@ abstract class BaseBillingPeer
                 $obj3->addBilling($obj1);
             } // if joined row not null
 
-            // Add objects for joined AuthyGroup rows
+            // Add objects for joined BillingCategory rows
 
-            $key4 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+            $key4 = BillingCategoryPeer::getPrimaryKeyHashFromRow($row, $startcol4);
             if ($key4 !== null) {
-                $obj4 = AuthyGroupPeer::getInstanceFromPool($key4);
+                $obj4 = BillingCategoryPeer::getInstanceFromPool($key4);
                 if (!$obj4) {
 
-                    $cls = AuthyGroupPeer::getOMClass();
+                    $cls = BillingCategoryPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
-                    AuthyGroupPeer::addInstanceToPool($obj4, $key4);
+                    BillingCategoryPeer::addInstanceToPool($obj4, $key4);
                 } // if obj4 loaded
 
-                // Add the $obj1 (Billing) to the collection in $obj4 (AuthyGroup)
+                // Add the $obj1 (Billing) to the collection in $obj4 (BillingCategory)
                 $obj4->addBilling($obj1);
             } // if joined row not null
 
-            // Add objects for joined Authy rows
+            // Add objects for joined AuthyGroup rows
 
-            $key5 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+            $key5 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol5);
             if ($key5 !== null) {
-                $obj5 = AuthyPeer::getInstanceFromPool($key5);
+                $obj5 = AuthyGroupPeer::getInstanceFromPool($key5);
                 if (!$obj5) {
 
-                    $cls = AuthyPeer::getOMClass();
+                    $cls = AuthyGroupPeer::getOMClass();
 
                     $obj5 = new $cls();
                     $obj5->hydrate($row, $startcol5);
-                    AuthyPeer::addInstanceToPool($obj5, $key5);
+                    AuthyGroupPeer::addInstanceToPool($obj5, $key5);
                 } // if obj5 loaded
 
-                // Add the $obj1 (Billing) to the collection in $obj5 (Authy)
-                $obj5->addBillingRelatedByIdCreation($obj1);
+                // Add the $obj1 (Billing) to the collection in $obj5 (AuthyGroup)
+                $obj5->addBilling($obj1);
             } // if joined row not null
 
             // Add objects for joined Authy rows
@@ -1466,7 +1602,25 @@ abstract class BaseBillingPeer
                 } // if obj6 loaded
 
                 // Add the $obj1 (Billing) to the collection in $obj6 (Authy)
-                $obj6->addBillingRelatedByIdModification($obj1);
+                $obj6->addBillingRelatedByIdCreation($obj1);
+            } // if joined row not null
+
+            // Add objects for joined Authy rows
+
+            $key7 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+            if ($key7 !== null) {
+                $obj7 = AuthyPeer::getInstanceFromPool($key7);
+                if (!$obj7) {
+
+                    $cls = AuthyPeer::getOMClass();
+
+                    $obj7 = new $cls();
+                    $obj7->hydrate($row, $startcol7);
+                    AuthyPeer::addInstanceToPool($obj7, $key7);
+                } // if obj7 loaded
+
+                // Add the $obj1 (Billing) to the collection in $obj7 (Authy)
+                $obj7->addBillingRelatedByIdModification($obj1);
             } // if joined row not null
 
             $results[] = $obj1;
@@ -1514,6 +1668,8 @@ abstract class BaseBillingPeer
         }
 
         $criteria->addJoin(BillingPeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
+
+        $criteria->addJoin(BillingPeer::ID_BILLING_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
 
         $criteria->addJoin(BillingPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
@@ -1571,6 +1727,67 @@ abstract class BaseBillingPeer
         }
 
         $criteria->addJoin(BillingPeer::ID_CLIENT, ClientPeer::ID_CLIENT, $join_behavior);
+
+        $criteria->addJoin(BillingPeer::ID_BILLING_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $criteria->addJoin(BillingPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
+
+        $criteria->addJoin(BillingPeer::ID_CREATION, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(BillingPeer::ID_MODIFICATION, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related BillingCategory table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinAllExceptBillingCategory(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(BillingPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            BillingPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY should not affect count
+
+        // Set the correct dbName
+        $criteria->setDbName(BillingPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(BillingPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(BillingPeer::ID_CLIENT, ClientPeer::ID_CLIENT, $join_behavior);
+
+        $criteria->addJoin(BillingPeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
 
         $criteria->addJoin(BillingPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
@@ -1631,6 +1848,8 @@ abstract class BaseBillingPeer
 
         $criteria->addJoin(BillingPeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
 
+        $criteria->addJoin(BillingPeer::ID_BILLING_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
         $criteria->addJoin(BillingPeer::ID_CREATION, AuthyPeer::ID_AUTHY, $join_behavior);
 
         $criteria->addJoin(BillingPeer::ID_MODIFICATION, AuthyPeer::ID_AUTHY, $join_behavior);
@@ -1688,6 +1907,8 @@ abstract class BaseBillingPeer
 
         $criteria->addJoin(BillingPeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
 
+        $criteria->addJoin(BillingPeer::ID_BILLING_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
         $criteria->addJoin(BillingPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -1743,6 +1964,8 @@ abstract class BaseBillingPeer
 
         $criteria->addJoin(BillingPeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
 
+        $criteria->addJoin(BillingPeer::ID_BILLING_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
         $criteria->addJoin(BillingPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -1785,16 +2008,21 @@ abstract class BaseBillingPeer
         ProjectPeer::addSelectColumns($criteria);
         $startcol3 = $startcol2 + ProjectPeer::NUM_HYDRATE_COLUMNS;
 
-        AuthyGroupPeer::addSelectColumns($criteria);
-        $startcol4 = $startcol3 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+        BillingCategoryPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + BillingCategoryPeer::NUM_HYDRATE_COLUMNS;
 
-        AuthyPeer::addSelectColumns($criteria);
-        $startcol5 = $startcol4 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+        AuthyGroupPeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
 
         AuthyPeer::addSelectColumns($criteria);
         $startcol6 = $startcol5 + AuthyPeer::NUM_HYDRATE_COLUMNS;
 
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol7 = $startcol6 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
         $criteria->addJoin(BillingPeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
+
+        $criteria->addJoin(BillingPeer::ID_BILLING_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
 
         $criteria->addJoin(BillingPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
@@ -1839,41 +2067,41 @@ abstract class BaseBillingPeer
 
             } // if joined row is not null
 
-                // Add objects for joined AuthyGroup rows
+                // Add objects for joined BillingCategory rows
 
-                $key3 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+                $key3 = BillingCategoryPeer::getPrimaryKeyHashFromRow($row, $startcol3);
                 if ($key3 !== null) {
-                    $obj3 = AuthyGroupPeer::getInstanceFromPool($key3);
+                    $obj3 = BillingCategoryPeer::getInstanceFromPool($key3);
                     if (!$obj3) {
 
-                        $cls = AuthyGroupPeer::getOMClass();
+                        $cls = BillingCategoryPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
-                    AuthyGroupPeer::addInstanceToPool($obj3, $key3);
+                    BillingCategoryPeer::addInstanceToPool($obj3, $key3);
                 } // if $obj3 already loaded
 
-                // Add the $obj1 (Billing) to the collection in $obj3 (AuthyGroup)
+                // Add the $obj1 (Billing) to the collection in $obj3 (BillingCategory)
                 $obj3->addBilling($obj1);
 
             } // if joined row is not null
 
-                // Add objects for joined Authy rows
+                // Add objects for joined AuthyGroup rows
 
-                $key4 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+                $key4 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol4);
                 if ($key4 !== null) {
-                    $obj4 = AuthyPeer::getInstanceFromPool($key4);
+                    $obj4 = AuthyGroupPeer::getInstanceFromPool($key4);
                     if (!$obj4) {
 
-                        $cls = AuthyPeer::getOMClass();
+                        $cls = AuthyGroupPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
-                    AuthyPeer::addInstanceToPool($obj4, $key4);
+                    AuthyGroupPeer::addInstanceToPool($obj4, $key4);
                 } // if $obj4 already loaded
 
-                // Add the $obj1 (Billing) to the collection in $obj4 (Authy)
-                $obj4->addBillingRelatedByIdCreation($obj1);
+                // Add the $obj1 (Billing) to the collection in $obj4 (AuthyGroup)
+                $obj4->addBilling($obj1);
 
             } // if joined row is not null
 
@@ -1892,7 +2120,26 @@ abstract class BaseBillingPeer
                 } // if $obj5 already loaded
 
                 // Add the $obj1 (Billing) to the collection in $obj5 (Authy)
-                $obj5->addBillingRelatedByIdModification($obj1);
+                $obj5->addBillingRelatedByIdCreation($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Authy rows
+
+                $key6 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+                if ($key6 !== null) {
+                    $obj6 = AuthyPeer::getInstanceFromPool($key6);
+                    if (!$obj6) {
+
+                        $cls = AuthyPeer::getOMClass();
+
+                    $obj6 = new $cls();
+                    $obj6->hydrate($row, $startcol6);
+                    AuthyPeer::addInstanceToPool($obj6, $key6);
+                } // if $obj6 already loaded
+
+                // Add the $obj1 (Billing) to the collection in $obj6 (Authy)
+                $obj6->addBillingRelatedByIdModification($obj1);
 
             } // if joined row is not null
 
@@ -1931,16 +2178,21 @@ abstract class BaseBillingPeer
         ClientPeer::addSelectColumns($criteria);
         $startcol3 = $startcol2 + ClientPeer::NUM_HYDRATE_COLUMNS;
 
-        AuthyGroupPeer::addSelectColumns($criteria);
-        $startcol4 = $startcol3 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+        BillingCategoryPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + BillingCategoryPeer::NUM_HYDRATE_COLUMNS;
 
-        AuthyPeer::addSelectColumns($criteria);
-        $startcol5 = $startcol4 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+        AuthyGroupPeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
 
         AuthyPeer::addSelectColumns($criteria);
         $startcol6 = $startcol5 + AuthyPeer::NUM_HYDRATE_COLUMNS;
 
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol7 = $startcol6 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
         $criteria->addJoin(BillingPeer::ID_CLIENT, ClientPeer::ID_CLIENT, $join_behavior);
+
+        $criteria->addJoin(BillingPeer::ID_BILLING_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
 
         $criteria->addJoin(BillingPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
@@ -1985,41 +2237,41 @@ abstract class BaseBillingPeer
 
             } // if joined row is not null
 
-                // Add objects for joined AuthyGroup rows
+                // Add objects for joined BillingCategory rows
 
-                $key3 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+                $key3 = BillingCategoryPeer::getPrimaryKeyHashFromRow($row, $startcol3);
                 if ($key3 !== null) {
-                    $obj3 = AuthyGroupPeer::getInstanceFromPool($key3);
+                    $obj3 = BillingCategoryPeer::getInstanceFromPool($key3);
                     if (!$obj3) {
 
-                        $cls = AuthyGroupPeer::getOMClass();
+                        $cls = BillingCategoryPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
-                    AuthyGroupPeer::addInstanceToPool($obj3, $key3);
+                    BillingCategoryPeer::addInstanceToPool($obj3, $key3);
                 } // if $obj3 already loaded
 
-                // Add the $obj1 (Billing) to the collection in $obj3 (AuthyGroup)
+                // Add the $obj1 (Billing) to the collection in $obj3 (BillingCategory)
                 $obj3->addBilling($obj1);
 
             } // if joined row is not null
 
-                // Add objects for joined Authy rows
+                // Add objects for joined AuthyGroup rows
 
-                $key4 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+                $key4 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol4);
                 if ($key4 !== null) {
-                    $obj4 = AuthyPeer::getInstanceFromPool($key4);
+                    $obj4 = AuthyGroupPeer::getInstanceFromPool($key4);
                     if (!$obj4) {
 
-                        $cls = AuthyPeer::getOMClass();
+                        $cls = AuthyGroupPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
-                    AuthyPeer::addInstanceToPool($obj4, $key4);
+                    AuthyGroupPeer::addInstanceToPool($obj4, $key4);
                 } // if $obj4 already loaded
 
-                // Add the $obj1 (Billing) to the collection in $obj4 (Authy)
-                $obj4->addBillingRelatedByIdCreation($obj1);
+                // Add the $obj1 (Billing) to the collection in $obj4 (AuthyGroup)
+                $obj4->addBilling($obj1);
 
             } // if joined row is not null
 
@@ -2038,7 +2290,196 @@ abstract class BaseBillingPeer
                 } // if $obj5 already loaded
 
                 // Add the $obj1 (Billing) to the collection in $obj5 (Authy)
-                $obj5->addBillingRelatedByIdModification($obj1);
+                $obj5->addBillingRelatedByIdCreation($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Authy rows
+
+                $key6 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+                if ($key6 !== null) {
+                    $obj6 = AuthyPeer::getInstanceFromPool($key6);
+                    if (!$obj6) {
+
+                        $cls = AuthyPeer::getOMClass();
+
+                    $obj6 = new $cls();
+                    $obj6->hydrate($row, $startcol6);
+                    AuthyPeer::addInstanceToPool($obj6, $key6);
+                } // if $obj6 already loaded
+
+                // Add the $obj1 (Billing) to the collection in $obj6 (Authy)
+                $obj6->addBillingRelatedByIdModification($obj1);
+
+            } // if joined row is not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Selects a collection of Billing objects pre-filled with all related objects except BillingCategory.
+     *
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Billing objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinAllExceptBillingCategory(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        // $criteria->getDbName() will return the same object if not set to another value
+        // so == check is okay and faster
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(BillingPeer::DATABASE_NAME);
+        }
+
+        BillingPeer::addSelectColumns($criteria);
+        $startcol2 = BillingPeer::NUM_HYDRATE_COLUMNS;
+
+        ClientPeer::addSelectColumns($criteria);
+        $startcol3 = $startcol2 + ClientPeer::NUM_HYDRATE_COLUMNS;
+
+        ProjectPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + ProjectPeer::NUM_HYDRATE_COLUMNS;
+
+        AuthyGroupPeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol6 = $startcol5 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol7 = $startcol6 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
+        $criteria->addJoin(BillingPeer::ID_CLIENT, ClientPeer::ID_CLIENT, $join_behavior);
+
+        $criteria->addJoin(BillingPeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
+
+        $criteria->addJoin(BillingPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
+
+        $criteria->addJoin(BillingPeer::ID_CREATION, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(BillingPeer::ID_MODIFICATION, AuthyPeer::ID_AUTHY, $join_behavior);
+
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = BillingPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = BillingPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+                $cls = BillingPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                BillingPeer::addInstanceToPool($obj1, $key1);
+            } // if obj1 already loaded
+
+                // Add objects for joined Client rows
+
+                $key2 = ClientPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+                if ($key2 !== null) {
+                    $obj2 = ClientPeer::getInstanceFromPool($key2);
+                    if (!$obj2) {
+
+                        $cls = ClientPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol2);
+                    ClientPeer::addInstanceToPool($obj2, $key2);
+                } // if $obj2 already loaded
+
+                // Add the $obj1 (Billing) to the collection in $obj2 (Client)
+                $obj2->addBilling($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Project rows
+
+                $key3 = ProjectPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+                if ($key3 !== null) {
+                    $obj3 = ProjectPeer::getInstanceFromPool($key3);
+                    if (!$obj3) {
+
+                        $cls = ProjectPeer::getOMClass();
+
+                    $obj3 = new $cls();
+                    $obj3->hydrate($row, $startcol3);
+                    ProjectPeer::addInstanceToPool($obj3, $key3);
+                } // if $obj3 already loaded
+
+                // Add the $obj1 (Billing) to the collection in $obj3 (Project)
+                $obj3->addBilling($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined AuthyGroup rows
+
+                $key4 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+                if ($key4 !== null) {
+                    $obj4 = AuthyGroupPeer::getInstanceFromPool($key4);
+                    if (!$obj4) {
+
+                        $cls = AuthyGroupPeer::getOMClass();
+
+                    $obj4 = new $cls();
+                    $obj4->hydrate($row, $startcol4);
+                    AuthyGroupPeer::addInstanceToPool($obj4, $key4);
+                } // if $obj4 already loaded
+
+                // Add the $obj1 (Billing) to the collection in $obj4 (AuthyGroup)
+                $obj4->addBilling($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Authy rows
+
+                $key5 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                if ($key5 !== null) {
+                    $obj5 = AuthyPeer::getInstanceFromPool($key5);
+                    if (!$obj5) {
+
+                        $cls = AuthyPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    AuthyPeer::addInstanceToPool($obj5, $key5);
+                } // if $obj5 already loaded
+
+                // Add the $obj1 (Billing) to the collection in $obj5 (Authy)
+                $obj5->addBillingRelatedByIdCreation($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Authy rows
+
+                $key6 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+                if ($key6 !== null) {
+                    $obj6 = AuthyPeer::getInstanceFromPool($key6);
+                    if (!$obj6) {
+
+                        $cls = AuthyPeer::getOMClass();
+
+                    $obj6 = new $cls();
+                    $obj6->hydrate($row, $startcol6);
+                    AuthyPeer::addInstanceToPool($obj6, $key6);
+                } // if $obj6 already loaded
+
+                // Add the $obj1 (Billing) to the collection in $obj6 (Authy)
+                $obj6->addBillingRelatedByIdModification($obj1);
 
             } // if joined row is not null
 
@@ -2080,15 +2521,20 @@ abstract class BaseBillingPeer
         ProjectPeer::addSelectColumns($criteria);
         $startcol4 = $startcol3 + ProjectPeer::NUM_HYDRATE_COLUMNS;
 
-        AuthyPeer::addSelectColumns($criteria);
-        $startcol5 = $startcol4 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+        BillingCategoryPeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + BillingCategoryPeer::NUM_HYDRATE_COLUMNS;
 
         AuthyPeer::addSelectColumns($criteria);
         $startcol6 = $startcol5 + AuthyPeer::NUM_HYDRATE_COLUMNS;
 
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol7 = $startcol6 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
         $criteria->addJoin(BillingPeer::ID_CLIENT, ClientPeer::ID_CLIENT, $join_behavior);
 
         $criteria->addJoin(BillingPeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
+
+        $criteria->addJoin(BillingPeer::ID_BILLING_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
 
         $criteria->addJoin(BillingPeer::ID_CREATION, AuthyPeer::ID_AUTHY, $join_behavior);
 
@@ -2150,22 +2596,22 @@ abstract class BaseBillingPeer
 
             } // if joined row is not null
 
-                // Add objects for joined Authy rows
+                // Add objects for joined BillingCategory rows
 
-                $key4 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+                $key4 = BillingCategoryPeer::getPrimaryKeyHashFromRow($row, $startcol4);
                 if ($key4 !== null) {
-                    $obj4 = AuthyPeer::getInstanceFromPool($key4);
+                    $obj4 = BillingCategoryPeer::getInstanceFromPool($key4);
                     if (!$obj4) {
 
-                        $cls = AuthyPeer::getOMClass();
+                        $cls = BillingCategoryPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
-                    AuthyPeer::addInstanceToPool($obj4, $key4);
+                    BillingCategoryPeer::addInstanceToPool($obj4, $key4);
                 } // if $obj4 already loaded
 
-                // Add the $obj1 (Billing) to the collection in $obj4 (Authy)
-                $obj4->addBillingRelatedByIdCreation($obj1);
+                // Add the $obj1 (Billing) to the collection in $obj4 (BillingCategory)
+                $obj4->addBilling($obj1);
 
             } // if joined row is not null
 
@@ -2184,7 +2630,26 @@ abstract class BaseBillingPeer
                 } // if $obj5 already loaded
 
                 // Add the $obj1 (Billing) to the collection in $obj5 (Authy)
-                $obj5->addBillingRelatedByIdModification($obj1);
+                $obj5->addBillingRelatedByIdCreation($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Authy rows
+
+                $key6 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+                if ($key6 !== null) {
+                    $obj6 = AuthyPeer::getInstanceFromPool($key6);
+                    if (!$obj6) {
+
+                        $cls = AuthyPeer::getOMClass();
+
+                    $obj6 = new $cls();
+                    $obj6->hydrate($row, $startcol6);
+                    AuthyPeer::addInstanceToPool($obj6, $key6);
+                } // if $obj6 already loaded
+
+                // Add the $obj1 (Billing) to the collection in $obj6 (Authy)
+                $obj6->addBillingRelatedByIdModification($obj1);
 
             } // if joined row is not null
 
@@ -2226,12 +2691,17 @@ abstract class BaseBillingPeer
         ProjectPeer::addSelectColumns($criteria);
         $startcol4 = $startcol3 + ProjectPeer::NUM_HYDRATE_COLUMNS;
 
+        BillingCategoryPeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + BillingCategoryPeer::NUM_HYDRATE_COLUMNS;
+
         AuthyGroupPeer::addSelectColumns($criteria);
-        $startcol5 = $startcol4 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+        $startcol6 = $startcol5 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
 
         $criteria->addJoin(BillingPeer::ID_CLIENT, ClientPeer::ID_CLIENT, $join_behavior);
 
         $criteria->addJoin(BillingPeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
+
+        $criteria->addJoin(BillingPeer::ID_BILLING_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
 
         $criteria->addJoin(BillingPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
@@ -2291,22 +2761,41 @@ abstract class BaseBillingPeer
 
             } // if joined row is not null
 
-                // Add objects for joined AuthyGroup rows
+                // Add objects for joined BillingCategory rows
 
-                $key4 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+                $key4 = BillingCategoryPeer::getPrimaryKeyHashFromRow($row, $startcol4);
                 if ($key4 !== null) {
-                    $obj4 = AuthyGroupPeer::getInstanceFromPool($key4);
+                    $obj4 = BillingCategoryPeer::getInstanceFromPool($key4);
                     if (!$obj4) {
 
-                        $cls = AuthyGroupPeer::getOMClass();
+                        $cls = BillingCategoryPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
-                    AuthyGroupPeer::addInstanceToPool($obj4, $key4);
+                    BillingCategoryPeer::addInstanceToPool($obj4, $key4);
                 } // if $obj4 already loaded
 
-                // Add the $obj1 (Billing) to the collection in $obj4 (AuthyGroup)
+                // Add the $obj1 (Billing) to the collection in $obj4 (BillingCategory)
                 $obj4->addBilling($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined AuthyGroup rows
+
+                $key5 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                if ($key5 !== null) {
+                    $obj5 = AuthyGroupPeer::getInstanceFromPool($key5);
+                    if (!$obj5) {
+
+                        $cls = AuthyGroupPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    AuthyGroupPeer::addInstanceToPool($obj5, $key5);
+                } // if $obj5 already loaded
+
+                // Add the $obj1 (Billing) to the collection in $obj5 (AuthyGroup)
+                $obj5->addBilling($obj1);
 
             } // if joined row is not null
 
@@ -2348,12 +2837,17 @@ abstract class BaseBillingPeer
         ProjectPeer::addSelectColumns($criteria);
         $startcol4 = $startcol3 + ProjectPeer::NUM_HYDRATE_COLUMNS;
 
+        BillingCategoryPeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + BillingCategoryPeer::NUM_HYDRATE_COLUMNS;
+
         AuthyGroupPeer::addSelectColumns($criteria);
-        $startcol5 = $startcol4 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+        $startcol6 = $startcol5 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
 
         $criteria->addJoin(BillingPeer::ID_CLIENT, ClientPeer::ID_CLIENT, $join_behavior);
 
         $criteria->addJoin(BillingPeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
+
+        $criteria->addJoin(BillingPeer::ID_BILLING_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
 
         $criteria->addJoin(BillingPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
@@ -2413,22 +2907,41 @@ abstract class BaseBillingPeer
 
             } // if joined row is not null
 
-                // Add objects for joined AuthyGroup rows
+                // Add objects for joined BillingCategory rows
 
-                $key4 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+                $key4 = BillingCategoryPeer::getPrimaryKeyHashFromRow($row, $startcol4);
                 if ($key4 !== null) {
-                    $obj4 = AuthyGroupPeer::getInstanceFromPool($key4);
+                    $obj4 = BillingCategoryPeer::getInstanceFromPool($key4);
                     if (!$obj4) {
 
-                        $cls = AuthyGroupPeer::getOMClass();
+                        $cls = BillingCategoryPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
-                    AuthyGroupPeer::addInstanceToPool($obj4, $key4);
+                    BillingCategoryPeer::addInstanceToPool($obj4, $key4);
                 } // if $obj4 already loaded
 
-                // Add the $obj1 (Billing) to the collection in $obj4 (AuthyGroup)
+                // Add the $obj1 (Billing) to the collection in $obj4 (BillingCategory)
                 $obj4->addBilling($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined AuthyGroup rows
+
+                $key5 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                if ($key5 !== null) {
+                    $obj5 = AuthyGroupPeer::getInstanceFromPool($key5);
+                    if (!$obj5) {
+
+                        $cls = AuthyGroupPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    AuthyGroupPeer::addInstanceToPool($obj5, $key5);
+                } // if $obj5 already loaded
+
+                // Add the $obj1 (Billing) to the collection in $obj5 (AuthyGroup)
+                $obj5->addBilling($obj1);
 
             } // if joined row is not null
 
@@ -2695,6 +3208,9 @@ abstract class BaseBillingPeer
 
         if ($obj->isNew() || $obj->isColumnModified(BillingPeer::ID_PROJECT))
             $columns[BillingPeer::ID_PROJECT] = $obj->getIdProject();
+
+        if ($obj->isNew() || $obj->isColumnModified(BillingPeer::ID_BILLING_CATEGORY))
+            $columns[BillingPeer::ID_BILLING_CATEGORY] = $obj->getIdBillingCategory();
 
         if ($obj->isNew() || $obj->isColumnModified(BillingPeer::DATE))
             $columns[BillingPeer::DATE] = $obj->getDate();

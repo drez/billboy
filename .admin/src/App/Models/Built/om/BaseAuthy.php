@@ -29,6 +29,8 @@ use App\AuthyLogQuery;
 use App\AuthyPeer;
 use App\AuthyQuery;
 use App\Billing;
+use App\BillingCategory;
+use App\BillingCategoryQuery;
 use App\BillingLine;
 use App\BillingLineQuery;
 use App\BillingQuery;
@@ -46,6 +48,8 @@ use App\PaymentLine;
 use App\PaymentLineQuery;
 use App\Project;
 use App\ProjectQuery;
+use App\Supplier;
+use App\SupplierQuery;
 use App\Template;
 use App\TemplateFile;
 use App\TemplateFileQuery;
@@ -329,6 +333,30 @@ abstract class BaseAuthy extends BaseObject implements Persistent
     protected $collTimeLinesRelatedByIdModificationPartial;
 
     /**
+     * @var        PropelObjectCollection|BillingCategory[] Collection to store aggregation of BillingCategory objects.
+     */
+    protected $collBillingCategoriesRelatedByIdCreation;
+    protected $collBillingCategoriesRelatedByIdCreationPartial;
+
+    /**
+     * @var        PropelObjectCollection|BillingCategory[] Collection to store aggregation of BillingCategory objects.
+     */
+    protected $collBillingCategoriesRelatedByIdModification;
+    protected $collBillingCategoriesRelatedByIdModificationPartial;
+
+    /**
+     * @var        PropelObjectCollection|Supplier[] Collection to store aggregation of Supplier objects.
+     */
+    protected $collSuppliersRelatedByIdCreation;
+    protected $collSuppliersRelatedByIdCreationPartial;
+
+    /**
+     * @var        PropelObjectCollection|Supplier[] Collection to store aggregation of Supplier objects.
+     */
+    protected $collSuppliersRelatedByIdModification;
+    protected $collSuppliersRelatedByIdModificationPartial;
+
+    /**
      * @var        PropelObjectCollection|Authy[] Collection to store aggregation of Authy objects.
      */
     protected $collAuthiesRelatedByIdAuthy0;
@@ -551,6 +579,30 @@ abstract class BaseAuthy extends BaseObject implements Persistent
      * @var		PropelObjectCollection
      */
     protected $timeLinesRelatedByIdModificationScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $billingCategoriesRelatedByIdCreationScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $billingCategoriesRelatedByIdModificationScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $suppliersRelatedByIdCreationScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $suppliersRelatedByIdModificationScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1682,6 +1734,14 @@ abstract class BaseAuthy extends BaseObject implements Persistent
 
             $this->collTimeLinesRelatedByIdModification = null;
 
+            $this->collBillingCategoriesRelatedByIdCreation = null;
+
+            $this->collBillingCategoriesRelatedByIdModification = null;
+
+            $this->collSuppliersRelatedByIdCreation = null;
+
+            $this->collSuppliersRelatedByIdModification = null;
+
             $this->collAuthiesRelatedByIdAuthy0 = null;
 
             $this->collAuthiesRelatedByIdAuthy1 = null;
@@ -2228,6 +2288,78 @@ abstract class BaseAuthy extends BaseObject implements Persistent
 
             if ($this->collTimeLinesRelatedByIdModification !== null) {
                 foreach ($this->collTimeLinesRelatedByIdModification as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->billingCategoriesRelatedByIdCreationScheduledForDeletion !== null) {
+                if (!$this->billingCategoriesRelatedByIdCreationScheduledForDeletion->isEmpty()) {
+                    foreach ($this->billingCategoriesRelatedByIdCreationScheduledForDeletion as $billingCategoryRelatedByIdCreation) {
+                        // need to save related object because we set the relation to null
+                        $billingCategoryRelatedByIdCreation->save($con);
+                    }
+                    $this->billingCategoriesRelatedByIdCreationScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collBillingCategoriesRelatedByIdCreation !== null) {
+                foreach ($this->collBillingCategoriesRelatedByIdCreation as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->billingCategoriesRelatedByIdModificationScheduledForDeletion !== null) {
+                if (!$this->billingCategoriesRelatedByIdModificationScheduledForDeletion->isEmpty()) {
+                    foreach ($this->billingCategoriesRelatedByIdModificationScheduledForDeletion as $billingCategoryRelatedByIdModification) {
+                        // need to save related object because we set the relation to null
+                        $billingCategoryRelatedByIdModification->save($con);
+                    }
+                    $this->billingCategoriesRelatedByIdModificationScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collBillingCategoriesRelatedByIdModification !== null) {
+                foreach ($this->collBillingCategoriesRelatedByIdModification as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->suppliersRelatedByIdCreationScheduledForDeletion !== null) {
+                if (!$this->suppliersRelatedByIdCreationScheduledForDeletion->isEmpty()) {
+                    foreach ($this->suppliersRelatedByIdCreationScheduledForDeletion as $supplierRelatedByIdCreation) {
+                        // need to save related object because we set the relation to null
+                        $supplierRelatedByIdCreation->save($con);
+                    }
+                    $this->suppliersRelatedByIdCreationScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collSuppliersRelatedByIdCreation !== null) {
+                foreach ($this->collSuppliersRelatedByIdCreation as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->suppliersRelatedByIdModificationScheduledForDeletion !== null) {
+                if (!$this->suppliersRelatedByIdModificationScheduledForDeletion->isEmpty()) {
+                    foreach ($this->suppliersRelatedByIdModificationScheduledForDeletion as $supplierRelatedByIdModification) {
+                        // need to save related object because we set the relation to null
+                        $supplierRelatedByIdModification->save($con);
+                    }
+                    $this->suppliersRelatedByIdModificationScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collSuppliersRelatedByIdModification !== null) {
+                foreach ($this->collSuppliersRelatedByIdModification as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -2961,6 +3093,38 @@ abstract class BaseAuthy extends BaseObject implements Persistent
                     }
                 }
 
+                if ($this->collBillingCategoriesRelatedByIdCreation !== null) {
+                    foreach ($this->collBillingCategoriesRelatedByIdCreation as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
+                if ($this->collBillingCategoriesRelatedByIdModification !== null) {
+                    foreach ($this->collBillingCategoriesRelatedByIdModification as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
+                if ($this->collSuppliersRelatedByIdCreation !== null) {
+                    foreach ($this->collSuppliersRelatedByIdCreation as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
+                if ($this->collSuppliersRelatedByIdModification !== null) {
+                    foreach ($this->collSuppliersRelatedByIdModification as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
                 if ($this->collAuthiesRelatedByIdAuthy0 !== null) {
                     foreach ($this->collAuthiesRelatedByIdAuthy0 as $referrerFK) {
                         if (!$referrerFK->validate($columns)) {
@@ -3234,6 +3398,18 @@ abstract class BaseAuthy extends BaseObject implements Persistent
             }
             if (null !== $this->collTimeLinesRelatedByIdModification) {
                 $result['TimeLinesRelatedByIdModification'] = $this->collTimeLinesRelatedByIdModification->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collBillingCategoriesRelatedByIdCreation) {
+                $result['BillingCategoriesRelatedByIdCreation'] = $this->collBillingCategoriesRelatedByIdCreation->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collBillingCategoriesRelatedByIdModification) {
+                $result['BillingCategoriesRelatedByIdModification'] = $this->collBillingCategoriesRelatedByIdModification->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collSuppliersRelatedByIdCreation) {
+                $result['SuppliersRelatedByIdCreation'] = $this->collSuppliersRelatedByIdCreation->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collSuppliersRelatedByIdModification) {
+                $result['SuppliersRelatedByIdModification'] = $this->collSuppliersRelatedByIdModification->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collAuthiesRelatedByIdAuthy0) {
                 $result['AuthiesRelatedByIdAuthy0'] = $this->collAuthiesRelatedByIdAuthy0->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -3659,6 +3835,30 @@ abstract class BaseAuthy extends BaseObject implements Persistent
                 }
             }
 
+            foreach ($this->getBillingCategoriesRelatedByIdCreation() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addBillingCategoryRelatedByIdCreation($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getBillingCategoriesRelatedByIdModification() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addBillingCategoryRelatedByIdModification($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getSuppliersRelatedByIdCreation() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addSupplierRelatedByIdCreation($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getSuppliersRelatedByIdModification() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addSupplierRelatedByIdModification($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getAuthiesRelatedByIdAuthy0() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addAuthyRelatedByIdAuthy0($relObj->copy($deepCopy));
@@ -4081,6 +4281,18 @@ abstract class BaseAuthy extends BaseObject implements Persistent
         if ('TimeLineRelatedByIdModification' == $relationName) {
             $this->initTimeLinesRelatedByIdModification();
         }
+        if ('BillingCategoryRelatedByIdCreation' == $relationName) {
+            $this->initBillingCategoriesRelatedByIdCreation();
+        }
+        if ('BillingCategoryRelatedByIdModification' == $relationName) {
+            $this->initBillingCategoriesRelatedByIdModification();
+        }
+        if ('SupplierRelatedByIdCreation' == $relationName) {
+            $this->initSuppliersRelatedByIdCreation();
+        }
+        if ('SupplierRelatedByIdModification' == $relationName) {
+            $this->initSuppliersRelatedByIdModification();
+        }
         if ('AuthyRelatedByIdAuthy0' == $relationName) {
             $this->initAuthiesRelatedByIdAuthy0();
         }
@@ -4389,6 +4601,23 @@ abstract class BaseAuthy extends BaseObject implements Persistent
     {
         $query = BillingLineQuery::create(null, $criteria);
         $query->joinWith('Project', $join_behavior);
+
+        return $this->getBillingLinesRelatedByIdAssign($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|BillingLine[] List of BillingLine objects
+     */
+    public function getBillingLinesRelatedByIdAssignJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingLineQuery::create(null, $criteria);
+        $query->joinWith('BillingCategory', $join_behavior);
 
         return $this->getBillingLinesRelatedByIdAssign($query, $con);
     }
@@ -5666,6 +5895,23 @@ abstract class BaseAuthy extends BaseObject implements Persistent
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return PropelObjectCollection|Billing[] List of Billing objects
      */
+    public function getBillingsRelatedByIdCreationJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingQuery::create(null, $criteria);
+        $query->joinWith('BillingCategory', $join_behavior);
+
+        return $this->getBillingsRelatedByIdCreation($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Billing[] List of Billing objects
+     */
     public function getBillingsRelatedByIdCreationJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
         $query = BillingQuery::create(null, $criteria);
@@ -5929,6 +6175,23 @@ abstract class BaseAuthy extends BaseObject implements Persistent
     {
         $query = BillingQuery::create(null, $criteria);
         $query->joinWith('Project', $join_behavior);
+
+        return $this->getBillingsRelatedByIdModification($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Billing[] List of Billing objects
+     */
+    public function getBillingsRelatedByIdModificationJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingQuery::create(null, $criteria);
+        $query->joinWith('BillingCategory', $join_behavior);
 
         return $this->getBillingsRelatedByIdModification($query, $con);
     }
@@ -6218,6 +6481,23 @@ abstract class BaseAuthy extends BaseObject implements Persistent
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return PropelObjectCollection|BillingLine[] List of BillingLine objects
      */
+    public function getBillingLinesRelatedByIdCreationJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingLineQuery::create(null, $criteria);
+        $query->joinWith('BillingCategory', $join_behavior);
+
+        return $this->getBillingLinesRelatedByIdCreation($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|BillingLine[] List of BillingLine objects
+     */
     public function getBillingLinesRelatedByIdCreationJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
         $query = BillingLineQuery::create(null, $criteria);
@@ -6481,6 +6761,23 @@ abstract class BaseAuthy extends BaseObject implements Persistent
     {
         $query = BillingLineQuery::create(null, $criteria);
         $query->joinWith('Project', $join_behavior);
+
+        return $this->getBillingLinesRelatedByIdModification($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|BillingLine[] List of BillingLine objects
+     */
+    public function getBillingLinesRelatedByIdModificationJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingLineQuery::create(null, $criteria);
+        $query->joinWith('BillingCategory', $join_behavior);
 
         return $this->getBillingLinesRelatedByIdModification($query, $con);
     }
@@ -7271,6 +7568,40 @@ abstract class BaseAuthy extends BaseObject implements Persistent
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return PropelObjectCollection|CostLine[] List of CostLine objects
      */
+    public function getCostLinesRelatedByIdCreationJoinSupplier($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CostLineQuery::create(null, $criteria);
+        $query->joinWith('Supplier', $join_behavior);
+
+        return $this->getCostLinesRelatedByIdCreation($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|CostLine[] List of CostLine objects
+     */
+    public function getCostLinesRelatedByIdCreationJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CostLineQuery::create(null, $criteria);
+        $query->joinWith('BillingCategory', $join_behavior);
+
+        return $this->getCostLinesRelatedByIdCreation($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|CostLine[] List of CostLine objects
+     */
     public function getCostLinesRelatedByIdCreationJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
         $query = CostLineQuery::create(null, $criteria);
@@ -7517,6 +7848,40 @@ abstract class BaseAuthy extends BaseObject implements Persistent
     {
         $query = CostLineQuery::create(null, $criteria);
         $query->joinWith('Billing', $join_behavior);
+
+        return $this->getCostLinesRelatedByIdModification($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|CostLine[] List of CostLine objects
+     */
+    public function getCostLinesRelatedByIdModificationJoinSupplier($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CostLineQuery::create(null, $criteria);
+        $query->joinWith('Supplier', $join_behavior);
+
+        return $this->getCostLinesRelatedByIdModification($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|CostLine[] List of CostLine objects
+     */
+    public function getCostLinesRelatedByIdModificationJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CostLineQuery::create(null, $criteria);
+        $query->joinWith('BillingCategory', $join_behavior);
 
         return $this->getCostLinesRelatedByIdModification($query, $con);
     }
@@ -8572,6 +8937,1008 @@ abstract class BaseAuthy extends BaseObject implements Persistent
         $query->joinWith('AuthyGroup', $join_behavior);
 
         return $this->getTimeLinesRelatedByIdModification($query, $con);
+    }
+
+    /**
+     * Clears out the collBillingCategoriesRelatedByIdCreation collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Authy The current object (for fluent API support)
+     * @see        addBillingCategoriesRelatedByIdCreation()
+     */
+    public function clearBillingCategoriesRelatedByIdCreation()
+    {
+        $this->collBillingCategoriesRelatedByIdCreation = null; // important to set this to null since that means it is uninitialized
+        $this->collBillingCategoriesRelatedByIdCreationPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collBillingCategoriesRelatedByIdCreation collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialBillingCategoriesRelatedByIdCreation($v = true)
+    {
+        $this->collBillingCategoriesRelatedByIdCreationPartial = $v;
+    }
+
+    /**
+     * Initializes the collBillingCategoriesRelatedByIdCreation collection.
+     *
+     * By default this just sets the collBillingCategoriesRelatedByIdCreation collection to an empty array (like clearcollBillingCategoriesRelatedByIdCreation());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initBillingCategoriesRelatedByIdCreation($overrideExisting = true)
+    {
+        if (null !== $this->collBillingCategoriesRelatedByIdCreation && !$overrideExisting) {
+            return;
+        }
+        $this->collBillingCategoriesRelatedByIdCreation = new PropelObjectCollection();
+        $this->collBillingCategoriesRelatedByIdCreation->setModel('BillingCategory');
+    }
+
+    /**
+     * Gets an array of BillingCategory objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Authy is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|BillingCategory[] List of BillingCategory objects
+     * @throws PropelException
+     */
+    public function getBillingCategoriesRelatedByIdCreation($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collBillingCategoriesRelatedByIdCreationPartial && !$this->isNew();
+        if (null === $this->collBillingCategoriesRelatedByIdCreation || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collBillingCategoriesRelatedByIdCreation) {
+                // return empty collection
+                $this->initBillingCategoriesRelatedByIdCreation();
+            } else {
+                $collBillingCategoriesRelatedByIdCreation = BillingCategoryQuery::create(null, $criteria)
+                    ->filterByAuthyRelatedByIdCreation($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collBillingCategoriesRelatedByIdCreationPartial && count($collBillingCategoriesRelatedByIdCreation)) {
+                      $this->initBillingCategoriesRelatedByIdCreation(false);
+
+                      foreach ($collBillingCategoriesRelatedByIdCreation as $obj) {
+                        if (false == $this->collBillingCategoriesRelatedByIdCreation->contains($obj)) {
+                          $this->collBillingCategoriesRelatedByIdCreation->append($obj);
+                        }
+                      }
+
+                      $this->collBillingCategoriesRelatedByIdCreationPartial = true;
+                    }
+
+                    $collBillingCategoriesRelatedByIdCreation->getInternalIterator()->rewind();
+
+                    return $collBillingCategoriesRelatedByIdCreation;
+                }
+
+                if ($partial && $this->collBillingCategoriesRelatedByIdCreation) {
+                    foreach ($this->collBillingCategoriesRelatedByIdCreation as $obj) {
+                        if ($obj->isNew()) {
+                            $collBillingCategoriesRelatedByIdCreation[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collBillingCategoriesRelatedByIdCreation = $collBillingCategoriesRelatedByIdCreation;
+                $this->collBillingCategoriesRelatedByIdCreationPartial = false;
+            }
+        }
+
+        return $this->collBillingCategoriesRelatedByIdCreation;
+    }
+
+    /**
+     * Sets a collection of BillingCategoryRelatedByIdCreation objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $billingCategoriesRelatedByIdCreation A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return Authy The current object (for fluent API support)
+     */
+    public function setBillingCategoriesRelatedByIdCreation(PropelCollection $billingCategoriesRelatedByIdCreation, PropelPDO $con = null)
+    {
+        $billingCategoriesRelatedByIdCreationToDelete = $this->getBillingCategoriesRelatedByIdCreation(new Criteria(), $con)->diff($billingCategoriesRelatedByIdCreation);
+
+
+        $this->billingCategoriesRelatedByIdCreationScheduledForDeletion = $billingCategoriesRelatedByIdCreationToDelete;
+
+        foreach ($billingCategoriesRelatedByIdCreationToDelete as $billingCategoryRelatedByIdCreationRemoved) {
+            $billingCategoryRelatedByIdCreationRemoved->setAuthyRelatedByIdCreation(null);
+        }
+
+        $this->collBillingCategoriesRelatedByIdCreation = null;
+        foreach ($billingCategoriesRelatedByIdCreation as $billingCategoryRelatedByIdCreation) {
+            $this->addBillingCategoryRelatedByIdCreation($billingCategoryRelatedByIdCreation);
+        }
+
+        $this->collBillingCategoriesRelatedByIdCreation = $billingCategoriesRelatedByIdCreation;
+        $this->collBillingCategoriesRelatedByIdCreationPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related BillingCategory objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related BillingCategory objects.
+     * @throws PropelException
+     */
+    public function countBillingCategoriesRelatedByIdCreation(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collBillingCategoriesRelatedByIdCreationPartial && !$this->isNew();
+        if (null === $this->collBillingCategoriesRelatedByIdCreation || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collBillingCategoriesRelatedByIdCreation) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getBillingCategoriesRelatedByIdCreation());
+            }
+            $query = BillingCategoryQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByAuthyRelatedByIdCreation($this)
+                ->count($con);
+        }
+
+        return count($this->collBillingCategoriesRelatedByIdCreation);
+    }
+
+    /**
+     * Method called to associate a BillingCategory object to this object
+     * through the BillingCategory foreign key attribute.
+     *
+     * @param    BillingCategory $l BillingCategory
+     * @return Authy The current object (for fluent API support)
+     */
+    public function addBillingCategoryRelatedByIdCreation(BillingCategory $l)
+    {
+        if ($this->collBillingCategoriesRelatedByIdCreation === null) {
+            $this->initBillingCategoriesRelatedByIdCreation();
+            $this->collBillingCategoriesRelatedByIdCreationPartial = true;
+        }
+
+        if (!in_array($l, $this->collBillingCategoriesRelatedByIdCreation->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddBillingCategoryRelatedByIdCreation($l);
+
+            if ($this->billingCategoriesRelatedByIdCreationScheduledForDeletion and $this->billingCategoriesRelatedByIdCreationScheduledForDeletion->contains($l)) {
+                $this->billingCategoriesRelatedByIdCreationScheduledForDeletion->remove($this->billingCategoriesRelatedByIdCreationScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	BillingCategoryRelatedByIdCreation $billingCategoryRelatedByIdCreation The billingCategoryRelatedByIdCreation object to add.
+     */
+    protected function doAddBillingCategoryRelatedByIdCreation($billingCategoryRelatedByIdCreation)
+    {
+        $this->collBillingCategoriesRelatedByIdCreation[]= $billingCategoryRelatedByIdCreation;
+        $billingCategoryRelatedByIdCreation->setAuthyRelatedByIdCreation($this);
+    }
+
+    /**
+     * @param	BillingCategoryRelatedByIdCreation $billingCategoryRelatedByIdCreation The billingCategoryRelatedByIdCreation object to remove.
+     * @return Authy The current object (for fluent API support)
+     */
+    public function removeBillingCategoryRelatedByIdCreation($billingCategoryRelatedByIdCreation)
+    {
+        if ($this->getBillingCategoriesRelatedByIdCreation()->contains($billingCategoryRelatedByIdCreation)) {
+            $this->collBillingCategoriesRelatedByIdCreation->remove($this->collBillingCategoriesRelatedByIdCreation->search($billingCategoryRelatedByIdCreation));
+            if (null === $this->billingCategoriesRelatedByIdCreationScheduledForDeletion) {
+                $this->billingCategoriesRelatedByIdCreationScheduledForDeletion = clone $this->collBillingCategoriesRelatedByIdCreation;
+                $this->billingCategoriesRelatedByIdCreationScheduledForDeletion->clear();
+            }
+            $this->billingCategoriesRelatedByIdCreationScheduledForDeletion[]= $billingCategoryRelatedByIdCreation;
+            $billingCategoryRelatedByIdCreation->setAuthyRelatedByIdCreation(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|BillingCategory[] List of BillingCategory objects
+     */
+    public function getBillingCategoriesRelatedByIdCreationJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingCategoryQuery::create(null, $criteria);
+        $query->joinWith('AuthyGroup', $join_behavior);
+
+        return $this->getBillingCategoriesRelatedByIdCreation($query, $con);
+    }
+
+    /**
+     * Clears out the collBillingCategoriesRelatedByIdModification collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Authy The current object (for fluent API support)
+     * @see        addBillingCategoriesRelatedByIdModification()
+     */
+    public function clearBillingCategoriesRelatedByIdModification()
+    {
+        $this->collBillingCategoriesRelatedByIdModification = null; // important to set this to null since that means it is uninitialized
+        $this->collBillingCategoriesRelatedByIdModificationPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collBillingCategoriesRelatedByIdModification collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialBillingCategoriesRelatedByIdModification($v = true)
+    {
+        $this->collBillingCategoriesRelatedByIdModificationPartial = $v;
+    }
+
+    /**
+     * Initializes the collBillingCategoriesRelatedByIdModification collection.
+     *
+     * By default this just sets the collBillingCategoriesRelatedByIdModification collection to an empty array (like clearcollBillingCategoriesRelatedByIdModification());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initBillingCategoriesRelatedByIdModification($overrideExisting = true)
+    {
+        if (null !== $this->collBillingCategoriesRelatedByIdModification && !$overrideExisting) {
+            return;
+        }
+        $this->collBillingCategoriesRelatedByIdModification = new PropelObjectCollection();
+        $this->collBillingCategoriesRelatedByIdModification->setModel('BillingCategory');
+    }
+
+    /**
+     * Gets an array of BillingCategory objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Authy is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|BillingCategory[] List of BillingCategory objects
+     * @throws PropelException
+     */
+    public function getBillingCategoriesRelatedByIdModification($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collBillingCategoriesRelatedByIdModificationPartial && !$this->isNew();
+        if (null === $this->collBillingCategoriesRelatedByIdModification || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collBillingCategoriesRelatedByIdModification) {
+                // return empty collection
+                $this->initBillingCategoriesRelatedByIdModification();
+            } else {
+                $collBillingCategoriesRelatedByIdModification = BillingCategoryQuery::create(null, $criteria)
+                    ->filterByAuthyRelatedByIdModification($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collBillingCategoriesRelatedByIdModificationPartial && count($collBillingCategoriesRelatedByIdModification)) {
+                      $this->initBillingCategoriesRelatedByIdModification(false);
+
+                      foreach ($collBillingCategoriesRelatedByIdModification as $obj) {
+                        if (false == $this->collBillingCategoriesRelatedByIdModification->contains($obj)) {
+                          $this->collBillingCategoriesRelatedByIdModification->append($obj);
+                        }
+                      }
+
+                      $this->collBillingCategoriesRelatedByIdModificationPartial = true;
+                    }
+
+                    $collBillingCategoriesRelatedByIdModification->getInternalIterator()->rewind();
+
+                    return $collBillingCategoriesRelatedByIdModification;
+                }
+
+                if ($partial && $this->collBillingCategoriesRelatedByIdModification) {
+                    foreach ($this->collBillingCategoriesRelatedByIdModification as $obj) {
+                        if ($obj->isNew()) {
+                            $collBillingCategoriesRelatedByIdModification[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collBillingCategoriesRelatedByIdModification = $collBillingCategoriesRelatedByIdModification;
+                $this->collBillingCategoriesRelatedByIdModificationPartial = false;
+            }
+        }
+
+        return $this->collBillingCategoriesRelatedByIdModification;
+    }
+
+    /**
+     * Sets a collection of BillingCategoryRelatedByIdModification objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $billingCategoriesRelatedByIdModification A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return Authy The current object (for fluent API support)
+     */
+    public function setBillingCategoriesRelatedByIdModification(PropelCollection $billingCategoriesRelatedByIdModification, PropelPDO $con = null)
+    {
+        $billingCategoriesRelatedByIdModificationToDelete = $this->getBillingCategoriesRelatedByIdModification(new Criteria(), $con)->diff($billingCategoriesRelatedByIdModification);
+
+
+        $this->billingCategoriesRelatedByIdModificationScheduledForDeletion = $billingCategoriesRelatedByIdModificationToDelete;
+
+        foreach ($billingCategoriesRelatedByIdModificationToDelete as $billingCategoryRelatedByIdModificationRemoved) {
+            $billingCategoryRelatedByIdModificationRemoved->setAuthyRelatedByIdModification(null);
+        }
+
+        $this->collBillingCategoriesRelatedByIdModification = null;
+        foreach ($billingCategoriesRelatedByIdModification as $billingCategoryRelatedByIdModification) {
+            $this->addBillingCategoryRelatedByIdModification($billingCategoryRelatedByIdModification);
+        }
+
+        $this->collBillingCategoriesRelatedByIdModification = $billingCategoriesRelatedByIdModification;
+        $this->collBillingCategoriesRelatedByIdModificationPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related BillingCategory objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related BillingCategory objects.
+     * @throws PropelException
+     */
+    public function countBillingCategoriesRelatedByIdModification(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collBillingCategoriesRelatedByIdModificationPartial && !$this->isNew();
+        if (null === $this->collBillingCategoriesRelatedByIdModification || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collBillingCategoriesRelatedByIdModification) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getBillingCategoriesRelatedByIdModification());
+            }
+            $query = BillingCategoryQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByAuthyRelatedByIdModification($this)
+                ->count($con);
+        }
+
+        return count($this->collBillingCategoriesRelatedByIdModification);
+    }
+
+    /**
+     * Method called to associate a BillingCategory object to this object
+     * through the BillingCategory foreign key attribute.
+     *
+     * @param    BillingCategory $l BillingCategory
+     * @return Authy The current object (for fluent API support)
+     */
+    public function addBillingCategoryRelatedByIdModification(BillingCategory $l)
+    {
+        if ($this->collBillingCategoriesRelatedByIdModification === null) {
+            $this->initBillingCategoriesRelatedByIdModification();
+            $this->collBillingCategoriesRelatedByIdModificationPartial = true;
+        }
+
+        if (!in_array($l, $this->collBillingCategoriesRelatedByIdModification->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddBillingCategoryRelatedByIdModification($l);
+
+            if ($this->billingCategoriesRelatedByIdModificationScheduledForDeletion and $this->billingCategoriesRelatedByIdModificationScheduledForDeletion->contains($l)) {
+                $this->billingCategoriesRelatedByIdModificationScheduledForDeletion->remove($this->billingCategoriesRelatedByIdModificationScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	BillingCategoryRelatedByIdModification $billingCategoryRelatedByIdModification The billingCategoryRelatedByIdModification object to add.
+     */
+    protected function doAddBillingCategoryRelatedByIdModification($billingCategoryRelatedByIdModification)
+    {
+        $this->collBillingCategoriesRelatedByIdModification[]= $billingCategoryRelatedByIdModification;
+        $billingCategoryRelatedByIdModification->setAuthyRelatedByIdModification($this);
+    }
+
+    /**
+     * @param	BillingCategoryRelatedByIdModification $billingCategoryRelatedByIdModification The billingCategoryRelatedByIdModification object to remove.
+     * @return Authy The current object (for fluent API support)
+     */
+    public function removeBillingCategoryRelatedByIdModification($billingCategoryRelatedByIdModification)
+    {
+        if ($this->getBillingCategoriesRelatedByIdModification()->contains($billingCategoryRelatedByIdModification)) {
+            $this->collBillingCategoriesRelatedByIdModification->remove($this->collBillingCategoriesRelatedByIdModification->search($billingCategoryRelatedByIdModification));
+            if (null === $this->billingCategoriesRelatedByIdModificationScheduledForDeletion) {
+                $this->billingCategoriesRelatedByIdModificationScheduledForDeletion = clone $this->collBillingCategoriesRelatedByIdModification;
+                $this->billingCategoriesRelatedByIdModificationScheduledForDeletion->clear();
+            }
+            $this->billingCategoriesRelatedByIdModificationScheduledForDeletion[]= $billingCategoryRelatedByIdModification;
+            $billingCategoryRelatedByIdModification->setAuthyRelatedByIdModification(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|BillingCategory[] List of BillingCategory objects
+     */
+    public function getBillingCategoriesRelatedByIdModificationJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingCategoryQuery::create(null, $criteria);
+        $query->joinWith('AuthyGroup', $join_behavior);
+
+        return $this->getBillingCategoriesRelatedByIdModification($query, $con);
+    }
+
+    /**
+     * Clears out the collSuppliersRelatedByIdCreation collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Authy The current object (for fluent API support)
+     * @see        addSuppliersRelatedByIdCreation()
+     */
+    public function clearSuppliersRelatedByIdCreation()
+    {
+        $this->collSuppliersRelatedByIdCreation = null; // important to set this to null since that means it is uninitialized
+        $this->collSuppliersRelatedByIdCreationPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collSuppliersRelatedByIdCreation collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialSuppliersRelatedByIdCreation($v = true)
+    {
+        $this->collSuppliersRelatedByIdCreationPartial = $v;
+    }
+
+    /**
+     * Initializes the collSuppliersRelatedByIdCreation collection.
+     *
+     * By default this just sets the collSuppliersRelatedByIdCreation collection to an empty array (like clearcollSuppliersRelatedByIdCreation());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initSuppliersRelatedByIdCreation($overrideExisting = true)
+    {
+        if (null !== $this->collSuppliersRelatedByIdCreation && !$overrideExisting) {
+            return;
+        }
+        $this->collSuppliersRelatedByIdCreation = new PropelObjectCollection();
+        $this->collSuppliersRelatedByIdCreation->setModel('Supplier');
+    }
+
+    /**
+     * Gets an array of Supplier objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Authy is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     * @throws PropelException
+     */
+    public function getSuppliersRelatedByIdCreation($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collSuppliersRelatedByIdCreationPartial && !$this->isNew();
+        if (null === $this->collSuppliersRelatedByIdCreation || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collSuppliersRelatedByIdCreation) {
+                // return empty collection
+                $this->initSuppliersRelatedByIdCreation();
+            } else {
+                $collSuppliersRelatedByIdCreation = SupplierQuery::create(null, $criteria)
+                    ->filterByAuthyRelatedByIdCreation($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collSuppliersRelatedByIdCreationPartial && count($collSuppliersRelatedByIdCreation)) {
+                      $this->initSuppliersRelatedByIdCreation(false);
+
+                      foreach ($collSuppliersRelatedByIdCreation as $obj) {
+                        if (false == $this->collSuppliersRelatedByIdCreation->contains($obj)) {
+                          $this->collSuppliersRelatedByIdCreation->append($obj);
+                        }
+                      }
+
+                      $this->collSuppliersRelatedByIdCreationPartial = true;
+                    }
+
+                    $collSuppliersRelatedByIdCreation->getInternalIterator()->rewind();
+
+                    return $collSuppliersRelatedByIdCreation;
+                }
+
+                if ($partial && $this->collSuppliersRelatedByIdCreation) {
+                    foreach ($this->collSuppliersRelatedByIdCreation as $obj) {
+                        if ($obj->isNew()) {
+                            $collSuppliersRelatedByIdCreation[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collSuppliersRelatedByIdCreation = $collSuppliersRelatedByIdCreation;
+                $this->collSuppliersRelatedByIdCreationPartial = false;
+            }
+        }
+
+        return $this->collSuppliersRelatedByIdCreation;
+    }
+
+    /**
+     * Sets a collection of SupplierRelatedByIdCreation objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $suppliersRelatedByIdCreation A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return Authy The current object (for fluent API support)
+     */
+    public function setSuppliersRelatedByIdCreation(PropelCollection $suppliersRelatedByIdCreation, PropelPDO $con = null)
+    {
+        $suppliersRelatedByIdCreationToDelete = $this->getSuppliersRelatedByIdCreation(new Criteria(), $con)->diff($suppliersRelatedByIdCreation);
+
+
+        $this->suppliersRelatedByIdCreationScheduledForDeletion = $suppliersRelatedByIdCreationToDelete;
+
+        foreach ($suppliersRelatedByIdCreationToDelete as $supplierRelatedByIdCreationRemoved) {
+            $supplierRelatedByIdCreationRemoved->setAuthyRelatedByIdCreation(null);
+        }
+
+        $this->collSuppliersRelatedByIdCreation = null;
+        foreach ($suppliersRelatedByIdCreation as $supplierRelatedByIdCreation) {
+            $this->addSupplierRelatedByIdCreation($supplierRelatedByIdCreation);
+        }
+
+        $this->collSuppliersRelatedByIdCreation = $suppliersRelatedByIdCreation;
+        $this->collSuppliersRelatedByIdCreationPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Supplier objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related Supplier objects.
+     * @throws PropelException
+     */
+    public function countSuppliersRelatedByIdCreation(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collSuppliersRelatedByIdCreationPartial && !$this->isNew();
+        if (null === $this->collSuppliersRelatedByIdCreation || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collSuppliersRelatedByIdCreation) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getSuppliersRelatedByIdCreation());
+            }
+            $query = SupplierQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByAuthyRelatedByIdCreation($this)
+                ->count($con);
+        }
+
+        return count($this->collSuppliersRelatedByIdCreation);
+    }
+
+    /**
+     * Method called to associate a Supplier object to this object
+     * through the Supplier foreign key attribute.
+     *
+     * @param    Supplier $l Supplier
+     * @return Authy The current object (for fluent API support)
+     */
+    public function addSupplierRelatedByIdCreation(Supplier $l)
+    {
+        if ($this->collSuppliersRelatedByIdCreation === null) {
+            $this->initSuppliersRelatedByIdCreation();
+            $this->collSuppliersRelatedByIdCreationPartial = true;
+        }
+
+        if (!in_array($l, $this->collSuppliersRelatedByIdCreation->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddSupplierRelatedByIdCreation($l);
+
+            if ($this->suppliersRelatedByIdCreationScheduledForDeletion and $this->suppliersRelatedByIdCreationScheduledForDeletion->contains($l)) {
+                $this->suppliersRelatedByIdCreationScheduledForDeletion->remove($this->suppliersRelatedByIdCreationScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	SupplierRelatedByIdCreation $supplierRelatedByIdCreation The supplierRelatedByIdCreation object to add.
+     */
+    protected function doAddSupplierRelatedByIdCreation($supplierRelatedByIdCreation)
+    {
+        $this->collSuppliersRelatedByIdCreation[]= $supplierRelatedByIdCreation;
+        $supplierRelatedByIdCreation->setAuthyRelatedByIdCreation($this);
+    }
+
+    /**
+     * @param	SupplierRelatedByIdCreation $supplierRelatedByIdCreation The supplierRelatedByIdCreation object to remove.
+     * @return Authy The current object (for fluent API support)
+     */
+    public function removeSupplierRelatedByIdCreation($supplierRelatedByIdCreation)
+    {
+        if ($this->getSuppliersRelatedByIdCreation()->contains($supplierRelatedByIdCreation)) {
+            $this->collSuppliersRelatedByIdCreation->remove($this->collSuppliersRelatedByIdCreation->search($supplierRelatedByIdCreation));
+            if (null === $this->suppliersRelatedByIdCreationScheduledForDeletion) {
+                $this->suppliersRelatedByIdCreationScheduledForDeletion = clone $this->collSuppliersRelatedByIdCreation;
+                $this->suppliersRelatedByIdCreationScheduledForDeletion->clear();
+            }
+            $this->suppliersRelatedByIdCreationScheduledForDeletion[]= $supplierRelatedByIdCreation;
+            $supplierRelatedByIdCreation->setAuthyRelatedByIdCreation(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     */
+    public function getSuppliersRelatedByIdCreationJoinCountry($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = SupplierQuery::create(null, $criteria);
+        $query->joinWith('Country', $join_behavior);
+
+        return $this->getSuppliersRelatedByIdCreation($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     */
+    public function getSuppliersRelatedByIdCreationJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = SupplierQuery::create(null, $criteria);
+        $query->joinWith('AuthyGroup', $join_behavior);
+
+        return $this->getSuppliersRelatedByIdCreation($query, $con);
+    }
+
+    /**
+     * Clears out the collSuppliersRelatedByIdModification collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Authy The current object (for fluent API support)
+     * @see        addSuppliersRelatedByIdModification()
+     */
+    public function clearSuppliersRelatedByIdModification()
+    {
+        $this->collSuppliersRelatedByIdModification = null; // important to set this to null since that means it is uninitialized
+        $this->collSuppliersRelatedByIdModificationPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collSuppliersRelatedByIdModification collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialSuppliersRelatedByIdModification($v = true)
+    {
+        $this->collSuppliersRelatedByIdModificationPartial = $v;
+    }
+
+    /**
+     * Initializes the collSuppliersRelatedByIdModification collection.
+     *
+     * By default this just sets the collSuppliersRelatedByIdModification collection to an empty array (like clearcollSuppliersRelatedByIdModification());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initSuppliersRelatedByIdModification($overrideExisting = true)
+    {
+        if (null !== $this->collSuppliersRelatedByIdModification && !$overrideExisting) {
+            return;
+        }
+        $this->collSuppliersRelatedByIdModification = new PropelObjectCollection();
+        $this->collSuppliersRelatedByIdModification->setModel('Supplier');
+    }
+
+    /**
+     * Gets an array of Supplier objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Authy is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     * @throws PropelException
+     */
+    public function getSuppliersRelatedByIdModification($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collSuppliersRelatedByIdModificationPartial && !$this->isNew();
+        if (null === $this->collSuppliersRelatedByIdModification || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collSuppliersRelatedByIdModification) {
+                // return empty collection
+                $this->initSuppliersRelatedByIdModification();
+            } else {
+                $collSuppliersRelatedByIdModification = SupplierQuery::create(null, $criteria)
+                    ->filterByAuthyRelatedByIdModification($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collSuppliersRelatedByIdModificationPartial && count($collSuppliersRelatedByIdModification)) {
+                      $this->initSuppliersRelatedByIdModification(false);
+
+                      foreach ($collSuppliersRelatedByIdModification as $obj) {
+                        if (false == $this->collSuppliersRelatedByIdModification->contains($obj)) {
+                          $this->collSuppliersRelatedByIdModification->append($obj);
+                        }
+                      }
+
+                      $this->collSuppliersRelatedByIdModificationPartial = true;
+                    }
+
+                    $collSuppliersRelatedByIdModification->getInternalIterator()->rewind();
+
+                    return $collSuppliersRelatedByIdModification;
+                }
+
+                if ($partial && $this->collSuppliersRelatedByIdModification) {
+                    foreach ($this->collSuppliersRelatedByIdModification as $obj) {
+                        if ($obj->isNew()) {
+                            $collSuppliersRelatedByIdModification[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collSuppliersRelatedByIdModification = $collSuppliersRelatedByIdModification;
+                $this->collSuppliersRelatedByIdModificationPartial = false;
+            }
+        }
+
+        return $this->collSuppliersRelatedByIdModification;
+    }
+
+    /**
+     * Sets a collection of SupplierRelatedByIdModification objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $suppliersRelatedByIdModification A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return Authy The current object (for fluent API support)
+     */
+    public function setSuppliersRelatedByIdModification(PropelCollection $suppliersRelatedByIdModification, PropelPDO $con = null)
+    {
+        $suppliersRelatedByIdModificationToDelete = $this->getSuppliersRelatedByIdModification(new Criteria(), $con)->diff($suppliersRelatedByIdModification);
+
+
+        $this->suppliersRelatedByIdModificationScheduledForDeletion = $suppliersRelatedByIdModificationToDelete;
+
+        foreach ($suppliersRelatedByIdModificationToDelete as $supplierRelatedByIdModificationRemoved) {
+            $supplierRelatedByIdModificationRemoved->setAuthyRelatedByIdModification(null);
+        }
+
+        $this->collSuppliersRelatedByIdModification = null;
+        foreach ($suppliersRelatedByIdModification as $supplierRelatedByIdModification) {
+            $this->addSupplierRelatedByIdModification($supplierRelatedByIdModification);
+        }
+
+        $this->collSuppliersRelatedByIdModification = $suppliersRelatedByIdModification;
+        $this->collSuppliersRelatedByIdModificationPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Supplier objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related Supplier objects.
+     * @throws PropelException
+     */
+    public function countSuppliersRelatedByIdModification(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collSuppliersRelatedByIdModificationPartial && !$this->isNew();
+        if (null === $this->collSuppliersRelatedByIdModification || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collSuppliersRelatedByIdModification) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getSuppliersRelatedByIdModification());
+            }
+            $query = SupplierQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByAuthyRelatedByIdModification($this)
+                ->count($con);
+        }
+
+        return count($this->collSuppliersRelatedByIdModification);
+    }
+
+    /**
+     * Method called to associate a Supplier object to this object
+     * through the Supplier foreign key attribute.
+     *
+     * @param    Supplier $l Supplier
+     * @return Authy The current object (for fluent API support)
+     */
+    public function addSupplierRelatedByIdModification(Supplier $l)
+    {
+        if ($this->collSuppliersRelatedByIdModification === null) {
+            $this->initSuppliersRelatedByIdModification();
+            $this->collSuppliersRelatedByIdModificationPartial = true;
+        }
+
+        if (!in_array($l, $this->collSuppliersRelatedByIdModification->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddSupplierRelatedByIdModification($l);
+
+            if ($this->suppliersRelatedByIdModificationScheduledForDeletion and $this->suppliersRelatedByIdModificationScheduledForDeletion->contains($l)) {
+                $this->suppliersRelatedByIdModificationScheduledForDeletion->remove($this->suppliersRelatedByIdModificationScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	SupplierRelatedByIdModification $supplierRelatedByIdModification The supplierRelatedByIdModification object to add.
+     */
+    protected function doAddSupplierRelatedByIdModification($supplierRelatedByIdModification)
+    {
+        $this->collSuppliersRelatedByIdModification[]= $supplierRelatedByIdModification;
+        $supplierRelatedByIdModification->setAuthyRelatedByIdModification($this);
+    }
+
+    /**
+     * @param	SupplierRelatedByIdModification $supplierRelatedByIdModification The supplierRelatedByIdModification object to remove.
+     * @return Authy The current object (for fluent API support)
+     */
+    public function removeSupplierRelatedByIdModification($supplierRelatedByIdModification)
+    {
+        if ($this->getSuppliersRelatedByIdModification()->contains($supplierRelatedByIdModification)) {
+            $this->collSuppliersRelatedByIdModification->remove($this->collSuppliersRelatedByIdModification->search($supplierRelatedByIdModification));
+            if (null === $this->suppliersRelatedByIdModificationScheduledForDeletion) {
+                $this->suppliersRelatedByIdModificationScheduledForDeletion = clone $this->collSuppliersRelatedByIdModification;
+                $this->suppliersRelatedByIdModificationScheduledForDeletion->clear();
+            }
+            $this->suppliersRelatedByIdModificationScheduledForDeletion[]= $supplierRelatedByIdModification;
+            $supplierRelatedByIdModification->setAuthyRelatedByIdModification(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     */
+    public function getSuppliersRelatedByIdModificationJoinCountry($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = SupplierQuery::create(null, $criteria);
+        $query->joinWith('Country', $join_behavior);
+
+        return $this->getSuppliersRelatedByIdModification($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     */
+    public function getSuppliersRelatedByIdModificationJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = SupplierQuery::create(null, $criteria);
+        $query->joinWith('AuthyGroup', $join_behavior);
+
+        return $this->getSuppliersRelatedByIdModification($query, $con);
     }
 
     /**
@@ -12923,6 +14290,26 @@ abstract class BaseAuthy extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collBillingCategoriesRelatedByIdCreation) {
+                foreach ($this->collBillingCategoriesRelatedByIdCreation as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collBillingCategoriesRelatedByIdModification) {
+                foreach ($this->collBillingCategoriesRelatedByIdModification as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collSuppliersRelatedByIdCreation) {
+                foreach ($this->collSuppliersRelatedByIdCreation as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collSuppliersRelatedByIdModification) {
+                foreach ($this->collSuppliersRelatedByIdModification as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collAuthiesRelatedByIdAuthy0) {
                 foreach ($this->collAuthiesRelatedByIdAuthy0 as $o) {
                     $o->clearAllReferences($deep);
@@ -13097,6 +14484,22 @@ abstract class BaseAuthy extends BaseObject implements Persistent
             $this->collTimeLinesRelatedByIdModification->clearIterator();
         }
         $this->collTimeLinesRelatedByIdModification = null;
+        if ($this->collBillingCategoriesRelatedByIdCreation instanceof PropelCollection) {
+            $this->collBillingCategoriesRelatedByIdCreation->clearIterator();
+        }
+        $this->collBillingCategoriesRelatedByIdCreation = null;
+        if ($this->collBillingCategoriesRelatedByIdModification instanceof PropelCollection) {
+            $this->collBillingCategoriesRelatedByIdModification->clearIterator();
+        }
+        $this->collBillingCategoriesRelatedByIdModification = null;
+        if ($this->collSuppliersRelatedByIdCreation instanceof PropelCollection) {
+            $this->collSuppliersRelatedByIdCreation->clearIterator();
+        }
+        $this->collSuppliersRelatedByIdCreation = null;
+        if ($this->collSuppliersRelatedByIdModification instanceof PropelCollection) {
+            $this->collSuppliersRelatedByIdModification->clearIterator();
+        }
+        $this->collSuppliersRelatedByIdModification = null;
         if ($this->collAuthiesRelatedByIdAuthy0 instanceof PropelCollection) {
             $this->collAuthiesRelatedByIdAuthy0->clearIterator();
         }

@@ -2382,6 +2382,23 @@ abstract class BaseProject extends BaseObject implements Persistent
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return PropelObjectCollection|Billing[] List of Billing objects
      */
+    public function getBillingsJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingQuery::create(null, $criteria);
+        $query->joinWith('BillingCategory', $join_behavior);
+
+        return $this->getBillings($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Billing[] List of Billing objects
+     */
     public function getBillingsJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
         $query = BillingQuery::create(null, $criteria);
@@ -2679,6 +2696,23 @@ abstract class BaseProject extends BaseObject implements Persistent
     {
         $query = BillingLineQuery::create(null, $criteria);
         $query->joinWith('AuthyRelatedByIdAssign', $join_behavior);
+
+        return $this->getBillingLines($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|BillingLine[] List of BillingLine objects
+     */
+    public function getBillingLinesJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingLineQuery::create(null, $criteria);
+        $query->joinWith('BillingCategory', $join_behavior);
 
         return $this->getBillingLines($query, $con);
     }

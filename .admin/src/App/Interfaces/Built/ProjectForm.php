@@ -1362,6 +1362,30 @@ $this->fields['Project']['Name']['html']
         $arrayOpt = $pcDataO->toArray();
 
         return assocToNum($arrayOpt , true);
+    }
+
+    /**
+     * Query for BillingLine_IdBillingCategory selectBox 
+     * @param class $obj
+     * @param class $dataObj
+     * @param array $data
+    **/
+    public function selectBoxBillingLine_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+        $q = BillingCategoryQuery::create();
+
+            $q->select(array('Name', 'IdBillingCategory'));
+            $q->orderBy('Name', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+
+        $arrayOpt = $pcDataO->toArray();
+
+        return assocToNum($arrayOpt , true);
     }	
     /**
      * function getBillingLineList
@@ -1389,6 +1413,7 @@ $this->fields['Project']['Name']['html']
   'Quantity' => '',
   'Amount' => '',
   'Total' => '',
+  'IdBillingCategory' => '',
   'NoteBillingLigne' => '',
   'DateCreation' => '',
   'DateModification' => '',
@@ -1483,7 +1508,9 @@ $this->fields['Project']['Name']['html']
                 #alias default
                 ->leftJoinWith('AuthyRelatedByIdAssign a0')
                 #default
-                ->leftJoinWith('Project') 
+                ->leftJoinWith('Project')
+                #default
+                ->leftJoinWith('BillingCategory') 
             
             ->filterByIdProject( $filterKey );; 
                // Search
@@ -1523,6 +1550,7 @@ $this->fields['Project']['Name']['html']
         
         $this->arrayIdAssignOptions = $this->selectBoxBillingLine_IdAssign($this, $dataObj, $data);
         $this->arrayIdProjectOptions = $this->selectBoxBillingLine_IdProject($this, $dataObj, $data);
+        $this->arrayIdBillingCategoryOptions = $this->selectBoxBillingLine_IdBillingCategory($this, $dataObj, $data);
         
         
           
@@ -1543,6 +1571,7 @@ $this->fields['Project']['Name']['html']
 .th(_("Quantity"), " th='sorted' c='Quantity' title='" . _('Quantity')."' ")
 .th(_("Amount"), " th='sorted' c='Amount' title='" . _('Amount')."' ")
 .th(_("Total"), " th='sorted' c='Total' title='" . _('Total')."' ")
+.th(_("Category"), " th='sorted' c='BillingCategory.Name' title='"._('BillingCategory.Name')."' ")
 .th(_("Note"), " th='sorted' c='NoteBillingLigne' title='" . _('Note')."' ")
 .'' . $actionRowHeader, " ln='BillingLine' class=''");
 
@@ -1580,6 +1609,10 @@ $this->fields['Project']['Name']['html']
                                     if($data->getProject()){
                                         $Project_Name = $data->getProject()->getName();
                                     }
+                                    $BillingCategory_Name = "";
+                                    if($data->getBillingCategory()){
+                                        $BillingCategory_Name = $data->getBillingCategory()->getName();
+                                    }
                 
                 
                 ;
@@ -1597,6 +1630,7 @@ $this->fields['Project']['Name']['html']
                 td(span(\htmlentities((($altValue['Quantity']) ? $altValue['Quantity'] : str_replace(',', '.', $data->getQuantity())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Quantity' class='right'  j='editBillingLine'") . 
                 td(span(\htmlentities((($altValue['Amount']) ? $altValue['Amount'] : str_replace(',', '.', $data->getAmount())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Amount' class='right'  j='editBillingLine'") . 
                 td(span(\htmlentities((($altValue['Total']) ? $altValue['Total'] : str_replace(',', '.', $data->getTotal())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Total' class='right'  j='editBillingLine'") . 
+                td(span(\htmlentities((($altValue['IdBillingCategory']) ? $altValue['IdBillingCategory'] : $BillingCategory_Name) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBillingCategory' class=''  j='editBillingLine'") . 
                 td(span(\htmlentities((($altValue['NoteBillingLigne']) ? $altValue['NoteBillingLigne'] : substr(strip_tags($data->getNoteBillingLigne()), 0, 100)) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='NoteBillingLigne' class=''  j='editBillingLine'") . 
                             (isset($hookListColumnsBillingLine)?$hookListColumnsBillingLine:'').
                             $actionRow

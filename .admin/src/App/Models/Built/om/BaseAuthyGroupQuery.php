@@ -19,6 +19,7 @@ use App\AuthyGroupPeer;
 use App\AuthyGroupQuery;
 use App\AuthyGroupX;
 use App\Billing;
+use App\BillingCategory;
 use App\BillingLine;
 use App\Client;
 use App\Config;
@@ -27,6 +28,7 @@ use App\Country;
 use App\MessageI18n;
 use App\PaymentLine;
 use App\Project;
+use App\Supplier;
 use App\Template;
 use App\TemplateFile;
 use App\TimeLine;
@@ -111,6 +113,14 @@ use App\TimeLine;
  * @method AuthyGroupQuery leftJoinTimeLine($relationAlias = null) Adds a LEFT JOIN clause to the query using the TimeLine relation
  * @method AuthyGroupQuery rightJoinTimeLine($relationAlias = null) Adds a RIGHT JOIN clause to the query using the TimeLine relation
  * @method AuthyGroupQuery innerJoinTimeLine($relationAlias = null) Adds a INNER JOIN clause to the query using the TimeLine relation
+ *
+ * @method AuthyGroupQuery leftJoinBillingCategory($relationAlias = null) Adds a LEFT JOIN clause to the query using the BillingCategory relation
+ * @method AuthyGroupQuery rightJoinBillingCategory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BillingCategory relation
+ * @method AuthyGroupQuery innerJoinBillingCategory($relationAlias = null) Adds a INNER JOIN clause to the query using the BillingCategory relation
+ *
+ * @method AuthyGroupQuery leftJoinSupplier($relationAlias = null) Adds a LEFT JOIN clause to the query using the Supplier relation
+ * @method AuthyGroupQuery rightJoinSupplier($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Supplier relation
+ * @method AuthyGroupQuery innerJoinSupplier($relationAlias = null) Adds a INNER JOIN clause to the query using the Supplier relation
  *
  * @method AuthyGroupQuery leftJoinAuthyRelatedByIdAuthyGroup($relationAlias = null) Adds a LEFT JOIN clause to the query using the AuthyRelatedByIdAuthyGroup relation
  * @method AuthyGroupQuery rightJoinAuthyRelatedByIdAuthyGroup($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AuthyRelatedByIdAuthyGroup relation
@@ -1654,6 +1664,154 @@ abstract class BaseAuthyGroupQuery extends ModelCriteria
         return $this
             ->joinTimeLine($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'TimeLine', '\App\TimeLineQuery');
+    }
+
+    /**
+     * Filter the query by a related BillingCategory object
+     *
+     * @param   BillingCategory|PropelObjectCollection $billingCategory  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 AuthyGroupQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByBillingCategory($billingCategory, $comparison = null)
+    {
+        if ($billingCategory instanceof BillingCategory) {
+            return $this
+                ->addUsingAlias(AuthyGroupPeer::ID_AUTHY_GROUP, $billingCategory->getIdGroupCreation(), $comparison);
+        } elseif ($billingCategory instanceof PropelObjectCollection) {
+            return $this
+                ->useBillingCategoryQuery()
+                ->filterByPrimaryKeys($billingCategory->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByBillingCategory() only accepts arguments of type BillingCategory or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the BillingCategory relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return AuthyGroupQuery The current query, for fluid interface
+     */
+    public function joinBillingCategory($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('BillingCategory');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'BillingCategory');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the BillingCategory relation BillingCategory object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\BillingCategoryQuery A secondary query class using the current class as primary query
+     */
+    public function useBillingCategoryQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinBillingCategory($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'BillingCategory', '\App\BillingCategoryQuery');
+    }
+
+    /**
+     * Filter the query by a related Supplier object
+     *
+     * @param   Supplier|PropelObjectCollection $supplier  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 AuthyGroupQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterBySupplier($supplier, $comparison = null)
+    {
+        if ($supplier instanceof Supplier) {
+            return $this
+                ->addUsingAlias(AuthyGroupPeer::ID_AUTHY_GROUP, $supplier->getIdGroupCreation(), $comparison);
+        } elseif ($supplier instanceof PropelObjectCollection) {
+            return $this
+                ->useSupplierQuery()
+                ->filterByPrimaryKeys($supplier->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterBySupplier() only accepts arguments of type Supplier or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Supplier relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return AuthyGroupQuery The current query, for fluid interface
+     */
+    public function joinSupplier($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Supplier');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Supplier');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Supplier relation Supplier object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\SupplierQuery A secondary query class using the current class as primary query
+     */
+    public function useSupplierQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinSupplier($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Supplier', '\App\SupplierQuery');
     }
 
     /**

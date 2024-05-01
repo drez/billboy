@@ -23,5 +23,10 @@ class CostLineServiceWrapper extends CostLineService
         $this->Form = new CostLineFormWrapper($request, $args);
     }
 
+    public function beforeSave(CostLineService $Class, array &$data, bool $isNew, string|null &$messages, array|false &$extValidationErr)
+    {
+        $data['Total'] = bcmul($data['Quantity'], $data['Amount']);
+    }
+
     
 }

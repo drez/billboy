@@ -125,7 +125,9 @@ class BillingLineForm extends BillingLine
                 #alias default
                 ->leftJoinWith('AuthyRelatedByIdAssign a0')
                 #default
-                ->leftJoinWith('Project');
+                ->leftJoinWith('Project')
+                #default
+                ->leftJoinWith('BillingCategory');
                 
                 
         }else{
@@ -138,6 +140,8 @@ class BillingLineForm extends BillingLine
                 ->leftJoinWith('AuthyRelatedByIdAssign a0')
                 #default
                 ->leftJoinWith('Project')
+                #default
+                ->leftJoinWith('BillingCategory')
                             
 
                             ->paginate($page, $maxPerPage);
@@ -150,7 +154,9 @@ class BillingLineForm extends BillingLine
                 #alias default
                 ->leftJoinWith('AuthyRelatedByIdAssign a0')
                 #default
-                ->leftJoinWith('Project');
+                ->leftJoinWith('Project')
+                #default
+                ->leftJoinWith('BillingCategory');
                 
             }
         }
@@ -206,6 +212,7 @@ class BillingLineForm extends BillingLine
 .th(_("Quantity"), " th='sorted' c='Quantity' title='" . _('Quantity')."' ")
 .th(_("Amount"), " th='sorted' c='Amount' title='" . _('Amount')."' ")
 .th(_("Total"), " th='sorted' c='Total' title='" . _('Total')."' ")
+.th(_("Category"), " th='sorted' c='BillingCategory.Name' title='"._('BillingCategory.Name')."' ")
 .th(_("Note"), " th='sorted' c='NoteBillingLigne' title='" . _('Note')."' ")
 . $this->cCmoreColsHeader;
                 if(!$this->setReadOnly){
@@ -224,6 +231,7 @@ class BillingLineForm extends BillingLine
                 
         $this->arrayIdAssignOptions = $this->selectBoxBillingLine_IdAssign($this, $emptyVar, $data);
         $this->arrayIdProjectOptions = $this->selectBoxBillingLine_IdProject($this, $emptyVar, $data);
+        $this->arrayIdBillingCategoryOptions = $this->selectBoxBillingLine_IdBillingCategory($this, $emptyVar, $data);
                 
                 ;
                 return $trSearch;
@@ -273,6 +281,7 @@ class BillingLineForm extends BillingLine
   'Quantity' => '',
   'Amount' => '',
   'Total' => '',
+  'IdBillingCategory' => '',
   'NoteBillingLigne' => '',
   'DateCreation' => '',
   'DateModification' => '',
@@ -361,6 +370,10 @@ class BillingLineForm extends BillingLine
                                     if($data->getProject()){
                                         $Project_Name = $data->getProject()->getName();
                                     }
+                                    $BillingCategory_Name = "";
+                                    if($data->getBillingCategory()){
+                                        $BillingCategory_Name = $data->getBillingCategory()->getName();
+                                    }
                     
 
                 $actionCell =  td(
@@ -374,6 +387,7 @@ class BillingLineForm extends BillingLine
                 td(span(\htmlentities((($altValue['Quantity']) ? $altValue['Quantity'] : str_replace(',', '.', $data->getQuantity())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Quantity' class='right'  j='editBillingLine'") . 
                 td(span(\htmlentities((($altValue['Amount']) ? $altValue['Amount'] : str_replace(',', '.', $data->getAmount())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Amount' class='right'  j='editBillingLine'") . 
                 td(span(\htmlentities((($altValue['Total']) ? $altValue['Total'] : str_replace(',', '.', $data->getTotal())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Total' class='right'  j='editBillingLine'") . 
+                td(span(\htmlentities((($altValue['IdBillingCategory']) ? $altValue['IdBillingCategory'] : $BillingCategory_Name) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBillingCategory' class=''  j='editBillingLine'") . 
                 td(span(\htmlentities((($altValue['NoteBillingLigne']) ? $altValue['NoteBillingLigne'] : substr(strip_tags($data->getNoteBillingLigne()), 0, 100)) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='NoteBillingLigne' class=''  j='editBillingLine'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
@@ -510,6 +524,8 @@ class BillingLineForm extends BillingLine
         $e->setAmount( ($data['Amount'] == '' ) ? null : $data['Amount']);
         //integer not required
         $e->setTotal( ($data['Total'] == '' ) ? null : $data['Total']);
+        //foreign
+        $e->setIdBillingCategory(( $data['IdBillingCategory'] == '' ) ? null : $data['IdBillingCategory']);
         //integer not required
         $e->setNoteBillingLigne( ($data['NoteBillingLigne'] == '' ) ? null : $data['NoteBillingLigne']);
         $e->setDateCreation( ($data['DateCreation'] == '' || $data['DateCreation'] == 'null' || substr($data['DateCreation'],0,10) == '-0001-11-30') ? null : $data['DateCreation'] );
@@ -556,6 +572,9 @@ class BillingLineForm extends BillingLine
         }
         if(isset($data['Total'])){
             $e->setTotal( ($data['Total'] == '' ) ? null : $data['Total']);
+        }
+        if( isset($data['IdBillingCategory']) ){
+            $e->setIdBillingCategory(( $data['IdBillingCategory'] == '' ) ? null : $data['IdBillingCategory']);
         }
         if(isset($data['DateCreation'])){
             $e->setDateCreation( ($data['DateCreation'] == '' || $data['DateCreation'] == 'null' || substr($data['DateCreation'],0,10) == '-0001-11-30') ? null : $data['DateCreation'] );
@@ -625,6 +644,9 @@ class BillingLineForm extends BillingLine
                 case 'Project':
                     $data['IdProject'] = $data['ip'];
                     break;
+                case 'BillingCategory':
+                    $data['IdBillingCategory'] = $data['ip'];
+                    break;
                 case 'AuthyGroup':
                     $data['IdGroupCreation'] = $data['ip'];
                     break;
@@ -680,6 +702,8 @@ class BillingLineForm extends BillingLine
                 ->leftJoinWith('AuthyRelatedByIdAssign a0')
                 #default
                 ->leftJoinWith('Project')
+                #default
+                ->leftJoinWith('BillingCategory')
             ;
             
 
@@ -710,10 +734,12 @@ class BillingLineForm extends BillingLine
 
                                     ($dataObj->getAuthyRelatedByIdAssign())?'':$dataObj->setAuthyRelatedByIdAssign( new Authy() );
                                     ($dataObj->getProject())?'':$dataObj->setProject( new Project() );
+                                    ($dataObj->getBillingCategory())?'':$dataObj->setBillingCategory( new BillingCategory() );
 
         
         $this->arrayIdAssignOptions = $this->selectBoxBillingLine_IdAssign($this, $dataObj, $data);
         $this->arrayIdProjectOptions = $this->selectBoxBillingLine_IdProject($this, $dataObj, $data);
+        $this->arrayIdBillingCategoryOptions = $this->selectBoxBillingLine_IdBillingCategory($this, $dataObj, $data);
         
         
         
@@ -727,6 +753,7 @@ $this->fields['BillingLine']['WorkDate']['html'] = stdFieldRow(_("Date"), input(
 $this->fields['BillingLine']['Quantity']['html'] = stdFieldRow(_("Quantity"), input('text', 'Quantity', $dataObj->getQuantity(), "  placeholder='".str_replace("'","&#39;",_('Quantity'))."'  v='QUANTITY' size='5' s='d' class=''"), 'Quantity', "", $this->commentsQuantity, $this->commentsQuantity_css, '', ' ', 'no');
 $this->fields['BillingLine']['Amount']['html'] = stdFieldRow(_("Amount"), input('text', 'Amount', $dataObj->getAmount(), "  placeholder='".str_replace("'","&#39;",_('Amount'))."'  v='AMOUNT' size='5' s='d' class='req'"), 'Amount', "", $this->commentsAmount, $this->commentsAmount_css, '', ' ', 'no');
 $this->fields['BillingLine']['Total']['html'] = stdFieldRow(_("Total"), input('text', 'Total', $dataObj->getTotal(), "  placeholder='".str_replace("'","&#39;",_('Total'))."'  v='TOTAL' size='5' s='d' class=''"), 'Total', "", $this->commentsTotal, $this->commentsTotal_css, '', ' ', 'no');
+$this->fields['BillingLine']['IdBillingCategory']['html'] = stdFieldRow(_("Category"), selectboxCustomArray('IdBillingCategory', $this->arrayIdBillingCategoryOptions, _('Category'), "v='ID_BILLING_CATEGORY'  s='d'  val='".$dataObj->getIdBillingCategory()."'", $dataObj->getIdBillingCategory()), 'IdBillingCategory', "", $this->commentsIdBillingCategory, $this->commentsIdBillingCategory_css, '', ' ', 'no');
 $this->fields['BillingLine']['NoteBillingLigne']['html'] = stdFieldRow(_("Note"), textarea('NoteBillingLigne', htmlentities($dataObj->getNoteBillingLigne()) ,"placeholder='".str_replace("'","&#39;",_('Note'))."' cols='71' v='NOTE_BILLING_LIGNE' s='d'  class=' tinymce ' style='' spellcheck='false'"), 'NoteBillingLigne', "", $this->commentsNoteBillingLigne, $this->commentsNoteBillingLigne_css, 'istinymce', ' ', 'no');
 
 
@@ -794,6 +821,7 @@ $this->fields['BillingLine']['IdAssign']['html']
 .$this->fields['BillingLine']['Quantity']['html']
 .$this->fields['BillingLine']['Amount']['html']
 .$this->fields['BillingLine']['Total']['html']
+.$this->fields['BillingLine']['IdBillingCategory']['html']
 .'</div><div id="ogf_note_billing_ligne"  class=" ui-tabs-panel">'
 .$this->fields['BillingLine']['NoteBillingLigne']['html'].'</div>'
                 
@@ -881,6 +909,9 @@ $this->fields['BillingLine']['IdAssign']['html']
         $this->fieldsRo['BillingLine']['Total']['html'] = stdFieldRow(_("Total"), div( $dataObj->getTotal(), 'Total_label' , "class='readonly' s='d'")
                 .input('hidden', 'Total', $dataObj->getTotal(), "s='d'"), 'Total', "", $this->commentsTotal, $this->commentsTotal_css, 'readonly', ' ', 'no');
 
+        $this->fieldsRo['BillingLine']['IdBillingCategory']['html'] = stdFieldRow(_("Category"), div( ($dataObj->getBillingCategory())?$dataObj->getBillingCategory()->getName():'', 'IdBillingCategory_label' , "class='readonly' s='d'")
+                .input('hidden', 'IdBillingCategory', $dataObj->getIdBillingCategory(), "s='d'"), 'IdBillingCategory', "", $this->commentsIdBillingCategory, $this->commentsIdBillingCategory_css, 'readonly', ' ', 'no');
+
         $this->fieldsRo['BillingLine']['NoteBillingLigne']['html'] = stdFieldRow(_("Note"), div( $dataObj->getNoteBillingLigne(), 'NoteBillingLigne_label' , "class='readonly' s='d'")
                 .input('hidden', 'NoteBillingLigne', $dataObj->getNoteBillingLigne(), "s='d'"), 'NoteBillingLigne', "", $this->commentsNoteBillingLigne, $this->commentsNoteBillingLigne_css, 'readonly', ' ', 'no');
 
@@ -932,6 +963,30 @@ $this->fields['BillingLine']['IdAssign']['html']
 
             $q->filterByIdClient($dataObj->getBilling()->getIdClient() );
             $q->select(array('Name', 'IdProject'));
+            $q->orderBy('Name', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+
+        $arrayOpt = $pcDataO->toArray();
+
+        return assocToNum($arrayOpt , true);
+    }
+
+    /**
+     * Query for BillingLine_IdBillingCategory selectBox 
+     * @param class $obj
+     * @param class $dataObj
+     * @param array $data
+    **/
+    public function selectBoxBillingLine_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+        $q = BillingCategoryQuery::create();
+
+            $q->select(array('Name', 'IdBillingCategory'));
             $q->orderBy('Name', 'ASC');
         
             if(!$array){

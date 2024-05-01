@@ -986,6 +986,30 @@ $this->fields['Client']['Name']['html']
         $arrayOpt = $pcDataO->toArray();
 
         return assocToNum($arrayOpt , true);
+    }
+
+    /**
+     * Query for Billing_IdBillingCategory selectBox 
+     * @param class $obj
+     * @param class $dataObj
+     * @param array $data
+    **/
+    public function selectBoxBilling_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+        $q = BillingCategoryQuery::create();
+
+            $q->select(array('Name', 'IdBillingCategory'));
+            $q->orderBy('Name', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+
+        $arrayOpt = $pcDataO->toArray();
+
+        return assocToNum($arrayOpt , true);
     }	
     /**
      * function getBillingList
@@ -1008,10 +1032,12 @@ $this->fields['Client']['Name']['html']
   'Title' => '',
   'IdClient' => '',
   'IdProject' => '',
+  'IdBillingCategory' => '',
   'Date' => '',
   'Type' => '',
   'State' => '',
   'Gross' => '',
+  'Tax' => '',
   'DateDue' => '',
   'NoteBilling' => '',
   'DatePaid' => '',
@@ -1102,7 +1128,9 @@ $this->fields['Client']['Name']['html']
                 #required billing
                 ->leftJoinWith('Client')
                 #default
-                ->leftJoinWith('Project') 
+                ->leftJoinWith('Project')
+                #default
+                ->leftJoinWith('BillingCategory') 
             
             ->filterByIdClient( $filterKey );; 
                // Search
@@ -1142,6 +1170,7 @@ $this->fields['Client']['Name']['html']
         
         $this->arrayIdClientOptions = $this->selectBoxBilling_IdClient($this, $dataObj, $data);
         $this->arrayIdProjectOptions = $this->selectBoxBilling_IdProject($this, $dataObj, $data);
+        $this->arrayIdBillingCategoryOptions = $this->selectBoxBilling_IdBillingCategory($this, $dataObj, $data);
         
         
           
@@ -1158,10 +1187,12 @@ $this->fields['Client']['Name']['html']
         $header = tr( th(_("Title"), " th='sorted' c='Title' title='" . _('Title')."' ")
 .th(_("Client"), " th='sorted' c='Client.Name' title='"._('Client.Name')."' ")
 .th(_("Project"), " th='sorted' c='Project.Name' title='"._('Project.Name')."' ")
+.th(_("Category"), " th='sorted' c='BillingCategory.Name' title='"._('BillingCategory.Name')."' ")
 .th(_("Date"), " th='sorted' c='Date' title='" . _('Date')."' ")
 .th(_("Type"), " th='sorted' c='Type' title='" . _('Type')."' ")
 .th(_("State"), " th='sorted' c='State' title='" . _('State')."' ")
 .th(_("Gross"), " th='sorted' c='Gross' title='" . _('Gross')."' ")
+.th(_("Tax"), " th='sorted' c='Tax' title='" . _('Tax')."' ")
 .th(_("Due date"), " th='sorted' c='DateDue' title='" . _('Due date')."' ")
 .th(_("Paid date"), " th='sorted' c='DatePaid' title='" . _('Paid date')."' ")
 .th(_("Net"), " th='sorted' c='Net' title='" . _('Net')."' ")
@@ -1201,6 +1232,10 @@ $this->fields['Client']['Name']['html']
                                     if($data->getProject()){
                                         $Project_Name = $data->getProject()->getName();
                                     }
+                                    $BillingCategory_Name = "";
+                                    if($data->getBillingCategory()){
+                                        $BillingCategory_Name = $data->getBillingCategory()->getName();
+                                    }
                 
                 
                 ;
@@ -1214,10 +1249,12 @@ $this->fields['Client']['Name']['html']
                 td(span(\htmlentities((($altValue['Title']) ? $altValue['Title'] : $data->getTitle()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Title' class=''  j='editBilling'") . 
                 td(span(\htmlentities((($altValue['IdClient']) ? $altValue['IdClient'] : $Client_Name) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdClient' class=''  j='editBilling'") . 
                 td(span(\htmlentities((($altValue['IdProject']) ? $altValue['IdProject'] : $Project_Name) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdProject' class=''  j='editBilling'") . 
+                td(span(\htmlentities((($altValue['IdBillingCategory']) ? $altValue['IdBillingCategory'] : $BillingCategory_Name) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBillingCategory' class=''  j='editBilling'") . 
                 td(span(\htmlentities((($altValue['Date']) ? $altValue['Date'] : $data->getDate()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class=''  j='editBilling'") . 
                 td(span(\htmlentities((($altValue['Type']) ? $altValue['Type'] : isntPo($data->getType())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editBilling'") . 
                 td(span(\htmlentities((($altValue['State']) ? $altValue['State'] : isntPo($data->getState())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='State' class='center'  j='editBilling'") . 
                 td(span(\htmlentities((($altValue['Gross']) ? $altValue['Gross'] : str_replace(',', '.', $data->getGross())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Gross' class='right'  j='editBilling'") . 
+                td(span(\htmlentities((($altValue['Tax']) ? $altValue['Tax'] : str_replace(',', '.', $data->getTax())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Tax' class='right'  j='editBilling'") . 
                 td(span(\htmlentities((($altValue['DateDue']) ? $altValue['DateDue'] : $data->getDateDue()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DateDue' class=''  j='editBilling'") . 
                 td(span(\htmlentities((($altValue['DatePaid']) ? $altValue['DatePaid'] : $data->getDatePaid()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DatePaid' class=''  j='editBilling'") . 
                 td(span(\htmlentities((($altValue['Net']) ? $altValue['Net'] : str_replace(',', '.', $data->getNet())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Net' class='right'  j='editBilling'") . 

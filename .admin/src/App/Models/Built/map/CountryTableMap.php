@@ -73,6 +73,7 @@ class CountryTableMap extends TableMap
         $this->addRelation('AuthyRelatedByIdCreation', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_creation' => 'id_authy', ), null, null);
         $this->addRelation('AuthyRelatedByIdModification', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_modification' => 'id_authy', ), null, null);
         $this->addRelation('Client', 'App\\Client', RelationMap::ONE_TO_MANY, array('id_country' => 'id_country', ), null, null, 'Clients');
+        $this->addRelation('Supplier', 'App\\Supplier', RelationMap::ONE_TO_MANY, array('id_country' => 'id_country', ), null, null, 'Suppliers');
     } // buildRelations()
 
     /**

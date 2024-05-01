@@ -120,7 +120,11 @@ class CostLineForm extends CostLine
         if(is_array( $this->searchMs )){
             # main search form
             $q::create()
-                ;
+                
+                #default
+                ->leftJoinWith('Supplier')
+                #default
+                ->leftJoinWith('BillingCategory');
                 
                 
         }else{
@@ -129,6 +133,10 @@ class CostLineForm extends CostLine
                         $pmpoData = $q::create()
                             ->filterBy(json_decode($IdParent))
                             
+                #default
+                ->leftJoinWith('Supplier')
+                #default
+                ->leftJoinWith('BillingCategory')
                             
 
                             ->paginate($page, $maxPerPage);
@@ -137,7 +145,11 @@ class CostLineForm extends CostLine
             $hasParent = json_decode($IdParent);
             if(empty($hasParent)) {
                 $q::create()
-                ;
+                
+                #default
+                ->leftJoinWith('Supplier')
+                #default
+                ->leftJoinWith('BillingCategory');
                 
             }
         }
@@ -187,11 +199,17 @@ class CostLineForm extends CostLine
         switch($act) {
             case 'head':
                 $trHead = th(_("Title"), " th='sorted' c='Title' title='" . _('Title')."' ")
+.th(_("Supplier"), " th='sorted' c='Supplier.Name' title='"._('Supplier.Name')."' ")
+.th(_("Invoice no."), " th='sorted' c='InvoiceNo' title='" . _('Invoice no.')."' ")
+.th(_("Category"), " th='sorted' c='BillingCategory.Name' title='"._('BillingCategory.Name')."' ")
 .th(_("Date"), " th='sorted' c='SpendDate' title='" . _('Date')."' ")
-.th(_("Note"), " th='sorted' c='NoteBillingLigne' title='" . _('Note')."' ")
+.th(_("Recuring"), " th='sorted' c='Recuring' title='" . _('Recuring')."' ")
+.th(_("Renewal date"), " th='sorted' c='RenewalDate' title='" . _('Renewal date')."' ")
 .th(_("Quantity"), " th='sorted' c='Quantity' title='" . _('Quantity')."' ")
 .th(_("Amount"), " th='sorted' c='Amount' title='" . _('Amount')."' ")
 .th(_("Total"), " th='sorted' c='Total' title='" . _('Total')."' ")
+.th(_("Add to bill"), " th='sorted' c='Bill' title='" . _('Add to bill')."' ")
+.th(_("Note"), " th='sorted' c='NoteBillingLigne' title='" . _('Note')."' ")
 . $this->cCmoreColsHeader;
                 if(!$this->setReadOnly){
                     $trHead .= th('&nbsp;',' class="actionrow delete" ');
@@ -207,6 +225,8 @@ class CostLineForm extends CostLine
 
             case 'search':
                 
+        $this->arrayIdSupplierOptions = $this->selectBoxCostLine_IdSupplier($this, $emptyVar, $data);
+        $this->arrayIdBillingCategoryOptions = $this->selectBoxCostLine_IdBillingCategory($this, $emptyVar, $data);
                 
                 ;
                 return $trSearch;
@@ -250,11 +270,17 @@ class CostLineForm extends CostLine
   'IdBilling' => '',
   'CalcId' => '',
   'Title' => '',
+  'IdSupplier' => '',
+  'InvoiceNo' => '',
+  'IdBillingCategory' => '',
   'SpendDate' => '',
-  'NoteBillingLigne' => '',
+  'Recuring' => '',
+  'RenewalDate' => '',
   'Quantity' => '',
   'Amount' => '',
   'Total' => '',
+  'Bill' => '',
+  'NoteBillingLigne' => '',
   'DateCreation' => '',
   'DateModification' => '',
   'IdGroupCreation' => '',
@@ -330,6 +356,14 @@ class CostLineForm extends CostLine
                 
                 
                 
+                                    $Supplier_Name = "";
+                                    if($data->getSupplier()){
+                                        $Supplier_Name = $data->getSupplier()->getName();
+                                    }
+                                    $BillingCategory_Name = "";
+                                    if($data->getBillingCategory()){
+                                        $BillingCategory_Name = $data->getBillingCategory()->getName();
+                                    }
                     
 
                 $actionCell =  td(
@@ -337,11 +371,17 @@ class CostLineForm extends CostLine
 
                 $tr .= tr(
                 td(span(\htmlentities((($altValue['Title']) ? $altValue['Title'] : $data->getTitle()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Title' class=''  j='editCostLine'") . 
+                td(span(\htmlentities((($altValue['IdSupplier']) ? $altValue['IdSupplier'] : $Supplier_Name) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdSupplier' class=''  j='editCostLine'") . 
+                td(span(\htmlentities((($altValue['InvoiceNo']) ? $altValue['InvoiceNo'] : $data->getInvoiceNo()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='InvoiceNo' class=''  j='editCostLine'") . 
+                td(span(\htmlentities((($altValue['IdBillingCategory']) ? $altValue['IdBillingCategory'] : $BillingCategory_Name) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBillingCategory' class=''  j='editCostLine'") . 
                 td(span(\htmlentities((($altValue['SpendDate']) ? $altValue['SpendDate'] : $data->getSpendDate()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='SpendDate' class=''  j='editCostLine'") . 
-                td(span(\htmlentities((($altValue['NoteBillingLigne']) ? $altValue['NoteBillingLigne'] : substr(strip_tags($data->getNoteBillingLigne()), 0, 100)) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='NoteBillingLigne' class=''  j='editCostLine'") . 
+                td(span(\htmlentities((($altValue['Recuring']) ? $altValue['Recuring'] : isntPo($data->getRecuring())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Recuring' class='center'  j='editCostLine'") . 
+                td(span(\htmlentities((($altValue['RenewalDate']) ? $altValue['RenewalDate'] : $data->getRenewalDate()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='RenewalDate' class=''  j='editCostLine'") . 
                 td(span(\htmlentities((($altValue['Quantity']) ? $altValue['Quantity'] : str_replace(',', '.', $data->getQuantity())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Quantity' class='right'  j='editCostLine'") . 
                 td(span(\htmlentities((($altValue['Amount']) ? $altValue['Amount'] : str_replace(',', '.', $data->getAmount())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Amount' class='right'  j='editCostLine'") . 
-                td(span(\htmlentities((($altValue['Total']) ? $altValue['Total'] : str_replace(',', '.', $data->getTotal())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Total' class='right'  j='editCostLine'") . $cCmoreCols.$actionCell
+                td(span(\htmlentities((($altValue['Total']) ? $altValue['Total'] : str_replace(',', '.', $data->getTotal())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Total' class='right'  j='editCostLine'") . 
+                td(span(\htmlentities((($altValue['Bill']) ? $altValue['Bill'] : isntPo($data->getBill())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Bill' class='center'  j='editCostLine'") . 
+                td(span(\htmlentities((($altValue['NoteBillingLigne']) ? $altValue['NoteBillingLigne'] : substr(strip_tags($data->getNoteBillingLigne()), 0, 100)) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='NoteBillingLigne' class=''  j='editCostLine'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -462,19 +502,32 @@ class CostLineForm extends CostLine
         $e = new CostLine();
         
         
+        if(!$data['Recuring']){
+            $data['Recuring'] = "Once";
+        } 
+        if(!$data['Bill']){
+            $data['Bill'] = "No";
+        } 
         $e->fromArray($data );
         
         #
         
+        //foreign
+        $e->setIdBilling(( $data['IdBilling'] == '' ) ? null : $data['IdBilling']);
+        //foreign
+        $e->setIdSupplier(( $data['IdSupplier'] == '' ) ? null : $data['IdSupplier']);
+        //foreign
+        $e->setIdBillingCategory(( $data['IdBillingCategory'] == '' ) ? null : $data['IdBillingCategory']);
         $e->setSpendDate( ($data['SpendDate'] == '' || $data['SpendDate'] == 'null' || substr($data['SpendDate'],0,10) == '-0001-11-30') ? null : $data['SpendDate'] );
-        //integer not required
-        $e->setNoteBillingLigne( ($data['NoteBillingLigne'] == '' ) ? null : $data['NoteBillingLigne']);
+        $e->setRenewalDate( ($data['RenewalDate'] == '' || $data['RenewalDate'] == 'null' || substr($data['RenewalDate'],0,10) == '-0001-11-30') ? null : $data['RenewalDate'] );
         //integer not required
         $e->setQuantity( ($data['Quantity'] == '' ) ? null : $data['Quantity']);
         //integer not required
         $e->setAmount( ($data['Amount'] == '' ) ? null : $data['Amount']);
         //integer not required
         $e->setTotal( ($data['Total'] == '' ) ? null : $data['Total']);
+        //integer not required
+        $e->setNoteBillingLigne( ($data['NoteBillingLigne'] == '' ) ? null : $data['NoteBillingLigne']);
         $e->setDateCreation( ($data['DateCreation'] == '' || $data['DateCreation'] == 'null' || substr($data['DateCreation'],0,10) == '-0001-11-30') ? null : $data['DateCreation'] );
         $e->setDateModification( ($data['DateModification'] == '' || $data['DateModification'] == 'null' || substr($data['DateModification'],0,10) == '-0001-11-30') ? null : $data['DateModification'] );
         //foreign
@@ -498,12 +551,30 @@ class CostLineForm extends CostLine
         $e = CostLineQuery::create()->findPk(json_decode($data['i']));
         
         
+        if(!$data['Recuring']){
+            $data['Recuring'] = "Once";
+        } 
+        if(!$data['Bill']){
+            $data['Bill'] = "No";
+        } 
         $e->fromArray($data );
         
         
         
+        if( isset($data['IdBilling']) ){
+            $e->setIdBilling(( $data['IdBilling'] == '' ) ? null : $data['IdBilling']);
+        }
+        if( isset($data['IdSupplier']) ){
+            $e->setIdSupplier(( $data['IdSupplier'] == '' ) ? null : $data['IdSupplier']);
+        }
+        if( isset($data['IdBillingCategory']) ){
+            $e->setIdBillingCategory(( $data['IdBillingCategory'] == '' ) ? null : $data['IdBillingCategory']);
+        }
         if(isset($data['SpendDate'])){
             $e->setSpendDate( ($data['SpendDate'] == '' || $data['SpendDate'] == 'null' || substr($data['SpendDate'],0,10) == '-0001-11-30') ? null : $data['SpendDate'] );
+        }
+        if(isset($data['RenewalDate'])){
+            $e->setRenewalDate( ($data['RenewalDate'] == '' || $data['RenewalDate'] == 'null' || substr($data['RenewalDate'],0,10) == '-0001-11-30') ? null : $data['RenewalDate'] );
         }
         if(isset($data['Quantity'])){
             $e->setQuantity( ($data['Quantity'] == '' ) ? null : $data['Quantity']);
@@ -576,6 +647,12 @@ class CostLineForm extends CostLine
                 case 'Billing':
                     $data['IdBilling'] = $data['ip'];
                     break;
+                case 'Supplier':
+                    $data['IdSupplier'] = $data['ip'];
+                    break;
+                case 'BillingCategory':
+                    $data['IdBillingCategory'] = $data['ip'];
+                    break;
                 case 'AuthyGroup':
                     $data['IdGroupCreation'] = $data['ip'];
                     break;
@@ -630,6 +707,10 @@ class CostLineForm extends CostLine
 
             $q = CostLineQuery::create()
             
+                #default
+                ->leftJoinWith('Supplier')
+                #default
+                ->leftJoinWith('BillingCategory')
             ;
             
 
@@ -658,8 +739,12 @@ class CostLineForm extends CostLine
         
 
 
+                                    ($dataObj->getSupplier())?'':$dataObj->setSupplier( new Supplier() );
+                                    ($dataObj->getBillingCategory())?'':$dataObj->setBillingCategory( new BillingCategory() );
 
         
+        $this->arrayIdSupplierOptions = $this->selectBoxCostLine_IdSupplier($this, $dataObj, $data);
+        $this->arrayIdBillingCategoryOptions = $this->selectBoxCostLine_IdBillingCategory($this, $dataObj, $data);
         
         
         
@@ -667,11 +752,17 @@ class CostLineForm extends CostLine
         
         
 $this->fields['CostLine']['Title']['html'] = stdFieldRow(_("Title"), input('text', 'Title', htmlentities($dataObj->getTitle()), "   placeholder='".str_replace("'","&#39;",_('Title'))."' size='35'  v='TITLE' s='d' class=''  ")."", 'Title', "", $this->commentsTitle, $this->commentsTitle_css, '', ' ', 'no');
+$this->fields['CostLine']['IdSupplier']['html'] = stdFieldRow(_("Supplier"), selectboxCustomArray('IdSupplier', $this->arrayIdSupplierOptions, _('Supplier'), "v='ID_SUPPLIER'  s='d'  val='".$dataObj->getIdSupplier()."'", $dataObj->getIdSupplier()), 'IdSupplier', "", $this->commentsIdSupplier, $this->commentsIdSupplier_css, '', ' ', 'no');
+$this->fields['CostLine']['InvoiceNo']['html'] = stdFieldRow(_("Invoice no."), input('text', 'InvoiceNo', htmlentities($dataObj->getInvoiceNo()), "   placeholder='".str_replace("'","&#39;",_('Invoice no.'))."' size='35'  v='INVOICE_NO' s='d' class=''  ")."", 'InvoiceNo', "", $this->commentsInvoiceNo, $this->commentsInvoiceNo_css, '', ' ', 'no');
+$this->fields['CostLine']['IdBillingCategory']['html'] = stdFieldRow(_("Category"), selectboxCustomArray('IdBillingCategory', $this->arrayIdBillingCategoryOptions, _('Category'), "v='ID_BILLING_CATEGORY'  s='d'  val='".$dataObj->getIdBillingCategory()."'", $dataObj->getIdBillingCategory()), 'IdBillingCategory', "", $this->commentsIdBillingCategory, $this->commentsIdBillingCategory_css, '', ' ', 'no');
 $this->fields['CostLine']['SpendDate']['html'] = stdFieldRow(_("Date"), input('date', 'SpendDate', $dataObj->getSpendDate(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'SpendDate', "", $this->commentsSpendDate, $this->commentsSpendDate_css, '', ' ', 'no');
-$this->fields['CostLine']['NoteBillingLigne']['html'] = stdFieldRow(_("Note"), textarea('NoteBillingLigne', htmlentities($dataObj->getNoteBillingLigne()) ,"placeholder='".str_replace("'","&#39;",_('Note'))."' cols='71' v='NOTE_BILLING_LIGNE' s='d'  class=' ' style='' spellcheck='false'"), 'NoteBillingLigne', "", $this->commentsNoteBillingLigne, $this->commentsNoteBillingLigne_css, '', ' ', 'no');
+$this->fields['CostLine']['Recuring']['html'] = stdFieldRow(_("Recuring"), selectboxCustomArray('Recuring', array( '0' => array('0'=>_("Once"), '1'=>"Once"),'1' => array('0'=>_("Monthly"), '1'=>"Monthly"),'2' => array('0'=>_("Yearly"), '1'=>"Yearly"), ), "", "s='d'  ", $dataObj->getRecuring(), '', false), 'Recuring', "", $this->commentsRecuring, $this->commentsRecuring_css, '', ' ', 'no');
+$this->fields['CostLine']['RenewalDate']['html'] = stdFieldRow(_("Renewal date"), input('date', 'RenewalDate', $dataObj->getRenewalDate(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'RenewalDate', "", $this->commentsRenewalDate, $this->commentsRenewalDate_css, '', ' ', 'no');
 $this->fields['CostLine']['Quantity']['html'] = stdFieldRow(_("Quantity"), input('text', 'Quantity', $dataObj->getQuantity(), "  placeholder='".str_replace("'","&#39;",_('Quantity'))."'  v='QUANTITY' size='5' s='d' class=''"), 'Quantity', "", $this->commentsQuantity, $this->commentsQuantity_css, '', ' ', 'no');
 $this->fields['CostLine']['Amount']['html'] = stdFieldRow(_("Amount"), input('text', 'Amount', $dataObj->getAmount(), "  placeholder='".str_replace("'","&#39;",_('Amount'))."'  v='AMOUNT' size='5' s='d' class='req'"), 'Amount', "", $this->commentsAmount, $this->commentsAmount_css, '', ' ', 'no');
 $this->fields['CostLine']['Total']['html'] = stdFieldRow(_("Total"), input('text', 'Total', $dataObj->getTotal(), "  placeholder='".str_replace("'","&#39;",_('Total'))."'  v='TOTAL' size='5' s='d' class=''"), 'Total', "", $this->commentsTotal, $this->commentsTotal_css, '', ' ', 'no');
+$this->fields['CostLine']['Bill']['html'] = stdFieldRow(_("Add to bill"), selectboxCustomArray('Bill', array( '0' => array('0'=>_("No"), '1'=>"No"),'1' => array('0'=>_("Yes"), '1'=>"Yes"), ), "", "s='d'  ", $dataObj->getBill(), '', false), 'Bill', "", $this->commentsBill, $this->commentsBill_css, '', ' ', 'no');
+$this->fields['CostLine']['NoteBillingLigne']['html'] = stdFieldRow(_("Note"), textarea('NoteBillingLigne', htmlentities($dataObj->getNoteBillingLigne()) ,"placeholder='".str_replace("'","&#39;",_('Note'))."' cols='71' v='NOTE_BILLING_LIGNE' s='d'  class=' ' style='' spellcheck='false'"), 'NoteBillingLigne', "", $this->commentsNoteBillingLigne, $this->commentsNoteBillingLigne_css, '', ' ', 'no');
 
 
         $this->lockFormField(array(0=>'Total',), $dataObj);
@@ -719,18 +810,24 @@ $this->fields['CostLine']['Total']['html'] = stdFieldRow(_("Total"), input('text
         .form(
             
             div(
-                div('Cost entry', '', "class='panel-heading'").
+                div('Expense', '', "class='panel-heading'").
                 $header_top_onglet.
                 
                 $this->hookFormInnerTop
                 
                 .
 $this->fields['CostLine']['Title']['html']
+.$this->fields['CostLine']['IdSupplier']['html']
+.$this->fields['CostLine']['InvoiceNo']['html']
+.$this->fields['CostLine']['IdBillingCategory']['html']
 .$this->fields['CostLine']['SpendDate']['html']
-.$this->fields['CostLine']['NoteBillingLigne']['html']
+.$this->fields['CostLine']['Recuring']['html']
+.$this->fields['CostLine']['RenewalDate']['html']
 .$this->fields['CostLine']['Quantity']['html']
 .$this->fields['CostLine']['Amount']['html']
 .$this->fields['CostLine']['Total']['html']
+.$this->fields['CostLine']['Bill']['html']
+.$this->fields['CostLine']['NoteBillingLigne']['html']
                 
                 .$this->formSaveBar
                 .$this->hookFormInnerBottom
@@ -792,11 +889,23 @@ $this->fields['CostLine']['Title']['html']
         $this->fieldsRo['CostLine']['Title']['html'] = stdFieldRow(_("Title"), div( $dataObj->getTitle(), 'Title_label' , "class='readonly' s='d'")
                 .input('hidden', 'Title', $dataObj->getTitle(), "s='d'"), 'Title', "", $this->commentsTitle, $this->commentsTitle_css, 'readonly', ' ', 'no');
 
+        $this->fieldsRo['CostLine']['IdSupplier']['html'] = stdFieldRow(_("Supplier"), div( ($dataObj->getSupplier())?$dataObj->getSupplier()->getName():'', 'IdSupplier_label' , "class='readonly' s='d'")
+                .input('hidden', 'IdSupplier', $dataObj->getIdSupplier(), "s='d'"), 'IdSupplier', "", $this->commentsIdSupplier, $this->commentsIdSupplier_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['CostLine']['InvoiceNo']['html'] = stdFieldRow(_("Invoice no."), div( $dataObj->getInvoiceNo(), 'InvoiceNo_label' , "class='readonly' s='d'")
+                .input('hidden', 'InvoiceNo', $dataObj->getInvoiceNo(), "s='d'"), 'InvoiceNo', "", $this->commentsInvoiceNo, $this->commentsInvoiceNo_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['CostLine']['IdBillingCategory']['html'] = stdFieldRow(_("Category"), div( ($dataObj->getBillingCategory())?$dataObj->getBillingCategory()->getName():'', 'IdBillingCategory_label' , "class='readonly' s='d'")
+                .input('hidden', 'IdBillingCategory', $dataObj->getIdBillingCategory(), "s='d'"), 'IdBillingCategory', "", $this->commentsIdBillingCategory, $this->commentsIdBillingCategory_css, 'readonly', ' ', 'no');
+
         $this->fieldsRo['CostLine']['SpendDate']['html'] = stdFieldRow(_("Date"), div( $dataObj->getSpendDate(), 'SpendDate_label' , "class='readonly' s='d'")
                 .input('hidden', 'SpendDate', $dataObj->getSpendDate(), "s='d'"), 'SpendDate', "", $this->commentsSpendDate, $this->commentsSpendDate_css, 'readonly', ' ', 'no');
 
-        $this->fieldsRo['CostLine']['NoteBillingLigne']['html'] = stdFieldRow(_("Note"), div( $dataObj->getNoteBillingLigne(), 'NoteBillingLigne_label' , "class='readonly' s='d'")
-                .input('hidden', 'NoteBillingLigne', $dataObj->getNoteBillingLigne(), "s='d'"), 'NoteBillingLigne', "", $this->commentsNoteBillingLigne, $this->commentsNoteBillingLigne_css, 'readonly', ' ', 'no');
+        $this->fieldsRo['CostLine']['Recuring']['html'] = stdFieldRow(_("Recuring"), div( $dataObj->getRecuring(), 'Recuring_label' , "class='readonly' s='d'")
+                .input('hidden', 'Recuring', $dataObj->getRecuring(), "s='d'"), 'Recuring', "", $this->commentsRecuring, $this->commentsRecuring_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['CostLine']['RenewalDate']['html'] = stdFieldRow(_("Renewal date"), div( $dataObj->getRenewalDate(), 'RenewalDate_label' , "class='readonly' s='d'")
+                .input('hidden', 'RenewalDate', $dataObj->getRenewalDate(), "s='d'"), 'RenewalDate', "", $this->commentsRenewalDate, $this->commentsRenewalDate_css, 'readonly', ' ', 'no');
 
         $this->fieldsRo['CostLine']['Quantity']['html'] = stdFieldRow(_("Quantity"), div( $dataObj->getQuantity(), 'Quantity_label' , "class='readonly' s='d'")
                 .input('hidden', 'Quantity', $dataObj->getQuantity(), "s='d'"), 'Quantity', "", $this->commentsQuantity, $this->commentsQuantity_css, 'readonly', ' ', 'no');
@@ -806,6 +915,12 @@ $this->fields['CostLine']['Title']['html']
 
         $this->fieldsRo['CostLine']['Total']['html'] = stdFieldRow(_("Total"), div( $dataObj->getTotal(), 'Total_label' , "class='readonly' s='d'")
                 .input('hidden', 'Total', $dataObj->getTotal(), "s='d'"), 'Total', "", $this->commentsTotal, $this->commentsTotal_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['CostLine']['Bill']['html'] = stdFieldRow(_("Add to bill"), div( $dataObj->getBill(), 'Bill_label' , "class='readonly' s='d'")
+                .input('hidden', 'Bill', $dataObj->getBill(), "s='d'"), 'Bill', "", $this->commentsBill, $this->commentsBill_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['CostLine']['NoteBillingLigne']['html'] = stdFieldRow(_("Note"), div( $dataObj->getNoteBillingLigne(), 'NoteBillingLigne_label' , "class='readonly' s='d'")
+                .input('hidden', 'NoteBillingLigne', $dataObj->getNoteBillingLigne(), "s='d'"), 'NoteBillingLigne', "", $this->commentsNoteBillingLigne, $this->commentsNoteBillingLigne_css, 'readonly', ' ', 'no');
 
 
         if($fields == 'all') {
@@ -817,5 +932,53 @@ $this->fields['CostLine']['Title']['html']
                 $this->fields['CostLine'][$field]['html'] = $this->fieldsRo['CostLine'][$field]['html'];
             }
         }
+    }
+
+    /**
+     * Query for CostLine_IdSupplier selectBox 
+     * @param class $obj
+     * @param class $dataObj
+     * @param array $data
+    **/
+    public function selectBoxCostLine_IdSupplier(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+        $q = SupplierQuery::create();
+
+            $q->select(array('Name', 'IdSupplier'));
+            $q->orderBy('Name', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+
+        $arrayOpt = $pcDataO->toArray();
+
+        return assocToNum($arrayOpt , true);
+    }
+
+    /**
+     * Query for CostLine_IdBillingCategory selectBox 
+     * @param class $obj
+     * @param class $dataObj
+     * @param array $data
+    **/
+    public function selectBoxCostLine_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+        $q = BillingCategoryQuery::create();
+
+            $q->select(array('Name', 'IdBillingCategory'));
+            $q->orderBy('Name', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+
+        $arrayOpt = $pcDataO->toArray();
+
+        return assocToNum($arrayOpt , true);
     }
 }

@@ -36,7 +36,7 @@
             "add_tab_columns": {"Note":"note_billing", "Paiement":"date_paid"},
             is_wysiwyg_colunms: ["note_billing"],
             add_search_columns:{"Type": [["type", "%val", "multiple"]], "Client": [["id_client", "%val", "multiple"]], "Date": [["date", "%val"]], "Title": [["title", "%val"]], "State": [["state", "%val", "multiple"]],},
-			"set_readonly_columns":["gross"],
+			"set_readonly_columns":["gross", "tax"],
 			"set_list_hide_columns":["note_billing", "reference"],
 			set_order_list_columns:[["date", "DESC"]],
 			set_order_child_list_columns:{"billing_line":[["work_date", "DESC"]]},
@@ -49,12 +49,16 @@
 			"title('Title')": ["varchar(100)"],
 			"id_client('Client')": ["integer()","foreign(client)",null,"foreign:id_client"],
 			"id_project('Project')": ["integer()","foreign(project)",'not-required', 'default:null',"foreign:id_project"],
+			"id_billing_category('Category')": ["integer()","foreign(billing_category)",'not-required', 'default:null'],
 
 			"date('Date')": ["date()"],
 			//"id_project('Project')": ["integer()","foreign(project)",null,"foreign:id_project"],
 			"type('Type')": ["enum(Quote, Bill)",'required', "default:'Bill'"],
 			"state('State')": ["enum(New, Approved, Sent, Partial paiement, Paid,Cancelled, To send)",'required'],
 			"gross('Gross')": ["decimal(8, 2)"],
+
+			"tax('Tax')": ["decimal(8, 2)"],
+
 			"date_due('Due date')": ["date()"],
 			
 			"note_billing('Note')": ["longvarchar(400)"],
@@ -87,6 +91,7 @@
             "quantity('Quantity')": ["decimal(8, 2)"],
 			"amount('Amount')": ["decimal(8, 2)"],
 			"total('Total')": ["decimal(8, 2)"],
+			"id_billing_category('Category')": ["integer()","foreign(billing_category)",'not-required', 'default:null'],
 			"note_billing_ligne('Note')": ["longvarchar(500)"],
 			
 			"validator": {"amount":{"required":{"msg":"billing_line_amount_required"}}},
@@ -106,20 +111,28 @@
 			
 			"validator": {"amount":{"required":{"msg":"billing_line_amount_required"}}},
 		},
-        "cost_line('Cost entry')": {
+        "cost_line('Expense')": {
             "set_parent_table": 'billing',
             "set_readonly_columns":["total"],
+			set_menu_priority: 1,
 
 			"id_cost_line()": ["primary()"],
-			"id_billing()": ["integer()","foreign(billing)","onDelete:cascade","foreign:id_billing"],
+			"id_billing()": ["integer()","foreign(billing)","onDelete:cascade","foreign:id_billing",'not-required', 'default:null'],
 			"calc_id()": ["varchar(20)"],
 			//"prod_id('Produit')": ["integer()","foreign(product)","onDelete:restrict","foreign:id_product"],
 			"title('Title')": ["varchar(100)"],
+			"id_supplier('Supplier')": ["integer()","foreign(supplier)",'not-required', 'default:null'],		
+			"invoice_no('Invoice no.')": ["varchar(100)"],
+			"id_billing_category('Category')": ["integer()","foreign(billing_category)",'not-required', 'default:null'],
 			"spend_date('Date')": ["date()"],
-			"note_billing_ligne('Note')": ["longvarchar(500)"],
+			"recuring('Recuring')": ["enum(Once, Monthly, Yearly)", 'required'],
+			"renewal_date('Renewal date')": ["date()"],
+			
             "quantity('Quantity')": ["decimal(8, 2)"],
 			"amount('Amount')": ["decimal(8, 2)"],
             "total('Total')": ["decimal(8, 2)"],
+			"bill('Add to bill')": ["enum(No, Yes)", 'required'],
+			"note_billing_ligne('Note')": ["longvarchar(500)"],
 			
 			"validator": {"amount":{"required":{"msg":"cost_line_amount_required"}}},
 		},
@@ -162,6 +175,38 @@
             "total('Total')": ["decimal(8, 2)"],
 			
 			"validator": {"amount":{"required":{"msg":"cost_line_amount_required"}}},
-		}
+		},
+        "billing_category('Category billing')": {
+            set_parent_menu:"Settings",
+			"id_billing_category()": ["primary()"],
+			"name('Name')": ["varchar(100)"],
+			
+			"validator": {"name":{"required":{"msg":"name_required","value":null}}},
+		},
+		"supplier('Supplier')": {
+            set_menu_priority: 1,
+            "with_child_tables": ["cost_line"],
+
+			"id_supplier()": ["primary()"],
+			"name('Name')": ["varchar(100)"],
+			"id_country('Country')": ["integer()","foreign(country)",null],
+			"phone('Phone')": ["varchar(20)"],
+			"phone_work('Phone work')": ["varchar(20)"],
+			"ext('Extension')": ["varchar(10)"],
+			"email('Email')": ["varchar(100)"],
+			"contact('Contact')": ["varchar(150)"],
+			"email2('Email (contact)')": ["varchar(100)"],
+			"phone_mobile('contact')": ["varchar(20)"],
+			"website()": ["varchar(100)"],
+			"address_1('Address 1')": ["longvarchar()"],
+			"address_2('Address 2')": ["longvarchar()"],
+			"address_3('Address 3')": ["longvarchar()"],
+			"zip('Zip')": ["varchar(12)"],
+			
+			"validator": {
+                    "name":{"minLength":{"msg":"supplier_name_required","value":"1"}},
+                    "id_country":{"required":{"msg":"supplier_country_required"}}
+					},
+		},
     }
 }

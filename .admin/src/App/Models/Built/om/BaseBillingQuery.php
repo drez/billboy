@@ -15,6 +15,7 @@ use \PropelPDO;
 use App\Authy;
 use App\AuthyGroup;
 use App\Billing;
+use App\BillingCategory;
 use App\BillingLine;
 use App\BillingPeer;
 use App\BillingQuery;
@@ -33,10 +34,12 @@ use App\Project;
  * @method BillingQuery orderByTitle($order = Criteria::ASC) Order by the title column
  * @method BillingQuery orderByIdClient($order = Criteria::ASC) Order by the id_client column
  * @method BillingQuery orderByIdProject($order = Criteria::ASC) Order by the id_project column
+ * @method BillingQuery orderByIdBillingCategory($order = Criteria::ASC) Order by the id_billing_category column
  * @method BillingQuery orderByDate($order = Criteria::ASC) Order by the date column
  * @method BillingQuery orderByType($order = Criteria::ASC) Order by the type column
  * @method BillingQuery orderByState($order = Criteria::ASC) Order by the state column
  * @method BillingQuery orderByGross($order = Criteria::ASC) Order by the gross column
+ * @method BillingQuery orderByTax($order = Criteria::ASC) Order by the tax column
  * @method BillingQuery orderByDateDue($order = Criteria::ASC) Order by the date_due column
  * @method BillingQuery orderByNoteBilling($order = Criteria::ASC) Order by the note_billing column
  * @method BillingQuery orderByDatePaid($order = Criteria::ASC) Order by the date_paid column
@@ -53,10 +56,12 @@ use App\Project;
  * @method BillingQuery groupByTitle() Group by the title column
  * @method BillingQuery groupByIdClient() Group by the id_client column
  * @method BillingQuery groupByIdProject() Group by the id_project column
+ * @method BillingQuery groupByIdBillingCategory() Group by the id_billing_category column
  * @method BillingQuery groupByDate() Group by the date column
  * @method BillingQuery groupByType() Group by the type column
  * @method BillingQuery groupByState() Group by the state column
  * @method BillingQuery groupByGross() Group by the gross column
+ * @method BillingQuery groupByTax() Group by the tax column
  * @method BillingQuery groupByDateDue() Group by the date_due column
  * @method BillingQuery groupByNoteBilling() Group by the note_billing column
  * @method BillingQuery groupByDatePaid() Group by the date_paid column
@@ -79,6 +84,10 @@ use App\Project;
  * @method BillingQuery leftJoinProject($relationAlias = null) Adds a LEFT JOIN clause to the query using the Project relation
  * @method BillingQuery rightJoinProject($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Project relation
  * @method BillingQuery innerJoinProject($relationAlias = null) Adds a INNER JOIN clause to the query using the Project relation
+ *
+ * @method BillingQuery leftJoinBillingCategory($relationAlias = null) Adds a LEFT JOIN clause to the query using the BillingCategory relation
+ * @method BillingQuery rightJoinBillingCategory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BillingCategory relation
+ * @method BillingQuery innerJoinBillingCategory($relationAlias = null) Adds a INNER JOIN clause to the query using the BillingCategory relation
  *
  * @method BillingQuery leftJoinAuthyGroup($relationAlias = null) Adds a LEFT JOIN clause to the query using the AuthyGroup relation
  * @method BillingQuery rightJoinAuthyGroup($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AuthyGroup relation
@@ -111,10 +120,12 @@ use App\Project;
  * @method Billing findOneByTitle(string $title) Return the first Billing filtered by the title column
  * @method Billing findOneByIdClient(int $id_client) Return the first Billing filtered by the id_client column
  * @method Billing findOneByIdProject(int $id_project) Return the first Billing filtered by the id_project column
+ * @method Billing findOneByIdBillingCategory(int $id_billing_category) Return the first Billing filtered by the id_billing_category column
  * @method Billing findOneByDate(string $date) Return the first Billing filtered by the date column
  * @method Billing findOneByType(int $type) Return the first Billing filtered by the type column
  * @method Billing findOneByState(int $state) Return the first Billing filtered by the state column
  * @method Billing findOneByGross(string $gross) Return the first Billing filtered by the gross column
+ * @method Billing findOneByTax(string $tax) Return the first Billing filtered by the tax column
  * @method Billing findOneByDateDue(string $date_due) Return the first Billing filtered by the date_due column
  * @method Billing findOneByNoteBilling(string $note_billing) Return the first Billing filtered by the note_billing column
  * @method Billing findOneByDatePaid(string $date_paid) Return the first Billing filtered by the date_paid column
@@ -131,10 +142,12 @@ use App\Project;
  * @method array findByTitle(string $title) Return Billing objects filtered by the title column
  * @method array findByIdClient(int $id_client) Return Billing objects filtered by the id_client column
  * @method array findByIdProject(int $id_project) Return Billing objects filtered by the id_project column
+ * @method array findByIdBillingCategory(int $id_billing_category) Return Billing objects filtered by the id_billing_category column
  * @method array findByDate(string $date) Return Billing objects filtered by the date column
  * @method array findByType(int $type) Return Billing objects filtered by the type column
  * @method array findByState(int $state) Return Billing objects filtered by the state column
  * @method array findByGross(string $gross) Return Billing objects filtered by the gross column
+ * @method array findByTax(string $tax) Return Billing objects filtered by the tax column
  * @method array findByDateDue(string $date_due) Return Billing objects filtered by the date_due column
  * @method array findByNoteBilling(string $note_billing) Return Billing objects filtered by the note_billing column
  * @method array findByDatePaid(string $date_paid) Return Billing objects filtered by the date_paid column
@@ -253,7 +266,7 @@ abstract class BaseBillingQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_billing`, `calc_id`, `title`, `id_client`, `id_project`, `date`, `type`, `state`, `gross`, `date_due`, `note_billing`, `date_paid`, `net`, `reference`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `billing` WHERE `id_billing` = :p0';
+        $sql = 'SELECT `id_billing`, `calc_id`, `title`, `id_client`, `id_project`, `id_billing_category`, `date`, `type`, `state`, `gross`, `tax`, `date_due`, `note_billing`, `date_paid`, `net`, `reference`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `billing` WHERE `id_billing` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -534,6 +547,50 @@ abstract class BaseBillingQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the id_billing_category column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIdBillingCategory(1234); // WHERE id_billing_category = 1234
+     * $query->filterByIdBillingCategory(array(12, 34)); // WHERE id_billing_category IN (12, 34)
+     * $query->filterByIdBillingCategory(array('min' => 12)); // WHERE id_billing_category >= 12
+     * $query->filterByIdBillingCategory(array('max' => 12)); // WHERE id_billing_category <= 12
+     * </code>
+     *
+     * @see       filterByBillingCategory()
+     *
+     * @param     mixed $idBillingCategory The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return BillingQuery The current query, for fluid interface
+     */
+    public function filterByIdBillingCategory($idBillingCategory = null, $comparison = null)
+    {
+        if (is_array($idBillingCategory)) {
+            $useMinMax = false;
+            if (isset($idBillingCategory['min'])) {
+                $this->addUsingAlias(BillingPeer::ID_BILLING_CATEGORY, $idBillingCategory['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($idBillingCategory['max'])) {
+                $this->addUsingAlias(BillingPeer::ID_BILLING_CATEGORY, $idBillingCategory['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(BillingPeer::ID_BILLING_CATEGORY, $idBillingCategory, $comparison);
+    }
+
+    /**
      * Filter the query on the date column
      *
      * Example usage:
@@ -670,6 +727,48 @@ abstract class BaseBillingQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(BillingPeer::GROSS, $gross, $comparison);
+    }
+
+    /**
+     * Filter the query on the tax column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByTax(1234); // WHERE tax = 1234
+     * $query->filterByTax(array(12, 34)); // WHERE tax IN (12, 34)
+     * $query->filterByTax(array('min' => 12)); // WHERE tax >= 12
+     * $query->filterByTax(array('max' => 12)); // WHERE tax <= 12
+     * </code>
+     *
+     * @param     mixed $tax The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return BillingQuery The current query, for fluid interface
+     */
+    public function filterByTax($tax = null, $comparison = null)
+    {
+        if (is_array($tax)) {
+            $useMinMax = false;
+            if (isset($tax['min'])) {
+                $this->addUsingAlias(BillingPeer::TAX, $tax['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($tax['max'])) {
+                $this->addUsingAlias(BillingPeer::TAX, $tax['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(BillingPeer::TAX, $tax, $comparison);
     }
 
     /**
@@ -1229,6 +1328,82 @@ abstract class BaseBillingQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related BillingCategory object
+     *
+     * @param   BillingCategory|PropelObjectCollection $billingCategory The related object(s) to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 BillingQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByBillingCategory($billingCategory, $comparison = null)
+    {
+        if ($billingCategory instanceof BillingCategory) {
+            return $this
+                ->addUsingAlias(BillingPeer::ID_BILLING_CATEGORY, $billingCategory->getIdBillingCategory(), $comparison);
+        } elseif ($billingCategory instanceof PropelObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(BillingPeer::ID_BILLING_CATEGORY, $billingCategory->toKeyValue('PrimaryKey', 'IdBillingCategory'), $comparison);
+        } else {
+            throw new PropelException('filterByBillingCategory() only accepts arguments of type BillingCategory or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the BillingCategory relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return BillingQuery The current query, for fluid interface
+     */
+    public function joinBillingCategory($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('BillingCategory');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'BillingCategory');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the BillingCategory relation BillingCategory object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\BillingCategoryQuery A secondary query class using the current class as primary query
+     */
+    public function useBillingCategoryQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinBillingCategory($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'BillingCategory', '\App\BillingCategoryQuery');
+    }
+
+    /**
      * Filter the query by a related AuthyGroup object
      *
      * @param   AuthyGroup|PropelObjectCollection $authyGroup The related object(s) to use as filter
@@ -1636,7 +1811,7 @@ abstract class BaseBillingQuery extends ModelCriteria
      *
      * @return BillingQuery The current query, for fluid interface
      */
-    public function joinCostLine($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinCostLine($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('CostLine');
@@ -1671,7 +1846,7 @@ abstract class BaseBillingQuery extends ModelCriteria
      *
      * @return   \App\CostLineQuery A secondary query class using the current class as primary query
      */
-    public function useCostLineQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useCostLineQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinCostLine($relationAlias, $joinType)

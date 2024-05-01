@@ -24,6 +24,8 @@ use App\ClientQuery;
 use App\Country;
 use App\CountryPeer;
 use App\CountryQuery;
+use App\Supplier;
+use App\SupplierQuery;
 
 /**
  * Base class that represents a row from the 'country' table.
@@ -141,6 +143,12 @@ abstract class BaseCountry extends BaseObject implements Persistent
     protected $collClientsPartial;
 
     /**
+     * @var        PropelObjectCollection|Supplier[] Collection to store aggregation of Supplier objects.
+     */
+    protected $collSuppliers;
+    protected $collSuppliersPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      * @var        boolean
@@ -165,6 +173,12 @@ abstract class BaseCountry extends BaseObject implements Persistent
      * @var		PropelObjectCollection
      */
     protected $clientsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $suppliersScheduledForDeletion = null;
 
     /**
      * @Field()
@@ -731,6 +745,8 @@ abstract class BaseCountry extends BaseObject implements Persistent
             $this->aAuthyRelatedByIdModification = null;
             $this->collClients = null;
 
+            $this->collSuppliers = null;
+
         } // if (deep)
     }
 
@@ -912,6 +928,23 @@ abstract class BaseCountry extends BaseObject implements Persistent
 
             if ($this->collClients !== null) {
                 foreach ($this->collClients as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->suppliersScheduledForDeletion !== null) {
+                if (!$this->suppliersScheduledForDeletion->isEmpty()) {
+                    SupplierQuery::create()
+                        ->filterByPrimaryKeys($this->suppliersScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->suppliersScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collSuppliers !== null) {
+                foreach ($this->collSuppliers as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1152,6 +1185,14 @@ abstract class BaseCountry extends BaseObject implements Persistent
                     }
                 }
 
+                if ($this->collSuppliers !== null) {
+                    foreach ($this->collSuppliers as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
 
             $this->alreadyInValidation = false;
         }
@@ -1229,6 +1270,9 @@ abstract class BaseCountry extends BaseObject implements Persistent
             }
             if (null !== $this->collClients) {
                 $result['Clients'] = $this->collClients->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collSuppliers) {
+                $result['Suppliers'] = $this->collSuppliers->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1438,6 +1482,12 @@ abstract class BaseCountry extends BaseObject implements Persistent
             foreach ($this->getClients() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addClient($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getSuppliers() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addSupplier($relObj->copy($deepCopy));
                 }
             }
 
@@ -1660,6 +1710,9 @@ abstract class BaseCountry extends BaseObject implements Persistent
     {
         if ('Client' == $relationName) {
             $this->initClients();
+        }
+        if ('Supplier' == $relationName) {
+            $this->initSuppliers();
         }
     }
 
@@ -1940,6 +1993,282 @@ abstract class BaseCountry extends BaseObject implements Persistent
     }
 
     /**
+     * Clears out the collSuppliers collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Country The current object (for fluent API support)
+     * @see        addSuppliers()
+     */
+    public function clearSuppliers()
+    {
+        $this->collSuppliers = null; // important to set this to null since that means it is uninitialized
+        $this->collSuppliersPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collSuppliers collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialSuppliers($v = true)
+    {
+        $this->collSuppliersPartial = $v;
+    }
+
+    /**
+     * Initializes the collSuppliers collection.
+     *
+     * By default this just sets the collSuppliers collection to an empty array (like clearcollSuppliers());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initSuppliers($overrideExisting = true)
+    {
+        if (null !== $this->collSuppliers && !$overrideExisting) {
+            return;
+        }
+        $this->collSuppliers = new PropelObjectCollection();
+        $this->collSuppliers->setModel('Supplier');
+    }
+
+    /**
+     * Gets an array of Supplier objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Country is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     * @throws PropelException
+     */
+    public function getSuppliers($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collSuppliersPartial && !$this->isNew();
+        if (null === $this->collSuppliers || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collSuppliers) {
+                // return empty collection
+                $this->initSuppliers();
+            } else {
+                $collSuppliers = SupplierQuery::create(null, $criteria)
+                    ->filterByCountry($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collSuppliersPartial && count($collSuppliers)) {
+                      $this->initSuppliers(false);
+
+                      foreach ($collSuppliers as $obj) {
+                        if (false == $this->collSuppliers->contains($obj)) {
+                          $this->collSuppliers->append($obj);
+                        }
+                      }
+
+                      $this->collSuppliersPartial = true;
+                    }
+
+                    $collSuppliers->getInternalIterator()->rewind();
+
+                    return $collSuppliers;
+                }
+
+                if ($partial && $this->collSuppliers) {
+                    foreach ($this->collSuppliers as $obj) {
+                        if ($obj->isNew()) {
+                            $collSuppliers[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collSuppliers = $collSuppliers;
+                $this->collSuppliersPartial = false;
+            }
+        }
+
+        return $this->collSuppliers;
+    }
+
+    /**
+     * Sets a collection of Supplier objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $suppliers A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return Country The current object (for fluent API support)
+     */
+    public function setSuppliers(PropelCollection $suppliers, PropelPDO $con = null)
+    {
+        $suppliersToDelete = $this->getSuppliers(new Criteria(), $con)->diff($suppliers);
+
+
+        $this->suppliersScheduledForDeletion = $suppliersToDelete;
+
+        foreach ($suppliersToDelete as $supplierRemoved) {
+            $supplierRemoved->setCountry(null);
+        }
+
+        $this->collSuppliers = null;
+        foreach ($suppliers as $supplier) {
+            $this->addSupplier($supplier);
+        }
+
+        $this->collSuppliers = $suppliers;
+        $this->collSuppliersPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Supplier objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related Supplier objects.
+     * @throws PropelException
+     */
+    public function countSuppliers(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collSuppliersPartial && !$this->isNew();
+        if (null === $this->collSuppliers || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collSuppliers) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getSuppliers());
+            }
+            $query = SupplierQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByCountry($this)
+                ->count($con);
+        }
+
+        return count($this->collSuppliers);
+    }
+
+    /**
+     * Method called to associate a Supplier object to this object
+     * through the Supplier foreign key attribute.
+     *
+     * @param    Supplier $l Supplier
+     * @return Country The current object (for fluent API support)
+     */
+    public function addSupplier(Supplier $l)
+    {
+        if ($this->collSuppliers === null) {
+            $this->initSuppliers();
+            $this->collSuppliersPartial = true;
+        }
+
+        if (!in_array($l, $this->collSuppliers->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddSupplier($l);
+
+            if ($this->suppliersScheduledForDeletion and $this->suppliersScheduledForDeletion->contains($l)) {
+                $this->suppliersScheduledForDeletion->remove($this->suppliersScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	Supplier $supplier The supplier object to add.
+     */
+    protected function doAddSupplier($supplier)
+    {
+        $this->collSuppliers[]= $supplier;
+        $supplier->setCountry($this);
+    }
+
+    /**
+     * @param	Supplier $supplier The supplier object to remove.
+     * @return Country The current object (for fluent API support)
+     */
+    public function removeSupplier($supplier)
+    {
+        if ($this->getSuppliers()->contains($supplier)) {
+            $this->collSuppliers->remove($this->collSuppliers->search($supplier));
+            if (null === $this->suppliersScheduledForDeletion) {
+                $this->suppliersScheduledForDeletion = clone $this->collSuppliers;
+                $this->suppliersScheduledForDeletion->clear();
+            }
+            $this->suppliersScheduledForDeletion[]= clone $supplier;
+            $supplier->setCountry(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     */
+    public function getSuppliersJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = SupplierQuery::create(null, $criteria);
+        $query->joinWith('AuthyGroup', $join_behavior);
+
+        return $this->getSuppliers($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     */
+    public function getSuppliersJoinAuthyRelatedByIdCreation($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = SupplierQuery::create(null, $criteria);
+        $query->joinWith('AuthyRelatedByIdCreation', $join_behavior);
+
+        return $this->getSuppliers($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     */
+    public function getSuppliersJoinAuthyRelatedByIdModification($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = SupplierQuery::create(null, $criteria);
+        $query->joinWith('AuthyRelatedByIdModification', $join_behavior);
+
+        return $this->getSuppliers($query, $con);
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
@@ -1982,6 +2311,11 @@ abstract class BaseCountry extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collSuppliers) {
+                foreach ($this->collSuppliers as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->aAuthyGroup instanceof Persistent) {
               $this->aAuthyGroup->clearAllReferences($deep);
             }
@@ -1999,6 +2333,10 @@ abstract class BaseCountry extends BaseObject implements Persistent
             $this->collClients->clearIterator();
         }
         $this->collClients = null;
+        if ($this->collSuppliers instanceof PropelCollection) {
+            $this->collSuppliers->clearIterator();
+        }
+        $this->collSuppliers = null;
         $this->aAuthyGroup = null;
         $this->aAuthyRelatedByIdCreation = null;
         $this->aAuthyRelatedByIdModification = null;

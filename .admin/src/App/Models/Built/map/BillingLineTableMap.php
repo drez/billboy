@@ -52,6 +52,7 @@ class BillingLineTableMap extends TableMap
         $this->addColumn('quantity', 'Quantity', 'DECIMAL', false, 8, null);
         $this->addColumn('amount', 'Amount', 'DECIMAL', false, 8, null);
         $this->addColumn('total', 'Total', 'DECIMAL', false, 8, null);
+        $this->addForeignKey('id_billing_category', 'IdBillingCategory', 'INTEGER', 'billing_category', 'id_billing_category', false, 11, null);
         $this->addColumn('note_billing_ligne', 'NoteBillingLigne', 'LONGVARCHAR', false, 500, null);
         $this->addColumn('date_creation', 'DateCreation', 'TIMESTAMP', false, null, null);
         $this->addColumn('date_modification', 'DateModification', 'TIMESTAMP', false, null, null);
@@ -69,6 +70,7 @@ class BillingLineTableMap extends TableMap
         $this->addValidator('id_project', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('BillingLine_IdProject_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('title', 'type', 'propel.validator.TypeValidator', 'string', ('BillingLine_Title_type_string'));
         $this->addValidator('work_date', 'match', 'propel.validator.MatchValidator', '', ('BillingLine_WorkDate_match'));
+        $this->addValidator('id_billing_category', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('BillingLine_IdBillingCategory_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('note_billing_ligne', 'type', 'propel.validator.TypeValidator', 'string', ('BillingLine_NoteBillingLigne_type_string'));
     } // initialize()
 
@@ -80,6 +82,7 @@ class BillingLineTableMap extends TableMap
         $this->addRelation('Billing', 'App\\Billing', RelationMap::MANY_TO_ONE, array('id_billing' => 'id_billing', ), 'CASCADE', null);
         $this->addRelation('AuthyRelatedByIdAssign', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_assign' => 'id_creation', ), null, null);
         $this->addRelation('Project', 'App\\Project', RelationMap::MANY_TO_ONE, array('id_project' => 'id_project', ), null, null);
+        $this->addRelation('BillingCategory', 'App\\BillingCategory', RelationMap::MANY_TO_ONE, array('id_billing_category' => 'id_billing_category', ), null, null);
         $this->addRelation('AuthyGroup', 'App\\AuthyGroup', RelationMap::MANY_TO_ONE, array('id_group_creation' => 'id_authy_group', ), null, null);
         $this->addRelation('AuthyRelatedByIdCreation', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_creation' => 'id_authy', ), null, null);
         $this->addRelation('AuthyRelatedByIdModification', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_modification' => 'id_authy', ), null, null);

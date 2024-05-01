@@ -44,11 +44,11 @@ $omMap = [
     ],
     [
         'name' => 'CostLine',
-        'desc' => 'Cost entries',
+        'desc' => 'Expenses',
         'parent_table' => 'billing',
         'parent_menu' => '',
         'child_table' => null,
-        'display' => 'Billing - Cost entry',
+        'display' => 'Billing - Expense',
     ],
     [
         'name' => 'Project',
@@ -68,6 +68,16 @@ $omMap = [
         'parent_menu' => '',
         'child_table' => null,
         'display' => 'Project - Time',
+    ],
+    [
+        'name' => 'Supplier',
+        'desc' => 'Suppliers',
+        'parent_table' => null,
+        'parent_menu' => '',
+        'child_table' => [
+            'cost_line',
+        ],
+        'display' => 'Supplier',
     ],
     [
         'name' => 'AuthyGroupX',
@@ -92,6 +102,14 @@ $omMap = [
         'parent_menu' => '',
         'child_table' => null,
         'display' => 'MessageI18n',
+    ],
+    [
+        'name' => 'BillingCategory',
+        'desc' => 'Category billings',
+        'parent_table' => null,
+        'parent_menu' => 'Settings',
+        'child_table' => null,
+        'display' => 'Category billing',
     ],
     [
         'name' => 'Authy',

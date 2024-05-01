@@ -46,10 +46,25 @@ class BillingLineServiceWrapper extends BillingLineService
 
             $Billing = BillingQuery::Create()->findOneByIdBilling($IdBilling);
             if ($Billing) {
+                $tax = $this->getTax($total);
+                $Billing->setTax($tax);
                 $Billing->setGross($total);
                 $Billing->save();
             }
         }
+    }
+
+    private function getTax($total)
+    {
+        if(defined('billing_tax_1')){
+            $tax = bcdiv(bcmul($total, billing_tax_1), 100);
+
+            if(defined('billing_tax_2')){
+                $tax += bcdiv(bcmul(bcsub($total, $tax), billing_tax_2), 100);
+            }
+        }
+
+        return $tax;
     }
 
     public function setProjectSpent(BillingLine $BillingLine){

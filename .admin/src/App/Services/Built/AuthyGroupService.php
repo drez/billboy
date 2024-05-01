@@ -179,13 +179,19 @@ class AuthyGroupService
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Payment entry'. ", '', true,'Group'); die( $error['onReadyJs'] );
             }
             if($obj->countCostLines()){
-                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Cost entry'. ", '', true,'Group'); die( $error['onReadyJs'] );
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Expense'. ", '', true,'Group'); die( $error['onReadyJs'] );
             }
             if($obj->countProjects()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Project'. ", '', true,'Group'); die( $error['onReadyJs'] );
             }
             if($obj->countTimeLines()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Time'. ", '', true,'Group'); die( $error['onReadyJs'] );
+            }
+            if($obj->countBillingCategories()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Category billing'. ", '', true,'Group'); die( $error['onReadyJs'] );
+            }
+            if($obj->countSuppliers()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Supplier'. ", '', true,'Group'); die( $error['onReadyJs'] );
             }
             if($obj->countAuthiesRelatedByIdGroupCreation()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'User'. ", '', true,'Group'); die( $error['onReadyJs'] );

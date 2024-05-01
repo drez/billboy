@@ -18,6 +18,8 @@ use App\AuthyGroup;
 use App\AuthyGroupQuery;
 use App\AuthyQuery;
 use App\Billing;
+use App\BillingCategory;
+use App\BillingCategoryQuery;
 use App\BillingLine;
 use App\BillingLinePeer;
 use App\BillingLineQuery;
@@ -114,6 +116,12 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
     protected $total;
 
     /**
+     * The value for the id_billing_category field.
+     * @var        int
+     */
+    protected $id_billing_category;
+
+    /**
      * The value for the note_billing_ligne field.
      * @var        string
      */
@@ -163,6 +171,11 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
      * @var        Project
      */
     protected $aProject;
+
+    /**
+     * @var        BillingCategory
+     */
+    protected $aBillingCategory;
 
     /**
      * @var        AuthyGroup
@@ -346,6 +359,18 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
     {
 
         return $this->total;
+    }
+
+    /**
+     * @Field()
+     * Get the [id_billing_category] column value.
+     * Category
+     * @return int
+     */
+    public function getIdBillingCategory()
+    {
+
+        return $this->id_billing_category;
     }
 
     /**
@@ -703,6 +728,31 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
     } // setTotal()
 
     /**
+     * Set the value of [id_billing_category] column.
+     * Category
+     * @param  int $v new value
+     * @return BillingLine The current object (for fluent API support)
+     */
+    public function setIdBillingCategory($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (int) $v;
+        }
+
+        if ($this->id_billing_category !== $v) {
+            $this->id_billing_category = $v;
+            $this->modifiedColumns[] = BillingLinePeer::ID_BILLING_CATEGORY;
+        }
+
+        if ($this->aBillingCategory !== null && $this->aBillingCategory->getIdBillingCategory() !== $v) {
+            $this->aBillingCategory = null;
+        }
+
+
+        return $this;
+    } // setIdBillingCategory()
+
+    /**
      * Set the value of [note_billing_ligne] column.
      * Note
      * @param  string $v new value
@@ -886,12 +936,13 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
             $this->quantity = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
             $this->amount = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
             $this->total = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
-            $this->note_billing_ligne = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
-            $this->date_creation = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-            $this->date_modification = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-            $this->id_group_creation = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
-            $this->id_creation = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
-            $this->id_modification = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+            $this->id_billing_category = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
+            $this->note_billing_ligne = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
+            $this->date_creation = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+            $this->date_modification = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
+            $this->id_group_creation = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
+            $this->id_creation = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+            $this->id_modification = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -901,7 +952,7 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 16; // 16 = BillingLinePeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 17; // 17 = BillingLinePeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating BillingLine object", $e);
@@ -932,6 +983,9 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
         }
         if ($this->aProject !== null && $this->id_project !== $this->aProject->getIdProject()) {
             $this->aProject = null;
+        }
+        if ($this->aBillingCategory !== null && $this->id_billing_category !== $this->aBillingCategory->getIdBillingCategory()) {
+            $this->aBillingCategory = null;
         }
         if ($this->aAuthyGroup !== null && $this->id_group_creation !== $this->aAuthyGroup->getIdAuthyGroup()) {
             $this->aAuthyGroup = null;
@@ -984,6 +1038,7 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
             $this->aBilling = null;
             $this->aAuthyRelatedByIdAssign = null;
             $this->aProject = null;
+            $this->aBillingCategory = null;
             $this->aAuthyGroup = null;
             $this->aAuthyRelatedByIdCreation = null;
             $this->aAuthyRelatedByIdModification = null;
@@ -1146,6 +1201,13 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
                 $this->setProject($this->aProject);
             }
 
+            if ($this->aBillingCategory !== null) {
+                if ($this->aBillingCategory->isModified() || $this->aBillingCategory->isNew()) {
+                    $affectedRows += $this->aBillingCategory->save($con);
+                }
+                $this->setBillingCategory($this->aBillingCategory);
+            }
+
             if ($this->aAuthyGroup !== null) {
                 if ($this->aAuthyGroup->isModified() || $this->aAuthyGroup->isNew()) {
                     $affectedRows += $this->aAuthyGroup->save($con);
@@ -1234,6 +1296,9 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
         if ($this->isColumnModified(BillingLinePeer::TOTAL)) {
             $modifiedColumns[':p' . $index++]  = '`total`';
         }
+        if ($this->isColumnModified(BillingLinePeer::ID_BILLING_CATEGORY)) {
+            $modifiedColumns[':p' . $index++]  = '`id_billing_category`';
+        }
         if ($this->isColumnModified(BillingLinePeer::NOTE_BILLING_LIGNE)) {
             $modifiedColumns[':p' . $index++]  = '`note_billing_ligne`';
         }
@@ -1292,6 +1357,9 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
                         break;
                     case '`total`':
                         $stmt->bindValue($identifier, $this->total, PDO::PARAM_STR);
+                        break;
+                    case '`id_billing_category`':
+                        $stmt->bindValue($identifier, $this->id_billing_category, PDO::PARAM_INT);
                         break;
                     case '`note_billing_ligne`':
                         $stmt->bindValue($identifier, $this->note_billing_ligne, PDO::PARAM_STR);
@@ -1428,6 +1496,12 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
                 }
             }
 
+            if ($this->aBillingCategory !== null) {
+                if (!$this->aBillingCategory->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aBillingCategory->getValidationFailures());
+                }
+            }
+
             if ($this->aAuthyGroup !== null) {
                 if (!$this->aAuthyGroup->validate($columns)) {
                     $failureMap = array_merge($failureMap, $this->aAuthyGroup->getValidationFailures());
@@ -1510,12 +1584,13 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
             $keys[7] => $this->getQuantity(),
             $keys[8] => $this->getAmount(),
             $keys[9] => $this->getTotal(),
-            $keys[10] => $this->getNoteBillingLigne(),
-            $keys[11] => $this->getDateCreation(),
-            $keys[12] => $this->getDateModification(),
-            $keys[13] => $this->getIdGroupCreation(),
-            $keys[14] => $this->getIdCreation(),
-            $keys[15] => $this->getIdModification(),
+            $keys[10] => $this->getIdBillingCategory(),
+            $keys[11] => $this->getNoteBillingLigne(),
+            $keys[12] => $this->getDateCreation(),
+            $keys[13] => $this->getDateModification(),
+            $keys[14] => $this->getIdGroupCreation(),
+            $keys[15] => $this->getIdCreation(),
+            $keys[16] => $this->getIdModification(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1531,6 +1606,9 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
             }
             if (null !== $this->aProject) {
                 $result['Project'] = $this->aProject->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aBillingCategory) {
+                $result['BillingCategory'] = $this->aBillingCategory->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aAuthyGroup) {
                 $result['AuthyGroup'] = $this->aAuthyGroup->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -1606,21 +1684,24 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
                 $this->setTotal($value);
                 break;
             case 10:
-                $this->setNoteBillingLigne($value);
+                $this->setIdBillingCategory($value);
                 break;
             case 11:
-                $this->setDateCreation($value);
+                $this->setNoteBillingLigne($value);
                 break;
             case 12:
-                $this->setDateModification($value);
+                $this->setDateCreation($value);
                 break;
             case 13:
-                $this->setIdGroupCreation($value);
+                $this->setDateModification($value);
                 break;
             case 14:
-                $this->setIdCreation($value);
+                $this->setIdGroupCreation($value);
                 break;
             case 15:
+                $this->setIdCreation($value);
+                break;
+            case 16:
                 $this->setIdModification($value);
                 break;
         } // switch()
@@ -1657,12 +1738,13 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
         if (array_key_exists($keys[7], $arr)) $this->setQuantity($arr[$keys[7]]);
         if (array_key_exists($keys[8], $arr)) $this->setAmount($arr[$keys[8]]);
         if (array_key_exists($keys[9], $arr)) $this->setTotal($arr[$keys[9]]);
-        if (array_key_exists($keys[10], $arr)) $this->setNoteBillingLigne($arr[$keys[10]]);
-        if (array_key_exists($keys[11], $arr)) $this->setDateCreation($arr[$keys[11]]);
-        if (array_key_exists($keys[12], $arr)) $this->setDateModification($arr[$keys[12]]);
-        if (array_key_exists($keys[13], $arr)) $this->setIdGroupCreation($arr[$keys[13]]);
-        if (array_key_exists($keys[14], $arr)) $this->setIdCreation($arr[$keys[14]]);
-        if (array_key_exists($keys[15], $arr)) $this->setIdModification($arr[$keys[15]]);
+        if (array_key_exists($keys[10], $arr)) $this->setIdBillingCategory($arr[$keys[10]]);
+        if (array_key_exists($keys[11], $arr)) $this->setNoteBillingLigne($arr[$keys[11]]);
+        if (array_key_exists($keys[12], $arr)) $this->setDateCreation($arr[$keys[12]]);
+        if (array_key_exists($keys[13], $arr)) $this->setDateModification($arr[$keys[13]]);
+        if (array_key_exists($keys[14], $arr)) $this->setIdGroupCreation($arr[$keys[14]]);
+        if (array_key_exists($keys[15], $arr)) $this->setIdCreation($arr[$keys[15]]);
+        if (array_key_exists($keys[16], $arr)) $this->setIdModification($arr[$keys[16]]);
     }
 
     /**
@@ -1684,6 +1766,7 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
         if ($this->isColumnModified(BillingLinePeer::QUANTITY)) $criteria->add(BillingLinePeer::QUANTITY, $this->quantity);
         if ($this->isColumnModified(BillingLinePeer::AMOUNT)) $criteria->add(BillingLinePeer::AMOUNT, $this->amount);
         if ($this->isColumnModified(BillingLinePeer::TOTAL)) $criteria->add(BillingLinePeer::TOTAL, $this->total);
+        if ($this->isColumnModified(BillingLinePeer::ID_BILLING_CATEGORY)) $criteria->add(BillingLinePeer::ID_BILLING_CATEGORY, $this->id_billing_category);
         if ($this->isColumnModified(BillingLinePeer::NOTE_BILLING_LIGNE)) $criteria->add(BillingLinePeer::NOTE_BILLING_LIGNE, $this->note_billing_ligne);
         if ($this->isColumnModified(BillingLinePeer::DATE_CREATION)) $criteria->add(BillingLinePeer::DATE_CREATION, $this->date_creation);
         if ($this->isColumnModified(BillingLinePeer::DATE_MODIFICATION)) $criteria->add(BillingLinePeer::DATE_MODIFICATION, $this->date_modification);
@@ -1762,6 +1845,7 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
         $copyObj->setQuantity($this->getQuantity());
         $copyObj->setAmount($this->getAmount());
         $copyObj->setTotal($this->getTotal());
+        $copyObj->setIdBillingCategory($this->getIdBillingCategory());
         $copyObj->setNoteBillingLigne($this->getNoteBillingLigne());
         $copyObj->setDateCreation($this->getDateCreation());
         $copyObj->setDateModification($this->getDateModification());
@@ -1985,6 +2069,58 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
     }
 
     /**
+     * Declares an association between this object and a BillingCategory object.
+     *
+     * @param                  BillingCategory $v
+     * @return BillingLine The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setBillingCategory(BillingCategory $v = null)
+    {
+        if ($v === null) {
+            $this->setIdBillingCategory(NULL);
+        } else {
+            $this->setIdBillingCategory($v->getIdBillingCategory());
+        }
+
+        $this->aBillingCategory = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the BillingCategory object, it will not be re-added.
+        if ($v !== null) {
+            $v->addBillingLine($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated BillingCategory object
+     *
+     * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
+     * @return BillingCategory The associated BillingCategory object.
+     * @throws PropelException
+     */
+    public function getBillingCategory(PropelPDO $con = null, $doQuery = true)
+    {
+        if ($this->aBillingCategory === null && ($this->id_billing_category !== null) && $doQuery) {
+            $this->aBillingCategory = BillingCategoryQuery::create()->findPk($this->id_billing_category, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aBillingCategory->addBillingLines($this);
+             */
+        }
+
+        return $this->aBillingCategory;
+    }
+
+    /**
      * Declares an association between this object and a AuthyGroup object.
      *
      * @param                  AuthyGroup $v
@@ -2155,6 +2291,7 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
         $this->quantity = null;
         $this->amount = null;
         $this->total = null;
+        $this->id_billing_category = null;
         $this->note_billing_ligne = null;
         $this->date_creation = null;
         $this->date_modification = null;
@@ -2192,6 +2329,9 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
             if ($this->aProject instanceof Persistent) {
               $this->aProject->clearAllReferences($deep);
             }
+            if ($this->aBillingCategory instanceof Persistent) {
+              $this->aBillingCategory->clearAllReferences($deep);
+            }
             if ($this->aAuthyGroup instanceof Persistent) {
               $this->aAuthyGroup->clearAllReferences($deep);
             }
@@ -2208,6 +2348,7 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
         $this->aBilling = null;
         $this->aAuthyRelatedByIdAssign = null;
         $this->aProject = null;
+        $this->aBillingCategory = null;
         $this->aAuthyGroup = null;
         $this->aAuthyRelatedByIdCreation = null;
         $this->aAuthyRelatedByIdModification = null;

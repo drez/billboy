@@ -106,6 +106,10 @@ $table['billing'] = [
         'type' => 'INTEGER',
         'description' => 'Project',
     ],
+    'id_billing_category' => [
+        'type' => 'INTEGER',
+        'description' => 'Category',
+    ],
     'date' => [
         'type' => 'DATE',
         'description' => 'Date',
@@ -123,6 +127,10 @@ $table['billing'] = [
     'gross' => [
         'type' => 'DECIMAL',
         'description' => 'Gross',
+    ],
+    'tax' => [
+        'type' => 'DECIMAL',
+        'description' => 'Tax',
     ],
     'date_due' => [
         'type' => 'DATE',
@@ -206,6 +214,10 @@ $table['billing_line'] = [
     'total' => [
         'type' => 'DECIMAL',
         'description' => 'Total',
+    ],
+    'id_billing_category' => [
+        'type' => 'INTEGER',
+        'description' => 'Category',
     ],
     'note_billing_ligne' => [
         'type' => 'LONGVARCHAR',
@@ -297,13 +309,30 @@ $table['cost_line'] = [
         'type' => 'VARCHAR',
         'description' => 'Title',
     ],
+    'id_supplier' => [
+        'type' => 'INTEGER',
+        'description' => 'Supplier',
+    ],
+    'invoice_no' => [
+        'type' => 'VARCHAR',
+        'description' => 'Invoice no.',
+    ],
+    'id_billing_category' => [
+        'type' => 'INTEGER',
+        'description' => 'Category',
+    ],
     'spend_date' => [
         'type' => 'DATE',
         'description' => 'Date',
     ],
-    'note_billing_ligne' => [
-        'type' => 'LONGVARCHAR',
-        'description' => 'Note',
+    'recuring' => [
+        'type' => 'ENUM',
+        'description' => 'Recuring',
+        'valueSet' => null,
+    ],
+    'renewal_date' => [
+        'type' => 'DATE',
+        'description' => 'Renewal date',
     ],
     'quantity' => [
         'type' => 'DECIMAL',
@@ -316,6 +345,15 @@ $table['cost_line'] = [
     'total' => [
         'type' => 'DECIMAL',
         'description' => 'Total',
+    ],
+    'bill' => [
+        'type' => 'ENUM',
+        'description' => 'Add to bill',
+        'valueSet' => null,
+    ],
+    'note_billing_ligne' => [
+        'type' => 'LONGVARCHAR',
+        'description' => 'Note',
     ],
     'date_creation' => [
         'type' => 'TIMESTAMP',
@@ -461,6 +499,123 @@ $table['time_line'] = [
 
 $query['time_line'] = [
     'select' => $table['time_line'],
+    'filter' => [],
+    'join' => [],
+    'limit' => [],
+    'order' => [],
+    'page' => [],
+];
+$table['billing_category'] = [
+    'id_billing_category' => [
+        'type' => 'INTEGER',
+    ],
+    'name' => [
+        'type' => 'VARCHAR',
+        'description' => 'Name',
+    ],
+    'date_creation' => [
+        'type' => 'TIMESTAMP',
+    ],
+    'date_modification' => [
+        'type' => 'TIMESTAMP',
+    ],
+    'id_group_creation' => [
+        'type' => 'INTEGER',
+    ],
+    'id_creation' => [
+        'type' => 'INTEGER',
+    ],
+    'id_modification' => [
+        'type' => 'INTEGER',
+    ],
+];
+
+$query['billing_category'] = [
+    'select' => $table['billing_category'],
+    'filter' => [],
+    'join' => [],
+    'limit' => [],
+    'order' => [],
+    'page' => [],
+];
+$table['supplier'] = [
+    'id_supplier' => [
+        'type' => 'INTEGER',
+    ],
+    'name' => [
+        'type' => 'VARCHAR',
+        'description' => 'Name',
+    ],
+    'id_country' => [
+        'type' => 'INTEGER',
+        'description' => 'Country',
+    ],
+    'phone' => [
+        'type' => 'VARCHAR',
+        'description' => 'Phone',
+    ],
+    'phone_work' => [
+        'type' => 'VARCHAR',
+        'description' => 'Phone work',
+    ],
+    'ext' => [
+        'type' => 'VARCHAR',
+        'description' => 'Extension',
+    ],
+    'email' => [
+        'type' => 'VARCHAR',
+        'description' => 'Email',
+    ],
+    'contact' => [
+        'type' => 'VARCHAR',
+        'description' => 'Contact',
+    ],
+    'email2' => [
+        'type' => 'VARCHAR',
+        'description' => 'Email (contact)',
+    ],
+    'phone_mobile' => [
+        'type' => 'VARCHAR',
+        'description' => 'contact',
+    ],
+    'website' => [
+        'type' => 'VARCHAR',
+    ],
+    'address_1' => [
+        'type' => 'LONGVARCHAR',
+        'description' => 'Address 1',
+    ],
+    'address_2' => [
+        'type' => 'LONGVARCHAR',
+        'description' => 'Address 2',
+    ],
+    'address_3' => [
+        'type' => 'LONGVARCHAR',
+        'description' => 'Address 3',
+    ],
+    'zip' => [
+        'type' => 'VARCHAR',
+        'description' => 'Zip',
+    ],
+    'date_creation' => [
+        'type' => 'TIMESTAMP',
+    ],
+    'date_modification' => [
+        'type' => 'TIMESTAMP',
+    ],
+    'id_group_creation' => [
+        'type' => 'INTEGER',
+    ],
+    'id_creation' => [
+        'type' => 'INTEGER',
+    ],
+    'id_modification' => [
+        'type' => 'INTEGER',
+    ],
+];
+
+$query['supplier'] = [
+    'select' => $table['supplier'],
     'filter' => [],
     'join' => [],
     'limit' => [],
@@ -1241,7 +1396,7 @@ return [
         ],
     ],
     'cost_line[/{id}]' => [
-        'description' => 'Cost entry',
+        'description' => 'Expense',
         'type' => 'custom',
         'GET' => [
             'request' => [
@@ -1339,6 +1494,74 @@ return [
             'request' => [
                         'type' => 'INTEGER',
                         'name' => 'id_cost_line'
+            ]
+        ],
+    ],
+    'billing_category[/{id}]' => [
+        'description' => 'Category billing',
+        'type' => 'custom',
+        'GET' => [
+            'request' => [
+                'id' => [
+                    'type' => 'INTEGER',
+                    'name' => 'id_billing_category'
+                ]
+            ],
+            'response' => [
+                'data' => $table['billing_category']
+            ]
+        ],
+        'POST' =>  [
+            'request' => [
+                'fields' => $table['billing_category'],
+                'query' => $query
+            ],
+            'response' => [
+                'ids' => [],
+                'count' => []
+            ]
+        ],
+        'PATCH' =>  [
+            'request' => $table['billing_category']
+            ],
+        'DELETE' =>  [
+            'request' => [
+                        'type' => 'INTEGER',
+                        'name' => 'id_billing_category'
+            ]
+        ],
+    ],
+    'supplier[/{id}]' => [
+        'description' => 'Supplier',
+        'type' => 'custom',
+        'GET' => [
+            'request' => [
+                'id' => [
+                    'type' => 'INTEGER',
+                    'name' => 'id_supplier'
+                ]
+            ],
+            'response' => [
+                'data' => $table['supplier']
+            ]
+        ],
+        'POST' =>  [
+            'request' => [
+                'fields' => $table['supplier'],
+                'query' => $query
+            ],
+            'response' => [
+                'ids' => [],
+                'count' => []
+            ]
+        ],
+        'PATCH' =>  [
+            'request' => $table['supplier']
+            ],
+        'DELETE' =>  [
+            'request' => [
+                        'type' => 'INTEGER',
+                        'name' => 'id_supplier'
             ]
         ],
     ],

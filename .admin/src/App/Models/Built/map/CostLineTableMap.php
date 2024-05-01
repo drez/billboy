@@ -43,14 +43,29 @@ class CostLineTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id_cost_line', 'IdCostLine', 'INTEGER', true, 10, null);
-        $this->addForeignKey('id_billing', 'IdBilling', 'INTEGER', 'billing', 'id_billing', true, 11, null);
+        $this->addForeignKey('id_billing', 'IdBilling', 'INTEGER', 'billing', 'id_billing', false, 11, null);
         $this->addColumn('calc_id', 'CalcId', 'VARCHAR', false, 20, null);
         $this->addColumn('title', 'Title', 'VARCHAR', false, 100, null);
+        $this->addForeignKey('id_supplier', 'IdSupplier', 'INTEGER', 'supplier', 'id_supplier', false, 11, null);
+        $this->addColumn('invoice_no', 'InvoiceNo', 'VARCHAR', false, 100, null);
+        $this->addForeignKey('id_billing_category', 'IdBillingCategory', 'INTEGER', 'billing_category', 'id_billing_category', false, 11, null);
         $this->addColumn('spend_date', 'SpendDate', 'DATE', false, null, null);
-        $this->addColumn('note_billing_ligne', 'NoteBillingLigne', 'LONGVARCHAR', false, 500, null);
+        $this->addColumn('recuring', 'Recuring', 'ENUM', true, null, null);
+        $this->getColumn('recuring', false)->setValueSet(array (
+  0 => 'Once',
+  1 => 'Monthly',
+  2 => 'Yearly',
+));
+        $this->addColumn('renewal_date', 'RenewalDate', 'DATE', false, null, null);
         $this->addColumn('quantity', 'Quantity', 'DECIMAL', false, 8, null);
         $this->addColumn('amount', 'Amount', 'DECIMAL', false, 8, null);
         $this->addColumn('total', 'Total', 'DECIMAL', false, 8, null);
+        $this->addColumn('bill', 'Bill', 'ENUM', true, null, null);
+        $this->getColumn('bill', false)->setValueSet(array (
+  0 => 'No',
+  1 => 'Yes',
+));
+        $this->addColumn('note_billing_ligne', 'NoteBillingLigne', 'LONGVARCHAR', false, 500, null);
         $this->addColumn('date_creation', 'DateCreation', 'TIMESTAMP', false, null, null);
         $this->addColumn('date_modification', 'DateModification', 'TIMESTAMP', false, null, null);
         $this->addForeignKey('id_group_creation', 'IdGroupCreation', 'INTEGER', 'authy_group', 'id_authy_group', false, null, null);
@@ -60,11 +75,18 @@ class CostLineTableMap extends TableMap
         $this->addValidator('amount', 'required', 'propel.validator.RequiredValidator', '', 'cost_line_amount_required');
         $this->addValidator('id_cost_line', 'required', 'propel.validator.RequiredValidator', '', ('CostLine_IdCostLine_required'));
         $this->addValidator('id_cost_line', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('CostLine_IdCostLine_match_/^(?:[0-9]*|null)$/'));
-        $this->addValidator('id_billing', 'required', 'propel.validator.RequiredValidator', '', ('CostLine_IdBilling_required'));
         $this->addValidator('id_billing', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('CostLine_IdBilling_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('calc_id', 'type', 'propel.validator.TypeValidator', 'string', ('CostLine_CalcId_type_string'));
         $this->addValidator('title', 'type', 'propel.validator.TypeValidator', 'string', ('CostLine_Title_type_string'));
+        $this->addValidator('id_supplier', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('CostLine_IdSupplier_match_/^(?:[0-9]*|null)$/'));
+        $this->addValidator('invoice_no', 'type', 'propel.validator.TypeValidator', 'string', ('CostLine_InvoiceNo_type_string'));
+        $this->addValidator('id_billing_category', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('CostLine_IdBillingCategory_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('spend_date', 'match', 'propel.validator.MatchValidator', '', ('CostLine_SpendDate_match'));
+        $this->addValidator('recuring', 'required', 'propel.validator.RequiredValidator', '', ('CostLine_Recuring_required'));
+        $this->addValidator('recuring', 'type', 'propel.validator.TypeValidator', 'string', ('CostLine_Recuring_type_string'));
+        $this->addValidator('renewal_date', 'match', 'propel.validator.MatchValidator', '', ('CostLine_RenewalDate_match'));
+        $this->addValidator('bill', 'required', 'propel.validator.RequiredValidator', '', ('CostLine_Bill_required'));
+        $this->addValidator('bill', 'type', 'propel.validator.TypeValidator', 'string', ('CostLine_Bill_type_string'));
         $this->addValidator('note_billing_ligne', 'type', 'propel.validator.TypeValidator', 'string', ('CostLine_NoteBillingLigne_type_string'));
     } // initialize()
 
@@ -74,6 +96,8 @@ class CostLineTableMap extends TableMap
     public function buildRelations()
     {
         $this->addRelation('Billing', 'App\\Billing', RelationMap::MANY_TO_ONE, array('id_billing' => 'id_billing', ), 'CASCADE', null);
+        $this->addRelation('Supplier', 'App\\Supplier', RelationMap::MANY_TO_ONE, array('id_supplier' => 'id_supplier', ), null, null);
+        $this->addRelation('BillingCategory', 'App\\BillingCategory', RelationMap::MANY_TO_ONE, array('id_billing_category' => 'id_billing_category', ), null, null);
         $this->addRelation('AuthyGroup', 'App\\AuthyGroup', RelationMap::MANY_TO_ONE, array('id_group_creation' => 'id_authy_group', ), null, null);
         $this->addRelation('AuthyRelatedByIdCreation', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_creation' => 'id_authy', ), null, null);
         $this->addRelation('AuthyRelatedByIdModification', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_modification' => 'id_authy', ), null, null);
@@ -92,6 +116,7 @@ class CostLineTableMap extends TableMap
   'i18n_langs' => '["en_US"]',
   'set_parent_table' => 'billing',
   'set_readonly_columns' => '["total"]',
+  'set_menu_priority' => '1',
 ),
             'add_validator' =>  array (
 ),

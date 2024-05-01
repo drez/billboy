@@ -18,6 +18,7 @@ use App\Client;
 use App\Country;
 use App\CountryPeer;
 use App\CountryQuery;
+use App\Supplier;
 
 /**
  * Base class that represents a query for the 'country' table.
@@ -67,6 +68,10 @@ use App\CountryQuery;
  * @method CountryQuery leftJoinClient($relationAlias = null) Adds a LEFT JOIN clause to the query using the Client relation
  * @method CountryQuery rightJoinClient($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Client relation
  * @method CountryQuery innerJoinClient($relationAlias = null) Adds a INNER JOIN clause to the query using the Client relation
+ *
+ * @method CountryQuery leftJoinSupplier($relationAlias = null) Adds a LEFT JOIN clause to the query using the Supplier relation
+ * @method CountryQuery rightJoinSupplier($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Supplier relation
+ * @method CountryQuery innerJoinSupplier($relationAlias = null) Adds a INNER JOIN clause to the query using the Supplier relation
  *
  * @method Country findOne(PropelPDO $con = null) Return the first Country matching the query
  * @method Country findOneOrCreate(PropelPDO $con = null) Return the first Country matching the query, or a new Country object populated from the query conditions when no match is found
@@ -1011,6 +1016,80 @@ abstract class BaseCountryQuery extends ModelCriteria
         return $this
             ->joinClient($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Client', '\App\ClientQuery');
+    }
+
+    /**
+     * Filter the query by a related Supplier object
+     *
+     * @param   Supplier|PropelObjectCollection $supplier  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 CountryQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterBySupplier($supplier, $comparison = null)
+    {
+        if ($supplier instanceof Supplier) {
+            return $this
+                ->addUsingAlias(CountryPeer::ID_COUNTRY, $supplier->getIdCountry(), $comparison);
+        } elseif ($supplier instanceof PropelObjectCollection) {
+            return $this
+                ->useSupplierQuery()
+                ->filterByPrimaryKeys($supplier->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterBySupplier() only accepts arguments of type Supplier or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Supplier relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return CountryQuery The current query, for fluid interface
+     */
+    public function joinSupplier($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Supplier');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Supplier');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Supplier relation Supplier object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\SupplierQuery A secondary query class using the current class as primary query
+     */
+    public function useSupplierQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinSupplier($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Supplier', '\App\SupplierQuery');
     }
 
     /**

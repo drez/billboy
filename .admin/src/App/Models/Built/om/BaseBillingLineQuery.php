@@ -15,6 +15,7 @@ use \PropelPDO;
 use App\Authy;
 use App\AuthyGroup;
 use App\Billing;
+use App\BillingCategory;
 use App\BillingLine;
 use App\BillingLinePeer;
 use App\BillingLineQuery;
@@ -35,6 +36,7 @@ use App\Project;
  * @method BillingLineQuery orderByQuantity($order = Criteria::ASC) Order by the quantity column
  * @method BillingLineQuery orderByAmount($order = Criteria::ASC) Order by the amount column
  * @method BillingLineQuery orderByTotal($order = Criteria::ASC) Order by the total column
+ * @method BillingLineQuery orderByIdBillingCategory($order = Criteria::ASC) Order by the id_billing_category column
  * @method BillingLineQuery orderByNoteBillingLigne($order = Criteria::ASC) Order by the note_billing_ligne column
  * @method BillingLineQuery orderByDateCreation($order = Criteria::ASC) Order by the date_creation column
  * @method BillingLineQuery orderByDateModification($order = Criteria::ASC) Order by the date_modification column
@@ -52,6 +54,7 @@ use App\Project;
  * @method BillingLineQuery groupByQuantity() Group by the quantity column
  * @method BillingLineQuery groupByAmount() Group by the amount column
  * @method BillingLineQuery groupByTotal() Group by the total column
+ * @method BillingLineQuery groupByIdBillingCategory() Group by the id_billing_category column
  * @method BillingLineQuery groupByNoteBillingLigne() Group by the note_billing_ligne column
  * @method BillingLineQuery groupByDateCreation() Group by the date_creation column
  * @method BillingLineQuery groupByDateModification() Group by the date_modification column
@@ -74,6 +77,10 @@ use App\Project;
  * @method BillingLineQuery leftJoinProject($relationAlias = null) Adds a LEFT JOIN clause to the query using the Project relation
  * @method BillingLineQuery rightJoinProject($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Project relation
  * @method BillingLineQuery innerJoinProject($relationAlias = null) Adds a INNER JOIN clause to the query using the Project relation
+ *
+ * @method BillingLineQuery leftJoinBillingCategory($relationAlias = null) Adds a LEFT JOIN clause to the query using the BillingCategory relation
+ * @method BillingLineQuery rightJoinBillingCategory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BillingCategory relation
+ * @method BillingLineQuery innerJoinBillingCategory($relationAlias = null) Adds a INNER JOIN clause to the query using the BillingCategory relation
  *
  * @method BillingLineQuery leftJoinAuthyGroup($relationAlias = null) Adds a LEFT JOIN clause to the query using the AuthyGroup relation
  * @method BillingLineQuery rightJoinAuthyGroup($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AuthyGroup relation
@@ -99,6 +106,7 @@ use App\Project;
  * @method BillingLine findOneByQuantity(string $quantity) Return the first BillingLine filtered by the quantity column
  * @method BillingLine findOneByAmount(string $amount) Return the first BillingLine filtered by the amount column
  * @method BillingLine findOneByTotal(string $total) Return the first BillingLine filtered by the total column
+ * @method BillingLine findOneByIdBillingCategory(int $id_billing_category) Return the first BillingLine filtered by the id_billing_category column
  * @method BillingLine findOneByNoteBillingLigne(string $note_billing_ligne) Return the first BillingLine filtered by the note_billing_ligne column
  * @method BillingLine findOneByDateCreation(string $date_creation) Return the first BillingLine filtered by the date_creation column
  * @method BillingLine findOneByDateModification(string $date_modification) Return the first BillingLine filtered by the date_modification column
@@ -116,6 +124,7 @@ use App\Project;
  * @method array findByQuantity(string $quantity) Return BillingLine objects filtered by the quantity column
  * @method array findByAmount(string $amount) Return BillingLine objects filtered by the amount column
  * @method array findByTotal(string $total) Return BillingLine objects filtered by the total column
+ * @method array findByIdBillingCategory(int $id_billing_category) Return BillingLine objects filtered by the id_billing_category column
  * @method array findByNoteBillingLigne(string $note_billing_ligne) Return BillingLine objects filtered by the note_billing_ligne column
  * @method array findByDateCreation(string $date_creation) Return BillingLine objects filtered by the date_creation column
  * @method array findByDateModification(string $date_modification) Return BillingLine objects filtered by the date_modification column
@@ -230,7 +239,7 @@ abstract class BaseBillingLineQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_billing_line`, `id_billing`, `calc_id`, `id_assign`, `id_project`, `title`, `work_date`, `quantity`, `amount`, `total`, `note_billing_ligne`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `billing_line` WHERE `id_billing_line` = :p0';
+        $sql = 'SELECT `id_billing_line`, `id_billing`, `calc_id`, `id_assign`, `id_project`, `title`, `work_date`, `quantity`, `amount`, `total`, `id_billing_category`, `note_billing_ligne`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `billing_line` WHERE `id_billing_line` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -724,6 +733,50 @@ abstract class BaseBillingLineQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the id_billing_category column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIdBillingCategory(1234); // WHERE id_billing_category = 1234
+     * $query->filterByIdBillingCategory(array(12, 34)); // WHERE id_billing_category IN (12, 34)
+     * $query->filterByIdBillingCategory(array('min' => 12)); // WHERE id_billing_category >= 12
+     * $query->filterByIdBillingCategory(array('max' => 12)); // WHERE id_billing_category <= 12
+     * </code>
+     *
+     * @see       filterByBillingCategory()
+     *
+     * @param     mixed $idBillingCategory The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return BillingLineQuery The current query, for fluid interface
+     */
+    public function filterByIdBillingCategory($idBillingCategory = null, $comparison = null)
+    {
+        if (is_array($idBillingCategory)) {
+            $useMinMax = false;
+            if (isset($idBillingCategory['min'])) {
+                $this->addUsingAlias(BillingLinePeer::ID_BILLING_CATEGORY, $idBillingCategory['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($idBillingCategory['max'])) {
+                $this->addUsingAlias(BillingLinePeer::ID_BILLING_CATEGORY, $idBillingCategory['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(BillingLinePeer::ID_BILLING_CATEGORY, $idBillingCategory, $comparison);
+    }
+
+    /**
      * Filter the query on the note_billing_ligne column
      *
      * Example usage:
@@ -1196,6 +1249,82 @@ abstract class BaseBillingLineQuery extends ModelCriteria
         return $this
             ->joinProject($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Project', '\App\ProjectQuery');
+    }
+
+    /**
+     * Filter the query by a related BillingCategory object
+     *
+     * @param   BillingCategory|PropelObjectCollection $billingCategory The related object(s) to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 BillingLineQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByBillingCategory($billingCategory, $comparison = null)
+    {
+        if ($billingCategory instanceof BillingCategory) {
+            return $this
+                ->addUsingAlias(BillingLinePeer::ID_BILLING_CATEGORY, $billingCategory->getIdBillingCategory(), $comparison);
+        } elseif ($billingCategory instanceof PropelObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(BillingLinePeer::ID_BILLING_CATEGORY, $billingCategory->toKeyValue('PrimaryKey', 'IdBillingCategory'), $comparison);
+        } else {
+            throw new PropelException('filterByBillingCategory() only accepts arguments of type BillingCategory or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the BillingCategory relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return BillingLineQuery The current query, for fluid interface
+     */
+    public function joinBillingCategory($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('BillingCategory');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'BillingCategory');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the BillingCategory relation BillingCategory object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\BillingCategoryQuery A secondary query class using the current class as primary query
+     */
+    public function useBillingCategoryQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinBillingCategory($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'BillingCategory', '\App\BillingCategoryQuery');
     }
 
     /**

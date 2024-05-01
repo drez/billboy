@@ -23,6 +23,18 @@ return [
         'parent_menu' => null,
     ],
     [
+        'name' => 'CostLine',
+        'desc' => 'Expenses',
+        'index' => 1,
+        'parent_menu' => null,
+    ],
+    [
+        'name' => 'Supplier',
+        'desc' => 'Suppliers',
+        'index' => 1,
+        'parent_menu' => null,
+    ],
+    [
         'name' => 'Authy',
         'desc' => 'Users',
         'index' => 200,
@@ -55,6 +67,12 @@ return [
     [
         'name' => 'AuthyLog',
         'desc' => 'Login logs',
+        'index' => 0,
+        'parent_menu' => 'Settings',
+    ],
+    [
+        'name' => 'BillingCategory',
+        'desc' => 'Category billings',
         'index' => 0,
         'parent_menu' => 'Settings',
     ],

@@ -25,6 +25,8 @@ use App\AuthyGroupX;
 use App\AuthyGroupXQuery;
 use App\AuthyQuery;
 use App\Billing;
+use App\BillingCategory;
+use App\BillingCategoryQuery;
 use App\BillingLine;
 use App\BillingLineQuery;
 use App\BillingQuery;
@@ -42,6 +44,8 @@ use App\PaymentLine;
 use App\PaymentLineQuery;
 use App\Project;
 use App\ProjectQuery;
+use App\Supplier;
+use App\SupplierQuery;
 use App\Template;
 use App\TemplateFile;
 use App\TemplateFileQuery;
@@ -219,6 +223,18 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
     protected $collTimeLinesPartial;
 
     /**
+     * @var        PropelObjectCollection|BillingCategory[] Collection to store aggregation of BillingCategory objects.
+     */
+    protected $collBillingCategories;
+    protected $collBillingCategoriesPartial;
+
+    /**
+     * @var        PropelObjectCollection|Supplier[] Collection to store aggregation of Supplier objects.
+     */
+    protected $collSuppliers;
+    protected $collSuppliersPartial;
+
+    /**
      * @var        PropelObjectCollection|Authy[] Collection to store aggregation of Authy objects.
      */
     protected $collAuthiesRelatedByIdAuthyGroup;
@@ -339,6 +355,18 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
      * @var		PropelObjectCollection
      */
     protected $timeLinesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $billingCategoriesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $suppliersScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1067,6 +1095,10 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
 
             $this->collTimeLines = null;
 
+            $this->collBillingCategories = null;
+
+            $this->collSuppliers = null;
+
             $this->collAuthiesRelatedByIdAuthyGroup = null;
 
             $this->collAuthiesRelatedByIdGroupCreation = null;
@@ -1419,6 +1451,42 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
 
             if ($this->collTimeLines !== null) {
                 foreach ($this->collTimeLines as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->billingCategoriesScheduledForDeletion !== null) {
+                if (!$this->billingCategoriesScheduledForDeletion->isEmpty()) {
+                    foreach ($this->billingCategoriesScheduledForDeletion as $billingCategory) {
+                        // need to save related object because we set the relation to null
+                        $billingCategory->save($con);
+                    }
+                    $this->billingCategoriesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collBillingCategories !== null) {
+                foreach ($this->collBillingCategories as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->suppliersScheduledForDeletion !== null) {
+                if (!$this->suppliersScheduledForDeletion->isEmpty()) {
+                    foreach ($this->suppliersScheduledForDeletion as $supplier) {
+                        // need to save related object because we set the relation to null
+                        $supplier->save($con);
+                    }
+                    $this->suppliersScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collSuppliers !== null) {
+                foreach ($this->collSuppliers as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1888,6 +1956,22 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
                     }
                 }
 
+                if ($this->collBillingCategories !== null) {
+                    foreach ($this->collBillingCategories as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
+                if ($this->collSuppliers !== null) {
+                    foreach ($this->collSuppliers as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
                 if ($this->collAuthiesRelatedByIdAuthyGroup !== null) {
                     foreach ($this->collAuthiesRelatedByIdAuthyGroup as $referrerFK) {
                         if (!$referrerFK->validate($columns)) {
@@ -2060,6 +2144,12 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
             }
             if (null !== $this->collTimeLines) {
                 $result['TimeLines'] = $this->collTimeLines->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collBillingCategories) {
+                $result['BillingCategories'] = $this->collBillingCategories->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collSuppliers) {
+                $result['Suppliers'] = $this->collSuppliers->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collAuthiesRelatedByIdAuthyGroup) {
                 $result['AuthiesRelatedByIdAuthyGroup'] = $this->collAuthiesRelatedByIdAuthyGroup->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -2361,6 +2451,18 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
                 }
             }
 
+            foreach ($this->getBillingCategories() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addBillingCategory($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getSuppliers() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addSupplier($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getAuthiesRelatedByIdAuthyGroup() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addAuthyRelatedByIdAuthyGroup($relObj->copy($deepCopy));
@@ -2655,6 +2757,12 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
         }
         if ('TimeLine' == $relationName) {
             $this->initTimeLines();
+        }
+        if ('BillingCategory' == $relationName) {
+            $this->initBillingCategories();
+        }
+        if ('Supplier' == $relationName) {
+            $this->initSuppliers();
         }
         if ('AuthyRelatedByIdAuthyGroup' == $relationName) {
             $this->initAuthiesRelatedByIdAuthyGroup();
@@ -3474,6 +3582,23 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return PropelObjectCollection|Billing[] List of Billing objects
      */
+    public function getBillingsJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingQuery::create(null, $criteria);
+        $query->joinWith('BillingCategory', $join_behavior);
+
+        return $this->getBillings($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Billing[] List of Billing objects
+     */
     public function getBillingsJoinAuthyRelatedByIdCreation($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
         $query = BillingQuery::create(null, $criteria);
@@ -3771,6 +3896,23 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
     {
         $query = BillingLineQuery::create(null, $criteria);
         $query->joinWith('Project', $join_behavior);
+
+        return $this->getBillingLines($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|BillingLine[] List of BillingLine objects
+     */
+    public function getBillingLinesJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingLineQuery::create(null, $criteria);
+        $query->joinWith('BillingCategory', $join_behavior);
 
         return $this->getBillingLines($query, $con);
     }
@@ -4323,6 +4465,40 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
     {
         $query = CostLineQuery::create(null, $criteria);
         $query->joinWith('Billing', $join_behavior);
+
+        return $this->getCostLines($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|CostLine[] List of CostLine objects
+     */
+    public function getCostLinesJoinSupplier($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CostLineQuery::create(null, $criteria);
+        $query->joinWith('Supplier', $join_behavior);
+
+        return $this->getCostLines($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|CostLine[] List of CostLine objects
+     */
+    public function getCostLinesJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CostLineQuery::create(null, $criteria);
+        $query->joinWith('BillingCategory', $join_behavior);
 
         return $this->getCostLines($query, $con);
     }
@@ -4911,6 +5087,541 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
         $query->joinWith('AuthyRelatedByIdModification', $join_behavior);
 
         return $this->getTimeLines($query, $con);
+    }
+
+    /**
+     * Clears out the collBillingCategories collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return AuthyGroup The current object (for fluent API support)
+     * @see        addBillingCategories()
+     */
+    public function clearBillingCategories()
+    {
+        $this->collBillingCategories = null; // important to set this to null since that means it is uninitialized
+        $this->collBillingCategoriesPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collBillingCategories collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialBillingCategories($v = true)
+    {
+        $this->collBillingCategoriesPartial = $v;
+    }
+
+    /**
+     * Initializes the collBillingCategories collection.
+     *
+     * By default this just sets the collBillingCategories collection to an empty array (like clearcollBillingCategories());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initBillingCategories($overrideExisting = true)
+    {
+        if (null !== $this->collBillingCategories && !$overrideExisting) {
+            return;
+        }
+        $this->collBillingCategories = new PropelObjectCollection();
+        $this->collBillingCategories->setModel('BillingCategory');
+    }
+
+    /**
+     * Gets an array of BillingCategory objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this AuthyGroup is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|BillingCategory[] List of BillingCategory objects
+     * @throws PropelException
+     */
+    public function getBillingCategories($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collBillingCategoriesPartial && !$this->isNew();
+        if (null === $this->collBillingCategories || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collBillingCategories) {
+                // return empty collection
+                $this->initBillingCategories();
+            } else {
+                $collBillingCategories = BillingCategoryQuery::create(null, $criteria)
+                    ->filterByAuthyGroup($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collBillingCategoriesPartial && count($collBillingCategories)) {
+                      $this->initBillingCategories(false);
+
+                      foreach ($collBillingCategories as $obj) {
+                        if (false == $this->collBillingCategories->contains($obj)) {
+                          $this->collBillingCategories->append($obj);
+                        }
+                      }
+
+                      $this->collBillingCategoriesPartial = true;
+                    }
+
+                    $collBillingCategories->getInternalIterator()->rewind();
+
+                    return $collBillingCategories;
+                }
+
+                if ($partial && $this->collBillingCategories) {
+                    foreach ($this->collBillingCategories as $obj) {
+                        if ($obj->isNew()) {
+                            $collBillingCategories[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collBillingCategories = $collBillingCategories;
+                $this->collBillingCategoriesPartial = false;
+            }
+        }
+
+        return $this->collBillingCategories;
+    }
+
+    /**
+     * Sets a collection of BillingCategory objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $billingCategories A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return AuthyGroup The current object (for fluent API support)
+     */
+    public function setBillingCategories(PropelCollection $billingCategories, PropelPDO $con = null)
+    {
+        $billingCategoriesToDelete = $this->getBillingCategories(new Criteria(), $con)->diff($billingCategories);
+
+
+        $this->billingCategoriesScheduledForDeletion = $billingCategoriesToDelete;
+
+        foreach ($billingCategoriesToDelete as $billingCategoryRemoved) {
+            $billingCategoryRemoved->setAuthyGroup(null);
+        }
+
+        $this->collBillingCategories = null;
+        foreach ($billingCategories as $billingCategory) {
+            $this->addBillingCategory($billingCategory);
+        }
+
+        $this->collBillingCategories = $billingCategories;
+        $this->collBillingCategoriesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related BillingCategory objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related BillingCategory objects.
+     * @throws PropelException
+     */
+    public function countBillingCategories(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collBillingCategoriesPartial && !$this->isNew();
+        if (null === $this->collBillingCategories || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collBillingCategories) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getBillingCategories());
+            }
+            $query = BillingCategoryQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByAuthyGroup($this)
+                ->count($con);
+        }
+
+        return count($this->collBillingCategories);
+    }
+
+    /**
+     * Method called to associate a BillingCategory object to this object
+     * through the BillingCategory foreign key attribute.
+     *
+     * @param    BillingCategory $l BillingCategory
+     * @return AuthyGroup The current object (for fluent API support)
+     */
+    public function addBillingCategory(BillingCategory $l)
+    {
+        if ($this->collBillingCategories === null) {
+            $this->initBillingCategories();
+            $this->collBillingCategoriesPartial = true;
+        }
+
+        if (!in_array($l, $this->collBillingCategories->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddBillingCategory($l);
+
+            if ($this->billingCategoriesScheduledForDeletion and $this->billingCategoriesScheduledForDeletion->contains($l)) {
+                $this->billingCategoriesScheduledForDeletion->remove($this->billingCategoriesScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	BillingCategory $billingCategory The billingCategory object to add.
+     */
+    protected function doAddBillingCategory($billingCategory)
+    {
+        $this->collBillingCategories[]= $billingCategory;
+        $billingCategory->setAuthyGroup($this);
+    }
+
+    /**
+     * @param	BillingCategory $billingCategory The billingCategory object to remove.
+     * @return AuthyGroup The current object (for fluent API support)
+     */
+    public function removeBillingCategory($billingCategory)
+    {
+        if ($this->getBillingCategories()->contains($billingCategory)) {
+            $this->collBillingCategories->remove($this->collBillingCategories->search($billingCategory));
+            if (null === $this->billingCategoriesScheduledForDeletion) {
+                $this->billingCategoriesScheduledForDeletion = clone $this->collBillingCategories;
+                $this->billingCategoriesScheduledForDeletion->clear();
+            }
+            $this->billingCategoriesScheduledForDeletion[]= $billingCategory;
+            $billingCategory->setAuthyGroup(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|BillingCategory[] List of BillingCategory objects
+     */
+    public function getBillingCategoriesJoinAuthyRelatedByIdCreation($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingCategoryQuery::create(null, $criteria);
+        $query->joinWith('AuthyRelatedByIdCreation', $join_behavior);
+
+        return $this->getBillingCategories($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|BillingCategory[] List of BillingCategory objects
+     */
+    public function getBillingCategoriesJoinAuthyRelatedByIdModification($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingCategoryQuery::create(null, $criteria);
+        $query->joinWith('AuthyRelatedByIdModification', $join_behavior);
+
+        return $this->getBillingCategories($query, $con);
+    }
+
+    /**
+     * Clears out the collSuppliers collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return AuthyGroup The current object (for fluent API support)
+     * @see        addSuppliers()
+     */
+    public function clearSuppliers()
+    {
+        $this->collSuppliers = null; // important to set this to null since that means it is uninitialized
+        $this->collSuppliersPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collSuppliers collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialSuppliers($v = true)
+    {
+        $this->collSuppliersPartial = $v;
+    }
+
+    /**
+     * Initializes the collSuppliers collection.
+     *
+     * By default this just sets the collSuppliers collection to an empty array (like clearcollSuppliers());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initSuppliers($overrideExisting = true)
+    {
+        if (null !== $this->collSuppliers && !$overrideExisting) {
+            return;
+        }
+        $this->collSuppliers = new PropelObjectCollection();
+        $this->collSuppliers->setModel('Supplier');
+    }
+
+    /**
+     * Gets an array of Supplier objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this AuthyGroup is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     * @throws PropelException
+     */
+    public function getSuppliers($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collSuppliersPartial && !$this->isNew();
+        if (null === $this->collSuppliers || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collSuppliers) {
+                // return empty collection
+                $this->initSuppliers();
+            } else {
+                $collSuppliers = SupplierQuery::create(null, $criteria)
+                    ->filterByAuthyGroup($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collSuppliersPartial && count($collSuppliers)) {
+                      $this->initSuppliers(false);
+
+                      foreach ($collSuppliers as $obj) {
+                        if (false == $this->collSuppliers->contains($obj)) {
+                          $this->collSuppliers->append($obj);
+                        }
+                      }
+
+                      $this->collSuppliersPartial = true;
+                    }
+
+                    $collSuppliers->getInternalIterator()->rewind();
+
+                    return $collSuppliers;
+                }
+
+                if ($partial && $this->collSuppliers) {
+                    foreach ($this->collSuppliers as $obj) {
+                        if ($obj->isNew()) {
+                            $collSuppliers[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collSuppliers = $collSuppliers;
+                $this->collSuppliersPartial = false;
+            }
+        }
+
+        return $this->collSuppliers;
+    }
+
+    /**
+     * Sets a collection of Supplier objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $suppliers A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return AuthyGroup The current object (for fluent API support)
+     */
+    public function setSuppliers(PropelCollection $suppliers, PropelPDO $con = null)
+    {
+        $suppliersToDelete = $this->getSuppliers(new Criteria(), $con)->diff($suppliers);
+
+
+        $this->suppliersScheduledForDeletion = $suppliersToDelete;
+
+        foreach ($suppliersToDelete as $supplierRemoved) {
+            $supplierRemoved->setAuthyGroup(null);
+        }
+
+        $this->collSuppliers = null;
+        foreach ($suppliers as $supplier) {
+            $this->addSupplier($supplier);
+        }
+
+        $this->collSuppliers = $suppliers;
+        $this->collSuppliersPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Supplier objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related Supplier objects.
+     * @throws PropelException
+     */
+    public function countSuppliers(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collSuppliersPartial && !$this->isNew();
+        if (null === $this->collSuppliers || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collSuppliers) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getSuppliers());
+            }
+            $query = SupplierQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByAuthyGroup($this)
+                ->count($con);
+        }
+
+        return count($this->collSuppliers);
+    }
+
+    /**
+     * Method called to associate a Supplier object to this object
+     * through the Supplier foreign key attribute.
+     *
+     * @param    Supplier $l Supplier
+     * @return AuthyGroup The current object (for fluent API support)
+     */
+    public function addSupplier(Supplier $l)
+    {
+        if ($this->collSuppliers === null) {
+            $this->initSuppliers();
+            $this->collSuppliersPartial = true;
+        }
+
+        if (!in_array($l, $this->collSuppliers->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddSupplier($l);
+
+            if ($this->suppliersScheduledForDeletion and $this->suppliersScheduledForDeletion->contains($l)) {
+                $this->suppliersScheduledForDeletion->remove($this->suppliersScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	Supplier $supplier The supplier object to add.
+     */
+    protected function doAddSupplier($supplier)
+    {
+        $this->collSuppliers[]= $supplier;
+        $supplier->setAuthyGroup($this);
+    }
+
+    /**
+     * @param	Supplier $supplier The supplier object to remove.
+     * @return AuthyGroup The current object (for fluent API support)
+     */
+    public function removeSupplier($supplier)
+    {
+        if ($this->getSuppliers()->contains($supplier)) {
+            $this->collSuppliers->remove($this->collSuppliers->search($supplier));
+            if (null === $this->suppliersScheduledForDeletion) {
+                $this->suppliersScheduledForDeletion = clone $this->collSuppliers;
+                $this->suppliersScheduledForDeletion->clear();
+            }
+            $this->suppliersScheduledForDeletion[]= $supplier;
+            $supplier->setAuthyGroup(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     */
+    public function getSuppliersJoinCountry($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = SupplierQuery::create(null, $criteria);
+        $query->joinWith('Country', $join_behavior);
+
+        return $this->getSuppliers($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     */
+    public function getSuppliersJoinAuthyRelatedByIdCreation($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = SupplierQuery::create(null, $criteria);
+        $query->joinWith('AuthyRelatedByIdCreation', $join_behavior);
+
+        return $this->getSuppliers($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     */
+    public function getSuppliersJoinAuthyRelatedByIdModification($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = SupplierQuery::create(null, $criteria);
+        $query->joinWith('AuthyRelatedByIdModification', $join_behavior);
+
+        return $this->getSuppliers($query, $con);
     }
 
     /**
@@ -7358,6 +8069,16 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collBillingCategories) {
+                foreach ($this->collBillingCategories as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collSuppliers) {
+                foreach ($this->collSuppliers as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collAuthiesRelatedByIdAuthyGroup) {
                 foreach ($this->collAuthiesRelatedByIdAuthyGroup as $o) {
                     $o->clearAllReferences($deep);
@@ -7453,6 +8174,14 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
             $this->collTimeLines->clearIterator();
         }
         $this->collTimeLines = null;
+        if ($this->collBillingCategories instanceof PropelCollection) {
+            $this->collBillingCategories->clearIterator();
+        }
+        $this->collBillingCategories = null;
+        if ($this->collSuppliers instanceof PropelCollection) {
+            $this->collSuppliers->clearIterator();
+        }
+        $this->collSuppliers = null;
         if ($this->collAuthiesRelatedByIdAuthyGroup instanceof PropelCollection) {
             $this->collAuthiesRelatedByIdAuthyGroup->clearIterator();
         }

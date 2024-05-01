@@ -92,6 +92,8 @@ class AuthyGroupTableMap extends TableMap
         $this->addRelation('CostLine', 'App\\CostLine', RelationMap::ONE_TO_MANY, array('id_authy_group' => 'id_group_creation', ), null, null, 'CostLines');
         $this->addRelation('Project', 'App\\Project', RelationMap::ONE_TO_MANY, array('id_authy_group' => 'id_group_creation', ), null, null, 'Projects');
         $this->addRelation('TimeLine', 'App\\TimeLine', RelationMap::ONE_TO_MANY, array('id_authy_group' => 'id_group_creation', ), null, null, 'TimeLines');
+        $this->addRelation('BillingCategory', 'App\\BillingCategory', RelationMap::ONE_TO_MANY, array('id_authy_group' => 'id_group_creation', ), null, null, 'BillingCategories');
+        $this->addRelation('Supplier', 'App\\Supplier', RelationMap::ONE_TO_MANY, array('id_authy_group' => 'id_group_creation', ), null, null, 'Suppliers');
         $this->addRelation('AuthyRelatedByIdAuthyGroup', 'App\\Authy', RelationMap::ONE_TO_MANY, array('id_authy_group' => 'id_authy_group', ), 'CASCADE', null, 'AuthiesRelatedByIdAuthyGroup');
         $this->addRelation('AuthyRelatedByIdGroupCreation', 'App\\Authy', RelationMap::ONE_TO_MANY, array('id_authy_group' => 'id_group_creation', ), null, null, 'AuthiesRelatedByIdGroupCreation');
         $this->addRelation('Country', 'App\\Country', RelationMap::ONE_TO_MANY, array('id_authy_group' => 'id_group_creation', ), null, null, 'Countries');

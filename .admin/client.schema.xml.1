@@ -59,10 +59,15 @@
 		<foreign-key foreignTable="project" onDelete="restrict" onUpdate="restrict" >
 			<reference local="id_project" foreign="id_project" />
 		</foreign-key>
+		<column name="id_billing_category" description="Category" type="INTEGER" size="11" required="false" defaultValue="null" />
+		<foreign-key foreignTable="billing_category" onDelete="restrict" onUpdate="restrict" >
+			<reference local="id_billing_category" foreign="id_billing_category" />
+		</foreign-key>
 		<column name="date" description="Date" type="DATE" required="false" />
 		<column name="type" description="Type" type="ENUM" valueSet="Quote, Bill" required="true" defaultValue="Bill" />
-		<column name="state" description="State" type="ENUM" valueSet="New, Approved, Sent, Partial paiement, Paid,Cancelled, To send" required="true" defaultValue="To send" />
+		<column name="state" description="State" type="ENUM" valueSet="New, Approved, Sent, Partial paiement, Paid,Cancelled, To send" required="true" />
 		<column name="gross" description="Gross" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="tax" description="Tax" type="DECIMAL" size="8" scale=" 2" required="false" />
 		<column name="date_due" description="Due date" type="DATE" required="false" />
 		<column name="note_billing" description="Note" type="LONGVARCHAR" required="false" size="400" />
 		<column name="date_paid" description="Paid date" type="DATE" required="false" />
@@ -101,6 +106,10 @@
 		<column name="quantity" description="Quantity" type="DECIMAL" size="8" scale=" 2" required="false" />
 		<column name="amount" description="Amount" type="DECIMAL" size="8" scale=" 2" required="false" />
 		<column name="total" description="Total" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="id_billing_category" description="Category" type="INTEGER" size="11" required="false" defaultValue="null" />
+		<foreign-key foreignTable="billing_category" onDelete="restrict" onUpdate="restrict" >
+			<reference local="id_billing_category" foreign="id_billing_category" />
+		</foreign-key>
 		<column name="note_billing_ligne" description="Note" type="LONGVARCHAR" required="false" size="500" />
 		<validator column="amount" >
 			<rule name="required" message="billing_line_amount_required" />
@@ -124,23 +133,36 @@
 			<rule name="required" message="billing_line_amount_required" />
 		</validator>
 	</table>
-	<table name="cost_line" description="Cost entry" >
+	<table name="cost_line" description="Expense" >
 		<behavior name="GoatCheese" >
 			<parameter name="set_parent_table" value="billing" />
 			<parameter name="set_readonly_columns" value='["total"]' />
+			<parameter name="set_menu_priority" value="1" />
 		</behavior>
 		<column name="id_cost_line" description="" type="INTEGER" size="10" required="true" primaryKey="true" autoIncrement="true" />
-		<column name="id_billing" description="" type="INTEGER" size="11" required="true" />
+		<column name="id_billing" description="" type="INTEGER" size="11" required="false" defaultValue="null" />
 		<foreign-key foreignTable="billing" onDelete="cascade" onUpdate="restrict" >
 			<reference local="id_billing" foreign="id_billing" />
 		</foreign-key>
 		<column name="calc_id" description="" type="VARCHAR" size="20" />
 		<column name="title" description="Title" type="VARCHAR" size="100" />
+		<column name="id_supplier" description="Supplier" type="INTEGER" size="11" required="false" defaultValue="null" />
+		<foreign-key foreignTable="supplier" onDelete="restrict" onUpdate="restrict" >
+			<reference local="id_supplier" foreign="id_supplier" />
+		</foreign-key>
+		<column name="invoice_no" description="Invoice no." type="VARCHAR" size="100" />
+		<column name="id_billing_category" description="Category" type="INTEGER" size="11" required="false" defaultValue="null" />
+		<foreign-key foreignTable="billing_category" onDelete="restrict" onUpdate="restrict" >
+			<reference local="id_billing_category" foreign="id_billing_category" />
+		</foreign-key>
 		<column name="spend_date" description="Date" type="DATE" required="false" />
-		<column name="note_billing_ligne" description="Note" type="LONGVARCHAR" required="false" size="500" />
+		<column name="recuring" description="Recuring" type="ENUM" valueSet="Once, Monthly, Yearly" required="true" />
+		<column name="renewal_date" description="Renewal date" type="DATE" required="false" />
 		<column name="quantity" description="Quantity" type="DECIMAL" size="8" scale=" 2" required="false" />
 		<column name="amount" description="Amount" type="DECIMAL" size="8" scale=" 2" required="false" />
 		<column name="total" description="Total" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="bill" description="Add to bill" type="ENUM" valueSet="No, Yes" required="true" />
+		<column name="note_billing_ligne" description="Note" type="LONGVARCHAR" required="false" size="500" />
 		<validator column="amount" >
 			<rule name="required" message="cost_line_amount_required" />
 		</validator>
@@ -190,6 +212,46 @@
 		<column name="total" description="Total" type="DECIMAL" size="8" scale=" 2" required="false" />
 		<validator column="amount" >
 			<rule name="required" message="cost_line_amount_required" />
+		</validator>
+	</table>
+	<table name="billing_category" description="Category billing" >
+		<behavior name="GoatCheese" >
+			<parameter name="set_parent_menu" value="Settings" />
+		</behavior>
+		<column name="id_billing_category" description="" type="INTEGER" size="10" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="name" description="Name" type="VARCHAR" size="100" />
+		<validator column="name" >
+			<rule name="required" message="name_required" />
+		</validator>
+	</table>
+	<table name="supplier" description="Supplier" >
+		<behavior name="GoatCheese" >
+			<parameter name="set_menu_priority" value="1" />
+			<parameter name="with_child_tables" value='["cost_line"]' />
+		</behavior>
+		<column name="id_supplier" description="" type="INTEGER" size="10" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="name" description="Name" type="VARCHAR" size="100" />
+		<column name="id_country" description="Country" type="INTEGER" size="11" required="true" />
+		<foreign-key foreignTable="country" onDelete="restrict" onUpdate="restrict" >
+			<reference local="id_country" foreign="id_country" />
+		</foreign-key>
+		<column name="phone" description="Phone" type="VARCHAR" size="20" />
+		<column name="phone_work" description="Phone work" type="VARCHAR" size="20" />
+		<column name="ext" description="Extension" type="VARCHAR" size="10" />
+		<column name="email" description="Email" type="VARCHAR" size="100" />
+		<column name="contact" description="Contact" type="VARCHAR" size="150" />
+		<column name="email2" description="Email (contact)" type="VARCHAR" size="100" />
+		<column name="phone_mobile" description="contact" type="VARCHAR" size="20" />
+		<column name="website" description="" type="VARCHAR" size="100" />
+		<column name="address_1" description="Address 1" type="LONGVARCHAR" required="false" size="10" />
+		<column name="address_2" description="Address 2" type="LONGVARCHAR" required="false" size="10" />
+		<column name="address_3" description="Address 3" type="LONGVARCHAR" required="false" size="10" />
+		<column name="zip" description="Zip" type="VARCHAR" size="12" />
+		<validator column="name" >
+			<rule name="minLength" message="supplier_name_required" value="1" />
+		</validator>
+		<validator column="id_country" >
+			<rule name="required" message="supplier_country_required" />
 		</validator>
 	</table>
 </database>

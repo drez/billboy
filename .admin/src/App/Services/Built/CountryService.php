@@ -169,6 +169,9 @@ class CountryService
             if($obj->countClients()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Client'. ", '', true,'Country'); die( $error['onReadyJs'] );
             }
+            if($obj->countSuppliers()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Supplier'. ", '', true,'Country'); die( $error['onReadyJs'] );
+            }
 
         $obj->delete();
 

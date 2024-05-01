@@ -18,15 +18,19 @@ use App\AuthyGroup;
 use App\AuthyGroupQuery;
 use App\AuthyQuery;
 use App\Billing;
+use App\BillingCategory;
+use App\BillingCategoryQuery;
 use App\BillingQuery;
 use App\CostLine;
 use App\CostLinePeer;
 use App\CostLineQuery;
+use App\Supplier;
+use App\SupplierQuery;
 
 /**
  * Base class that represents a row from the 'cost_line' table.
  *
- * Cost entry
+ * Expense
  *
  * @package    propel.generator..om
  */
@@ -76,16 +80,40 @@ abstract class BaseCostLine extends BaseObject implements Persistent
     protected $title;
 
     /**
+     * The value for the id_supplier field.
+     * @var        int
+     */
+    protected $id_supplier;
+
+    /**
+     * The value for the invoice_no field.
+     * @var        string
+     */
+    protected $invoice_no;
+
+    /**
+     * The value for the id_billing_category field.
+     * @var        int
+     */
+    protected $id_billing_category;
+
+    /**
      * The value for the spend_date field.
      * @var        string
      */
     protected $spend_date;
 
     /**
-     * The value for the note_billing_ligne field.
+     * The value for the recuring field.
+     * @var        int
+     */
+    protected $recuring;
+
+    /**
+     * The value for the renewal_date field.
      * @var        string
      */
-    protected $note_billing_ligne;
+    protected $renewal_date;
 
     /**
      * The value for the quantity field.
@@ -104,6 +132,18 @@ abstract class BaseCostLine extends BaseObject implements Persistent
      * @var        string
      */
     protected $total;
+
+    /**
+     * The value for the bill field.
+     * @var        int
+     */
+    protected $bill;
+
+    /**
+     * The value for the note_billing_ligne field.
+     * @var        string
+     */
+    protected $note_billing_ligne;
 
     /**
      * The value for the date_creation field.
@@ -139,6 +179,16 @@ abstract class BaseCostLine extends BaseObject implements Persistent
      * @var        Billing
      */
     protected $aBilling;
+
+    /**
+     * @var        Supplier
+     */
+    protected $aSupplier;
+
+    /**
+     * @var        BillingCategory
+     */
+    protected $aBillingCategory;
 
     /**
      * @var        AuthyGroup
@@ -225,6 +275,42 @@ abstract class BaseCostLine extends BaseObject implements Persistent
 
     /**
      * @Field()
+     * Get the [id_supplier] column value.
+     * Supplier
+     * @return int
+     */
+    public function getIdSupplier()
+    {
+
+        return $this->id_supplier;
+    }
+
+    /**
+     * @Field()
+     * Get the [invoice_no] column value.
+     * Invoice no.
+     * @return string
+     */
+    public function getInvoiceNo()
+    {
+
+        return $this->invoice_no;
+    }
+
+    /**
+     * @Field()
+     * Get the [id_billing_category] column value.
+     * Category
+     * @return int
+     */
+    public function getIdBillingCategory()
+    {
+
+        return $this->id_billing_category;
+    }
+
+    /**
+     * @Field()
      * Get the [optionally formatted] temporal [spend_date] column value.
      * Date
      *
@@ -266,14 +352,63 @@ abstract class BaseCostLine extends BaseObject implements Persistent
 
     /**
      * @Field()
-     * Get the [note_billing_ligne] column value.
-     * Note
-     * @return string
+     * Get the [recuring] column value.
+     * Recuring
+     * @return int
+     * @throws PropelException - if the stored enum key is unknown.
      */
-    public function getNoteBillingLigne()
+    public function getRecuring()
     {
+        if (null === $this->recuring) {
+            return null;
+        }
+        $valueSet = CostLinePeer::getValueSet(CostLinePeer::RECURING);
+        if (!isset($valueSet[$this->recuring])) {
+            throw new PropelException('Unknown stored enum key: ' . $this->recuring);
+        }
 
-        return $this->note_billing_ligne;
+        return $valueSet[$this->recuring];
+    }
+
+    /**
+     * @Field()
+     * Get the [optionally formatted] temporal [renewal_date] column value.
+     * Renewal date
+     *
+     * @param string $format The date/time format string (either date()-style or strftime()-style).
+     *				 If format is null, then the raw DateTime object will be returned.
+     * @return mixed Formatted date/time value as string or DateTime object (if format is null), null if column is null, and 0 if column value is 0000-00-00
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getRenewalDate($format = 'Y-m-d')
+    {
+        if ($this->renewal_date === null) {
+            return null;
+        }
+
+        if ($this->renewal_date === '0000-00-00') {
+            // while technically this is not a default value of null,
+            // this seems to be closest in meaning.
+            return null;
+        }
+
+        try {
+            $dt = new DateTime($this->renewal_date);
+        } catch (Exception $x) {
+            throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->renewal_date, true), $x);
+        }
+
+        if ($format === null) {
+            // Because propel.useDateTimeClass is true, we return a DateTime object.
+            return $dt;
+        }
+
+        if (strpos($format, '%') !== false) {
+            return strftime($format, $dt->format('U'));
+        }
+
+        return $dt->format($format);
+
     }
 
     /**
@@ -310,6 +445,38 @@ abstract class BaseCostLine extends BaseObject implements Persistent
     {
 
         return $this->total;
+    }
+
+    /**
+     * @Field()
+     * Get the [bill] column value.
+     * Add to bill
+     * @return int
+     * @throws PropelException - if the stored enum key is unknown.
+     */
+    public function getBill()
+    {
+        if (null === $this->bill) {
+            return null;
+        }
+        $valueSet = CostLinePeer::getValueSet(CostLinePeer::BILL);
+        if (!isset($valueSet[$this->bill])) {
+            throw new PropelException('Unknown stored enum key: ' . $this->bill);
+        }
+
+        return $valueSet[$this->bill];
+    }
+
+    /**
+     * @Field()
+     * Get the [note_billing_ligne] column value.
+     * Note
+     * @return string
+     */
+    public function getNoteBillingLigne()
+    {
+
+        return $this->note_billing_ligne;
     }
 
     /**
@@ -519,6 +686,77 @@ abstract class BaseCostLine extends BaseObject implements Persistent
     } // setTitle()
 
     /**
+     * Set the value of [id_supplier] column.
+     * Supplier
+     * @param  int $v new value
+     * @return CostLine The current object (for fluent API support)
+     */
+    public function setIdSupplier($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (int) $v;
+        }
+
+        if ($this->id_supplier !== $v) {
+            $this->id_supplier = $v;
+            $this->modifiedColumns[] = CostLinePeer::ID_SUPPLIER;
+        }
+
+        if ($this->aSupplier !== null && $this->aSupplier->getIdSupplier() !== $v) {
+            $this->aSupplier = null;
+        }
+
+
+        return $this;
+    } // setIdSupplier()
+
+    /**
+     * Set the value of [invoice_no] column.
+     * Invoice no.
+     * @param  string $v new value
+     * @return CostLine The current object (for fluent API support)
+     */
+    public function setInvoiceNo($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->invoice_no !== $v) {
+            $this->invoice_no = $v;
+            $this->modifiedColumns[] = CostLinePeer::INVOICE_NO;
+        }
+
+
+        return $this;
+    } // setInvoiceNo()
+
+    /**
+     * Set the value of [id_billing_category] column.
+     * Category
+     * @param  int $v new value
+     * @return CostLine The current object (for fluent API support)
+     */
+    public function setIdBillingCategory($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (int) $v;
+        }
+
+        if ($this->id_billing_category !== $v) {
+            $this->id_billing_category = $v;
+            $this->modifiedColumns[] = CostLinePeer::ID_BILLING_CATEGORY;
+        }
+
+        if ($this->aBillingCategory !== null && $this->aBillingCategory->getIdBillingCategory() !== $v) {
+            $this->aBillingCategory = null;
+        }
+
+
+        return $this;
+    } // setIdBillingCategory()
+
+    /**
      * Sets the value of [spend_date] column to a normalized version of the date/time value specified.
      * Date
      * @param mixed $v string, integer (timestamp), or DateTime value.
@@ -542,25 +780,53 @@ abstract class BaseCostLine extends BaseObject implements Persistent
     } // setSpendDate()
 
     /**
-     * Set the value of [note_billing_ligne] column.
-     * Note
-     * @param  string $v new value
+     * Set the value of [recuring] column.
+     * Recuring
+     * @param  int $v new value
      * @return CostLine The current object (for fluent API support)
+     * @throws PropelException - if the value is not accepted by this enum.
      */
-    public function setNoteBillingLigne($v)
+    public function setRecuring($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            $valueSet = CostLinePeer::getValueSet(CostLinePeer::RECURING);
+            if (!in_array($v, $valueSet)) {
+                throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $v));
+            }
+            $v = array_search($v, $valueSet);
         }
 
-        if ($this->note_billing_ligne !== $v) {
-            $this->note_billing_ligne = $v;
-            $this->modifiedColumns[] = CostLinePeer::NOTE_BILLING_LIGNE;
+        if ($this->recuring !== $v) {
+            $this->recuring = $v;
+            $this->modifiedColumns[] = CostLinePeer::RECURING;
         }
 
 
         return $this;
-    } // setNoteBillingLigne()
+    } // setRecuring()
+
+    /**
+     * Sets the value of [renewal_date] column to a normalized version of the date/time value specified.
+     * Renewal date
+     * @param mixed $v string, integer (timestamp), or DateTime value.
+     *               Empty strings are treated as null.
+     * @return CostLine The current object (for fluent API support)
+     */
+    public function setRenewalDate($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->renewal_date !== null || $dt !== null) {
+            $currentDateAsString = ($this->renewal_date !== null && $tmpDt = new DateTime($this->renewal_date)) ? $tmpDt->format('Y-m-d') : null;
+            $newDateAsString = $dt ? $dt->format('Y-m-d') : null;
+            if ($currentDateAsString !== $newDateAsString) {
+                $this->renewal_date = $newDateAsString;
+                $this->modifiedColumns[] = CostLinePeer::RENEWAL_DATE;
+            }
+        } // if either are not null
+
+
+        return $this;
+    } // setRenewalDate()
 
     /**
      * Set the value of [quantity] column.
@@ -624,6 +890,53 @@ abstract class BaseCostLine extends BaseObject implements Persistent
 
         return $this;
     } // setTotal()
+
+    /**
+     * Set the value of [bill] column.
+     * Add to bill
+     * @param  int $v new value
+     * @return CostLine The current object (for fluent API support)
+     * @throws PropelException - if the value is not accepted by this enum.
+     */
+    public function setBill($v)
+    {
+        if ($v !== null) {
+            $valueSet = CostLinePeer::getValueSet(CostLinePeer::BILL);
+            if (!in_array($v, $valueSet)) {
+                throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $v));
+            }
+            $v = array_search($v, $valueSet);
+        }
+
+        if ($this->bill !== $v) {
+            $this->bill = $v;
+            $this->modifiedColumns[] = CostLinePeer::BILL;
+        }
+
+
+        return $this;
+    } // setBill()
+
+    /**
+     * Set the value of [note_billing_ligne] column.
+     * Note
+     * @param  string $v new value
+     * @return CostLine The current object (for fluent API support)
+     */
+    public function setNoteBillingLigne($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->note_billing_ligne !== $v) {
+            $this->note_billing_ligne = $v;
+            $this->modifiedColumns[] = CostLinePeer::NOTE_BILLING_LIGNE;
+        }
+
+
+        return $this;
+    } // setNoteBillingLigne()
 
     /**
      * Sets the value of [date_creation] column to a normalized version of the date/time value specified.
@@ -782,16 +1095,22 @@ abstract class BaseCostLine extends BaseObject implements Persistent
             $this->id_billing = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
             $this->calc_id = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
             $this->title = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-            $this->spend_date = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-            $this->note_billing_ligne = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
-            $this->quantity = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-            $this->amount = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
-            $this->total = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
-            $this->date_creation = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
-            $this->date_modification = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
-            $this->id_group_creation = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
-            $this->id_creation = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
-            $this->id_modification = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
+            $this->id_supplier = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
+            $this->invoice_no = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+            $this->id_billing_category = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+            $this->spend_date = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+            $this->recuring = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
+            $this->renewal_date = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
+            $this->quantity = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
+            $this->amount = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
+            $this->total = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+            $this->bill = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
+            $this->note_billing_ligne = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
+            $this->date_creation = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
+            $this->date_modification = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
+            $this->id_group_creation = ($row[$startcol + 17] !== null) ? (int) $row[$startcol + 17] : null;
+            $this->id_creation = ($row[$startcol + 18] !== null) ? (int) $row[$startcol + 18] : null;
+            $this->id_modification = ($row[$startcol + 19] !== null) ? (int) $row[$startcol + 19] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -801,7 +1120,7 @@ abstract class BaseCostLine extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 14; // 14 = CostLinePeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 20; // 20 = CostLinePeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating CostLine object", $e);
@@ -826,6 +1145,12 @@ abstract class BaseCostLine extends BaseObject implements Persistent
 
         if ($this->aBilling !== null && $this->id_billing !== $this->aBilling->getIdBilling()) {
             $this->aBilling = null;
+        }
+        if ($this->aSupplier !== null && $this->id_supplier !== $this->aSupplier->getIdSupplier()) {
+            $this->aSupplier = null;
+        }
+        if ($this->aBillingCategory !== null && $this->id_billing_category !== $this->aBillingCategory->getIdBillingCategory()) {
+            $this->aBillingCategory = null;
         }
         if ($this->aAuthyGroup !== null && $this->id_group_creation !== $this->aAuthyGroup->getIdAuthyGroup()) {
             $this->aAuthyGroup = null;
@@ -876,6 +1201,8 @@ abstract class BaseCostLine extends BaseObject implements Persistent
         if ($deep) {  // also de-associate any related objects?
 
             $this->aBilling = null;
+            $this->aSupplier = null;
+            $this->aBillingCategory = null;
             $this->aAuthyGroup = null;
             $this->aAuthyRelatedByIdCreation = null;
             $this->aAuthyRelatedByIdModification = null;
@@ -1024,6 +1351,20 @@ abstract class BaseCostLine extends BaseObject implements Persistent
                 $this->setBilling($this->aBilling);
             }
 
+            if ($this->aSupplier !== null) {
+                if ($this->aSupplier->isModified() || $this->aSupplier->isNew()) {
+                    $affectedRows += $this->aSupplier->save($con);
+                }
+                $this->setSupplier($this->aSupplier);
+            }
+
+            if ($this->aBillingCategory !== null) {
+                if ($this->aBillingCategory->isModified() || $this->aBillingCategory->isNew()) {
+                    $affectedRows += $this->aBillingCategory->save($con);
+                }
+                $this->setBillingCategory($this->aBillingCategory);
+            }
+
             if ($this->aAuthyGroup !== null) {
                 if ($this->aAuthyGroup->isModified() || $this->aAuthyGroup->isNew()) {
                     $affectedRows += $this->aAuthyGroup->save($con);
@@ -1094,11 +1435,23 @@ abstract class BaseCostLine extends BaseObject implements Persistent
         if ($this->isColumnModified(CostLinePeer::TITLE)) {
             $modifiedColumns[':p' . $index++]  = '`title`';
         }
+        if ($this->isColumnModified(CostLinePeer::ID_SUPPLIER)) {
+            $modifiedColumns[':p' . $index++]  = '`id_supplier`';
+        }
+        if ($this->isColumnModified(CostLinePeer::INVOICE_NO)) {
+            $modifiedColumns[':p' . $index++]  = '`invoice_no`';
+        }
+        if ($this->isColumnModified(CostLinePeer::ID_BILLING_CATEGORY)) {
+            $modifiedColumns[':p' . $index++]  = '`id_billing_category`';
+        }
         if ($this->isColumnModified(CostLinePeer::SPEND_DATE)) {
             $modifiedColumns[':p' . $index++]  = '`spend_date`';
         }
-        if ($this->isColumnModified(CostLinePeer::NOTE_BILLING_LIGNE)) {
-            $modifiedColumns[':p' . $index++]  = '`note_billing_ligne`';
+        if ($this->isColumnModified(CostLinePeer::RECURING)) {
+            $modifiedColumns[':p' . $index++]  = '`recuring`';
+        }
+        if ($this->isColumnModified(CostLinePeer::RENEWAL_DATE)) {
+            $modifiedColumns[':p' . $index++]  = '`renewal_date`';
         }
         if ($this->isColumnModified(CostLinePeer::QUANTITY)) {
             $modifiedColumns[':p' . $index++]  = '`quantity`';
@@ -1108,6 +1461,12 @@ abstract class BaseCostLine extends BaseObject implements Persistent
         }
         if ($this->isColumnModified(CostLinePeer::TOTAL)) {
             $modifiedColumns[':p' . $index++]  = '`total`';
+        }
+        if ($this->isColumnModified(CostLinePeer::BILL)) {
+            $modifiedColumns[':p' . $index++]  = '`bill`';
+        }
+        if ($this->isColumnModified(CostLinePeer::NOTE_BILLING_LIGNE)) {
+            $modifiedColumns[':p' . $index++]  = '`note_billing_ligne`';
         }
         if ($this->isColumnModified(CostLinePeer::DATE_CREATION)) {
             $modifiedColumns[':p' . $index++]  = '`date_creation`';
@@ -1147,11 +1506,23 @@ abstract class BaseCostLine extends BaseObject implements Persistent
                     case '`title`':
                         $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
                         break;
+                    case '`id_supplier`':
+                        $stmt->bindValue($identifier, $this->id_supplier, PDO::PARAM_INT);
+                        break;
+                    case '`invoice_no`':
+                        $stmt->bindValue($identifier, $this->invoice_no, PDO::PARAM_STR);
+                        break;
+                    case '`id_billing_category`':
+                        $stmt->bindValue($identifier, $this->id_billing_category, PDO::PARAM_INT);
+                        break;
                     case '`spend_date`':
                         $stmt->bindValue($identifier, $this->spend_date, PDO::PARAM_STR);
                         break;
-                    case '`note_billing_ligne`':
-                        $stmt->bindValue($identifier, $this->note_billing_ligne, PDO::PARAM_STR);
+                    case '`recuring`':
+                        $stmt->bindValue($identifier, $this->recuring, PDO::PARAM_INT);
+                        break;
+                    case '`renewal_date`':
+                        $stmt->bindValue($identifier, $this->renewal_date, PDO::PARAM_STR);
                         break;
                     case '`quantity`':
                         $stmt->bindValue($identifier, $this->quantity, PDO::PARAM_STR);
@@ -1161,6 +1532,12 @@ abstract class BaseCostLine extends BaseObject implements Persistent
                         break;
                     case '`total`':
                         $stmt->bindValue($identifier, $this->total, PDO::PARAM_STR);
+                        break;
+                    case '`bill`':
+                        $stmt->bindValue($identifier, $this->bill, PDO::PARAM_INT);
+                        break;
+                    case '`note_billing_ligne`':
+                        $stmt->bindValue($identifier, $this->note_billing_ligne, PDO::PARAM_STR);
                         break;
                     case '`date_creation`':
                         $stmt->bindValue($identifier, $this->date_creation, PDO::PARAM_STR);
@@ -1282,6 +1659,18 @@ abstract class BaseCostLine extends BaseObject implements Persistent
                 }
             }
 
+            if ($this->aSupplier !== null) {
+                if (!$this->aSupplier->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aSupplier->getValidationFailures());
+                }
+            }
+
+            if ($this->aBillingCategory !== null) {
+                if (!$this->aBillingCategory->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aBillingCategory->getValidationFailures());
+                }
+            }
+
             if ($this->aAuthyGroup !== null) {
                 if (!$this->aAuthyGroup->validate($columns)) {
                     $failureMap = array_merge($failureMap, $this->aAuthyGroup->getValidationFailures());
@@ -1358,16 +1747,22 @@ abstract class BaseCostLine extends BaseObject implements Persistent
             $keys[1] => $this->getIdBilling(),
             $keys[2] => $this->getCalcId(),
             $keys[3] => $this->getTitle(),
-            $keys[4] => $this->getSpendDate(),
-            $keys[5] => $this->getNoteBillingLigne(),
-            $keys[6] => $this->getQuantity(),
-            $keys[7] => $this->getAmount(),
-            $keys[8] => $this->getTotal(),
-            $keys[9] => $this->getDateCreation(),
-            $keys[10] => $this->getDateModification(),
-            $keys[11] => $this->getIdGroupCreation(),
-            $keys[12] => $this->getIdCreation(),
-            $keys[13] => $this->getIdModification(),
+            $keys[4] => $this->getIdSupplier(),
+            $keys[5] => $this->getInvoiceNo(),
+            $keys[6] => $this->getIdBillingCategory(),
+            $keys[7] => $this->getSpendDate(),
+            $keys[8] => $this->getRecuring(),
+            $keys[9] => $this->getRenewalDate(),
+            $keys[10] => $this->getQuantity(),
+            $keys[11] => $this->getAmount(),
+            $keys[12] => $this->getTotal(),
+            $keys[13] => $this->getBill(),
+            $keys[14] => $this->getNoteBillingLigne(),
+            $keys[15] => $this->getDateCreation(),
+            $keys[16] => $this->getDateModification(),
+            $keys[17] => $this->getIdGroupCreation(),
+            $keys[18] => $this->getIdCreation(),
+            $keys[19] => $this->getIdModification(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1377,6 +1772,12 @@ abstract class BaseCostLine extends BaseObject implements Persistent
         if ($includeForeignObjects) {
             if (null !== $this->aBilling) {
                 $result['Billing'] = $this->aBilling->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aSupplier) {
+                $result['Supplier'] = $this->aSupplier->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aBillingCategory) {
+                $result['BillingCategory'] = $this->aBillingCategory->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aAuthyGroup) {
                 $result['AuthyGroup'] = $this->aAuthyGroup->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -1434,33 +1835,59 @@ abstract class BaseCostLine extends BaseObject implements Persistent
                 $this->setTitle($value);
                 break;
             case 4:
-                $this->setSpendDate($value);
+                $this->setIdSupplier($value);
                 break;
             case 5:
-                $this->setNoteBillingLigne($value);
+                $this->setInvoiceNo($value);
                 break;
             case 6:
-                $this->setQuantity($value);
+                $this->setIdBillingCategory($value);
                 break;
             case 7:
-                $this->setAmount($value);
+                $this->setSpendDate($value);
                 break;
             case 8:
-                $this->setTotal($value);
+                $valueSet = CostLinePeer::getValueSet(CostLinePeer::RECURING);
+                if (isset($valueSet[$value])) {
+                    $value = $valueSet[$value];
+                }
+                $this->setRecuring($value);
                 break;
             case 9:
-                $this->setDateCreation($value);
+                $this->setRenewalDate($value);
                 break;
             case 10:
-                $this->setDateModification($value);
+                $this->setQuantity($value);
                 break;
             case 11:
-                $this->setIdGroupCreation($value);
+                $this->setAmount($value);
                 break;
             case 12:
-                $this->setIdCreation($value);
+                $this->setTotal($value);
                 break;
             case 13:
+                $valueSet = CostLinePeer::getValueSet(CostLinePeer::BILL);
+                if (isset($valueSet[$value])) {
+                    $value = $valueSet[$value];
+                }
+                $this->setBill($value);
+                break;
+            case 14:
+                $this->setNoteBillingLigne($value);
+                break;
+            case 15:
+                $this->setDateCreation($value);
+                break;
+            case 16:
+                $this->setDateModification($value);
+                break;
+            case 17:
+                $this->setIdGroupCreation($value);
+                break;
+            case 18:
+                $this->setIdCreation($value);
+                break;
+            case 19:
                 $this->setIdModification($value);
                 break;
         } // switch()
@@ -1491,16 +1918,22 @@ abstract class BaseCostLine extends BaseObject implements Persistent
         if (array_key_exists($keys[1], $arr)) $this->setIdBilling($arr[$keys[1]]);
         if (array_key_exists($keys[2], $arr)) $this->setCalcId($arr[$keys[2]]);
         if (array_key_exists($keys[3], $arr)) $this->setTitle($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setSpendDate($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setNoteBillingLigne($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setQuantity($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setAmount($arr[$keys[7]]);
-        if (array_key_exists($keys[8], $arr)) $this->setTotal($arr[$keys[8]]);
-        if (array_key_exists($keys[9], $arr)) $this->setDateCreation($arr[$keys[9]]);
-        if (array_key_exists($keys[10], $arr)) $this->setDateModification($arr[$keys[10]]);
-        if (array_key_exists($keys[11], $arr)) $this->setIdGroupCreation($arr[$keys[11]]);
-        if (array_key_exists($keys[12], $arr)) $this->setIdCreation($arr[$keys[12]]);
-        if (array_key_exists($keys[13], $arr)) $this->setIdModification($arr[$keys[13]]);
+        if (array_key_exists($keys[4], $arr)) $this->setIdSupplier($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setInvoiceNo($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setIdBillingCategory($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setSpendDate($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setRecuring($arr[$keys[8]]);
+        if (array_key_exists($keys[9], $arr)) $this->setRenewalDate($arr[$keys[9]]);
+        if (array_key_exists($keys[10], $arr)) $this->setQuantity($arr[$keys[10]]);
+        if (array_key_exists($keys[11], $arr)) $this->setAmount($arr[$keys[11]]);
+        if (array_key_exists($keys[12], $arr)) $this->setTotal($arr[$keys[12]]);
+        if (array_key_exists($keys[13], $arr)) $this->setBill($arr[$keys[13]]);
+        if (array_key_exists($keys[14], $arr)) $this->setNoteBillingLigne($arr[$keys[14]]);
+        if (array_key_exists($keys[15], $arr)) $this->setDateCreation($arr[$keys[15]]);
+        if (array_key_exists($keys[16], $arr)) $this->setDateModification($arr[$keys[16]]);
+        if (array_key_exists($keys[17], $arr)) $this->setIdGroupCreation($arr[$keys[17]]);
+        if (array_key_exists($keys[18], $arr)) $this->setIdCreation($arr[$keys[18]]);
+        if (array_key_exists($keys[19], $arr)) $this->setIdModification($arr[$keys[19]]);
     }
 
     /**
@@ -1516,11 +1949,17 @@ abstract class BaseCostLine extends BaseObject implements Persistent
         if ($this->isColumnModified(CostLinePeer::ID_BILLING)) $criteria->add(CostLinePeer::ID_BILLING, $this->id_billing);
         if ($this->isColumnModified(CostLinePeer::CALC_ID)) $criteria->add(CostLinePeer::CALC_ID, $this->calc_id);
         if ($this->isColumnModified(CostLinePeer::TITLE)) $criteria->add(CostLinePeer::TITLE, $this->title);
+        if ($this->isColumnModified(CostLinePeer::ID_SUPPLIER)) $criteria->add(CostLinePeer::ID_SUPPLIER, $this->id_supplier);
+        if ($this->isColumnModified(CostLinePeer::INVOICE_NO)) $criteria->add(CostLinePeer::INVOICE_NO, $this->invoice_no);
+        if ($this->isColumnModified(CostLinePeer::ID_BILLING_CATEGORY)) $criteria->add(CostLinePeer::ID_BILLING_CATEGORY, $this->id_billing_category);
         if ($this->isColumnModified(CostLinePeer::SPEND_DATE)) $criteria->add(CostLinePeer::SPEND_DATE, $this->spend_date);
-        if ($this->isColumnModified(CostLinePeer::NOTE_BILLING_LIGNE)) $criteria->add(CostLinePeer::NOTE_BILLING_LIGNE, $this->note_billing_ligne);
+        if ($this->isColumnModified(CostLinePeer::RECURING)) $criteria->add(CostLinePeer::RECURING, $this->recuring);
+        if ($this->isColumnModified(CostLinePeer::RENEWAL_DATE)) $criteria->add(CostLinePeer::RENEWAL_DATE, $this->renewal_date);
         if ($this->isColumnModified(CostLinePeer::QUANTITY)) $criteria->add(CostLinePeer::QUANTITY, $this->quantity);
         if ($this->isColumnModified(CostLinePeer::AMOUNT)) $criteria->add(CostLinePeer::AMOUNT, $this->amount);
         if ($this->isColumnModified(CostLinePeer::TOTAL)) $criteria->add(CostLinePeer::TOTAL, $this->total);
+        if ($this->isColumnModified(CostLinePeer::BILL)) $criteria->add(CostLinePeer::BILL, $this->bill);
+        if ($this->isColumnModified(CostLinePeer::NOTE_BILLING_LIGNE)) $criteria->add(CostLinePeer::NOTE_BILLING_LIGNE, $this->note_billing_ligne);
         if ($this->isColumnModified(CostLinePeer::DATE_CREATION)) $criteria->add(CostLinePeer::DATE_CREATION, $this->date_creation);
         if ($this->isColumnModified(CostLinePeer::DATE_MODIFICATION)) $criteria->add(CostLinePeer::DATE_MODIFICATION, $this->date_modification);
         if ($this->isColumnModified(CostLinePeer::ID_GROUP_CREATION)) $criteria->add(CostLinePeer::ID_GROUP_CREATION, $this->id_group_creation);
@@ -1592,11 +2031,17 @@ abstract class BaseCostLine extends BaseObject implements Persistent
         $copyObj->setIdBilling($this->getIdBilling());
         $copyObj->setCalcId($this->getCalcId());
         $copyObj->setTitle($this->getTitle());
+        $copyObj->setIdSupplier($this->getIdSupplier());
+        $copyObj->setInvoiceNo($this->getInvoiceNo());
+        $copyObj->setIdBillingCategory($this->getIdBillingCategory());
         $copyObj->setSpendDate($this->getSpendDate());
-        $copyObj->setNoteBillingLigne($this->getNoteBillingLigne());
+        $copyObj->setRecuring($this->getRecuring());
+        $copyObj->setRenewalDate($this->getRenewalDate());
         $copyObj->setQuantity($this->getQuantity());
         $copyObj->setAmount($this->getAmount());
         $copyObj->setTotal($this->getTotal());
+        $copyObj->setBill($this->getBill());
+        $copyObj->setNoteBillingLigne($this->getNoteBillingLigne());
         $copyObj->setDateCreation($this->getDateCreation());
         $copyObj->setDateModification($this->getDateModification());
         $copyObj->setIdGroupCreation($this->getIdGroupCreation());
@@ -1710,6 +2155,110 @@ abstract class BaseCostLine extends BaseObject implements Persistent
         }
 
         return $this->aBilling;
+    }
+
+    /**
+     * Declares an association between this object and a Supplier object.
+     *
+     * @param                  Supplier $v
+     * @return CostLine The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setSupplier(Supplier $v = null)
+    {
+        if ($v === null) {
+            $this->setIdSupplier(NULL);
+        } else {
+            $this->setIdSupplier($v->getIdSupplier());
+        }
+
+        $this->aSupplier = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the Supplier object, it will not be re-added.
+        if ($v !== null) {
+            $v->addCostLine($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated Supplier object
+     *
+     * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
+     * @return Supplier The associated Supplier object.
+     * @throws PropelException
+     */
+    public function getSupplier(PropelPDO $con = null, $doQuery = true)
+    {
+        if ($this->aSupplier === null && ($this->id_supplier !== null) && $doQuery) {
+            $this->aSupplier = SupplierQuery::create()->findPk($this->id_supplier, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aSupplier->addCostLines($this);
+             */
+        }
+
+        return $this->aSupplier;
+    }
+
+    /**
+     * Declares an association between this object and a BillingCategory object.
+     *
+     * @param                  BillingCategory $v
+     * @return CostLine The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setBillingCategory(BillingCategory $v = null)
+    {
+        if ($v === null) {
+            $this->setIdBillingCategory(NULL);
+        } else {
+            $this->setIdBillingCategory($v->getIdBillingCategory());
+        }
+
+        $this->aBillingCategory = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the BillingCategory object, it will not be re-added.
+        if ($v !== null) {
+            $v->addCostLine($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated BillingCategory object
+     *
+     * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
+     * @return BillingCategory The associated BillingCategory object.
+     * @throws PropelException
+     */
+    public function getBillingCategory(PropelPDO $con = null, $doQuery = true)
+    {
+        if ($this->aBillingCategory === null && ($this->id_billing_category !== null) && $doQuery) {
+            $this->aBillingCategory = BillingCategoryQuery::create()->findPk($this->id_billing_category, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aBillingCategory->addCostLines($this);
+             */
+        }
+
+        return $this->aBillingCategory;
     }
 
     /**
@@ -1877,11 +2426,17 @@ abstract class BaseCostLine extends BaseObject implements Persistent
         $this->id_billing = null;
         $this->calc_id = null;
         $this->title = null;
+        $this->id_supplier = null;
+        $this->invoice_no = null;
+        $this->id_billing_category = null;
         $this->spend_date = null;
-        $this->note_billing_ligne = null;
+        $this->recuring = null;
+        $this->renewal_date = null;
         $this->quantity = null;
         $this->amount = null;
         $this->total = null;
+        $this->bill = null;
+        $this->note_billing_ligne = null;
         $this->date_creation = null;
         $this->date_modification = null;
         $this->id_group_creation = null;
@@ -1912,6 +2467,12 @@ abstract class BaseCostLine extends BaseObject implements Persistent
             if ($this->aBilling instanceof Persistent) {
               $this->aBilling->clearAllReferences($deep);
             }
+            if ($this->aSupplier instanceof Persistent) {
+              $this->aSupplier->clearAllReferences($deep);
+            }
+            if ($this->aBillingCategory instanceof Persistent) {
+              $this->aBillingCategory->clearAllReferences($deep);
+            }
             if ($this->aAuthyGroup instanceof Persistent) {
               $this->aAuthyGroup->clearAllReferences($deep);
             }
@@ -1926,6 +2487,8 @@ abstract class BaseCostLine extends BaseObject implements Persistent
         } // if ($deep)
 
         $this->aBilling = null;
+        $this->aSupplier = null;
+        $this->aBillingCategory = null;
         $this->aAuthyGroup = null;
         $this->aAuthyRelatedByIdCreation = null;
         $this->aAuthyRelatedByIdModification = null;

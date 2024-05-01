@@ -123,6 +123,10 @@ class AuthyTableMap extends TableMap
         $this->addRelation('ProjectRelatedByIdModification', 'App\\Project', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_modification', ), null, null, 'ProjectsRelatedByIdModification');
         $this->addRelation('TimeLineRelatedByIdCreation', 'App\\TimeLine', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_creation', ), null, null, 'TimeLinesRelatedByIdCreation');
         $this->addRelation('TimeLineRelatedByIdModification', 'App\\TimeLine', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_modification', ), null, null, 'TimeLinesRelatedByIdModification');
+        $this->addRelation('BillingCategoryRelatedByIdCreation', 'App\\BillingCategory', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_creation', ), null, null, 'BillingCategoriesRelatedByIdCreation');
+        $this->addRelation('BillingCategoryRelatedByIdModification', 'App\\BillingCategory', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_modification', ), null, null, 'BillingCategoriesRelatedByIdModification');
+        $this->addRelation('SupplierRelatedByIdCreation', 'App\\Supplier', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_creation', ), null, null, 'SuppliersRelatedByIdCreation');
+        $this->addRelation('SupplierRelatedByIdModification', 'App\\Supplier', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_modification', ), null, null, 'SuppliersRelatedByIdModification');
         $this->addRelation('AuthyRelatedByIdAuthy0', 'App\\Authy', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_creation', ), null, null, 'AuthiesRelatedByIdAuthy0');
         $this->addRelation('AuthyRelatedByIdAuthy1', 'App\\Authy', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_modification', ), null, null, 'AuthiesRelatedByIdAuthy1');
         $this->addRelation('CountryRelatedByIdCreation', 'App\\Country', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_creation', ), null, null, 'CountriesRelatedByIdCreation');

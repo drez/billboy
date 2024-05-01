@@ -21,6 +21,7 @@ use App\AuthyLog;
 use App\AuthyPeer;
 use App\AuthyQuery;
 use App\Billing;
+use App\BillingCategory;
 use App\BillingLine;
 use App\Client;
 use App\Config;
@@ -29,6 +30,7 @@ use App\Country;
 use App\MessageI18n;
 use App\PaymentLine;
 use App\Project;
+use App\Supplier;
 use App\Template;
 use App\TemplateFile;
 use App\TimeLine;
@@ -167,6 +169,22 @@ use App\TimeLine;
  * @method AuthyQuery leftJoinTimeLineRelatedByIdModification($relationAlias = null) Adds a LEFT JOIN clause to the query using the TimeLineRelatedByIdModification relation
  * @method AuthyQuery rightJoinTimeLineRelatedByIdModification($relationAlias = null) Adds a RIGHT JOIN clause to the query using the TimeLineRelatedByIdModification relation
  * @method AuthyQuery innerJoinTimeLineRelatedByIdModification($relationAlias = null) Adds a INNER JOIN clause to the query using the TimeLineRelatedByIdModification relation
+ *
+ * @method AuthyQuery leftJoinBillingCategoryRelatedByIdCreation($relationAlias = null) Adds a LEFT JOIN clause to the query using the BillingCategoryRelatedByIdCreation relation
+ * @method AuthyQuery rightJoinBillingCategoryRelatedByIdCreation($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BillingCategoryRelatedByIdCreation relation
+ * @method AuthyQuery innerJoinBillingCategoryRelatedByIdCreation($relationAlias = null) Adds a INNER JOIN clause to the query using the BillingCategoryRelatedByIdCreation relation
+ *
+ * @method AuthyQuery leftJoinBillingCategoryRelatedByIdModification($relationAlias = null) Adds a LEFT JOIN clause to the query using the BillingCategoryRelatedByIdModification relation
+ * @method AuthyQuery rightJoinBillingCategoryRelatedByIdModification($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BillingCategoryRelatedByIdModification relation
+ * @method AuthyQuery innerJoinBillingCategoryRelatedByIdModification($relationAlias = null) Adds a INNER JOIN clause to the query using the BillingCategoryRelatedByIdModification relation
+ *
+ * @method AuthyQuery leftJoinSupplierRelatedByIdCreation($relationAlias = null) Adds a LEFT JOIN clause to the query using the SupplierRelatedByIdCreation relation
+ * @method AuthyQuery rightJoinSupplierRelatedByIdCreation($relationAlias = null) Adds a RIGHT JOIN clause to the query using the SupplierRelatedByIdCreation relation
+ * @method AuthyQuery innerJoinSupplierRelatedByIdCreation($relationAlias = null) Adds a INNER JOIN clause to the query using the SupplierRelatedByIdCreation relation
+ *
+ * @method AuthyQuery leftJoinSupplierRelatedByIdModification($relationAlias = null) Adds a LEFT JOIN clause to the query using the SupplierRelatedByIdModification relation
+ * @method AuthyQuery rightJoinSupplierRelatedByIdModification($relationAlias = null) Adds a RIGHT JOIN clause to the query using the SupplierRelatedByIdModification relation
+ * @method AuthyQuery innerJoinSupplierRelatedByIdModification($relationAlias = null) Adds a INNER JOIN clause to the query using the SupplierRelatedByIdModification relation
  *
  * @method AuthyQuery leftJoinAuthyRelatedByIdAuthy0($relationAlias = null) Adds a LEFT JOIN clause to the query using the AuthyRelatedByIdAuthy0 relation
  * @method AuthyQuery rightJoinAuthyRelatedByIdAuthy0($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AuthyRelatedByIdAuthy0 relation
@@ -2728,6 +2746,302 @@ abstract class BaseAuthyQuery extends ModelCriteria
         return $this
             ->joinTimeLineRelatedByIdModification($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'TimeLineRelatedByIdModification', '\App\TimeLineQuery');
+    }
+
+    /**
+     * Filter the query by a related BillingCategory object
+     *
+     * @param   BillingCategory|PropelObjectCollection $billingCategory  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 AuthyQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByBillingCategoryRelatedByIdCreation($billingCategory, $comparison = null)
+    {
+        if ($billingCategory instanceof BillingCategory) {
+            return $this
+                ->addUsingAlias(AuthyPeer::ID_AUTHY, $billingCategory->getIdCreation(), $comparison);
+        } elseif ($billingCategory instanceof PropelObjectCollection) {
+            return $this
+                ->useBillingCategoryRelatedByIdCreationQuery()
+                ->filterByPrimaryKeys($billingCategory->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByBillingCategoryRelatedByIdCreation() only accepts arguments of type BillingCategory or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the BillingCategoryRelatedByIdCreation relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return AuthyQuery The current query, for fluid interface
+     */
+    public function joinBillingCategoryRelatedByIdCreation($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('BillingCategoryRelatedByIdCreation');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'BillingCategoryRelatedByIdCreation');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the BillingCategoryRelatedByIdCreation relation BillingCategory object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\BillingCategoryQuery A secondary query class using the current class as primary query
+     */
+    public function useBillingCategoryRelatedByIdCreationQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinBillingCategoryRelatedByIdCreation($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'BillingCategoryRelatedByIdCreation', '\App\BillingCategoryQuery');
+    }
+
+    /**
+     * Filter the query by a related BillingCategory object
+     *
+     * @param   BillingCategory|PropelObjectCollection $billingCategory  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 AuthyQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByBillingCategoryRelatedByIdModification($billingCategory, $comparison = null)
+    {
+        if ($billingCategory instanceof BillingCategory) {
+            return $this
+                ->addUsingAlias(AuthyPeer::ID_AUTHY, $billingCategory->getIdModification(), $comparison);
+        } elseif ($billingCategory instanceof PropelObjectCollection) {
+            return $this
+                ->useBillingCategoryRelatedByIdModificationQuery()
+                ->filterByPrimaryKeys($billingCategory->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByBillingCategoryRelatedByIdModification() only accepts arguments of type BillingCategory or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the BillingCategoryRelatedByIdModification relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return AuthyQuery The current query, for fluid interface
+     */
+    public function joinBillingCategoryRelatedByIdModification($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('BillingCategoryRelatedByIdModification');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'BillingCategoryRelatedByIdModification');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the BillingCategoryRelatedByIdModification relation BillingCategory object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\BillingCategoryQuery A secondary query class using the current class as primary query
+     */
+    public function useBillingCategoryRelatedByIdModificationQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinBillingCategoryRelatedByIdModification($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'BillingCategoryRelatedByIdModification', '\App\BillingCategoryQuery');
+    }
+
+    /**
+     * Filter the query by a related Supplier object
+     *
+     * @param   Supplier|PropelObjectCollection $supplier  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 AuthyQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterBySupplierRelatedByIdCreation($supplier, $comparison = null)
+    {
+        if ($supplier instanceof Supplier) {
+            return $this
+                ->addUsingAlias(AuthyPeer::ID_AUTHY, $supplier->getIdCreation(), $comparison);
+        } elseif ($supplier instanceof PropelObjectCollection) {
+            return $this
+                ->useSupplierRelatedByIdCreationQuery()
+                ->filterByPrimaryKeys($supplier->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterBySupplierRelatedByIdCreation() only accepts arguments of type Supplier or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the SupplierRelatedByIdCreation relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return AuthyQuery The current query, for fluid interface
+     */
+    public function joinSupplierRelatedByIdCreation($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('SupplierRelatedByIdCreation');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'SupplierRelatedByIdCreation');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the SupplierRelatedByIdCreation relation Supplier object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\SupplierQuery A secondary query class using the current class as primary query
+     */
+    public function useSupplierRelatedByIdCreationQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinSupplierRelatedByIdCreation($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'SupplierRelatedByIdCreation', '\App\SupplierQuery');
+    }
+
+    /**
+     * Filter the query by a related Supplier object
+     *
+     * @param   Supplier|PropelObjectCollection $supplier  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 AuthyQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterBySupplierRelatedByIdModification($supplier, $comparison = null)
+    {
+        if ($supplier instanceof Supplier) {
+            return $this
+                ->addUsingAlias(AuthyPeer::ID_AUTHY, $supplier->getIdModification(), $comparison);
+        } elseif ($supplier instanceof PropelObjectCollection) {
+            return $this
+                ->useSupplierRelatedByIdModificationQuery()
+                ->filterByPrimaryKeys($supplier->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterBySupplierRelatedByIdModification() only accepts arguments of type Supplier or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the SupplierRelatedByIdModification relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return AuthyQuery The current query, for fluid interface
+     */
+    public function joinSupplierRelatedByIdModification($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('SupplierRelatedByIdModification');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'SupplierRelatedByIdModification');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the SupplierRelatedByIdModification relation Supplier object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\SupplierQuery A secondary query class using the current class as primary query
+     */
+    public function useSupplierRelatedByIdModificationQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinSupplierRelatedByIdModification($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'SupplierRelatedByIdModification', '\App\SupplierQuery');
     }
 
     /**

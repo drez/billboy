@@ -15,24 +15,32 @@ use \PropelPDO;
 use App\Authy;
 use App\AuthyGroup;
 use App\Billing;
+use App\BillingCategory;
 use App\CostLine;
 use App\CostLinePeer;
 use App\CostLineQuery;
+use App\Supplier;
 
 /**
  * Base class that represents a query for the 'cost_line' table.
  *
- * Cost entry
+ * Expense
  *
  * @method CostLineQuery orderByIdCostLine($order = Criteria::ASC) Order by the id_cost_line column
  * @method CostLineQuery orderByIdBilling($order = Criteria::ASC) Order by the id_billing column
  * @method CostLineQuery orderByCalcId($order = Criteria::ASC) Order by the calc_id column
  * @method CostLineQuery orderByTitle($order = Criteria::ASC) Order by the title column
+ * @method CostLineQuery orderByIdSupplier($order = Criteria::ASC) Order by the id_supplier column
+ * @method CostLineQuery orderByInvoiceNo($order = Criteria::ASC) Order by the invoice_no column
+ * @method CostLineQuery orderByIdBillingCategory($order = Criteria::ASC) Order by the id_billing_category column
  * @method CostLineQuery orderBySpendDate($order = Criteria::ASC) Order by the spend_date column
- * @method CostLineQuery orderByNoteBillingLigne($order = Criteria::ASC) Order by the note_billing_ligne column
+ * @method CostLineQuery orderByRecuring($order = Criteria::ASC) Order by the recuring column
+ * @method CostLineQuery orderByRenewalDate($order = Criteria::ASC) Order by the renewal_date column
  * @method CostLineQuery orderByQuantity($order = Criteria::ASC) Order by the quantity column
  * @method CostLineQuery orderByAmount($order = Criteria::ASC) Order by the amount column
  * @method CostLineQuery orderByTotal($order = Criteria::ASC) Order by the total column
+ * @method CostLineQuery orderByBill($order = Criteria::ASC) Order by the bill column
+ * @method CostLineQuery orderByNoteBillingLigne($order = Criteria::ASC) Order by the note_billing_ligne column
  * @method CostLineQuery orderByDateCreation($order = Criteria::ASC) Order by the date_creation column
  * @method CostLineQuery orderByDateModification($order = Criteria::ASC) Order by the date_modification column
  * @method CostLineQuery orderByIdGroupCreation($order = Criteria::ASC) Order by the id_group_creation column
@@ -43,11 +51,17 @@ use App\CostLineQuery;
  * @method CostLineQuery groupByIdBilling() Group by the id_billing column
  * @method CostLineQuery groupByCalcId() Group by the calc_id column
  * @method CostLineQuery groupByTitle() Group by the title column
+ * @method CostLineQuery groupByIdSupplier() Group by the id_supplier column
+ * @method CostLineQuery groupByInvoiceNo() Group by the invoice_no column
+ * @method CostLineQuery groupByIdBillingCategory() Group by the id_billing_category column
  * @method CostLineQuery groupBySpendDate() Group by the spend_date column
- * @method CostLineQuery groupByNoteBillingLigne() Group by the note_billing_ligne column
+ * @method CostLineQuery groupByRecuring() Group by the recuring column
+ * @method CostLineQuery groupByRenewalDate() Group by the renewal_date column
  * @method CostLineQuery groupByQuantity() Group by the quantity column
  * @method CostLineQuery groupByAmount() Group by the amount column
  * @method CostLineQuery groupByTotal() Group by the total column
+ * @method CostLineQuery groupByBill() Group by the bill column
+ * @method CostLineQuery groupByNoteBillingLigne() Group by the note_billing_ligne column
  * @method CostLineQuery groupByDateCreation() Group by the date_creation column
  * @method CostLineQuery groupByDateModification() Group by the date_modification column
  * @method CostLineQuery groupByIdGroupCreation() Group by the id_group_creation column
@@ -61,6 +75,14 @@ use App\CostLineQuery;
  * @method CostLineQuery leftJoinBilling($relationAlias = null) Adds a LEFT JOIN clause to the query using the Billing relation
  * @method CostLineQuery rightJoinBilling($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Billing relation
  * @method CostLineQuery innerJoinBilling($relationAlias = null) Adds a INNER JOIN clause to the query using the Billing relation
+ *
+ * @method CostLineQuery leftJoinSupplier($relationAlias = null) Adds a LEFT JOIN clause to the query using the Supplier relation
+ * @method CostLineQuery rightJoinSupplier($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Supplier relation
+ * @method CostLineQuery innerJoinSupplier($relationAlias = null) Adds a INNER JOIN clause to the query using the Supplier relation
+ *
+ * @method CostLineQuery leftJoinBillingCategory($relationAlias = null) Adds a LEFT JOIN clause to the query using the BillingCategory relation
+ * @method CostLineQuery rightJoinBillingCategory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BillingCategory relation
+ * @method CostLineQuery innerJoinBillingCategory($relationAlias = null) Adds a INNER JOIN clause to the query using the BillingCategory relation
  *
  * @method CostLineQuery leftJoinAuthyGroup($relationAlias = null) Adds a LEFT JOIN clause to the query using the AuthyGroup relation
  * @method CostLineQuery rightJoinAuthyGroup($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AuthyGroup relation
@@ -80,11 +102,17 @@ use App\CostLineQuery;
  * @method CostLine findOneByIdBilling(int $id_billing) Return the first CostLine filtered by the id_billing column
  * @method CostLine findOneByCalcId(string $calc_id) Return the first CostLine filtered by the calc_id column
  * @method CostLine findOneByTitle(string $title) Return the first CostLine filtered by the title column
+ * @method CostLine findOneByIdSupplier(int $id_supplier) Return the first CostLine filtered by the id_supplier column
+ * @method CostLine findOneByInvoiceNo(string $invoice_no) Return the first CostLine filtered by the invoice_no column
+ * @method CostLine findOneByIdBillingCategory(int $id_billing_category) Return the first CostLine filtered by the id_billing_category column
  * @method CostLine findOneBySpendDate(string $spend_date) Return the first CostLine filtered by the spend_date column
- * @method CostLine findOneByNoteBillingLigne(string $note_billing_ligne) Return the first CostLine filtered by the note_billing_ligne column
+ * @method CostLine findOneByRecuring(int $recuring) Return the first CostLine filtered by the recuring column
+ * @method CostLine findOneByRenewalDate(string $renewal_date) Return the first CostLine filtered by the renewal_date column
  * @method CostLine findOneByQuantity(string $quantity) Return the first CostLine filtered by the quantity column
  * @method CostLine findOneByAmount(string $amount) Return the first CostLine filtered by the amount column
  * @method CostLine findOneByTotal(string $total) Return the first CostLine filtered by the total column
+ * @method CostLine findOneByBill(int $bill) Return the first CostLine filtered by the bill column
+ * @method CostLine findOneByNoteBillingLigne(string $note_billing_ligne) Return the first CostLine filtered by the note_billing_ligne column
  * @method CostLine findOneByDateCreation(string $date_creation) Return the first CostLine filtered by the date_creation column
  * @method CostLine findOneByDateModification(string $date_modification) Return the first CostLine filtered by the date_modification column
  * @method CostLine findOneByIdGroupCreation(int $id_group_creation) Return the first CostLine filtered by the id_group_creation column
@@ -95,11 +123,17 @@ use App\CostLineQuery;
  * @method array findByIdBilling(int $id_billing) Return CostLine objects filtered by the id_billing column
  * @method array findByCalcId(string $calc_id) Return CostLine objects filtered by the calc_id column
  * @method array findByTitle(string $title) Return CostLine objects filtered by the title column
+ * @method array findByIdSupplier(int $id_supplier) Return CostLine objects filtered by the id_supplier column
+ * @method array findByInvoiceNo(string $invoice_no) Return CostLine objects filtered by the invoice_no column
+ * @method array findByIdBillingCategory(int $id_billing_category) Return CostLine objects filtered by the id_billing_category column
  * @method array findBySpendDate(string $spend_date) Return CostLine objects filtered by the spend_date column
- * @method array findByNoteBillingLigne(string $note_billing_ligne) Return CostLine objects filtered by the note_billing_ligne column
+ * @method array findByRecuring(int $recuring) Return CostLine objects filtered by the recuring column
+ * @method array findByRenewalDate(string $renewal_date) Return CostLine objects filtered by the renewal_date column
  * @method array findByQuantity(string $quantity) Return CostLine objects filtered by the quantity column
  * @method array findByAmount(string $amount) Return CostLine objects filtered by the amount column
  * @method array findByTotal(string $total) Return CostLine objects filtered by the total column
+ * @method array findByBill(int $bill) Return CostLine objects filtered by the bill column
+ * @method array findByNoteBillingLigne(string $note_billing_ligne) Return CostLine objects filtered by the note_billing_ligne column
  * @method array findByDateCreation(string $date_creation) Return CostLine objects filtered by the date_creation column
  * @method array findByDateModification(string $date_modification) Return CostLine objects filtered by the date_modification column
  * @method array findByIdGroupCreation(int $id_group_creation) Return CostLine objects filtered by the id_group_creation column
@@ -213,7 +247,7 @@ abstract class BaseCostLineQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_cost_line`, `id_billing`, `calc_id`, `title`, `spend_date`, `note_billing_ligne`, `quantity`, `amount`, `total`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `cost_line` WHERE `id_cost_line` = :p0';
+        $sql = 'SELECT `id_cost_line`, `id_billing`, `calc_id`, `title`, `id_supplier`, `invoice_no`, `id_billing_category`, `spend_date`, `recuring`, `renewal_date`, `quantity`, `amount`, `total`, `bill`, `note_billing_ligne`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `cost_line` WHERE `id_cost_line` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -450,6 +484,123 @@ abstract class BaseCostLineQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the id_supplier column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIdSupplier(1234); // WHERE id_supplier = 1234
+     * $query->filterByIdSupplier(array(12, 34)); // WHERE id_supplier IN (12, 34)
+     * $query->filterByIdSupplier(array('min' => 12)); // WHERE id_supplier >= 12
+     * $query->filterByIdSupplier(array('max' => 12)); // WHERE id_supplier <= 12
+     * </code>
+     *
+     * @see       filterBySupplier()
+     *
+     * @param     mixed $idSupplier The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return CostLineQuery The current query, for fluid interface
+     */
+    public function filterByIdSupplier($idSupplier = null, $comparison = null)
+    {
+        if (is_array($idSupplier)) {
+            $useMinMax = false;
+            if (isset($idSupplier['min'])) {
+                $this->addUsingAlias(CostLinePeer::ID_SUPPLIER, $idSupplier['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($idSupplier['max'])) {
+                $this->addUsingAlias(CostLinePeer::ID_SUPPLIER, $idSupplier['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(CostLinePeer::ID_SUPPLIER, $idSupplier, $comparison);
+    }
+
+    /**
+     * Filter the query on the invoice_no column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByInvoiceNo('fooValue');   // WHERE invoice_no = 'fooValue'
+     * $query->filterByInvoiceNo('%fooValue%'); // WHERE invoice_no LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $invoiceNo The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return CostLineQuery The current query, for fluid interface
+     */
+    public function filterByInvoiceNo($invoiceNo = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($invoiceNo)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $invoiceNo)) {
+                $invoiceNo = str_replace('*', '%', $invoiceNo);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(CostLinePeer::INVOICE_NO, $invoiceNo, $comparison);
+    }
+
+    /**
+     * Filter the query on the id_billing_category column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIdBillingCategory(1234); // WHERE id_billing_category = 1234
+     * $query->filterByIdBillingCategory(array(12, 34)); // WHERE id_billing_category IN (12, 34)
+     * $query->filterByIdBillingCategory(array('min' => 12)); // WHERE id_billing_category >= 12
+     * $query->filterByIdBillingCategory(array('max' => 12)); // WHERE id_billing_category <= 12
+     * </code>
+     *
+     * @see       filterByBillingCategory()
+     *
+     * @param     mixed $idBillingCategory The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return CostLineQuery The current query, for fluid interface
+     */
+    public function filterByIdBillingCategory($idBillingCategory = null, $comparison = null)
+    {
+        if (is_array($idBillingCategory)) {
+            $useMinMax = false;
+            if (isset($idBillingCategory['min'])) {
+                $this->addUsingAlias(CostLinePeer::ID_BILLING_CATEGORY, $idBillingCategory['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($idBillingCategory['max'])) {
+                $this->addUsingAlias(CostLinePeer::ID_BILLING_CATEGORY, $idBillingCategory['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(CostLinePeer::ID_BILLING_CATEGORY, $idBillingCategory, $comparison);
+    }
+
+    /**
      * Filter the query on the spend_date column
      *
      * Example usage:
@@ -493,32 +644,73 @@ abstract class BaseCostLineQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the note_billing_ligne column
+     * Filter the query on the recuring column
+     *
+     * @param     mixed $recuring The value to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return CostLineQuery The current query, for fluid interface
+     * @throws PropelException - if the value is not accepted by the enum.
+     */
+    public function filterByRecuring($recuring = null, $comparison = null)
+    {
+        if (is_scalar($recuring)) {
+            $recuring = CostLinePeer::getSqlValueForEnum(CostLinePeer::RECURING, $recuring);
+        } elseif (is_array($recuring)) {
+            $convertedValues = array();
+            foreach ($recuring as $value) {
+                $convertedValues[] = CostLinePeer::getSqlValueForEnum(CostLinePeer::RECURING, $value);
+            }
+            $recuring = $convertedValues;
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(CostLinePeer::RECURING, $recuring, $comparison);
+    }
+
+    /**
+     * Filter the query on the renewal_date column
      *
      * Example usage:
      * <code>
-     * $query->filterByNoteBillingLigne('fooValue');   // WHERE note_billing_ligne = 'fooValue'
-     * $query->filterByNoteBillingLigne('%fooValue%'); // WHERE note_billing_ligne LIKE '%fooValue%'
+     * $query->filterByRenewalDate('2011-03-14'); // WHERE renewal_date = '2011-03-14'
+     * $query->filterByRenewalDate('now'); // WHERE renewal_date = '2011-03-14'
+     * $query->filterByRenewalDate(array('max' => 'yesterday')); // WHERE renewal_date < '2011-03-13'
      * </code>
      *
-     * @param     string $noteBillingLigne The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     mixed $renewalDate The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return CostLineQuery The current query, for fluid interface
      */
-    public function filterByNoteBillingLigne($noteBillingLigne = null, $comparison = null)
+    public function filterByRenewalDate($renewalDate = null, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($noteBillingLigne)) {
+        if (is_array($renewalDate)) {
+            $useMinMax = false;
+            if (isset($renewalDate['min'])) {
+                $this->addUsingAlias(CostLinePeer::RENEWAL_DATE, $renewalDate['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($renewalDate['max'])) {
+                $this->addUsingAlias(CostLinePeer::RENEWAL_DATE, $renewalDate['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $noteBillingLigne)) {
-                $noteBillingLigne = str_replace('*', '%', $noteBillingLigne);
-                $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(CostLinePeer::NOTE_BILLING_LIGNE, $noteBillingLigne, $comparison);
+        return $this->addUsingAlias(CostLinePeer::RENEWAL_DATE, $renewalDate, $comparison);
     }
 
     /**
@@ -645,6 +837,62 @@ abstract class BaseCostLineQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(CostLinePeer::TOTAL, $total, $comparison);
+    }
+
+    /**
+     * Filter the query on the bill column
+     *
+     * @param     mixed $bill The value to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return CostLineQuery The current query, for fluid interface
+     * @throws PropelException - if the value is not accepted by the enum.
+     */
+    public function filterByBill($bill = null, $comparison = null)
+    {
+        if (is_scalar($bill)) {
+            $bill = CostLinePeer::getSqlValueForEnum(CostLinePeer::BILL, $bill);
+        } elseif (is_array($bill)) {
+            $convertedValues = array();
+            foreach ($bill as $value) {
+                $convertedValues[] = CostLinePeer::getSqlValueForEnum(CostLinePeer::BILL, $value);
+            }
+            $bill = $convertedValues;
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(CostLinePeer::BILL, $bill, $comparison);
+    }
+
+    /**
+     * Filter the query on the note_billing_ligne column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByNoteBillingLigne('fooValue');   // WHERE note_billing_ligne = 'fooValue'
+     * $query->filterByNoteBillingLigne('%fooValue%'); // WHERE note_billing_ligne LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $noteBillingLigne The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return CostLineQuery The current query, for fluid interface
+     */
+    public function filterByNoteBillingLigne($noteBillingLigne = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($noteBillingLigne)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $noteBillingLigne)) {
+                $noteBillingLigne = str_replace('*', '%', $noteBillingLigne);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(CostLinePeer::NOTE_BILLING_LIGNE, $noteBillingLigne, $comparison);
     }
 
     /**
@@ -899,7 +1147,7 @@ abstract class BaseCostLineQuery extends ModelCriteria
      *
      * @return CostLineQuery The current query, for fluid interface
      */
-    public function joinBilling($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinBilling($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('Billing');
@@ -934,11 +1182,163 @@ abstract class BaseCostLineQuery extends ModelCriteria
      *
      * @return   \App\BillingQuery A secondary query class using the current class as primary query
      */
-    public function useBillingQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useBillingQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinBilling($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Billing', '\App\BillingQuery');
+    }
+
+    /**
+     * Filter the query by a related Supplier object
+     *
+     * @param   Supplier|PropelObjectCollection $supplier The related object(s) to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 CostLineQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterBySupplier($supplier, $comparison = null)
+    {
+        if ($supplier instanceof Supplier) {
+            return $this
+                ->addUsingAlias(CostLinePeer::ID_SUPPLIER, $supplier->getIdSupplier(), $comparison);
+        } elseif ($supplier instanceof PropelObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(CostLinePeer::ID_SUPPLIER, $supplier->toKeyValue('PrimaryKey', 'IdSupplier'), $comparison);
+        } else {
+            throw new PropelException('filterBySupplier() only accepts arguments of type Supplier or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Supplier relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return CostLineQuery The current query, for fluid interface
+     */
+    public function joinSupplier($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Supplier');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Supplier');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Supplier relation Supplier object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\SupplierQuery A secondary query class using the current class as primary query
+     */
+    public function useSupplierQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinSupplier($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Supplier', '\App\SupplierQuery');
+    }
+
+    /**
+     * Filter the query by a related BillingCategory object
+     *
+     * @param   BillingCategory|PropelObjectCollection $billingCategory The related object(s) to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 CostLineQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByBillingCategory($billingCategory, $comparison = null)
+    {
+        if ($billingCategory instanceof BillingCategory) {
+            return $this
+                ->addUsingAlias(CostLinePeer::ID_BILLING_CATEGORY, $billingCategory->getIdBillingCategory(), $comparison);
+        } elseif ($billingCategory instanceof PropelObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(CostLinePeer::ID_BILLING_CATEGORY, $billingCategory->toKeyValue('PrimaryKey', 'IdBillingCategory'), $comparison);
+        } else {
+            throw new PropelException('filterByBillingCategory() only accepts arguments of type BillingCategory or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the BillingCategory relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return CostLineQuery The current query, for fluid interface
+     */
+    public function joinBillingCategory($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('BillingCategory');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'BillingCategory');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the BillingCategory relation BillingCategory object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\BillingCategoryQuery A secondary query class using the current class as primary query
+     */
+    public function useBillingCategoryQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinBillingCategory($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'BillingCategory', '\App\BillingCategoryQuery');
     }
 
     /**
