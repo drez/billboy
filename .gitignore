@@ -1,6 +1,6 @@
 .admin/vendor/*
 .admin/.build/*
-.admin/tmp/*
+.admin/tmp/.*
 .env
 composer.lock
 gc

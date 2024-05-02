@@ -1,10 +1,6 @@
 **************** 
-2024-05-01 21:35:55
+2024-05-02 00:01:26
 
-***********  
-info
-***********  
-Config saved (/var/www/gc/p/myproject1/.admin/client.schema.xml)
 ***********  
 debug
 ***********  
@@ -41,11 +37,9 @@ propel > om-template:
 [propel-om] 16 tables found in 3 schema files.
 [propel-om] Generating PHP files...
 [propel-om] 	-> Updating config/basedata.sql.php (table: client, builder: BaseData)
-[propel-om] 	-> Updating map/BillingTableMap.php (table: billing, builder: PHP5TableMapBuilder)
-[propel-om] 	-> Updating interface/BillingForm.php (table: billing, builder: Form)
-[propel-om] Object model generation complete - 3 files written
+[propel-om] Object model generation complete - 1 files written
 BUILD FINISHED
-Total time: 0.3622 seconds
+Total time: 0.3749 seconds
 Buildfile: /var/www/gc/vendor/propel/propel1/generator/build.xml
 propel-project-builder > check-project-or-dir-set:
 propel-project-builder > check-project-set:
@@ -74,11 +68,9 @@ propel > om-template:
 [propel-om] 16 tables found in 3 schema files.
 [propel-om] Generating PHP files...
 [propel-om] 	-> Updating config/basedata.sql.php (table: client, builder: BaseData)
-[propel-om] 	-> Updating map/BillingTableMap.php (table: billing, builder: PHP5TableMapBuilder)
-[propel-om] 	-> Updating interface/BillingForm.php (table: billing, builder: Form)
-[propel-om] Object model generation complete - 3 files written
+[propel-om] Object model generation complete - 1 files written
 BUILD FINISHED
-Total time: 0.3622 seconds
+Total time: 0.3749 seconds
 
 -> Configs
 
@@ -108,7 +100,7 @@ propel > convert-conf:
 [propel-convert-conf] 16 tables found in 3 schema files.
 [propel-convert-conf] Updating PHP classmap file "/var/www/gc/p/myproject1/.admin/.build/conf/classmap.php"
 BUILD FINISHED
-Total time: 0.0494 seconds
+Total time: 0.0501 seconds
 Buildfile: /var/www/gc/vendor/propel/propel1/generator/build.xml
 propel-project-builder > check-project-or-dir-set:
 propel-project-builder > check-project-set:
@@ -133,7 +125,7 @@ propel > convert-conf:
 [propel-convert-conf] 16 tables found in 3 schema files.
 [propel-convert-conf] Updating PHP classmap file "/var/www/gc/p/myproject1/.admin/.build/conf/classmap.php"
 BUILD FINISHED
-Total time: 0.0494 seconds
+Total time: 0.0501 seconds
 
 -> Sql
 
@@ -167,7 +159,7 @@ propel > sql-template:
 [propel-sql] 16 tables found in 3 schema files.
 [propel-sql] [Unchanged] schema.sql
 BUILD FINISHED
-Total time: 0.0477 seconds
+Total time: 0.0520 seconds
 Buildfile: /var/www/gc/vendor/propel/propel1/generator/build.xml
 propel-project-builder > check-project-or-dir-set:
 propel-project-builder > check-project-set:
@@ -196,7 +188,7 @@ propel > sql-template:
 [propel-sql] 16 tables found in 3 schema files.
 [propel-sql] [Unchanged] schema.sql
 BUILD FINISHED
-Total time: 0.0477 seconds
+Total time: 0.0520 seconds
 
 -> Insert sql
 
@@ -222,7 +214,7 @@ propel > insert-sql:
 [propel-sql-exec]   44 of 44 SQL statements executed successfully
 [propel-sql-exec] SQL execution complete. 44 statements successfully executed.
 BUILD FINISHED
-Total time: 0.4768 seconds
+Total time: 0.4896 seconds
 Buildfile: /var/www/gc/vendor/propel/propel1/generator/build.xml
 propel-project-builder > check-project-or-dir-set:
 propel-project-builder > check-project-set:
@@ -243,7 +235,7 @@ propel > insert-sql:
 [propel-sql-exec]   44 of 44 SQL statements executed successfully
 [propel-sql-exec] SQL execution complete. 44 statements successfully executed.
 BUILD FINISHED
-Total time: 0.4768 seconds
+Total time: 0.4896 seconds
 
 -> Install
 
@@ -533,7 +525,7 @@ build > build:
      [copy] Copying 1 file to /var/www/gc/p/myproject1/.admin/config/Built
      [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/basedata.sql.php to /var/www/gc/p/myproject1/.admin/config/Built/basedata.sql
 BUILD FINISHED
-Total time: 0.0665 seconds
+Total time: 0.0720 seconds
 Buildfile: /var/www/gc/p/myproject1/.admin/build.xml
 Override ignored for user property phing.file
 Override ignored for user property phing.dir
@@ -818,12 +810,20 @@ build > build:
      [copy] Copying 1 file to /var/www/gc/p/myproject1/.admin/config/Built
      [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/basedata.sql.php to /var/www/gc/p/myproject1/.admin/config/Built/basedata.sql
 BUILD FINISHED
-Total time: 0.0665 seconds
+Total time: 0.0720 seconds
 
 -> Restore
 
 /usr/bin/mysql -f -u gc_myproject1 --password=njhghqmfyczbwwbmvxymfl gc_myproject1 < /var/www/gc/p/myproject1/.admin/tmp/db-backup.sql 2>&1
 Code 0
+ERROR 1146 (42S02) at line 201: Table 'gc_myproject1.tmp_breakdown_revenue_category' doesn't exist
+ERROR 1146 (42S02) at line 202: Table 'gc_myproject1.tmp_breakdown_revenue_category' doesn't exist
+ERROR 1146 (42S02) at line 204: Table 'gc_myproject1.tmp_breakdown_revenue_category' doesn't exist
+ERROR 1146 (42S02) at line 205: Table 'gc_myproject1.tmp_breakdown_revenue_category' doesn't exist
+ERROR 1146 (42S02) at line 201: Table 'gc_myproject1.tmp_breakdown_revenue_category' doesn't exist
+ERROR 1146 (42S02) at line 202: Table 'gc_myproject1.tmp_breakdown_revenue_category' doesn't exist
+ERROR 1146 (42S02) at line 204: Table 'gc_myproject1.tmp_breakdown_revenue_category' doesn't exist
+ERROR 1146 (42S02) at line 205: Table 'gc_myproject1.tmp_breakdown_revenue_category' doesn't exist
 
 -> Additionnal SQL
 
