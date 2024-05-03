@@ -381,9 +381,21 @@ JS;
 		$stmt->execute();
 
 		$sql = "CREATE TABLE `tmp_breakdown_revenue` (
+  `Pos` varchar(4) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `Date` date DEFAULT NULL COMMENT 'Paid date',
+  `state` tinyint(4) DEFAULT NULL COMMENT 'State',
+  `Year` varchar(4) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `Month` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `Week` varchar(2) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `Total` decimal(30,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
+		$stmt = $conn->prepare($sql);
+		$stmt->execute();
+
+		$sql = "INSERT INTO `tmp_breakdown_revenue` (
 				SELECT 'Paid' as 'Pos', date_paid as Date, state, DATE_FORMAT(date_paid, '%Y') as 'Year', DATE_FORMAT(date_paid, '%M') as 'Month', DATE_FORMAT(date_paid, '%u') as 'Week', sum(net) as 'Total'
 		FROM billing
-		WHERE state = 4 OR state = 3 AND type = 1
+		WHERE (state = 4 OR state = 3) AND type = 1
 		GROUP BY DATE_FORMAT(date_paid, '%Y'), DATE_FORMAT(date_paid, '%M'), DATE_FORMAT(date_paid, '%u')
 		WITH ROLLUP);";
 
@@ -392,7 +404,7 @@ JS;
 
 		$sql = "INSERT INTO `tmp_breakdown_revenue` (SELECT 'Open' as 'Pos', `date` as Date, state, DATE_FORMAT(`date`, '%Y') as 'Year', DATE_FORMAT(`date`, '%M') as 'Month', DATE_FORMAT(`date`, '%u') as 'Week', sum(gross) as 'Total'
 		FROM billing
-		WHERE state = 0 OR state = 1 OR state = 6 AND type = 1
+		WHERE (state = 0 OR state = 1 OR state = 6) AND type = 1
 		GROUP BY state, DATE_FORMAT(`date`, '%Y'), DATE_FORMAT(`date`, '%M'), DATE_FORMAT(`date`, '%u')
 		WITH ROLLUP)";
 
