@@ -10,9 +10,9 @@ Billboy is a small billing, crm and accounting software for those with basic nee
 #### 2. Install
 
 1. copy the files to the server
-2. add your database connection information to the .env file
-3. run
+2. rename .env.example and add your database and path configurations
+3. run the deplaoy script in console:
 
 ```
-composer install
+$ composer run-script deploy
 ```
