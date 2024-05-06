@@ -3555,6 +3555,23 @@ abstract class BaseBilling extends BaseObject implements Persistent
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return PropelObjectCollection|CostLine[] List of CostLine objects
      */
+    public function getCostLinesJoinProject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CostLineQuery::create(null, $criteria);
+        $query->joinWith('Project', $join_behavior);
+
+        return $this->getCostLines($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|CostLine[] List of CostLine objects
+     */
     public function getCostLinesJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
         $query = CostLineQuery::create(null, $criteria);

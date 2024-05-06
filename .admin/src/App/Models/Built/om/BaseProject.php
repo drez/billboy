@@ -25,6 +25,8 @@ use App\BillingLineQuery;
 use App\BillingQuery;
 use App\Client;
 use App\ClientQuery;
+use App\CostLine;
+use App\CostLineQuery;
 use App\Project;
 use App\ProjectPeer;
 use App\ProjectQuery;
@@ -182,6 +184,12 @@ abstract class BaseProject extends BaseObject implements Persistent
     protected $collBillingLinesPartial;
 
     /**
+     * @var        PropelObjectCollection|CostLine[] Collection to store aggregation of CostLine objects.
+     */
+    protected $collCostLines;
+    protected $collCostLinesPartial;
+
+    /**
      * @var        PropelObjectCollection|TimeLine[] Collection to store aggregation of TimeLine objects.
      */
     protected $collTimeLines;
@@ -218,6 +226,12 @@ abstract class BaseProject extends BaseObject implements Persistent
      * @var		PropelObjectCollection
      */
     protected $billingLinesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $costLinesScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -993,6 +1007,8 @@ abstract class BaseProject extends BaseObject implements Persistent
 
             $this->collBillingLines = null;
 
+            $this->collCostLines = null;
+
             $this->collTimeLines = null;
 
         } // if (deep)
@@ -1202,6 +1218,24 @@ abstract class BaseProject extends BaseObject implements Persistent
 
             if ($this->collBillingLines !== null) {
                 foreach ($this->collBillingLines as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->costLinesScheduledForDeletion !== null) {
+                if (!$this->costLinesScheduledForDeletion->isEmpty()) {
+                    foreach ($this->costLinesScheduledForDeletion as $costLine) {
+                        // need to save related object because we set the relation to null
+                        $costLine->save($con);
+                    }
+                    $this->costLinesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collCostLines !== null) {
+                foreach ($this->collCostLines as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1497,6 +1531,14 @@ abstract class BaseProject extends BaseObject implements Persistent
                     }
                 }
 
+                if ($this->collCostLines !== null) {
+                    foreach ($this->collCostLines as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
                 if ($this->collTimeLines !== null) {
                     foreach ($this->collTimeLines as $referrerFK) {
                         if (!$referrerFK->validate($columns)) {
@@ -1592,6 +1634,9 @@ abstract class BaseProject extends BaseObject implements Persistent
             }
             if (null !== $this->collBillingLines) {
                 $result['BillingLines'] = $this->collBillingLines->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collCostLines) {
+                $result['CostLines'] = $this->collCostLines->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collTimeLines) {
                 $result['TimeLines'] = $this->collTimeLines->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -1842,6 +1887,12 @@ abstract class BaseProject extends BaseObject implements Persistent
             foreach ($this->getBillingLines() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addBillingLine($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getCostLines() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addCostLine($relObj->copy($deepCopy));
                 }
             }
 
@@ -2125,6 +2176,9 @@ abstract class BaseProject extends BaseObject implements Persistent
         }
         if ('BillingLine' == $relationName) {
             $this->initBillingLines();
+        }
+        if ('CostLine' == $relationName) {
+            $this->initCostLines();
         }
         if ('TimeLine' == $relationName) {
             $this->initTimeLines();
@@ -2769,6 +2823,333 @@ abstract class BaseProject extends BaseObject implements Persistent
     }
 
     /**
+     * Clears out the collCostLines collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Project The current object (for fluent API support)
+     * @see        addCostLines()
+     */
+    public function clearCostLines()
+    {
+        $this->collCostLines = null; // important to set this to null since that means it is uninitialized
+        $this->collCostLinesPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collCostLines collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialCostLines($v = true)
+    {
+        $this->collCostLinesPartial = $v;
+    }
+
+    /**
+     * Initializes the collCostLines collection.
+     *
+     * By default this just sets the collCostLines collection to an empty array (like clearcollCostLines());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initCostLines($overrideExisting = true)
+    {
+        if (null !== $this->collCostLines && !$overrideExisting) {
+            return;
+        }
+        $this->collCostLines = new PropelObjectCollection();
+        $this->collCostLines->setModel('CostLine');
+    }
+
+    /**
+     * Gets an array of CostLine objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Project is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|CostLine[] List of CostLine objects
+     * @throws PropelException
+     */
+    public function getCostLines($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collCostLinesPartial && !$this->isNew();
+        if (null === $this->collCostLines || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collCostLines) {
+                // return empty collection
+                $this->initCostLines();
+            } else {
+                $collCostLines = CostLineQuery::create(null, $criteria)
+                    ->filterByProject($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collCostLinesPartial && count($collCostLines)) {
+                      $this->initCostLines(false);
+
+                      foreach ($collCostLines as $obj) {
+                        if (false == $this->collCostLines->contains($obj)) {
+                          $this->collCostLines->append($obj);
+                        }
+                      }
+
+                      $this->collCostLinesPartial = true;
+                    }
+
+                    $collCostLines->getInternalIterator()->rewind();
+
+                    return $collCostLines;
+                }
+
+                if ($partial && $this->collCostLines) {
+                    foreach ($this->collCostLines as $obj) {
+                        if ($obj->isNew()) {
+                            $collCostLines[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collCostLines = $collCostLines;
+                $this->collCostLinesPartial = false;
+            }
+        }
+
+        return $this->collCostLines;
+    }
+
+    /**
+     * Sets a collection of CostLine objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $costLines A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return Project The current object (for fluent API support)
+     */
+    public function setCostLines(PropelCollection $costLines, PropelPDO $con = null)
+    {
+        $costLinesToDelete = $this->getCostLines(new Criteria(), $con)->diff($costLines);
+
+
+        $this->costLinesScheduledForDeletion = $costLinesToDelete;
+
+        foreach ($costLinesToDelete as $costLineRemoved) {
+            $costLineRemoved->setProject(null);
+        }
+
+        $this->collCostLines = null;
+        foreach ($costLines as $costLine) {
+            $this->addCostLine($costLine);
+        }
+
+        $this->collCostLines = $costLines;
+        $this->collCostLinesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related CostLine objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related CostLine objects.
+     * @throws PropelException
+     */
+    public function countCostLines(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collCostLinesPartial && !$this->isNew();
+        if (null === $this->collCostLines || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collCostLines) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getCostLines());
+            }
+            $query = CostLineQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByProject($this)
+                ->count($con);
+        }
+
+        return count($this->collCostLines);
+    }
+
+    /**
+     * Method called to associate a CostLine object to this object
+     * through the CostLine foreign key attribute.
+     *
+     * @param    CostLine $l CostLine
+     * @return Project The current object (for fluent API support)
+     */
+    public function addCostLine(CostLine $l)
+    {
+        if ($this->collCostLines === null) {
+            $this->initCostLines();
+            $this->collCostLinesPartial = true;
+        }
+
+        if (!in_array($l, $this->collCostLines->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddCostLine($l);
+
+            if ($this->costLinesScheduledForDeletion and $this->costLinesScheduledForDeletion->contains($l)) {
+                $this->costLinesScheduledForDeletion->remove($this->costLinesScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	CostLine $costLine The costLine object to add.
+     */
+    protected function doAddCostLine($costLine)
+    {
+        $this->collCostLines[]= $costLine;
+        $costLine->setProject($this);
+    }
+
+    /**
+     * @param	CostLine $costLine The costLine object to remove.
+     * @return Project The current object (for fluent API support)
+     */
+    public function removeCostLine($costLine)
+    {
+        if ($this->getCostLines()->contains($costLine)) {
+            $this->collCostLines->remove($this->collCostLines->search($costLine));
+            if (null === $this->costLinesScheduledForDeletion) {
+                $this->costLinesScheduledForDeletion = clone $this->collCostLines;
+                $this->costLinesScheduledForDeletion->clear();
+            }
+            $this->costLinesScheduledForDeletion[]= $costLine;
+            $costLine->setProject(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|CostLine[] List of CostLine objects
+     */
+    public function getCostLinesJoinBilling($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CostLineQuery::create(null, $criteria);
+        $query->joinWith('Billing', $join_behavior);
+
+        return $this->getCostLines($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|CostLine[] List of CostLine objects
+     */
+    public function getCostLinesJoinSupplier($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CostLineQuery::create(null, $criteria);
+        $query->joinWith('Supplier', $join_behavior);
+
+        return $this->getCostLines($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|CostLine[] List of CostLine objects
+     */
+    public function getCostLinesJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CostLineQuery::create(null, $criteria);
+        $query->joinWith('BillingCategory', $join_behavior);
+
+        return $this->getCostLines($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|CostLine[] List of CostLine objects
+     */
+    public function getCostLinesJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CostLineQuery::create(null, $criteria);
+        $query->joinWith('AuthyGroup', $join_behavior);
+
+        return $this->getCostLines($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|CostLine[] List of CostLine objects
+     */
+    public function getCostLinesJoinAuthyRelatedByIdCreation($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CostLineQuery::create(null, $criteria);
+        $query->joinWith('AuthyRelatedByIdCreation', $join_behavior);
+
+        return $this->getCostLines($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|CostLine[] List of CostLine objects
+     */
+    public function getCostLinesJoinAuthyRelatedByIdModification($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CostLineQuery::create(null, $criteria);
+        $query->joinWith('AuthyRelatedByIdModification', $join_behavior);
+
+        return $this->getCostLines($query, $con);
+    }
+
+    /**
      * Clears out the collTimeLines collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
@@ -3096,6 +3477,11 @@ abstract class BaseProject extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collCostLines) {
+                foreach ($this->collCostLines as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collTimeLines) {
                 foreach ($this->collTimeLines as $o) {
                     $o->clearAllReferences($deep);
@@ -3125,6 +3511,10 @@ abstract class BaseProject extends BaseObject implements Persistent
             $this->collBillingLines->clearIterator();
         }
         $this->collBillingLines = null;
+        if ($this->collCostLines instanceof PropelCollection) {
+            $this->collCostLines->clearIterator();
+        }
+        $this->collCostLines = null;
         if ($this->collTimeLines instanceof PropelCollection) {
             $this->collTimeLines->clearIterator();
         }

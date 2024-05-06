@@ -460,8 +460,6 @@ class PaymentLineForm extends PaymentLine
         $e->setDate( ($data['Date'] == '' || $data['Date'] == 'null' || substr($data['Date'],0,10) == '-0001-11-30') ? null : $data['Date'] );
         //integer not required
         $e->setNote( ($data['Note'] == '' ) ? null : $data['Note']);
-        //integer not required
-        $e->setAmount( ($data['Amount'] == '' ) ? null : $data['Amount']);
         $e->setDateCreation( ($data['DateCreation'] == '' || $data['DateCreation'] == 'null' || substr($data['DateCreation'],0,10) == '-0001-11-30') ? null : $data['DateCreation'] );
         $e->setDateModification( ($data['DateModification'] == '' || $data['DateModification'] == 'null' || substr($data['DateModification'],0,10) == '-0001-11-30') ? null : $data['DateModification'] );
         //foreign
@@ -491,9 +489,6 @@ class PaymentLineForm extends PaymentLine
         
         if(isset($data['Date'])){
             $e->setDate( ($data['Date'] == '' || $data['Date'] == 'null' || substr($data['Date'],0,10) == '-0001-11-30') ? null : $data['Date'] );
-        }
-        if(isset($data['Amount'])){
-            $e->setAmount( ($data['Amount'] == '' ) ? null : $data['Amount']);
         }
         if(isset($data['DateCreation'])){
             $e->setDateCreation( ($data['DateCreation'] == '' || $data['DateCreation'] == 'null' || substr($data['DateCreation'],0,10) == '-0001-11-30') ? null : $data['DateCreation'] );
@@ -649,7 +644,7 @@ class PaymentLineForm extends PaymentLine
         
 $this->fields['PaymentLine']['Date']['html'] = stdFieldRow(_("Date"), input('date', 'Date', $dataObj->getDate(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'Date', "", $this->commentsDate, $this->commentsDate_css, '', ' ', 'no');
 $this->fields['PaymentLine']['Note']['html'] = stdFieldRow(_("Note"), textarea('Note', htmlentities($dataObj->getNote()) ,"placeholder='".str_replace("'","&#39;",_('Note'))."' cols='71' v='NOTE' s='d'  class=' ' style='' spellcheck='false'"), 'Note', "", $this->commentsNote, $this->commentsNote_css, '', ' ', 'no');
-$this->fields['PaymentLine']['Amount']['html'] = stdFieldRow(_("Amount"), input('text', 'Amount', $dataObj->getAmount(), "  placeholder='".str_replace("'","&#39;",_('Amount'))."'  v='AMOUNT' size='5' s='d' class='req'"), 'Amount', "", $this->commentsAmount, $this->commentsAmount_css, '', ' ', 'no');
+$this->fields['PaymentLine']['Amount']['html'] = stdFieldRow(_("Amount"), input('text', 'Amount', $dataObj->getAmount(), "  placeholder='".str_replace("'","&#39;",_('Amount'))."'  v='AMOUNT' size='5' s='d' class=''"), 'Amount', "", $this->commentsAmount, $this->commentsAmount_css, '', ' ', 'no');
 
 
         

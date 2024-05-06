@@ -47,14 +47,14 @@ class PaymentLineTableMap extends TableMap
         $this->addColumn('Reference', 'Reference', 'VARCHAR', false, 40, null);
         $this->addColumn('date', 'Date', 'DATE', false, null, null);
         $this->addColumn('note', 'Note', 'LONGVARCHAR', false, 500, null);
-        $this->addColumn('amount', 'Amount', 'DECIMAL', false, 8, null);
+        $this->addColumn('amount', 'Amount', 'DECIMAL', true, 8, 0);
         $this->addColumn('date_creation', 'DateCreation', 'TIMESTAMP', false, null, null);
         $this->addColumn('date_modification', 'DateModification', 'TIMESTAMP', false, null, null);
         $this->addForeignKey('id_group_creation', 'IdGroupCreation', 'INTEGER', 'authy_group', 'id_authy_group', false, null, null);
         $this->addForeignKey('id_creation', 'IdCreation', 'INTEGER', 'authy', 'id_authy', false, null, null);
         $this->addForeignKey('id_modification', 'IdModification', 'INTEGER', 'authy', 'id_authy', false, null, null);
         // validators
-        $this->addValidator('amount', 'required', 'propel.validator.RequiredValidator', '', 'billing_line_amount_required');
+        $this->addValidator('amount', 'minLength', 'propel.validator.MinLengthValidator', '1', 'payment_line_amount_required');
         $this->addValidator('id_payment_line', 'required', 'propel.validator.RequiredValidator', '', ('PaymentLine_IdPaymentLine_required'));
         $this->addValidator('id_payment_line', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('PaymentLine_IdPaymentLine_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('id_billing', 'required', 'propel.validator.RequiredValidator', '', ('PaymentLine_IdBilling_required'));
@@ -62,6 +62,7 @@ class PaymentLineTableMap extends TableMap
         $this->addValidator('Reference', 'type', 'propel.validator.TypeValidator', 'string', ('PaymentLine_Reference_type_string'));
         $this->addValidator('date', 'match', 'propel.validator.MatchValidator', '', ('PaymentLine_Date_match'));
         $this->addValidator('note', 'type', 'propel.validator.TypeValidator', 'string', ('PaymentLine_Note_type_string'));
+        $this->addValidator('amount', 'required', 'propel.validator.RequiredValidator', '', ('PaymentLine_Amount_required'));
     } // initialize()
 
     /**

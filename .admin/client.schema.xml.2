@@ -42,7 +42,7 @@
 			<parameter name="add_tab_columns" value='{"Note":"note_billing","Paiement":"date_paid"}' />
 			<parameter name="is_wysiwyg_colunms" value='["note_billing"]' />
 			<parameter name="add_search_columns" value='{"Type":[["type","%val","multiple"]],"Client":[["id_client","%val","multiple"]],"Date":[["date","%val"]],"Title":[["title","%val"]],"State":[["state","%val","multiple"]]}' />
-			<parameter name="set_readonly_columns" value='["gross"]' />
+			<parameter name="set_readonly_columns" value='["gross","tax"]' />
 			<parameter name="set_list_hide_columns" value='["note_billing","reference"]' />
 			<parameter name="set_order_list_columns" value='[["date","DESC"]]' />
 			<parameter name="set_order_child_list_columns" value='{"billing_line":[["work_date","DESC"]]}' />
@@ -67,6 +67,7 @@
 		<column name="type" description="Type" type="ENUM" valueSet="Quote, Bill" required="true" defaultValue="Bill" />
 		<column name="state" description="State" type="ENUM" valueSet="New, Approved, Sent, Partial paiement, Paid,Cancelled, To send" required="true" />
 		<column name="gross" description="Gross" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="tax" description="Tax" type="DECIMAL" size="8" scale=" 2" required="false" />
 		<column name="date_due" description="Due date" type="DATE" required="false" />
 		<column name="note_billing" description="Note" type="LONGVARCHAR" required="false" size="400" />
 		<column name="date_paid" description="Paid date" type="DATE" required="false" />
@@ -102,8 +103,8 @@
 		</foreign-key>
 		<column name="title" description="Title" type="VARCHAR" size="100" />
 		<column name="work_date" description="Date" type="DATE" required="false" />
-		<column name="quantity" description="Quantity" type="DECIMAL" size="8" scale=" 2" required="false" />
-		<column name="amount" description="Amount" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="quantity" description="Quantity" type="DECIMAL" size="8" scale=" 2" required="true" defaultValue="1.00" />
+		<column name="amount" description="Amount" type="DECIMAL" size="8" scale=" 2" required="true" defaultValue="0.00" />
 		<column name="total" description="Total" type="DECIMAL" size="8" scale=" 2" required="false" />
 		<column name="id_billing_category" description="Category" type="INTEGER" size="11" required="false" defaultValue="null" />
 		<foreign-key foreignTable="billing_category" onDelete="restrict" onUpdate="restrict" >
@@ -111,7 +112,10 @@
 		</foreign-key>
 		<column name="note_billing_ligne" description="Note" type="LONGVARCHAR" required="false" size="500" />
 		<validator column="amount" >
-			<rule name="required" message="billing_line_amount_required" />
+			<rule name="minLength" message="cost_line_amount_required" value="1" />
+		</validator>
+		<validator column="quantity" >
+			<rule name="minLength" message="cost_line_quantity_required" value="1" />
 		</validator>
 	</table>
 	<table name="payment_line" description="Payment entry" >
@@ -127,9 +131,12 @@
 		<column name="Reference" description="" type="VARCHAR" size="40" />
 		<column name="date" description="Date" type="DATE" required="false" />
 		<column name="note" description="Note" type="LONGVARCHAR" required="false" size="500" />
-		<column name="amount" description="Amount" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="amount" description="Amount" type="DECIMAL" size="8" scale=" 2" required="true" defaultValue="0.00" />
 		<validator column="amount" >
-			<rule name="required" message="billing_line_amount_required" />
+			<rule name="minLength" message="cost_line_amount_required" value="1" />
+		</validator>
+		<validator column="quantity" >
+			<rule name="minLength" message="cost_line_quantity_required" value="1" />
 		</validator>
 	</table>
 	<table name="cost_line" description="Expense" >
@@ -150,6 +157,10 @@
 			<reference local="id_supplier" foreign="id_supplier" />
 		</foreign-key>
 		<column name="invoice_no" description="Invoice no." type="VARCHAR" size="100" />
+		<column name="id_project" description="Project" type="INTEGER" size="11" required="false" defaultValue="null" />
+		<foreign-key foreignTable="project" onDelete="restrict" onUpdate="restrict" >
+			<reference local="id_project" foreign="id_project" />
+		</foreign-key>
 		<column name="id_billing_category" description="Category" type="INTEGER" size="11" required="false" defaultValue="null" />
 		<foreign-key foreignTable="billing_category" onDelete="restrict" onUpdate="restrict" >
 			<reference local="id_billing_category" foreign="id_billing_category" />
@@ -157,13 +168,16 @@
 		<column name="spend_date" description="Date" type="DATE" required="false" />
 		<column name="recuring" description="Recuring" type="ENUM" valueSet="Once, Monthly, Yearly" required="true" />
 		<column name="renewal_date" description="Renewal date" type="DATE" required="false" />
-		<column name="quantity" description="Quantity" type="DECIMAL" size="8" scale=" 2" required="false" />
-		<column name="amount" description="Amount" type="DECIMAL" size="8" scale=" 2" required="false" />
+		<column name="quantity" description="Quantity" type="DECIMAL" size="8" scale=" 2" required="true" defaultValue="1.00" />
+		<column name="amount" description="Amount" type="DECIMAL" size="8" scale=" 2" required="true" defaultValue="0.00" />
 		<column name="total" description="Total" type="DECIMAL" size="8" scale=" 2" required="false" />
 		<column name="bill" description="Add to bill" type="ENUM" valueSet="No, Yes" required="true" />
 		<column name="note_billing_ligne" description="Note" type="LONGVARCHAR" required="false" size="500" />
 		<validator column="amount" >
-			<rule name="required" message="cost_line_amount_required" />
+			<rule name="minLength" message="cost_line_amount_required" value="1" />
+		</validator>
+		<validator column="quantity" >
+			<rule name="minLength" message="cost_line_quantity_required" value="1" />
 		</validator>
 	</table>
 	<table name="project" description="Project" >

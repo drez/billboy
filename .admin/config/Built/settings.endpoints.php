@@ -317,6 +317,10 @@ $table['cost_line'] = [
         'type' => 'VARCHAR',
         'description' => 'Invoice no.',
     ],
+    'id_project' => [
+        'type' => 'INTEGER',
+        'description' => 'Project',
+    ],
     'id_billing_category' => [
         'type' => 'INTEGER',
         'description' => 'Category',

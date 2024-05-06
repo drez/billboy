@@ -7585,6 +7585,23 @@ abstract class BaseAuthy extends BaseObject implements Persistent
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return PropelObjectCollection|CostLine[] List of CostLine objects
      */
+    public function getCostLinesRelatedByIdCreationJoinProject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CostLineQuery::create(null, $criteria);
+        $query->joinWith('Project', $join_behavior);
+
+        return $this->getCostLinesRelatedByIdCreation($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|CostLine[] List of CostLine objects
+     */
     public function getCostLinesRelatedByIdCreationJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
         $query = CostLineQuery::create(null, $criteria);
@@ -7865,6 +7882,23 @@ abstract class BaseAuthy extends BaseObject implements Persistent
     {
         $query = CostLineQuery::create(null, $criteria);
         $query->joinWith('Supplier', $join_behavior);
+
+        return $this->getCostLinesRelatedByIdModification($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|CostLine[] List of CostLine objects
+     */
+    public function getCostLinesRelatedByIdModificationJoinProject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CostLineQuery::create(null, $criteria);
+        $query->joinWith('Project', $join_behavior);
 
         return $this->getCostLinesRelatedByIdModification($query, $con);
     }

@@ -2096,6 +2096,9 @@ abstract class BasePaymentLinePeer
         if ($obj->isNew() || $obj->isColumnModified(PaymentLinePeer::NOTE))
             $columns[PaymentLinePeer::NOTE] = $obj->getNote();
 
+        if ($obj->isNew() || $obj->isColumnModified(PaymentLinePeer::AMOUNT))
+            $columns[PaymentLinePeer::AMOUNT] = $obj->getAmount();
+
         }
 
         return BasePeer::doValidate(PaymentLinePeer::DATABASE_NAME, PaymentLinePeer::TABLE_NAME, $columns);

@@ -3515,6 +3515,9 @@ abstract class BaseBillingLinePeer
         if ($obj->isNew() || $obj->isColumnModified(BillingLinePeer::AMOUNT))
             $columns[BillingLinePeer::AMOUNT] = $obj->getAmount();
 
+        if ($obj->isNew() || $obj->isColumnModified(BillingLinePeer::QUANTITY))
+            $columns[BillingLinePeer::QUANTITY] = $obj->getQuantity();
+
         if ($obj->isNew() || $obj->isColumnModified(BillingLinePeer::ID_BILLING))
             $columns[BillingLinePeer::ID_BILLING] = $obj->getIdBilling();
 
@@ -3535,6 +3538,12 @@ abstract class BaseBillingLinePeer
 
         if ($obj->isNew() || $obj->isColumnModified(BillingLinePeer::WORK_DATE))
             $columns[BillingLinePeer::WORK_DATE] = $obj->getWorkDate();
+
+        if ($obj->isNew() || $obj->isColumnModified(BillingLinePeer::QUANTITY))
+            $columns[BillingLinePeer::QUANTITY] = $obj->getQuantity();
+
+        if ($obj->isNew() || $obj->isColumnModified(BillingLinePeer::AMOUNT))
+            $columns[BillingLinePeer::AMOUNT] = $obj->getAmount();
 
         if ($obj->isNew() || $obj->isColumnModified(BillingLinePeer::ID_BILLING_CATEGORY))
             $columns[BillingLinePeer::ID_BILLING_CATEGORY] = $obj->getIdBillingCategory();

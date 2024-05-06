@@ -17,6 +17,7 @@ use App\AuthyGroup;
 use App\Billing;
 use App\BillingLine;
 use App\Client;
+use App\CostLine;
 use App\Project;
 use App\ProjectPeer;
 use App\ProjectQuery;
@@ -86,6 +87,10 @@ use App\TimeLine;
  * @method ProjectQuery leftJoinBillingLine($relationAlias = null) Adds a LEFT JOIN clause to the query using the BillingLine relation
  * @method ProjectQuery rightJoinBillingLine($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BillingLine relation
  * @method ProjectQuery innerJoinBillingLine($relationAlias = null) Adds a INNER JOIN clause to the query using the BillingLine relation
+ *
+ * @method ProjectQuery leftJoinCostLine($relationAlias = null) Adds a LEFT JOIN clause to the query using the CostLine relation
+ * @method ProjectQuery rightJoinCostLine($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CostLine relation
+ * @method ProjectQuery innerJoinCostLine($relationAlias = null) Adds a INNER JOIN clause to the query using the CostLine relation
  *
  * @method ProjectQuery leftJoinTimeLine($relationAlias = null) Adds a LEFT JOIN clause to the query using the TimeLine relation
  * @method ProjectQuery rightJoinTimeLine($relationAlias = null) Adds a RIGHT JOIN clause to the query using the TimeLine relation
@@ -1346,6 +1351,80 @@ abstract class BaseProjectQuery extends ModelCriteria
         return $this
             ->joinBillingLine($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'BillingLine', '\App\BillingLineQuery');
+    }
+
+    /**
+     * Filter the query by a related CostLine object
+     *
+     * @param   CostLine|PropelObjectCollection $costLine  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 ProjectQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByCostLine($costLine, $comparison = null)
+    {
+        if ($costLine instanceof CostLine) {
+            return $this
+                ->addUsingAlias(ProjectPeer::ID_PROJECT, $costLine->getIdProject(), $comparison);
+        } elseif ($costLine instanceof PropelObjectCollection) {
+            return $this
+                ->useCostLineQuery()
+                ->filterByPrimaryKeys($costLine->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByCostLine() only accepts arguments of type CostLine or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the CostLine relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ProjectQuery The current query, for fluid interface
+     */
+    public function joinCostLine($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('CostLine');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'CostLine');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the CostLine relation CostLine object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\CostLineQuery A secondary query class using the current class as primary query
+     */
+    public function useCostLineQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinCostLine($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'CostLine', '\App\CostLineQuery');
     }
 
     /**

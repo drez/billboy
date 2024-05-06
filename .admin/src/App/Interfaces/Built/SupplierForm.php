@@ -965,6 +965,30 @@ $this->fields['Supplier']['Name']['html']
     }
 
     /**
+     * Query for CostLine_IdProject selectBox 
+     * @param class $obj
+     * @param class $dataObj
+     * @param array $data
+    **/
+    public function selectBoxCostLine_IdProject(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+        $q = ProjectQuery::create();
+
+            $q->select(array('Name', 'IdProject'));
+            $q->orderBy('Name', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+
+        $arrayOpt = $pcDataO->toArray();
+
+        return assocToNum($arrayOpt , true);
+    }
+
+    /**
      * Query for CostLine_IdBillingCategory selectBox 
      * @param class $obj
      * @param class $dataObj
@@ -1009,6 +1033,7 @@ $this->fields['Supplier']['Name']['html']
   'Title' => '',
   'IdSupplier' => '',
   'InvoiceNo' => '',
+  'IdProject' => '',
   'IdBillingCategory' => '',
   'SpendDate' => '',
   'Recuring' => '',
@@ -1111,6 +1136,8 @@ $this->fields['Supplier']['Name']['html']
                 #default
                 ->leftJoinWith('Supplier')
                 #default
+                ->leftJoinWith('Project')
+                #default
                 ->leftJoinWith('BillingCategory') 
             
             ->filterByIdSupplier( $filterKey );; 
@@ -1150,6 +1177,7 @@ $this->fields['Supplier']['Name']['html']
         #options building
         
         $this->arrayIdSupplierOptions = $this->selectBoxCostLine_IdSupplier($this, $dataObj, $data);
+        $this->arrayIdProjectOptions = $this->selectBoxCostLine_IdProject($this, $dataObj, $data);
         $this->arrayIdBillingCategoryOptions = $this->selectBoxCostLine_IdBillingCategory($this, $dataObj, $data);
         
         
@@ -1167,6 +1195,7 @@ $this->fields['Supplier']['Name']['html']
         $header = tr( th(_("Title"), " th='sorted' c='Title' title='" . _('Title')."' ")
 .th(_("Supplier"), " th='sorted' c='Supplier.Name' title='"._('Supplier.Name')."' ")
 .th(_("Invoice no."), " th='sorted' c='InvoiceNo' title='" . _('Invoice no.')."' ")
+.th(_("Project"), " th='sorted' c='Project.Name' title='"._('Project.Name')."' ")
 .th(_("Category"), " th='sorted' c='BillingCategory.Name' title='"._('BillingCategory.Name')."' ")
 .th(_("Date"), " th='sorted' c='SpendDate' title='" . _('Date')."' ")
 .th(_("Recuring"), " th='sorted' c='Recuring' title='" . _('Recuring')."' ")
@@ -1208,6 +1237,10 @@ $this->fields['Supplier']['Name']['html']
                                     if($data->getSupplier()){
                                         $Supplier_Name = $data->getSupplier()->getName();
                                     }
+                                    $Project_Name = "";
+                                    if($data->getProject()){
+                                        $Project_Name = $data->getProject()->getName();
+                                    }
                                     $BillingCategory_Name = "";
                                     if($data->getBillingCategory()){
                                         $BillingCategory_Name = $data->getBillingCategory()->getName();
@@ -1225,6 +1258,7 @@ $this->fields['Supplier']['Name']['html']
                 td(span(\htmlentities((($altValue['Title']) ? $altValue['Title'] : $data->getTitle()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Title' class=''  j='editCostLine'") . 
                 td(span(\htmlentities((($altValue['IdSupplier']) ? $altValue['IdSupplier'] : $Supplier_Name) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdSupplier' class=''  j='editCostLine'") . 
                 td(span(\htmlentities((($altValue['InvoiceNo']) ? $altValue['InvoiceNo'] : $data->getInvoiceNo()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='InvoiceNo' class=''  j='editCostLine'") . 
+                td(span(\htmlentities((($altValue['IdProject']) ? $altValue['IdProject'] : $Project_Name) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdProject' class=''  j='editCostLine'") . 
                 td(span(\htmlentities((($altValue['IdBillingCategory']) ? $altValue['IdBillingCategory'] : $BillingCategory_Name) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBillingCategory' class=''  j='editCostLine'") . 
                 td(span(\htmlentities((($altValue['SpendDate']) ? $altValue['SpendDate'] : $data->getSpendDate()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='SpendDate' class=''  j='editCostLine'") . 
                 td(span(\htmlentities((($altValue['Recuring']) ? $altValue['Recuring'] : isntPo($data->getRecuring())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Recuring' class='center'  j='editCostLine'") . 

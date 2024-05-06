@@ -57,7 +57,7 @@ class TimeLineTableMap extends TableMap
         $this->addForeignKey('id_creation', 'IdCreation', 'INTEGER', 'authy', 'id_authy', false, null, null);
         $this->addForeignKey('id_modification', 'IdModification', 'INTEGER', 'authy', 'id_authy', false, null, null);
         // validators
-        $this->addValidator('amount', 'required', 'propel.validator.RequiredValidator', '', 'cost_line_amount_required');
+        $this->addValidator('amount', 'required', 'propel.validator.RequiredValidator', '', 'time_line_amount_required');
         $this->addValidator('id_cost_line', 'required', 'propel.validator.RequiredValidator', '', ('TimeLine_IdCostLine_required'));
         $this->addValidator('id_cost_line', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('TimeLine_IdCostLine_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('id_project', 'required', 'propel.validator.RequiredValidator', '', ('TimeLine_IdProject_required'));

@@ -19,6 +19,7 @@ use App\BillingCategory;
 use App\CostLine;
 use App\CostLinePeer;
 use App\CostLineQuery;
+use App\Project;
 use App\Supplier;
 
 /**
@@ -32,6 +33,7 @@ use App\Supplier;
  * @method CostLineQuery orderByTitle($order = Criteria::ASC) Order by the title column
  * @method CostLineQuery orderByIdSupplier($order = Criteria::ASC) Order by the id_supplier column
  * @method CostLineQuery orderByInvoiceNo($order = Criteria::ASC) Order by the invoice_no column
+ * @method CostLineQuery orderByIdProject($order = Criteria::ASC) Order by the id_project column
  * @method CostLineQuery orderByIdBillingCategory($order = Criteria::ASC) Order by the id_billing_category column
  * @method CostLineQuery orderBySpendDate($order = Criteria::ASC) Order by the spend_date column
  * @method CostLineQuery orderByRecuring($order = Criteria::ASC) Order by the recuring column
@@ -53,6 +55,7 @@ use App\Supplier;
  * @method CostLineQuery groupByTitle() Group by the title column
  * @method CostLineQuery groupByIdSupplier() Group by the id_supplier column
  * @method CostLineQuery groupByInvoiceNo() Group by the invoice_no column
+ * @method CostLineQuery groupByIdProject() Group by the id_project column
  * @method CostLineQuery groupByIdBillingCategory() Group by the id_billing_category column
  * @method CostLineQuery groupBySpendDate() Group by the spend_date column
  * @method CostLineQuery groupByRecuring() Group by the recuring column
@@ -80,6 +83,10 @@ use App\Supplier;
  * @method CostLineQuery rightJoinSupplier($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Supplier relation
  * @method CostLineQuery innerJoinSupplier($relationAlias = null) Adds a INNER JOIN clause to the query using the Supplier relation
  *
+ * @method CostLineQuery leftJoinProject($relationAlias = null) Adds a LEFT JOIN clause to the query using the Project relation
+ * @method CostLineQuery rightJoinProject($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Project relation
+ * @method CostLineQuery innerJoinProject($relationAlias = null) Adds a INNER JOIN clause to the query using the Project relation
+ *
  * @method CostLineQuery leftJoinBillingCategory($relationAlias = null) Adds a LEFT JOIN clause to the query using the BillingCategory relation
  * @method CostLineQuery rightJoinBillingCategory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BillingCategory relation
  * @method CostLineQuery innerJoinBillingCategory($relationAlias = null) Adds a INNER JOIN clause to the query using the BillingCategory relation
@@ -104,6 +111,7 @@ use App\Supplier;
  * @method CostLine findOneByTitle(string $title) Return the first CostLine filtered by the title column
  * @method CostLine findOneByIdSupplier(int $id_supplier) Return the first CostLine filtered by the id_supplier column
  * @method CostLine findOneByInvoiceNo(string $invoice_no) Return the first CostLine filtered by the invoice_no column
+ * @method CostLine findOneByIdProject(int $id_project) Return the first CostLine filtered by the id_project column
  * @method CostLine findOneByIdBillingCategory(int $id_billing_category) Return the first CostLine filtered by the id_billing_category column
  * @method CostLine findOneBySpendDate(string $spend_date) Return the first CostLine filtered by the spend_date column
  * @method CostLine findOneByRecuring(int $recuring) Return the first CostLine filtered by the recuring column
@@ -125,6 +133,7 @@ use App\Supplier;
  * @method array findByTitle(string $title) Return CostLine objects filtered by the title column
  * @method array findByIdSupplier(int $id_supplier) Return CostLine objects filtered by the id_supplier column
  * @method array findByInvoiceNo(string $invoice_no) Return CostLine objects filtered by the invoice_no column
+ * @method array findByIdProject(int $id_project) Return CostLine objects filtered by the id_project column
  * @method array findByIdBillingCategory(int $id_billing_category) Return CostLine objects filtered by the id_billing_category column
  * @method array findBySpendDate(string $spend_date) Return CostLine objects filtered by the spend_date column
  * @method array findByRecuring(int $recuring) Return CostLine objects filtered by the recuring column
@@ -247,7 +256,7 @@ abstract class BaseCostLineQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_cost_line`, `id_billing`, `calc_id`, `title`, `id_supplier`, `invoice_no`, `id_billing_category`, `spend_date`, `recuring`, `renewal_date`, `quantity`, `amount`, `total`, `bill`, `note_billing_ligne`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `cost_line` WHERE `id_cost_line` = :p0';
+        $sql = 'SELECT `id_cost_line`, `id_billing`, `calc_id`, `title`, `id_supplier`, `invoice_no`, `id_project`, `id_billing_category`, `spend_date`, `recuring`, `renewal_date`, `quantity`, `amount`, `total`, `bill`, `note_billing_ligne`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `cost_line` WHERE `id_cost_line` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -554,6 +563,50 @@ abstract class BaseCostLineQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(CostLinePeer::INVOICE_NO, $invoiceNo, $comparison);
+    }
+
+    /**
+     * Filter the query on the id_project column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIdProject(1234); // WHERE id_project = 1234
+     * $query->filterByIdProject(array(12, 34)); // WHERE id_project IN (12, 34)
+     * $query->filterByIdProject(array('min' => 12)); // WHERE id_project >= 12
+     * $query->filterByIdProject(array('max' => 12)); // WHERE id_project <= 12
+     * </code>
+     *
+     * @see       filterByProject()
+     *
+     * @param     mixed $idProject The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return CostLineQuery The current query, for fluid interface
+     */
+    public function filterByIdProject($idProject = null, $comparison = null)
+    {
+        if (is_array($idProject)) {
+            $useMinMax = false;
+            if (isset($idProject['min'])) {
+                $this->addUsingAlias(CostLinePeer::ID_PROJECT, $idProject['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($idProject['max'])) {
+                $this->addUsingAlias(CostLinePeer::ID_PROJECT, $idProject['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(CostLinePeer::ID_PROJECT, $idProject, $comparison);
     }
 
     /**
@@ -1263,6 +1316,82 @@ abstract class BaseCostLineQuery extends ModelCriteria
         return $this
             ->joinSupplier($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Supplier', '\App\SupplierQuery');
+    }
+
+    /**
+     * Filter the query by a related Project object
+     *
+     * @param   Project|PropelObjectCollection $project The related object(s) to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 CostLineQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByProject($project, $comparison = null)
+    {
+        if ($project instanceof Project) {
+            return $this
+                ->addUsingAlias(CostLinePeer::ID_PROJECT, $project->getIdProject(), $comparison);
+        } elseif ($project instanceof PropelObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(CostLinePeer::ID_PROJECT, $project->toKeyValue('PrimaryKey', 'IdProject'), $comparison);
+        } else {
+            throw new PropelException('filterByProject() only accepts arguments of type Project or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Project relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return CostLineQuery The current query, for fluid interface
+     */
+    public function joinProject($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Project');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Project');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Project relation Project object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\ProjectQuery A secondary query class using the current class as primary query
+     */
+    public function useProjectQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinProject($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Project', '\App\ProjectQuery');
     }
 
     /**

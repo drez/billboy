@@ -91,6 +91,7 @@ class ProjectTableMap extends TableMap
         $this->addRelation('AuthyRelatedByIdModification', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_modification' => 'id_authy', ), null, null);
         $this->addRelation('Billing', 'App\\Billing', RelationMap::ONE_TO_MANY, array('id_project' => 'id_project', ), null, null, 'Billings');
         $this->addRelation('BillingLine', 'App\\BillingLine', RelationMap::ONE_TO_MANY, array('id_project' => 'id_project', ), null, null, 'BillingLines');
+        $this->addRelation('CostLine', 'App\\CostLine', RelationMap::ONE_TO_MANY, array('id_project' => 'id_project', ), null, null, 'CostLines');
         $this->addRelation('TimeLine', 'App\\TimeLine', RelationMap::ONE_TO_MANY, array('id_project' => 'id_project', ), 'CASCADE', null, 'TimeLines');
     } // buildRelations()
 

@@ -49,8 +49,8 @@ class BillingLineTableMap extends TableMap
         $this->addForeignKey('id_project', 'IdProject', 'INTEGER', 'project', 'id_project', false, 11, null);
         $this->addColumn('title', 'Title', 'VARCHAR', false, 100, null);
         $this->addColumn('work_date', 'WorkDate', 'DATE', false, null, null);
-        $this->addColumn('quantity', 'Quantity', 'DECIMAL', false, 8, null);
-        $this->addColumn('amount', 'Amount', 'DECIMAL', false, 8, null);
+        $this->addColumn('quantity', 'Quantity', 'DECIMAL', true, 8, 1);
+        $this->addColumn('amount', 'Amount', 'DECIMAL', true, 8, 0);
         $this->addColumn('total', 'Total', 'DECIMAL', false, 8, null);
         $this->addForeignKey('id_billing_category', 'IdBillingCategory', 'INTEGER', 'billing_category', 'id_billing_category', false, 11, null);
         $this->addColumn('note_billing_ligne', 'NoteBillingLigne', 'LONGVARCHAR', false, 500, null);
@@ -60,7 +60,8 @@ class BillingLineTableMap extends TableMap
         $this->addForeignKey('id_creation', 'IdCreation', 'INTEGER', 'authy', 'id_authy', false, null, null);
         $this->addForeignKey('id_modification', 'IdModification', 'INTEGER', 'authy', 'id_authy', false, null, null);
         // validators
-        $this->addValidator('amount', 'required', 'propel.validator.RequiredValidator', '', 'billing_line_amount_required');
+        $this->addValidator('amount', 'minLength', 'propel.validator.MinLengthValidator', '1', 'billing_line_amount_required');
+        $this->addValidator('quantity', 'minLength', 'propel.validator.MinLengthValidator', '1', 'billing_line_quantity_required');
         $this->addValidator('id_billing_line', 'required', 'propel.validator.RequiredValidator', '', ('BillingLine_IdBillingLine_required'));
         $this->addValidator('id_billing_line', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('BillingLine_IdBillingLine_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('id_billing', 'required', 'propel.validator.RequiredValidator', '', ('BillingLine_IdBilling_required'));
@@ -70,6 +71,8 @@ class BillingLineTableMap extends TableMap
         $this->addValidator('id_project', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('BillingLine_IdProject_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('title', 'type', 'propel.validator.TypeValidator', 'string', ('BillingLine_Title_type_string'));
         $this->addValidator('work_date', 'match', 'propel.validator.MatchValidator', '', ('BillingLine_WorkDate_match'));
+        $this->addValidator('quantity', 'required', 'propel.validator.RequiredValidator', '', ('BillingLine_Quantity_required'));
+        $this->addValidator('amount', 'required', 'propel.validator.RequiredValidator', '', ('BillingLine_Amount_required'));
         $this->addValidator('id_billing_category', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('BillingLine_IdBillingCategory_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('note_billing_ligne', 'type', 'propel.validator.TypeValidator', 'string', ('BillingLine_NoteBillingLigne_type_string'));
     } // initialize()

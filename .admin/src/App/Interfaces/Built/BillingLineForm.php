@@ -519,10 +519,6 @@ class BillingLineForm extends BillingLine
         $e->setIdProject(( $data['IdProject'] == '' ) ? null : $data['IdProject']);
         $e->setWorkDate( ($data['WorkDate'] == '' || $data['WorkDate'] == 'null' || substr($data['WorkDate'],0,10) == '-0001-11-30') ? null : $data['WorkDate'] );
         //integer not required
-        $e->setQuantity( ($data['Quantity'] == '' ) ? null : $data['Quantity']);
-        //integer not required
-        $e->setAmount( ($data['Amount'] == '' ) ? null : $data['Amount']);
-        //integer not required
         $e->setTotal( ($data['Total'] == '' ) ? null : $data['Total']);
         //foreign
         $e->setIdBillingCategory(( $data['IdBillingCategory'] == '' ) ? null : $data['IdBillingCategory']);
@@ -563,12 +559,6 @@ class BillingLineForm extends BillingLine
         }
         if(isset($data['WorkDate'])){
             $e->setWorkDate( ($data['WorkDate'] == '' || $data['WorkDate'] == 'null' || substr($data['WorkDate'],0,10) == '-0001-11-30') ? null : $data['WorkDate'] );
-        }
-        if(isset($data['Quantity'])){
-            $e->setQuantity( ($data['Quantity'] == '' ) ? null : $data['Quantity']);
-        }
-        if(isset($data['Amount'])){
-            $e->setAmount( ($data['Amount'] == '' ) ? null : $data['Amount']);
         }
         if(isset($data['Total'])){
             $e->setTotal( ($data['Total'] == '' ) ? null : $data['Total']);
@@ -751,7 +741,7 @@ $this->fields['BillingLine']['IdProject']['html'] = stdFieldRow(_("Project"), se
 $this->fields['BillingLine']['Title']['html'] = stdFieldRow(_("Title"), input('text', 'Title', htmlentities($dataObj->getTitle()), "   placeholder='".str_replace("'","&#39;",_('Title'))."' size='35'  v='TITLE' s='d' class=''  ")."", 'Title', "", $this->commentsTitle, $this->commentsTitle_css, '', ' ', 'no');
 $this->fields['BillingLine']['WorkDate']['html'] = stdFieldRow(_("Date"), input('date', 'WorkDate', $dataObj->getWorkDate(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'WorkDate', "", $this->commentsWorkDate, $this->commentsWorkDate_css, '', ' ', 'no');
 $this->fields['BillingLine']['Quantity']['html'] = stdFieldRow(_("Quantity"), input('text', 'Quantity', $dataObj->getQuantity(), "  placeholder='".str_replace("'","&#39;",_('Quantity'))."'  v='QUANTITY' size='5' s='d' class=''"), 'Quantity', "", $this->commentsQuantity, $this->commentsQuantity_css, '', ' ', 'no');
-$this->fields['BillingLine']['Amount']['html'] = stdFieldRow(_("Amount"), input('text', 'Amount', $dataObj->getAmount(), "  placeholder='".str_replace("'","&#39;",_('Amount'))."'  v='AMOUNT' size='5' s='d' class='req'"), 'Amount', "", $this->commentsAmount, $this->commentsAmount_css, '', ' ', 'no');
+$this->fields['BillingLine']['Amount']['html'] = stdFieldRow(_("Amount"), input('text', 'Amount', $dataObj->getAmount(), "  placeholder='".str_replace("'","&#39;",_('Amount'))."'  v='AMOUNT' size='5' s='d' class=''"), 'Amount', "", $this->commentsAmount, $this->commentsAmount_css, '', ' ', 'no');
 $this->fields['BillingLine']['Total']['html'] = stdFieldRow(_("Total"), input('text', 'Total', $dataObj->getTotal(), "  placeholder='".str_replace("'","&#39;",_('Total'))."'  v='TOTAL' size='5' s='d' class=''"), 'Total', "", $this->commentsTotal, $this->commentsTotal_css, '', ' ', 'no');
 $this->fields['BillingLine']['IdBillingCategory']['html'] = stdFieldRow(_("Category"), selectboxCustomArray('IdBillingCategory', $this->arrayIdBillingCategoryOptions, _('Category'), "v='ID_BILLING_CATEGORY'  s='d'  val='".$dataObj->getIdBillingCategory()."'", $dataObj->getIdBillingCategory()), 'IdBillingCategory', "", $this->commentsIdBillingCategory, $this->commentsIdBillingCategory_css, '', ' ', 'no');
 $this->fields['BillingLine']['NoteBillingLigne']['html'] = stdFieldRow(_("Note"), textarea('NoteBillingLigne', htmlentities($dataObj->getNoteBillingLigne()) ,"placeholder='".str_replace("'","&#39;",_('Note'))."' cols='71' v='NOTE_BILLING_LIGNE' s='d'  class=' tinymce ' style='' spellcheck='false'"), 'NoteBillingLigne', "", $this->commentsNoteBillingLigne, $this->commentsNoteBillingLigne_css, 'istinymce', ' ', 'no');

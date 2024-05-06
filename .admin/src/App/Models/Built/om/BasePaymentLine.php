@@ -83,6 +83,7 @@ abstract class BasePaymentLine extends BaseObject implements Persistent
 
     /**
      * The value for the amount field.
+     * Note: this column has a database default value of: '0.00'
      * @var        string
      */
     protected $amount;
@@ -156,6 +157,27 @@ abstract class BasePaymentLine extends BaseObject implements Persistent
      * @var        boolean
      */
     protected $alreadyInClearAllReferencesDeep = false;
+
+    /**
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see        __construct()
+     */
+    public function applyDefaultValues()
+    {
+        $this->amount = '0.00';
+    }
+
+    /**
+     * Initializes internal state of BasePaymentLine object.
+     * @see        applyDefaults()
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->applyDefaultValues();
+    }
 
     /**
      * @Field()
@@ -639,6 +661,10 @@ abstract class BasePaymentLine extends BaseObject implements Persistent
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->amount !== '0.00') {
+                return false;
+            }
+
         // otherwise, everything was equal, so return true
         return true;
     } // hasOnlyDefaultValues()
@@ -1729,6 +1755,7 @@ abstract class BasePaymentLine extends BaseObject implements Persistent
         $this->alreadyInValidation = false;
         $this->alreadyInClearAllReferencesDeep = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);

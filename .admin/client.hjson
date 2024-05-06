@@ -88,13 +88,20 @@
 			"title('Title')": ["varchar(100)"],
 			"work_date('Date')": ["date()"],
 			
-            "quantity('Quantity')": ["decimal(8, 2)"],
-			"amount('Amount')": ["decimal(8, 2)"],
+            "quantity('Quantity')": ["decimal(8, 2)", 'default:1.00', 'required'],
+			"amount('Amount')": ["decimal(8, 2)", 'default:0.00', 'required'],
 			"total('Total')": ["decimal(8, 2)"],
 			"id_billing_category('Category')": ["integer()","foreign(billing_category)",'not-required', 'default:null'],
 			"note_billing_ligne('Note')": ["longvarchar(500)"],
 			
-			"validator": {"amount":{"required":{"msg":"billing_line_amount_required"}}},
+			"validator": {
+				"amount":{
+					"minLength":{"msg":"billing_line_amount_required","value":"1"},
+					},
+				"quantity":{
+					"minLength":{"msg":"billing_line_quantity_required","value":"1"}
+					}
+				},
 		},
 		"payment_line('Payment entry')": {
             "set_parent_table": 'billing',
@@ -107,9 +114,13 @@
 			//"prod_id('Produit')": ["integer()","foreign(product)","onDelete:restrict","foreign:id_product"],
 			"date('Date')": ["date()"],
 			"note('Note')": ["longvarchar(500)"],
-			"amount('Amount')": ["decimal(8, 2)"],
+			"amount('Amount')": ["decimal(8, 2)", 'default:0.00', 'required'],
 			
-			"validator": {"amount":{"required":{"msg":"billing_line_amount_required"}}},
+			"validator": {
+				"amount":{
+					"minLength":{"msg":"payment_line_amount_required","value":"1"},
+					}
+				},
 		},
         "cost_line('Expense')": {
             "set_parent_table": 'billing',
@@ -120,21 +131,31 @@
 			"id_billing()": ["integer()","foreign(billing)","onDelete:cascade","foreign:id_billing",'not-required', 'default:null'],
 			"calc_id()": ["varchar(20)"],
 			//"prod_id('Produit')": ["integer()","foreign(product)","onDelete:restrict","foreign:id_product"],
-			"title('Title')": ["varchar(100)"],
+			"title('Title')": ["varchar(100)", 'required'],
 			"id_supplier('Supplier')": ["integer()","foreign(supplier)",'not-required', 'default:null'],		
 			"invoice_no('Invoice no.')": ["varchar(100)"],
+			"id_project('Project')": ["integer()","foreign(project)",'not-required', 'default:null',"foreign:id_project"],
 			"id_billing_category('Category')": ["integer()","foreign(billing_category)",'not-required', 'default:null'],
-			"spend_date('Date')": ["date()"],
+			"spend_date('Date')": ["date()", 'required'],
 			"recuring('Recuring')": ["enum(Once, Monthly, Yearly)", 'required'],
 			"renewal_date('Renewal date')": ["date()"],
 			
-            "quantity('Quantity')": ["decimal(8, 2)"],
-			"amount('Amount')": ["decimal(8, 2)"],
+            "quantity('Quantity')": ["decimal(8, 2)", 'required', 'default:1.00'],
+			"amount('Amount')": ["decimal(8, 2)", 'default:0.00', 'required'],
             "total('Total')": ["decimal(8, 2)"],
 			"bill('Add to bill')": ["enum(No, Yes)", 'required'],
 			"note_billing_ligne('Note')": ["longvarchar(500)"],
 			
-			"validator": {"amount":{"required":{"msg":"cost_line_amount_required"}}},
+			"validator": {
+				"id_supplier":{"required":{"msg":"cost_line_supplier_required"}},
+				"spend_date":{"required":{"msg":"cost_line_date_required"}},
+				"amount":{
+					"minLength":{"msg":"cost_line_amount_required","value":"1"},
+					},
+				"quantity":{
+					"minLength":{"msg":"cost_line_quantity_required","value":"1"}
+					}
+				},
 		},
 		"project('Project')": {
             set_menu_priority: 5,
@@ -174,7 +195,7 @@
 			"amount('Amount')": ["decimal(8, 2)"],
             "total('Total')": ["decimal(8, 2)"],
 			
-			"validator": {"amount":{"required":{"msg":"cost_line_amount_required"}}},
+			"validator": {"amount":{"required":{"msg":"time_line_amount_required"}}},
 		},
         "billing_category('Category billing')": {
             set_parent_menu:"Settings",

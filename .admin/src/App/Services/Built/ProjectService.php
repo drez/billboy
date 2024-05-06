@@ -186,6 +186,9 @@ class ProjectService
             if($obj->countBillingLines()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Entries'. ", '', true,'Project'); die( $error['onReadyJs'] );
             }
+            if($obj->countCostLines()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Expense'. ", '', true,'Project'); die( $error['onReadyJs'] );
+            }
 
         $obj->delete();
 
