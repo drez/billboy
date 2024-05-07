@@ -18,3 +18,5 @@ error.myproject1.log
 .admin/project.schema.xml.2
 .admin/runtime-conf.xml
 .admin/build.properties
+.admin/config/Built/config.php
+.admin/config/Built/db.php
