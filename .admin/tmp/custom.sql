@@ -24,14 +24,14 @@ CREATE TABLE `tmp_breakdown_expense` (
 		WITH ROLLUP
 		);
 
-INSERT INTO `config` (`id_config`, `category`, `config`, `value`, `system`, `description`, `type`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification`) VALUES
+INSERT IGNORE INTO `config` (`id_config`, `category`, `config`, `value`, `system`, `description`, `type`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification`) VALUES
 (17, 2, 'billing_default_unit_amount', '55.00', NULL, 'Amount by default in Billing', NULL, '2024-04-26 10:23:47', '2024-04-26 10:38:04', 2, 2, 2),
 (18, 0, 'billing_tax_1', '0', NULL, '', NULL, '2024-05-02 05:37:45', '2024-05-02 05:45:03', 2, 2, 2);
 
-INSERT INTO `authy` (`id_authy`, `validation_key`, `username`, `fullname`, `email`, `passwd_hash`, `expire`, `deactivate`, `is_root`, `id_authy_group`, `is_system`, `rights_all`, `rights_group`, `rights_owner`, `onglet`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification`) VALUES
+INSERT IGNORE INTO `authy` (`id_authy`, `validation_key`, `username`, `fullname`, `email`, `passwd_hash`, `expire`, `deactivate`, `is_root`, `id_authy_group`, `is_system`, `rights_all`, `rights_group`, `rights_owner`, `onglet`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification`) VALUES
 (1, NULL, 'apigoat', NULL, 'info@apigoat.com', '0c8504ec2885760b2b752a53c0e1684b', NULL, 1, 0, 2, 1, NULL, NULL, NULL, NULL, '2023-12-02 08:56:35', NULL, NULL, NULL, NULL);
 
-INSERT INTO `message` (`id_message`, `label`) VALUES
+INSERT IGNORE INTO `message` (`id_message`, `label`) VALUES
 (1, 'delete_row_confirm_msg'),
 (2, 'billing_title_required'),
 (3, 'Billing_IdClient_required'),
@@ -48,7 +48,7 @@ INSERT INTO `message` (`id_message`, `label`) VALUES
 (14, 'Template_Name_required'),
 (15, 'CostLine_Title_required');
 
-INSERT INTO `message_i18n` (`id_message`, `locale`, `text`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification`) VALUES
+INSERT IGNORE  INTO `message_i18n` (`id_message`, `locale`, `text`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification`) VALUES
 (1, 'en_US', 'Are you sure you want to delete this item?', '2024-05-07 15:59:18', '2024-05-08 04:17:23', 2, 1, 1),
 (1, 'fr_CA', NULL, '2024-05-07 15:59:18', '2024-05-08 04:17:23', 2, 1, 1),
 (2, 'en_US', 'The title is required.', '2024-05-07 15:59:22', '2024-05-08 04:17:43', 2, 1, 1),
