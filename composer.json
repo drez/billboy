@@ -9,13 +9,21 @@
     "type": "library",
     "license": "MIT",
     "require": {
-        "php": ">=8"
+        "php": ">=8",
+        "ext-bcmath": "*",
+        "ext-intl": "*",
+        "ext-mbstring": "*",
+        "ext-pdo": "*",
+        "ext-curl": "*"
     },
     "post-install-cmd": "deploy",
     "scripts": {
         "deploy": [
             "composer install -d ./.admin",
             "php ./.admin/scripts/deploy.php 2>&1"
+        ],
+        "clean": [
+            "php ./.admin/scripts/deploy.php clean 2>&1"
         ]
     }
 }

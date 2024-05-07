@@ -10,6 +10,6 @@ ini_set('max_execution_time',0);
 #try autoload
 require __DIR__ . '/../vendor/autoload.php';
 
-$Config = new Config();
+$Config = new Config($argv);
 
 exit();
