@@ -10,3 +10,11 @@ gc
 vendor/*
 error.myproject1.log
 .admin/tmp/db-backup.sql
+.admin/client.schema.xml
+.admin/client.schema.xml.1
+.admin/client.schema.xml.2
+.admin/project.schema.xml
+.admin/project.schema.xml.1
+.admin/project.schema.xml.2
+.admin/runtime-conf.xml
+.admin/build.properties
