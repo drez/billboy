@@ -8,7 +8,7 @@ class Config
 {
 
     private $build_path;
-    private $db = __DIR__;
+    private $db;
 
     public function __construct()
     { 
@@ -18,13 +18,29 @@ class Config
         $this->db = new \MysqliDb (env('MY_DB_HOST'), env('MY_DB_USER'), env('MY_DB_PASSWORD'), env('MY_DB_NAME'));
 
         if ($this->db) {
-            echo "\033[32mDatabase found\r\n";
+            echo "\033[32mDatabase found: ".env('MY_DB_NAME')."\r\n\033[31m";
         } else {
             echo "\033[31mDatabase error, please check your .env file (MY_DB_...)\r\n";
         }
 
-        $this->runCustomSql();
-        $this->setAdminUser();
+        if (!$this->checkBaseData()) {
+            $this->runSql();
+            $this->runCustomSql();
+            $this->setAdminUser();
+        } else {
+            echo "\033[32mAlready deployed, overwriting config...\r\n\033[31m";
+            $this->writeConfig();
+            chmod($this->build_path."public/css/", 0777);
+            chmod($this->build_path."public/js/", 0777);
+        }
+    }
+
+    private function runSql()
+    {
+        if (file_exists($this->build_path . 'config/Built/schema.sql')) {
+            $restore = "/usr/bin/mysql -f -u " . env('MY_DB_USER') . " --password=" . env('MY_DB_PASSWORD') . " " . env('MY_DB_NAME') . " < " . $this->build_path . "config/Built/schema.sql 2>&1";
+            return $this->run($restore, "SQL");
+        }
     }
 
     private function run($cmd, $label)
@@ -34,7 +50,7 @@ class Config
         if ($return_var) {
             echo "\033[31m$label: NOT OK\r\n";
         } else {
-            echo "\033[32m$label: OK\r\n";
+            echo "\033[32m$label: OK\r\n\033[31m";
         }
     }
 
@@ -92,6 +108,80 @@ class Config
             return true;
         }
         return false;
+
+    }
+
+    private function writeConfig()
+    {
+        $project_url = env("MY_PROJECT_URL").".admin".DIRECTORY_SEPARATOR;
+        $project_name = 'myproject1';
+
+        $authvar = substr(md5(env("MY_PROJECT_URL") . $project_name . "12"), 5, 10);
+		$cryptkey = substr(md5($project_name), 0, 8) . substr(md5(env('MY_DB_USER')), 10, 8);
+		$cryptiv = substr(md5(env("MY_PROJECT_URL")), 5, 8) . substr(md5($project_name), 7, 8);
+
+        $script = <<<EOS
+<?php
+ini_set('memory_limit', '128M');
+
+if (php_sapi_name() != 'cli') {
+	\$subdir_url = str_replace((isset(\$_SERVER['HTTPS']) && \$_SERVER['HTTPS'] != 'off' ? 'https' : 'http').'://' . \$_SERVER['SERVER_NAME'], '', "$project_url") ;
+} else {
+	\$subdir_url = "";
+}
+
+\$project_root = "{$this->build_path}";
+
+\$defines = [
+    "_DATA_SRC" => "$project_name",
+    "_PROJECT_NAME" => "$project_name",
+    "_PROJECT_PRFX" => "",
+    "API_VERSION" => "1",
+    "_DEPLOYMENT_TYPE" => "Standalone",
+    "_SYSTEM_USER" => "web1",
+    "_SITE_TITLE" => "",
+	"_SUB_DIR_URL" => \$subdir_url,	 # Routes prefix
+    "_ASSET_RELATIVE_PATH" => "",
+    "_BASE_DIR" => realpath("{$this->build_path}").DIRECTORY_SEPARATOR, 
+    "_AUTH_VAR" => "$authvar",
+    "_CRYPT_KEY" => "$cryptkey",
+    "_CRYPT_IV" => "$cryptiv",
+];
+
+\$locales = [
+    LC_MONETARY => 'en_CA.UTF-8',
+    LC_NUMERIC => 'en_CA.UTF-8',
+    LC_TIME => 'en_CA.UTF-8'
+];
+
+if(!isset(\$skipConfig)){
+    foreach(\$defines as \$define => \$val){
+        define(\$define, \$val);
+    }
+
+	if (php_sapi_name() != 'cli') {
+   	 	define("_SITE_URL", "https://" . \$_SERVER['SERVER_NAME'] . _SUB_DIR_URL);
+	} else {
+        define("_SITE_URL", "");
+    }
+    
+	define("_SRC_URL", _SITE_URL);
+
+    define("_INSTALL_PATH", "{$this->build_path}");
+    define("_VENDOR_DIR", _BASE_DIR . "vendor/");
+
+    define("_PROPEL_BASE_PATH", _VENDOR_DIR . "propel/propel1/");
+    define("_PROPEL_RUNTIME_PATH", _PROPEL_BASE_PATH . 'runtime');
+    define("_PEAR_LOG_PATH", _PROPEL_RUNTIME_PATH);
+    define("_PROPEL_GEN", _PROPEL_BASE_PATH . "generator/bin/propel-gen");
+
+    foreach(\$locales as \$locale => \$val){
+        setlocale(\$locale, \$val);
+    }
+}
+EOS;
+
+    file_put_contents($this->build_path.'config/Built/config.php', $script);
 
     }
 

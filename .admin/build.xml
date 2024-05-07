@@ -92,6 +92,7 @@
         </reflexive>
         <echo message="Moving config files..."/>
         <copy file=".build/conf/db.php" tofile="./config/Built/db.php" overwrite="true" mode="0775"/>
+        <copy file=".build/sql/schema.sql" tofile="./config/Built/schema.sql" overwrite="true" mode="0775"/>
 
         <echo message="Moving config files..."/>
         <reflexive>
@@ -109,6 +110,7 @@
                     <regexp pattern="'config/aclmap' => 'App/Models/Built/config/aclmap.php'," replace=""/>
                     <regexp pattern="'config/builder.routes' => 'App/Models/Built/config/builder.routes.php'," replace=""/>
                     <regexp pattern="'config/config' => 'App/Models/Built/config/config.php'," replace=""/>
+                    
                     <regexp pattern="'config/config.db' => 'App/Models/Built/config/config.db.php'," replace=""/>
                     <regexp pattern="'config/propel' => 'App/Models/Built/config/propel.php'," replace=""/>
                     <regexp pattern="'wrapper/service/" replace="'"/>

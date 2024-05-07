@@ -16,3 +16,7 @@ Billboy is a small billing, crm and accounting software for those with basic nee
 ```
 $ composer run-script deploy
 ```
+
+4. Log in with
+   user: apigoat
+   password: Apigoat2024!

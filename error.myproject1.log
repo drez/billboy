@@ -1,10 +1,6 @@
 **************** 
-2024-05-05 22:21:22
+2024-05-06 03:10:09
 
-***********  
-info
-***********  
-Config saved (/var/www/gc/p/myproject1/.admin/client.schema.xml)
 ***********  
 debug
 ***********  
@@ -40,13 +36,9 @@ propel > om-template:
 [propel-om] 16 tables found in 3 schema files.
 [propel-om] Generating PHP files...
 [propel-om] 	-> Updating config/basedata.sql.php (table: client, builder: BaseData)
-[propel-om] 	-> Updating map/BillingLineTableMap.php (table: billing_line, builder: PHP5TableMapBuilder)
-[propel-om] 	-> Updating om/BaseCostLinePeer.php (table: cost_line, builder: PHP5PeerBuilder)
-[propel-om] 	-> Updating map/CostLineTableMap.php (table: cost_line, builder: PHP5TableMapBuilder)
-[propel-om] 	-> Updating interface/CostLineForm.php (table: cost_line, builder: Form)
-[propel-om] Object model generation complete - 5 files written
+[propel-om] Object model generation complete - 1 files written
 BUILD FINISHED
-Total time: 0.3779 seconds
+Total time: 0.3536 seconds
 
 -> Classes done
 
@@ -78,7 +70,7 @@ propel > convert-conf:
 [propel-convert-conf] 16 tables found in 3 schema files.
 [propel-convert-conf] Updating PHP classmap file "/var/www/gc/p/myproject1/.admin/.build/conf/classmap.php"
 BUILD FINISHED
-Total time: 0.0466 seconds
+Total time: 0.0491 seconds
 
 -> Configs done
 
@@ -112,9 +104,9 @@ propel > sql:
 propel > sql-template:
 [propel-sql] Loading XML schema files...
 [propel-sql] 16 tables found in 3 schema files.
-[propel-sql] Writing to SQL file: /var/www/gc/p/myproject1/.admin/.build/sql/schema.sql
+[propel-sql] [Unchanged] schema.sql
 BUILD FINISHED
-Total time: 0.0503 seconds
+Total time: 0.0540 seconds
 
 -> Sql done
 
@@ -142,7 +134,7 @@ propel > insert-sql:
 [propel-sql-exec]   44 of 44 SQL statements executed successfully
 [propel-sql-exec] SQL execution complete. 44 statements successfully executed.
 BUILD FINISHED
-Total time: 0.5288 seconds
+Total time: 0.5038 seconds
 
 -> Insert sql done
 
@@ -424,6 +416,8 @@ build > build:
      [echo] Moving config files...
      [copy] Copying 1 file to /var/www/gc/p/myproject1/.admin/config/Built
      [copy] From /var/www/gc/p/myproject1/.admin/.build/conf/db.php to /var/www/gc/p/myproject1/.admin/config/Built/db.php
+     [copy] Copying 1 file to /var/www/gc/p/myproject1/.admin/config/Built
+     [copy] From /var/www/gc/p/myproject1/.admin/.build/sql/schema.sql to /var/www/gc/p/myproject1/.admin/config/Built/schema.sql
      [echo] Moving config files...
 [reflexive] Applying reflexive processing to 1 files.
 [reflexive] Applying reflexive processing to .build/conf/classmap.php
@@ -434,7 +428,7 @@ build > build:
      [copy] Copying 1 file to /var/www/gc/p/myproject1/.admin/config/Built
      [copy] From /var/www/gc/p/myproject1/.admin/.build/classes/config/basedata.sql.php to /var/www/gc/p/myproject1/.admin/config/Built/basedata.sql
 BUILD FINISHED
-Total time: 0.0631 seconds
+Total time: 0.0609 seconds
 
 -> Install done
 
@@ -449,6 +443,8 @@ Total time: 0.0631 seconds
 -> Additionnal SQL
 
 /usr/bin/mysql -f -u gc_myproject1 --password=njhghqmfyczbwwbmvxymfl gc_myproject1 < /var/www/gc/p/myproject1/.admin/tmp/custom.sql 2>&1
+ERROR 1062 (23000) at line 27: Duplicate entry '17' for key 'PRIMARY'
+ERROR 1062 (23000) at line 31: Duplicate entry '1' for key 'PRIMARY'
 
 -> Additionnal SQL done
 
