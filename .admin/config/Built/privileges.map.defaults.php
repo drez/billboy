@@ -20,7 +20,8 @@ return [
         "Authy/auth",
         "Authy/reset",
         "Authy/login",
-        "Authy/logout"
+        "Authy/logout",
+        "GuiManager"
     ]
 
 ];
