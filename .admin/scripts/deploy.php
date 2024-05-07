@@ -1,6 +1,6 @@
 <?php
 
-use App\Deploy\Config;
+use ApiGoat\Deploy\Config;
 
 #error_reporting(0);
 #ini_set('display_errors', 0);
