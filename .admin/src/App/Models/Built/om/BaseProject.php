@@ -331,7 +331,7 @@ abstract class BaseProject extends BaseObject implements Persistent
     /**
      * @Field()
      * Get the [type] column value.
-     * Type
+     *
      * @return int
      * @throws PropelException - if the stored enum key is unknown.
      */
@@ -635,7 +635,7 @@ abstract class BaseProject extends BaseObject implements Persistent
 
     /**
      * Set the value of [type] column.
-     * Type
+     *
      * @param  int $v new value
      * @return Project The current object (for fluent API support)
      * @throws PropelException - if the value is not accepted by this enum.

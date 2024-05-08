@@ -107,8 +107,9 @@ class ProjectTableMap extends TableMap
             'GoatCheese' =>  array (
   'i18n_langs' => '["en_US"]',
   'set_menu_priority' => '5',
-  'with_child_tables' => '["time_line","billing_line"]',
-  'add_tab_columns' => '{"Note":"note_billing","Paiement":"date_paid"}',
+  'with_child_tables' => '["billing_line","time_line"]',
+  'child_table_read_only' => '["billing_line"]',
+  'add_tab_columns' => '{"Budget":"budget"}',
   'is_wysiwyg_colunms' => '["note_billing"]',
   'add_search_columns' => '{"Client":[["id_client","%val"]],"Date":[["date","%val"]],"Title":[["title","%val"]]}',
   'set_readonly_columns' => '["spent"]',

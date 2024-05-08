@@ -99,15 +99,15 @@ class ProjectService
                 /**
                 *   Child table
                 **/
-                case 'TimeLine':
-                    $this->content = $this->Form->getTimeLineList($this->request['i'], $this->request);
+                case 'BillingLine':
+                    $this->content = $this->Form->getBillingLineList($this->request['i'], $this->request);
                 break;
 
                 /**
                 *   Child table
                 **/
-                case 'BillingLine':
-                    $this->content = $this->Form->getBillingLineList($this->request['i'], $this->request);
+                case 'TimeLine':
+                    $this->content = $this->Form->getTimeLineList($this->request['i'], $this->request);
                 break;
 
 

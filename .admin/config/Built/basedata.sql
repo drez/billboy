@@ -102,5 +102,57 @@ INSERT IGNORE INTO `template` (`id_template`, `name`, `status`, `subject`, `body
 <p>If you have any problems, do not hesitate to contact us at beta@apigoat.com</p>
 
 <p>The APIgoat team.</p>
-', '2020-08-02 05:35:04', '2020-08-04 12:40:56', NULL, NULL, NULL);
-;
+', '2020-08-02 05:35:04', '2020-08-04 12:40:56', NULL, NULL, NULL),
+(5, 'ApiGoat header', 'print_billing_header', '', '', '', 0, '<table border=\"0\" cellpadding=\"1\" cellspacing=\"10\" style=\"width:100%\">\r\n	<tbody>\r\n		<tr>\r\n			<td><img alt=\"\" src=\".admin/public/img/logo-admin.png\" /><img alt=\"\" src=\"/.admin/public/img/logo-admin.png\" /><img alt=\"\" src=\"https://gc.local/myproject1/.admin/public/img/logo-admin.png\" style=\"height:168px; width:375px\" /></td>\r\n			<td style=\"text-align:right; width:30%\">\r\n			<p>ApiGoat Inc.<br />\r\n			121 Legazpi Str., Makati<br />\r\n			Manila, Philippines, 1228</p>\r\n			</td>\r\n		</tr>\r\n	</tbody>\r\n</table>\r\n', '2024-05-08 12:55:53', '2024-05-08 12:58:31', 2, 2, 2);
+
+INSERT INTO `message` (`id_message`, `label`) VALUES
+(1, 'delete_row_confirm_msg'),
+(2, 'authy_email_required'),
+(3, 'client_phone_required'),
+(4, 'supplier_phone_required'),
+(5, 'CostLine_Title_required'),
+(6, 'client_name_required'),
+(7, 'client_country_required'),
+(8, 'supplier_name_required'),
+(9, 'supplier_country_required'),
+(10, 'authy_email_required'),
+(11, 'authy_password_required'),
+(12, 'name_required'),
+(13, 'Config_Config_required'),
+(14, 'Template_Name_required'),
+(15, 'CostLine_Title_required'),
+(16, 'project_name__required');
+
+INSERT INTO `message_i18n` (`id_message`, `locale`, `text`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification`) VALUES
+(1, 'en_US', 'Are you sure you want to delete this item?', '2024-05-06 06:19:18', '2024-05-06 06:19:18', 2, 2, 2),
+(1, 'fr_CA', NULL, '2024-05-06 06:19:18', '2024-05-06 06:19:18', 2, 2, 2),
+(2, 'en_US', 'The email is required.', '2024-02-29 19:42:34', '2024-05-08 13:30:39', 2, 1, 1),
+(2, 'fr_CA', NULL, '2024-02-29 19:42:34', '2024-05-08 13:30:39', 2, 1, 1),
+(3, 'en_US', 'The phone number is required.', '2024-03-17 22:28:05', '2024-05-08 13:31:01', 2, 2, 2),
+(3, 'fr_CA', NULL, '2024-03-17 22:28:05', '2024-05-08 13:31:01', 2, 2, 2),
+(4, 'en_US', 'The phone number is required.', '2024-05-01 13:18:03', '2024-05-08 13:30:29', 2, 2, 2),
+(4, 'fr_CA', NULL, '2024-05-01 13:18:03', '2024-05-08 13:30:29', 2, 2, 2),
+(5, 'en_US', 'The title is required.', '2024-05-06 06:21:28', '2024-05-08 13:30:49', 2, 2, 2),
+(5, 'fr_CA', NULL, '2024-05-06 06:21:28', '2024-05-08 13:30:49', 2, 2, 2),
+(6, 'en_US', 'The name is required.', '2024-05-07 16:01:41', '2024-05-08 04:18:39', 2, 1, 1),
+(6, 'fr_CA', NULL, '2024-05-07 16:01:41', '2024-05-08 04:18:39', 2, 1, 1),
+(7, 'en_US', 'The country is required.', '2024-05-07 16:01:41', '2024-05-08 04:18:57', 2, 1, 1),
+(7, 'fr_CA', NULL, '2024-05-07 16:01:41', '2024-05-08 04:18:57', 2, 1, 1),
+(8, 'en_US', 'The name is required.', '2024-05-07 16:02:26', '2024-05-08 04:19:08', 2, 1, 1),
+(8, 'fr_CA', NULL, '2024-05-07 16:02:26', '2024-05-08 04:19:08', 2, 1, 1),
+(9, 'en_US', 'The country is required.', '2024-05-07 16:02:26', '2024-05-08 04:19:19', 2, 1, 1),
+(9, 'fr_CA', NULL, '2024-05-07 16:02:26', '2024-05-08 04:19:19', 2, 1, 1),
+(10, 'en_US', 'The email is required.', '2024-05-07 16:02:34', '2024-05-08 04:19:31', 2, 1, 1),
+(10, 'fr_CA', NULL, '2024-05-07 16:02:34', '2024-05-08 04:19:31', 2, 1, 1),
+(11, 'en_US', 'The password is required.', '2024-05-07 16:02:34', '2024-05-08 04:19:45', 2, 1, 1),
+(11, 'fr_CA', NULL, '2024-05-07 16:02:34', '2024-05-08 04:19:45', 2, 1, 1),
+(12, 'en_US', 'The name is required.', '2024-05-07 16:02:42', '2024-05-08 04:19:55', 2, 1, 1),
+(12, 'fr_CA', NULL, '2024-05-07 16:02:42', '2024-05-08 04:19:55', 2, 1, 1),
+(13, 'en_US', 'The config is required.', '2024-05-07 16:02:56', '2024-05-08 04:20:09', 2, 1, 1),
+(13, 'fr_CA', NULL, '2024-05-07 16:02:56', '2024-05-08 04:20:09', 2, 1, 1),
+(14, 'en_US', 'The name is required.', '2024-05-07 16:03:03', '2024-05-08 04:20:19', 2, 1, 1),
+(14, 'fr_CA', NULL, '2024-05-07 16:03:03', '2024-05-08 04:20:19', 2, 1, 1),
+(15, 'en_US', 'The title is required.', '2024-05-07 17:13:15', '2024-05-08 04:20:26', 2, 1, 1),
+(15, 'fr_CA', NULL, '2024-05-07 17:13:15', '2024-05-08 04:20:26', 2, 1, 1),
+(16, 'en_US', 'The name is required.', '2024-05-08 13:13:41', '2024-05-08 13:31:08', 2, 2, 2),
+(16, 'fr_CA', NULL, '2024-05-08 13:13:41', '2024-05-08 13:31:08', 2, 2, 2);

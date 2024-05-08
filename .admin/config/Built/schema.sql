@@ -276,7 +276,7 @@ CREATE TABLE `project`
     `name` VARCHAR(100) COMMENT 'Name',
     `id_client` INTEGER(11) COMMENT 'Client',
     `date` DATE COMMENT 'Start date',
-    `type` TINYINT COMMENT 'Type',
+    `type` TINYINT,
     `state` TINYINT COMMENT 'State',
     `budget` DECIMAL(8, 2) COMMENT 'Budget',
     `spent` DECIMAL(8, 2) COMMENT 'Spent',

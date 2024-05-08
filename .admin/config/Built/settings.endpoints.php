@@ -405,8 +405,6 @@ $table['project'] = [
     ],
     'type' => [
         'type' => 'ENUM',
-        'description' => 'Type',
-        'valueSet' => null,
     ],
     'state' => [
         'type' => 'ENUM',

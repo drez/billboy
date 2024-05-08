@@ -56,8 +56,8 @@ $omMap = [
         'parent_table' => null,
         'parent_menu' => '',
         'child_table' => [
-            'time_line',
             'billing_line',
+            'time_line',
         ],
         'display' => 'Project',
     ],

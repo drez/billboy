@@ -1,6 +1,9 @@
 Billboy is a small billing, crm and accounting software for Freelancer with basic needs.
+It is meant to be simple and flexible.
 
-It supports:
+Demo @ https://billboy.apigoat.com/
+
+Features:
 
 - Billing, Quote
 - Client, Supplier
@@ -8,7 +11,8 @@ It supports:
 - Project budgeting (basic for now)
 - Bill, Quote printing with custom header
 - Report charts
-- Full API
+- Full API (https://apigoat.com/docs/api/)
+- Easy class hooks to customize (https://apigoat.com/docs/using-hooks-with-php/)
 
 It is build on top of Slim4 and Proel Orm via ApiGoat build engine.
 For documentation on APIgoat build, check apigoat.com
@@ -33,3 +37,13 @@ $ composer run-script deploy
 4. Log in with
    user: apigoat
    password: Apigoat2024!
+
+#### 5. Attributions
+
+#### 4. Attributions
+
+- ORM provided by Propel (https://propelorm.org)
+- PHP micro framework provided by Slim (https://www.slimframework.com)
+- the icon "loading" is provided by loading.io (https://loading.io)
+
+Licenced under MIT

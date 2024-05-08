@@ -213,7 +213,6 @@ class ProjectForm extends Project
                 $trHead = th(_("Name"), " th='sorted' c='Name' title='" . _('Name')."' ")
 .th(_("Client"), " th='sorted' c='Client.Name' title='"._('Client.Name')."' ")
 .th(_("Start date"), " th='sorted' c='Date' title='" . _('Start date')."' ")
-.th(_("Type"), " th='sorted' c='Type' title='" . _('Type')."' ")
 .th(_("State"), " th='sorted' c='State' title='" . _('State')."' ")
 .th(_("Budget"), " th='sorted' c='Budget' title='" . _('Budget')."' ")
 .th(_("Spent"), " th='sorted' c='Spent' title='" . _('Spent')."' ")
@@ -387,7 +386,6 @@ class ProjectForm extends Project
                 td(span((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editProject'") . 
                 td(span((($altValue['IdClient']) ? $altValue['IdClient'] : $Client_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdClient' class=''  j='editProject'") . 
                 td(span((($altValue['Date']) ? $altValue['Date'] : $data->getDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class=''  j='editProject'") . 
-                td(span((($altValue['Type']) ? $altValue['Type'] : isntPo($data->getType())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editProject'") . 
                 td(span((($altValue['State']) ? $altValue['State'] : isntPo($data->getState())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='State' class='center'  j='editProject'") . 
                 td(span((($altValue['Budget']) ? $altValue['Budget'] : str_replace(',', '.', $data->getBudget())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Budget' class='right'  j='editProject'") . 
                 td(span((($altValue['Spent']) ? $altValue['Spent'] : str_replace(',', '.', $data->getSpent())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Spent' class='right'  j='editProject'") . 
@@ -773,7 +771,6 @@ class ProjectForm extends Project
 $this->fields['Project']['Name']['html'] = stdFieldRow(_("Name"), input('text', 'Name', htmlentities($dataObj->getName()), "   placeholder='".str_replace("'","&#39;",_('Name'))."' size='35'  v='NAME' s='d' class='req'  ")."", 'Name', "", $this->commentsName, $this->commentsName_css, '', ' ', 'no');
 $this->fields['Project']['IdClient']['html'] = stdFieldRow(_("Client"), selectboxCustomArray('IdClient', $this->arrayIdClientOptions, _('Client'), "v='ID_CLIENT'  s='d'  val='".$dataObj->getIdClient()."'", $dataObj->getIdClient()), 'IdClient', "", $this->commentsIdClient, $this->commentsIdClient_css, '', ' ', 'no');
 $this->fields['Project']['Date']['html'] = stdFieldRow(_("Start date"), input('date', 'Date', $dataObj->getDate(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'Date', "", $this->commentsDate, $this->commentsDate_css, '', ' ', 'no');
-$this->fields['Project']['Type']['html'] = stdFieldRow(_("Type"), selectboxCustomArray('Type', array( '0' => array('0'=>_("Quote"), '1'=>"Quote"),'1' => array('0'=>_("Bill"), '1'=>"Bill"), ), _('Type'), "s='d'  ", $dataObj->getType(), '', true), 'Type', "", $this->commentsType, $this->commentsType_css, '', ' ', 'no');
 $this->fields['Project']['State']['html'] = stdFieldRow(_("State"), selectboxCustomArray('State', array( '0' => array('0'=>_("New"), '1'=>"New"),'1' => array('0'=>_("Approved"), '1'=>"Approved"),'2' => array('0'=>_("Cancelled"), '1'=>"Cancelled"),'3' => array('0'=>_("Closed"), '1'=>"Closed"), ), _('State'), "s='d'  ", $dataObj->getState(), '', true), 'State', "", $this->commentsState, $this->commentsState_css, '', ' ', 'no');
 $this->fields['Project']['Budget']['html'] = stdFieldRow(_("Budget"), input('text', 'Budget', $dataObj->getBudget(), "  placeholder='".str_replace("'","&#39;",_('Budget'))."'  v='BUDGET' size='5' s='d' class=''"), 'Budget', "", $this->commentsBudget, $this->commentsBudget_css, '', ' ', 'no');
 $this->fields['Project']['Spent']['html'] = stdFieldRow(_("Spent"), input('text', 'Spent', $dataObj->getSpent(), "  placeholder='".str_replace("'","&#39;",_('Spent'))."'  v='SPENT' size='5' s='d' class=''"), 'Spent', "", $this->commentsSpent, $this->commentsSpent_css, '', ' ', 'no');
@@ -790,14 +787,14 @@ $this->fields['Project']['Reference']['html'] = stdFieldRow(_("Paiement Referenc
 
         if( !isset($this->Project['request']['ChildHide']) ) {
 
-            # define child lists 'Time'
-            $ongletTab['0']['t'] = _('Time');
-            $ongletTab['0']['p'] = 'TimeLine';
+            # define child lists 'Entries'
+            $ongletTab['0']['t'] = _('Entries');
+            $ongletTab['0']['p'] = 'BillingLine';
             $ongletTab['0']['lkey'] = 'IdProject';
             $ongletTab['0']['fkey'] = 'IdProject';
-            # define child lists 'Entries'
-            $ongletTab['1']['t'] = _('Entries');
-            $ongletTab['1']['p'] = 'BillingLine';
+            # define child lists 'Time'
+            $ongletTab['1']['t'] = _('Time');
+            $ongletTab['1']['p'] = 'TimeLine';
             $ongletTab['1']['lkey'] = 'IdProject';
             $ongletTab['1']['fkey'] = 'IdProject';
         if(!empty($ongletTab) and $dataObj->getIdProject()){
@@ -838,8 +835,7 @@ $this->fields['Project']['Reference']['html'] = stdFieldRow(_("Paiement Referenc
         $ongletf =
             div(
                 ul(li(htmlLink(_('Project'),'#ogf_Project',' j="ogf" p="Project" class="ui-tabs-anchor" '))
-                    .li(htmlLink(_('Note'),'#ogf_note_billing',' j="ogf" class="ui-tabs-anchor" p="Project" '))
-                    .li(htmlLink(_('Paiement'),'#ogf_date_paid',' j="ogf" class="ui-tabs-anchor" p="Project" ')))
+                    .li(htmlLink(_('Budget'),'#ogf_budget',' j="ogf" class="ui-tabs-anchor" p="Project" ')))
             ,'cntOngletProject',' class="cntOnglet"')
         ;
         
@@ -888,8 +884,8 @@ $this->fields['Project']['Reference']['html'] = stdFieldRow(_("Paiement Referenc
 $this->fields['Project']['Name']['html']
 .$this->fields['Project']['IdClient']['html']
 .$this->fields['Project']['Date']['html']
-.$this->fields['Project']['Type']['html']
 .$this->fields['Project']['State']['html']
+.'</div><div id="ogf_budget"  class=" ui-tabs-panel">'
 .$this->fields['Project']['Budget']['html']
 .$this->fields['Project']['Spent']['html']
 .$this->fields['Project']['Reference']['html'].'</div>'
@@ -975,9 +971,6 @@ $this->fields['Project']['Name']['html']
         $this->fieldsRo['Project']['Date']['html'] = stdFieldRow(_("Start date"), div( $dataObj->getDate(), 'Date_label' , "class='readonly' s='d'")
                 .input('hidden', 'Date', $dataObj->getDate(), "s='d'"), 'Date', "", $this->commentsDate, $this->commentsDate_css, 'readonly', ' ', 'no');
 
-        $this->fieldsRo['Project']['Type']['html'] = stdFieldRow(_("Type"), div( $dataObj->getType(), 'Type_label' , "class='readonly' s='d'")
-                .input('hidden', 'Type', $dataObj->getType(), "s='d'"), 'Type', "", $this->commentsType, $this->commentsType_css, 'readonly', ' ', 'no');
-
         $this->fieldsRo['Project']['State']['html'] = stdFieldRow(_("State"), div( $dataObj->getState(), 'State_label' , "class='readonly' s='d'")
                 .input('hidden', 'State', $dataObj->getState(), "s='d'"), 'State', "", $this->commentsState, $this->commentsState_css, 'readonly', ' ', 'no');
 
@@ -1024,6 +1017,401 @@ $this->fields['Project']['Name']['html']
         $arrayOpt = $pcDataO->toArray();
 
         return assocToNum($arrayOpt , true);
+    }
+
+    /**
+     * Query for BillingLine_IdAssign selectBox 
+     * @param class $obj
+     * @param class $dataObj
+     * @param array $data
+    **/
+    public function selectBoxBillingLine_IdAssign(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+        $q = AuthyQuery::create();
+
+    if(method_exists($this, 'beginSelectboxBillingLine_IdAssign') and $array)
+        $ret = $this->beginSelectboxBillingLine_IdAssign($q, $dataObj, $data, $obj);
+    if($ret !== false)
+            $q->addAsColumn('selDisplay', ''.AuthyPeer::FULLNAME.' ');
+            $q->select(array('selDisplay', 'IdCreation'));
+            $q->orderBy('selDisplay', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+                if(function_exists('selectboxDataBillingLine_IdAssign')){ $this->selectboxDataBillingLine_IdAssign($pcDataO, $q); }
+
+
+        $arrayOpt = $pcDataO->toArray();
+
+        return assocToNum($arrayOpt , true);
+    }
+
+    /**
+     * Query for BillingLine_IdProject selectBox 
+     * @param class $obj
+     * @param class $dataObj
+     * @param array $data
+    **/
+    public function selectBoxBillingLine_IdProject(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+        $q = ProjectQuery::create();
+
+    if(method_exists($this, 'beginSelectboxBillingLine_IdProject') and $array)
+        $ret = $this->beginSelectboxBillingLine_IdProject($q, $dataObj, $data, $obj);
+    if($ret !== false)
+            $q->select(array('Name', 'IdProject'));
+            $q->orderBy('Name', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+                if(function_exists('selectboxDataBillingLine_IdProject')){ $this->selectboxDataBillingLine_IdProject($pcDataO, $q); }
+
+
+        $arrayOpt = $pcDataO->toArray();
+
+        return assocToNum($arrayOpt , true);
+    }
+
+    /**
+     * Query for BillingLine_IdBillingCategory selectBox 
+     * @param class $obj
+     * @param class $dataObj
+     * @param array $data
+    **/
+    public function selectBoxBillingLine_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+        $q = BillingCategoryQuery::create();
+
+    if(method_exists($this, 'beginSelectboxBillingLine_IdBillingCategory') and $array)
+        $ret = $this->beginSelectboxBillingLine_IdBillingCategory($q, $dataObj, $data, $obj);
+    if($ret !== false)
+            $q->select(array('Name', 'IdBillingCategory'));
+            $q->orderBy('Name', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+                if(function_exists('selectboxDataBillingLine_IdBillingCategory')){ $this->selectboxDataBillingLine_IdBillingCategory($pcDataO, $q); }
+
+
+        $arrayOpt = $pcDataO->toArray();
+
+        return assocToNum($arrayOpt , true);
+    }	
+    /**
+     * function getBillingLineList
+     * @param string $IdProject
+     * @param integer $page
+     * @param string $uiTabsId
+     * @param string $parentContainer
+     * @param string $mja_list
+     * @param array $search
+     * @param array $params
+     * @return string
+     */
+    public function getBillingLineList(String $IdProject, array $request)
+    {
+
+        $this->TableName = 'BillingLine';
+        $altValue = array (
+  'IdBillingLine' => '',
+  'IdBilling' => '',
+  'CalcId' => '',
+  'IdAssign' => '',
+  'IdProject' => '',
+  'Title' => '',
+  'WorkDate' => '',
+  'Quantity' => '',
+  'Amount' => '',
+  'Total' => '',
+  'IdBillingCategory' => '',
+  'NoteBillingLigne' => '',
+  'DateCreation' => '',
+  'DateModification' => '',
+  'IdGroupCreation' => '',
+  'IdCreation' => '',
+  'IdModification' => '',
+);
+        $dataObj = null;
+        $search = ['order' => null, 'page' => null, ];
+        $uiTabsId = (empty($request['cui'])) ? 'cntProjectChild' : $request['cui'];
+        $parentContainer = $request['pc'];
+        $orderReadyJs = '';
+        $param = [];
+        $total_child = '';
+
+        // if Search params
+        $this->searchMs = $this->setSearchVar($request['ms'] ?? '', 'Project/BillingLine');
+
+        // order
+        $search['order'] = $this->setOrderVar($request['order'] ?? '', 'Project/BillingLine');
+        
+        // page
+        $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Project/BillingLine');
+       
+        
+        
+
+        /*column hide*/
+        
+        if($parentContainer == 'editDialog'){
+            $diagNoClose = "diag:\"noclose\", ";
+            $diagNoCloseEscaped = "diag:\\\"noclose\\\", ";
+        }
+        
+        if(isset($this->Project['request']['noHeader']) && $this->Project['request']['noHeader'] == 'true'){
+            $noHeader = "'noHeader':'true',";
+        }
+        
+        $data['IdProject'] = $IdProject;
+        if($dataObj == null){
+            $dataObj = new Project();
+            $dataObj->setIdProject($IdProject);
+        }
+
+        $this->BillingLine['list_add'] = "";
+        $this->BillingLine['list_delete'] = "";
+
+        if($_SESSION[_AUTH_VAR]->hasRights('BillingLine', 'r')){
+            $this->BillingLine['list_edit'] = "";
+        }
+
+        #filters validation
+        
+        $filterKey = $IdProject;
+        $this->IdPk = $IdProject;
+        
+        
+        #main query
+        
+        // Normal query
+        $maxPerPage = ( $request['maxperpage'] ) ? $request['maxperpage'] : $this->childMaxPerPage;
+        $q = BillingLineQuery::create();
+        
+        
+        $q
+                #alias default
+                ->leftJoinWith('AuthyRelatedByIdAssign a0')
+                #default
+                ->leftJoinWith('Project')
+                #default
+                ->leftJoinWith('BillingCategory') 
+            
+            ->filterByIdProject( $filterKey );; 
+               // Search
+        
+               // orderring
+           
+        if( is_array( $search['order'] ) ) {
+            foreach ($search['order'] as $order) {
+                foreach ($order as $col => $sens) {
+                    if( $sens ) {
+                        $tOrd = explode('.', $col);
+                        $orderBy = "use" . $tOrd[0] . "Query";
+                        if( $tOrd[1] && method_exists( $q, $orderBy )) {
+                            $q->$orderBy( '', \Criteria::LEFT_JOIN )->orderBy( $tOrd[1], $sens )->endUse();
+                        }elseif( method_exists( $q, 'filterBy' . $col )) {
+                            $q->orderBy( $col, $sens );
+                        }
+
+                        $orderReadyJs .= "
+                            $(\"#{$uiTabsId} [th='sorted'][c='".$col."'], #{$uiTabsId} [th='sorted'][rc='".$col."']\").attr('sens','".$sens."');
+                            $(\"#{$uiTabsId} [th='sorted'][c='".$col."'], #{$uiTabsId} [th='sorted'][rc='".$col."']\").attr('order','on');
+                        ";
+                    }
+                }
+            }
+        }
+            // group by
+           
+        
+            //custom hook
+            if (method_exists($this, 'beforeChildSearchBillingLine')){ $this->beforeChildSearchBillingLine($q);}
+        $this->queryObj = $q;
+        
+        $pmpoData =$q->paginate($search['page'], $maxPerPage);
+        $resultsCount = $pmpoData->getNbResults();
+        
+            //custom hook
+            if (method_exists($this, 'beforeChildListBillingLine')){ $this->beforeChildListBillingLine($q, $filterKey, $param);}
+         
+        #options building
+        
+        $this->arrayIdAssignOptions = $this->selectBoxBillingLine_IdAssign($this, $dataObj, $data);
+        $this->arrayIdProjectOptions = $this->selectBoxBillingLine_IdProject($this, $dataObj, $data);
+        $this->arrayIdBillingCategoryOptions = $this->selectBoxBillingLine_IdBillingCategory($this, $dataObj, $data);
+        
+        
+          
+        
+        if(isset($this->Project['request']['noHeader']) && $this->Project['request']['noHeader'] == 'true'){
+            $trSearch = "";
+        }
+
+        $actionRowHeader ='';
+        if($_SESSION[_AUTH_VAR]->hasRights('BillingLine', 'd')){
+            $actionRowHeader = "";
+        }
+
+        $header = tr( th(_("User fullname"), " th='sorted' c='AuthyRelatedByIdAssign.Fullname' title='"._('AuthyRelatedByIdAssign.Fullname')."' " . $param['th']['IdAssign']."")
+.th(_("Project"), " th='sorted' c='Project.Name' title='"._('Project.Name')."' " . $param['th']['IdProject']."")
+.th(_("Title"), " th='sorted' c='Title' title='" . _('Title')."' " . $param['th']['Title']."")
+.th(_("Date"), " th='sorted' c='WorkDate' title='" . _('Date')."' " . $param['th']['WorkDate']."")
+.th(_("Quantity"), " th='sorted' c='Quantity' title='" . _('Quantity')."' " . $param['th']['Quantity']."")
+.th(_("Amount"), " th='sorted' c='Amount' title='" . _('Amount')."' " . $param['th']['Amount']."")
+.th(_("Total"), " th='sorted' c='Total' title='" . _('Total')."' " . $param['th']['Total']."")
+.th(_("Category"), " th='sorted' c='BillingCategory.Name' title='"._('BillingCategory.Name')."' " . $param['th']['IdBillingCategory']."")
+.th(_("Note"), " th='sorted' c='NoteBillingLigne' title='" . _('Note')."' " . $param['th']['NoteBillingLigne']."")
+.'' . $actionRowHeader, " ln='BillingLine' class=''");
+
+        
+
+        $i=0;
+        if( $pmpoData->isEmpty() ){
+            $tr .= tr(	td(p(span(_("No Entries found")),'class="no-results"'), "style='font-size:16px;' t='empty' ln='BillingLine' colspan='100%' "));
+            
+        }else{
+            //$pcData = $pmpoData->getResults();
+            foreach($pmpoData as $data){
+                $this->listActionCellBillingLine = '';
+                $actionRow = '';
+                
+            // custom hooks
+            if (method_exists($this, 'startChildListRowBillingLine')){ $this->startChildListRowBillingLine($altValue, $data, $i, $param, $this, $hookListColumnsBillingLine, $actionRow);}
+            
+                
+                
+                if($_SESSION[_AUTH_VAR]->hasRights('BillingLine', 'd')){
+                    $actionRow = "";
+                }
+                
+                
+                
+                
+                
+                $actionRow = $actionRow;
+                $actionRow = (!empty($actionRow)) ? td($this->listActionCellBillingLine.$actionRow," class='actionrow'") : "";
+                
+        $altValue['AuthyRelatedByIdAssign_Fullname'] = "";
+        if($data->getAuthyRelatedByIdAssign()){
+            $altValue['AuthyRelatedByIdAssign_Fullname'] = $data->getAuthyRelatedByIdAssign()->getFullname();
+        }
+                                    $Project_Name = "";
+                                    if($data->getProject()){
+                                        $Project_Name = $data->getProject()->getName();
+                                    }
+                                    $BillingCategory_Name = "";
+                                    if($data->getBillingCategory()){
+                                        $BillingCategory_Name = $data->getBillingCategory()->getName();
+                                    }
+                
+                
+                ;
+                
+                
+                
+                $tr .= $param['tr_before'].
+                        tr(
+                            (isset($hookListColumnsBillingLineFirst)?$hookListColumnsBillingLineFirst:'').
+                            
+                td(span((($altValue['IdAssign']) ? $altValue['IdAssign'] : $altValue['AuthyRelatedByIdAssign_Fullname']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdAssign' class='' " . $param['IdAssign']." j='editBillingLine'") . 
+                td(span((($altValue['IdProject']) ? $altValue['IdProject'] : $Project_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdProject' class='' " . $param['IdProject']." j='editBillingLine'") . 
+                td(span((($altValue['Title']) ? $altValue['Title'] : $data->getTitle()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Title' class='' " . $param['Title']." j='editBillingLine'") . 
+                td(span((($altValue['WorkDate']) ? $altValue['WorkDate'] : $data->getWorkDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='WorkDate' class='' " . $param['WorkDate']." j='editBillingLine'") . 
+                td(span((($altValue['Quantity']) ? $altValue['Quantity'] : str_replace(',', '.', $data->getQuantity())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Quantity' class='right' " . $param['Quantity']." j='editBillingLine'") . 
+                td(span((($altValue['Amount']) ? $altValue['Amount'] : str_replace(',', '.', $data->getAmount())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Amount' class='right' " . $param['Amount']." j='editBillingLine'") . 
+                td(span((($altValue['Total']) ? $altValue['Total'] : str_replace(',', '.', $data->getTotal())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Total' class='right' " . $param['Total']." j='editBillingLine'") . 
+                td(span((($altValue['IdBillingCategory']) ? $altValue['IdBillingCategory'] : $BillingCategory_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBillingCategory' class='' " . $param['IdBillingCategory']." j='editBillingLine'") . 
+                td(span((($altValue['NoteBillingLigne']) ? $altValue['NoteBillingLigne'] : substr(strip_tags($data->getNoteBillingLigne()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='NoteBillingLigne' class='' " . $param['NoteBillingLigne']." j='editBillingLine'") . 
+                            (isset($hookListColumnsBillingLine)?$hookListColumnsBillingLine:'').
+                            $actionRow
+                        ,"id='BillingLineRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='BillingLine' ".$param['tr']." ")
+                        .$param['tr_after'];
+                
+                $i++;
+            }
+            
+            
+        }
+
+    $add_button_child = "";
+    if(($_SESSION[_AUTH_VAR]->hasRights('BillingLine', 'a')) ){
+        $add_button_child = "";
+    }
+
+    //@PAGINATION
+    $pagerRow = $this->getPager($pmpoData, $resultsCount, $search, true);
+
+    $return['html'] =
+            div(
+                 $this->hookBillingLineListTop
+                .div(
+                    div($add_button_child
+                    .$trSearch, '' ,'class="ac-list-form-header-child"')
+                    .div(
+                        div(
+                            div(
+                                table(	
+                                    thead($header)
+                                    .$tr
+                                    .$this->hookBillingLineTableFooter
+                                , "id='BillingLineTable' class='tablesorter'")
+                            , 'childlistBillingLine')
+                            .$this->hookBillingLineListBottom
+                        ,'',' class="content" ')
+                    ,'listFormChild',' class="ac-list" ')
+                    .$pagerRow
+                ,'BillingLineListForm')
+            ,'cntBillingLinedivChild', "class='childListWrapper'");
+
+            
+            
+
+            $return['onReadyJs'] =
+                $this->hookListReadyJsFirstBillingLine
+                .""
+                .$this->BillingLine['list_add']
+                .$this->BillingLine['list_delete']
+                .$this->BillingLine['list_edit']
+            ."
+            
+            
+            
+            /*checkboxes*/
+            
+                
+        /* PAGINATION */
+        $('#BillingLinePager').bindPaging({
+            tableName:'BillingLine'
+            , parentId:'".$IdProject."'
+            , uiTabsId:'{$uiTabsId}'
+            , ajaxPageActParent:'".$this->virtualClassName."/BillingLine/$IdProject'
+            , pui:'".$uiTabsId."'
+        });  
+
+        $(\"#{$uiTabsId} [th='sorted']\").bindSorting({
+            modelName:'BillingLine',
+            url:'".$this->virtualClassName."/BillingLine/$IdProject',
+            destUi:'".$uiTabsId."'
+        });
+        
+        $('#cntProjectChild .js-select-label').SelectBox();
+
+        {$orderReadyJs}
+        ";
+
+        $return['onReadyJs'] .= "
+                "
+                . $this->hookListReadyJsBillingLine;
+        return $return;
     }	
     /**
      * function getTimeLineList
@@ -1331,432 +1719,6 @@ $this->fields['Project']['Name']['html']
         $return['onReadyJs'] .= "
                 "
                 . $this->hookListReadyJsTimeLine;
-        return $return;
-    }
-
-    /**
-     * Query for BillingLine_IdAssign selectBox 
-     * @param class $obj
-     * @param class $dataObj
-     * @param array $data
-    **/
-    public function selectBoxBillingLine_IdAssign(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
-        $q = AuthyQuery::create();
-
-    if(method_exists($this, 'beginSelectboxBillingLine_IdAssign') and $array)
-        $ret = $this->beginSelectboxBillingLine_IdAssign($q, $dataObj, $data, $obj);
-    if($ret !== false)
-            $q->addAsColumn('selDisplay', ''.AuthyPeer::FULLNAME.' ');
-            $q->select(array('selDisplay', 'IdCreation'));
-            $q->orderBy('selDisplay', 'ASC');
-        
-            if(!$array){
-                return $q;
-            }else{
-                $pcDataO = $q->find();
-            }
-
-                if(function_exists('selectboxDataBillingLine_IdAssign')){ $this->selectboxDataBillingLine_IdAssign($pcDataO, $q); }
-
-
-        $arrayOpt = $pcDataO->toArray();
-
-        return assocToNum($arrayOpt , true);
-    }
-
-    /**
-     * Query for BillingLine_IdProject selectBox 
-     * @param class $obj
-     * @param class $dataObj
-     * @param array $data
-    **/
-    public function selectBoxBillingLine_IdProject(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
-        $q = ProjectQuery::create();
-
-    if(method_exists($this, 'beginSelectboxBillingLine_IdProject') and $array)
-        $ret = $this->beginSelectboxBillingLine_IdProject($q, $dataObj, $data, $obj);
-    if($ret !== false)
-            $q->select(array('Name', 'IdProject'));
-            $q->orderBy('Name', 'ASC');
-        
-            if(!$array){
-                return $q;
-            }else{
-                $pcDataO = $q->find();
-            }
-
-                if(function_exists('selectboxDataBillingLine_IdProject')){ $this->selectboxDataBillingLine_IdProject($pcDataO, $q); }
-
-
-        $arrayOpt = $pcDataO->toArray();
-
-        return assocToNum($arrayOpt , true);
-    }
-
-    /**
-     * Query for BillingLine_IdBillingCategory selectBox 
-     * @param class $obj
-     * @param class $dataObj
-     * @param array $data
-    **/
-    public function selectBoxBillingLine_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
-        $q = BillingCategoryQuery::create();
-
-    if(method_exists($this, 'beginSelectboxBillingLine_IdBillingCategory') and $array)
-        $ret = $this->beginSelectboxBillingLine_IdBillingCategory($q, $dataObj, $data, $obj);
-    if($ret !== false)
-            $q->select(array('Name', 'IdBillingCategory'));
-            $q->orderBy('Name', 'ASC');
-        
-            if(!$array){
-                return $q;
-            }else{
-                $pcDataO = $q->find();
-            }
-
-                if(function_exists('selectboxDataBillingLine_IdBillingCategory')){ $this->selectboxDataBillingLine_IdBillingCategory($pcDataO, $q); }
-
-
-        $arrayOpt = $pcDataO->toArray();
-
-        return assocToNum($arrayOpt , true);
-    }	
-    /**
-     * function getBillingLineList
-     * @param string $IdProject
-     * @param integer $page
-     * @param string $uiTabsId
-     * @param string $parentContainer
-     * @param string $mja_list
-     * @param array $search
-     * @param array $params
-     * @return string
-     */
-    public function getBillingLineList(String $IdProject, array $request)
-    {
-
-        $this->TableName = 'BillingLine';
-        $altValue = array (
-  'IdBillingLine' => '',
-  'IdBilling' => '',
-  'CalcId' => '',
-  'IdAssign' => '',
-  'IdProject' => '',
-  'Title' => '',
-  'WorkDate' => '',
-  'Quantity' => '',
-  'Amount' => '',
-  'Total' => '',
-  'IdBillingCategory' => '',
-  'NoteBillingLigne' => '',
-  'DateCreation' => '',
-  'DateModification' => '',
-  'IdGroupCreation' => '',
-  'IdCreation' => '',
-  'IdModification' => '',
-);
-        $dataObj = null;
-        $search = ['order' => null, 'page' => null, ];
-        $uiTabsId = (empty($request['cui'])) ? 'cntProjectChild' : $request['cui'];
-        $parentContainer = $request['pc'];
-        $orderReadyJs = '';
-        $param = [];
-        $total_child = '';
-
-        // if Search params
-        $this->searchMs = $this->setSearchVar($request['ms'] ?? '', 'Project/BillingLine');
-
-        // order
-        $search['order'] = $this->setOrderVar($request['order'] ?? '', 'Project/BillingLine');
-        
-        // page
-        $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Project/BillingLine');
-       
-        
-        
-
-        /*column hide*/
-        
-        if($parentContainer == 'editDialog'){
-            $diagNoClose = "diag:\"noclose\", ";
-            $diagNoCloseEscaped = "diag:\\\"noclose\\\", ";
-        }
-        
-        if(isset($this->Project['request']['noHeader']) && $this->Project['request']['noHeader'] == 'true'){
-            $noHeader = "'noHeader':'true',";
-        }
-        
-        $data['IdProject'] = $IdProject;
-        if($dataObj == null){
-            $dataObj = new Project();
-            $dataObj->setIdProject($IdProject);
-        }
-
-        $this->BillingLine['list_add'] = "
-        $('#BillingLineListForm #addBillingLine').bindEdit({
-                modelName: 'BillingLine',
-                destUi: 'editDialog',
-                pc:'{$this->virtualClassName}',
-                ip:'".$IdProject."',
-                jet:'refreshChild',
-                tp:'BillingLine',
-                description: 'Entries'
-        });
-        ";
-        $this->BillingLine['list_delete'] = "
-        $(\"[j='deleteBillingLine']\").bindDelete({
-            modelName:'BillingLine',
-            ui:'cntBillingLinedivChild',
-            title: 'Entries',
-            message: '".addslashes(message_label('delete_row_confirm_msg') ?? '')."'
-        });";
-
-        if($_SESSION[_AUTH_VAR]->hasRights('BillingLine', 'r')){
-            $this->BillingLine['list_edit'] = "
-        $(\"#BillingLineTable tr td[j='editBillingLine']\").bind('click', function (){
-            
-        $('#editDialog').html( $('<div>').append( $('<img>').attr('src', '"._SITE_URL."public/img/Ellipsis-3.9s-200px.svg').css('width', '300px')).css('width', '300px').css('margin', 'auto') );
-        $('#editDialog').dialog({width:'auto'}).dialog('open');
-        $.get('"._SITE_URL."BillingLine/edit/'+$(this).attr('i'),
-                { ip:'".$IdProject."', ui:'editDialog', pc:'{$this->virtualClassName}', je:'BillingLineTableCntnr', jet:'refreshChild', 'it-pos':$(this).data('iterator-pos') },
-            function(data){ 
-                dialogWidthClass($('#editDialog')); 
-                $('#editDialog').html(data).dialog({width:'auto'});  
-        });
-        });";
-        }
-
-        #filters validation
-        
-        $filterKey = $IdProject;
-        $this->IdPk = $IdProject;
-        
-        
-        #main query
-        
-        // Normal query
-        $maxPerPage = ( $request['maxperpage'] ) ? $request['maxperpage'] : $this->childMaxPerPage;
-        $q = BillingLineQuery::create();
-        
-        
-        $q
-                #alias default
-                ->leftJoinWith('AuthyRelatedByIdAssign a0')
-                #default
-                ->leftJoinWith('Project')
-                #default
-                ->leftJoinWith('BillingCategory') 
-            
-            ->filterByIdProject( $filterKey );; 
-               // Search
-        
-               // orderring
-           
-        if( is_array( $search['order'] ) ) {
-            foreach ($search['order'] as $order) {
-                foreach ($order as $col => $sens) {
-                    if( $sens ) {
-                        $tOrd = explode('.', $col);
-                        $orderBy = "use" . $tOrd[0] . "Query";
-                        if( $tOrd[1] && method_exists( $q, $orderBy )) {
-                            $q->$orderBy( '', \Criteria::LEFT_JOIN )->orderBy( $tOrd[1], $sens )->endUse();
-                        }elseif( method_exists( $q, 'filterBy' . $col )) {
-                            $q->orderBy( $col, $sens );
-                        }
-
-                        $orderReadyJs .= "
-                            $(\"#{$uiTabsId} [th='sorted'][c='".$col."'], #{$uiTabsId} [th='sorted'][rc='".$col."']\").attr('sens','".$sens."');
-                            $(\"#{$uiTabsId} [th='sorted'][c='".$col."'], #{$uiTabsId} [th='sorted'][rc='".$col."']\").attr('order','on');
-                        ";
-                    }
-                }
-            }
-        }
-            // group by
-           
-        
-            //custom hook
-            if (method_exists($this, 'beforeChildSearchBillingLine')){ $this->beforeChildSearchBillingLine($q);}
-        $this->queryObj = $q;
-        
-        $pmpoData =$q->paginate($search['page'], $maxPerPage);
-        $resultsCount = $pmpoData->getNbResults();
-        
-            //custom hook
-            if (method_exists($this, 'beforeChildListBillingLine')){ $this->beforeChildListBillingLine($q, $filterKey, $param);}
-         
-        #options building
-        
-        $this->arrayIdAssignOptions = $this->selectBoxBillingLine_IdAssign($this, $dataObj, $data);
-        $this->arrayIdProjectOptions = $this->selectBoxBillingLine_IdProject($this, $dataObj, $data);
-        $this->arrayIdBillingCategoryOptions = $this->selectBoxBillingLine_IdBillingCategory($this, $dataObj, $data);
-        
-        
-          
-        
-        if(isset($this->Project['request']['noHeader']) && $this->Project['request']['noHeader'] == 'true'){
-            $trSearch = "";
-        }
-
-        $actionRowHeader ='';
-        if($_SESSION[_AUTH_VAR]->hasRights('BillingLine', 'd')){
-            $actionRowHeader = th('&nbsp;', " r='delrow' class='actionrow' ");
-        }
-
-        $header = tr( th(_("User fullname"), " th='sorted' c='AuthyRelatedByIdAssign.Fullname' title='"._('AuthyRelatedByIdAssign.Fullname')."' " . $param['th']['IdAssign']."")
-.th(_("Project"), " th='sorted' c='Project.Name' title='"._('Project.Name')."' " . $param['th']['IdProject']."")
-.th(_("Title"), " th='sorted' c='Title' title='" . _('Title')."' " . $param['th']['Title']."")
-.th(_("Date"), " th='sorted' c='WorkDate' title='" . _('Date')."' " . $param['th']['WorkDate']."")
-.th(_("Quantity"), " th='sorted' c='Quantity' title='" . _('Quantity')."' " . $param['th']['Quantity']."")
-.th(_("Amount"), " th='sorted' c='Amount' title='" . _('Amount')."' " . $param['th']['Amount']."")
-.th(_("Total"), " th='sorted' c='Total' title='" . _('Total')."' " . $param['th']['Total']."")
-.th(_("Category"), " th='sorted' c='BillingCategory.Name' title='"._('BillingCategory.Name')."' " . $param['th']['IdBillingCategory']."")
-.th(_("Note"), " th='sorted' c='NoteBillingLigne' title='" . _('Note')."' " . $param['th']['NoteBillingLigne']."")
-.'' . $actionRowHeader, " ln='BillingLine' class=''");
-
-        
-
-        $i=0;
-        if( $pmpoData->isEmpty() ){
-            $tr .= tr(	td(p(span(_("No Entries found")),'class="no-results"'), "style='font-size:16px;' t='empty' ln='BillingLine' colspan='100%' "));
-            
-        }else{
-            //$pcData = $pmpoData->getResults();
-            foreach($pmpoData as $data){
-                $this->listActionCellBillingLine = '';
-                $actionRow = '';
-                
-            // custom hooks
-            if (method_exists($this, 'startChildListRowBillingLine')){ $this->startChildListRowBillingLine($altValue, $data, $i, $param, $this, $hookListColumnsBillingLine, $actionRow);}
-            
-                
-                
-                if($_SESSION[_AUTH_VAR]->hasRights('BillingLine', 'd')){
-                    $actionRow = htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteBillingLine' i='".json_encode($data->getPrimaryKey())."'");
-                }
-                
-                
-                
-                
-                
-                $actionRow = $actionRow;
-                $actionRow = (!empty($actionRow)) ? td($this->listActionCellBillingLine.$actionRow," class='actionrow'") : "";
-                
-        $altValue['AuthyRelatedByIdAssign_Fullname'] = "";
-        if($data->getAuthyRelatedByIdAssign()){
-            $altValue['AuthyRelatedByIdAssign_Fullname'] = $data->getAuthyRelatedByIdAssign()->getFullname();
-        }
-                                    $Project_Name = "";
-                                    if($data->getProject()){
-                                        $Project_Name = $data->getProject()->getName();
-                                    }
-                                    $BillingCategory_Name = "";
-                                    if($data->getBillingCategory()){
-                                        $BillingCategory_Name = $data->getBillingCategory()->getName();
-                                    }
-                
-                
-                ;
-                
-                
-                
-                $tr .= $param['tr_before'].
-                        tr(
-                            (isset($hookListColumnsBillingLineFirst)?$hookListColumnsBillingLineFirst:'').
-                            
-                td(span((($altValue['IdAssign']) ? $altValue['IdAssign'] : $altValue['AuthyRelatedByIdAssign_Fullname']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdAssign' class='' " . $param['IdAssign']." j='editBillingLine'") . 
-                td(span((($altValue['IdProject']) ? $altValue['IdProject'] : $Project_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdProject' class='' " . $param['IdProject']." j='editBillingLine'") . 
-                td(span((($altValue['Title']) ? $altValue['Title'] : $data->getTitle()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Title' class='' " . $param['Title']." j='editBillingLine'") . 
-                td(span((($altValue['WorkDate']) ? $altValue['WorkDate'] : $data->getWorkDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='WorkDate' class='' " . $param['WorkDate']." j='editBillingLine'") . 
-                td(span((($altValue['Quantity']) ? $altValue['Quantity'] : str_replace(',', '.', $data->getQuantity())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Quantity' class='right' " . $param['Quantity']." j='editBillingLine'") . 
-                td(span((($altValue['Amount']) ? $altValue['Amount'] : str_replace(',', '.', $data->getAmount())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Amount' class='right' " . $param['Amount']." j='editBillingLine'") . 
-                td(span((($altValue['Total']) ? $altValue['Total'] : str_replace(',', '.', $data->getTotal())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Total' class='right' " . $param['Total']." j='editBillingLine'") . 
-                td(span((($altValue['IdBillingCategory']) ? $altValue['IdBillingCategory'] : $BillingCategory_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBillingCategory' class='' " . $param['IdBillingCategory']." j='editBillingLine'") . 
-                td(span((($altValue['NoteBillingLigne']) ? $altValue['NoteBillingLigne'] : substr(strip_tags($data->getNoteBillingLigne()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='NoteBillingLigne' class='' " . $param['NoteBillingLigne']." j='editBillingLine'") . 
-                            (isset($hookListColumnsBillingLine)?$hookListColumnsBillingLine:'').
-                            $actionRow
-                        ,"id='BillingLineRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='BillingLine' ".$param['tr']." ")
-                        .$param['tr_after'];
-                
-                $i++;
-            }
-            
-            
-        }
-
-    $add_button_child = 
-                            div(
-                                div(
-                                    div($total_child,'','class="nolink"')
-                            ,'trBillingLine'," ln='BillingLine' class=''").$this->cCMainTableHeader, '', "class='listHeaderItem' ");
-    if(($_SESSION[_AUTH_VAR]->hasRights('BillingLine', 'a')) ){
-        $add_button_child = htmlLink(span(_("Add")), "Javascript:","title='Add "._('Entries')."' id='addBillingLine' class='button-link-blue add-button'");
-    }
-
-    //@PAGINATION
-    $pagerRow = $this->getPager($pmpoData, $resultsCount, $search, true);
-
-    $return['html'] =
-            div(
-                 $this->hookBillingLineListTop
-                .div(
-                    div($add_button_child
-                    .$trSearch, '' ,'class="ac-list-form-header-child"')
-                    .div(
-                        div(
-                            div(
-                                table(	
-                                    thead($header)
-                                    .$tr
-                                    .$this->hookBillingLineTableFooter
-                                , "id='BillingLineTable' class='tablesorter'")
-                            , 'childlistBillingLine')
-                            .$this->hookBillingLineListBottom
-                        ,'',' class="content" ')
-                    ,'listFormChild',' class="ac-list" ')
-                    .$pagerRow
-                ,'BillingLineListForm')
-            ,'cntBillingLinedivChild', "class='childListWrapper'");
-
-            
-            
-
-            $return['onReadyJs'] =
-                $this->hookListReadyJsFirstBillingLine
-                .""
-                .$this->BillingLine['list_add']
-                .$this->BillingLine['list_delete']
-                .$this->BillingLine['list_edit']
-            ."
-            
-            
-            
-            /*checkboxes*/
-            
-                
-        /* PAGINATION */
-        $('#BillingLinePager').bindPaging({
-            tableName:'BillingLine'
-            , parentId:'".$IdProject."'
-            , uiTabsId:'{$uiTabsId}'
-            , ajaxPageActParent:'".$this->virtualClassName."/BillingLine/$IdProject'
-            , pui:'".$uiTabsId."'
-        });  
-
-        $(\"#{$uiTabsId} [th='sorted']\").bindSorting({
-            modelName:'BillingLine',
-            url:'".$this->virtualClassName."/BillingLine/$IdProject',
-            destUi:'".$uiTabsId."'
-        });
-        
-        $('#cntProjectChild .js-select-label').SelectBox();
-
-        {$orderReadyJs}
-        ";
-
-        $return['onReadyJs'] .= "
-                "
-                . $this->hookListReadyJsBillingLine;
         return $return;
     }
 }
