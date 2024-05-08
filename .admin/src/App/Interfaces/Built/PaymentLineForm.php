@@ -25,7 +25,6 @@ class PaymentLineForm extends PaymentLine
     public $model_name = '';
     public $isChild;
     public $IdPk;
-    public $queryObj;
     public $in;
     public $TableName;
     public $tableDescription;
@@ -73,6 +72,7 @@ class PaymentLineForm extends PaymentLine
     public $formTitle;
     public $ccStdFormOptions;
     public $cCMainTableHeader;
+    public $cCmoreColsHeader;
     
     public $canDelete;
 
@@ -115,7 +115,7 @@ class PaymentLineForm extends PaymentLine
 
         $q = new PaymentLineQuery();
         $q = $this->setAclFilter($q);
-        
+        if (method_exists($this, 'beforeListSearch')){ $this->beforeListSearch($q, $search);}
 
         if(is_array( $this->searchMs )){
             # main search form
@@ -169,7 +169,7 @@ class PaymentLineForm extends PaymentLine
         
         
         
-        $this->pmpoData =  $q;
+        $this->pmpoData = $q;
         
         
         return $this->pmpoData;
@@ -183,6 +183,8 @@ class PaymentLineForm extends PaymentLine
     public function getListHeader($act)
     {
         $this->in = 'getListHeader';
+        $trSearch = '';
+        $trHeadMod = '';
         
         switch($act) {
             case 'head':
@@ -239,6 +241,8 @@ class PaymentLineForm extends PaymentLine
      */
     public function getList( $request, $uiTabsId = 'tabsContain', $IdParent = null , $pmpoDataIn = null)
     {
+        $HelpDivJs = '';
+        $HelpDiv = '';
         $this->in = 'getList';
         $this->isChild = '';
         $this->TableName = 'PaymentLine';
@@ -259,6 +263,7 @@ class PaymentLineForm extends PaymentLine
         $hook = [];
         $editEvent = '';
         $return = ['html', 'js', 'onReadyJs'];
+        $cCmoreCols = '';
 
         
 
@@ -276,7 +281,7 @@ class PaymentLineForm extends PaymentLine
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'PaymentLine/');
 
-        
+        if (method_exists($this, 'beforeList')){ $this->beforeList($request, $pmpoDataIn );}
         
         
         
@@ -323,22 +328,23 @@ class PaymentLineForm extends PaymentLine
                 $this->listActionCell = '';
                 
                 
-                
+
+                if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                     
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deletePaymentLine' ") . $this->listActionCell, " class='actionrow' ");
 
-                $tr .= tr(
-                td(span(\htmlentities((($altValue['Date']) ? $altValue['Date'] : $data->getDate()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class=''  j='editPaymentLine'") . 
-                td(span(\htmlentities((($altValue['Note']) ? $altValue['Note'] : substr(strip_tags($data->getNote()), 0, 100)) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Note' class=''  j='editPaymentLine'") . 
-                td(span(\htmlentities((($altValue['Amount']) ? $altValue['Amount'] : str_replace(',', '.', $data->getAmount())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Amount' class='right'  j='editPaymentLine'") . $cCmoreCols.$actionCell
-                , " 
+                $tr .= $hook['tr_before'].tr(
+                td(span((($altValue['Date']) ? $altValue['Date'] : $data->getDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class=''  j='editPaymentLine'") . 
+                td(span((($altValue['Note']) ? $altValue['Note'] : substr(strip_tags($data->getNote()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Note' class=''  j='editPaymentLine'") . 
+                td(span((($altValue['Amount']) ? $altValue['Amount'] : str_replace(',', '.', $data->getAmount())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Amount' class='right'  j='editPaymentLine'") . $hook['td'].$cCmoreCols.$actionCell
+                , " ".$hook['tr']."
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
                         class='".$hook['class']." '
                         id='PaymentLineRow".$data->getPrimaryKey()."'")
-                ;
+                .$hook['tr_after'];
                 $i++;
             }
             $tr .= input('hidden', 'rowCountPaymentLine', $i);
@@ -350,7 +356,7 @@ class PaymentLineForm extends PaymentLine
         $pagerRow = $this->getPager($pmpoData, $resultsCount, $search);
         $bottomRow = div($pagerRow,'bottomPagerRow', "class='tablesorter'");
 
-        
+        if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
         
@@ -523,6 +529,12 @@ class PaymentLineForm extends PaymentLine
     {
         $this->in = "getEditForm";
 
+        $HelpDivJs = '';
+        $HelpDiv = '';
+        $childTable = [];
+        $script_autoc_one = '';
+        $ongletf = '';
+        $mceInclude = '';
         $ip_save = '';
         $ip_save = '';
         $IdParent = 0;
@@ -665,7 +677,7 @@ $this->fields['PaymentLine']['Amount']['html'] = stdFieldRow(_("Amount"), input(
                             .$this->hookListSearchButton
                         ,"", " class='divtd' colspan='2' style='text-align:right;'"),""," class='divtr divbut' ");
         }
-        $this->afterFormObj($data, $dataObj);
+        if (method_exists($this, 'afterFormObj')){ $this->afterFormObj($data, $dataObj);}
         
 
         //Form header

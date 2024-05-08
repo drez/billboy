@@ -8,11 +8,12 @@
         add_validator:true,
         add_tablestamp:true,
         set_debug_level:3,
-        add_hooks:{ "afterFormObj":["template", "billing_line", "payment_line", "cost_line", "billing"], 
+        /*add_hooks:{ "afterFormObj":["template", "billing_line", "payment_line", "cost_line", "billing"], 
                     "beforeSave":["billing_line", "cost_line"], 
                     "afterSave":["billing_line"],
                     "beforeList":["billing"]
-                },
+                },*/
+        add_hooks:{"full":"yes"},
         with_api:true,
 
         "authy('User')":{

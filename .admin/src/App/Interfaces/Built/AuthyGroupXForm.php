@@ -25,7 +25,6 @@ class AuthyGroupXForm extends AuthyGroupX
     public $model_name = '';
     public $isChild;
     public $IdPk;
-    public $queryObj;
     public $in;
     public $TableName;
     public $tableDescription;
@@ -73,6 +72,7 @@ class AuthyGroupXForm extends AuthyGroupX
     public $formTitle;
     public $ccStdFormOptions;
     public $cCMainTableHeader;
+    public $cCmoreColsHeader;
     
     public $canDelete;
 
@@ -115,7 +115,7 @@ class AuthyGroupXForm extends AuthyGroupX
 
         $q = new AuthyGroupXQuery();
         $q = $this->setAclFilter($q);
-        
+        if (method_exists($this, 'beforeListSearch')){ $this->beforeListSearch($q, $search);}
 
         if(is_array( $this->searchMs )){
             # main search form
@@ -165,7 +165,7 @@ class AuthyGroupXForm extends AuthyGroupX
         
         
         
-        $this->pmpoData =  $q;
+        $this->pmpoData = $q;
         
         
         return $this->pmpoData;
@@ -179,6 +179,8 @@ class AuthyGroupXForm extends AuthyGroupX
     public function getListHeader($act)
     {
         $this->in = 'getListHeader';
+        $trSearch = '';
+        $trHeadMod = '';
         
         switch($act) {
             case 'head':
@@ -234,6 +236,8 @@ class AuthyGroupXForm extends AuthyGroupX
      */
     public function getList( $request, $uiTabsId = 'tabsContain', $IdParent = null , $pmpoDataIn = null)
     {
+        $HelpDivJs = '';
+        $HelpDiv = '';
         $this->in = 'getList';
         $this->isChild = '';
         $this->TableName = 'AuthyGroupX';
@@ -245,6 +249,7 @@ class AuthyGroupXForm extends AuthyGroupX
         $hook = [];
         $editEvent = '';
         $return = ['html', 'js', 'onReadyJs'];
+        $cCmoreCols = '';
 
         
 
@@ -262,7 +267,7 @@ class AuthyGroupXForm extends AuthyGroupX
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'AuthyGroupX/');
 
-        
+        if (method_exists($this, 'beforeList')){ $this->beforeList($request, $pmpoDataIn );}
         
         
         
@@ -314,19 +319,20 @@ class AuthyGroupXForm extends AuthyGroupX
                                     if($data->getAuthyGroup()){
                                         $AuthyGroup_Name = $data->getAuthyGroup()->getName();
                                     }
+                if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                     
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteAuthyGroupX' ") . $this->listActionCell, " class='actionrow' ");
 
-                $tr .= tr(
-                td(span(\htmlentities((($altValue['IdAuthyGroup']) ? $altValue['IdAuthyGroup'] : $AuthyGroup_Name) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdAuthyGroup' class=''  j='editAuthyGroupX'") . $cCmoreCols.$actionCell
-                , " 
+                $tr .= $hook['tr_before'].tr(
+                td(span((($altValue['IdAuthyGroup']) ? $altValue['IdAuthyGroup'] : $AuthyGroup_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdAuthyGroup' class=''  j='editAuthyGroupX'") . $hook['td'].$cCmoreCols.$actionCell
+                , " ".$hook['tr']."
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
                         class='".$hook['class']." '
                         id='AuthyGroupXRow".$data->getPrimaryKey()."'")
-                ;
+                .$hook['tr_after'];
                 $i++;
             }
             $tr .= input('hidden', 'rowCountAuthyGroupX', $i);
@@ -338,7 +344,7 @@ class AuthyGroupXForm extends AuthyGroupX
         $pagerRow = $this->getPager($pmpoData, $resultsCount, $search);
         $bottomRow = div($pagerRow,'bottomPagerRow', "class='tablesorter'");
 
-        
+        if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
         
@@ -482,6 +488,12 @@ class AuthyGroupXForm extends AuthyGroupX
     {
         $this->in = "getEditForm";
 
+        $HelpDivJs = '';
+        $HelpDiv = '';
+        $childTable = [];
+        $script_autoc_one = '';
+        $ongletf = '';
+        $mceInclude = '';
         $ip_save = '';
         $ip_save = '';
         $IdParent = 0;
@@ -623,7 +635,7 @@ $this->fields['AuthyGroupX']['IdAuthyGroup']['html'] = stdFieldRow(_("Group"), s
                             .$this->hookListSearchButton
                         ,"", " class='divtd' colspan='2' style='text-align:right;'"),""," class='divtr divbut' ");
         }
-        
+        if (method_exists($this, 'afterFormObj')){ $this->afterFormObj($data, $dataObj);}
         
 
         //Form header

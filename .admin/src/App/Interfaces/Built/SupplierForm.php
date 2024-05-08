@@ -26,7 +26,6 @@ class SupplierForm extends Supplier
     public $model_name = '';
     public $isChild;
     public $IdPk;
-    public $queryObj;
     public $in;
     public $TableName;
     public $tableDescription;
@@ -74,6 +73,7 @@ class SupplierForm extends Supplier
     public $formTitle;
     public $ccStdFormOptions;
     public $cCMainTableHeader;
+    public $cCmoreColsHeader;
     
     public $canDelete;
 
@@ -116,7 +116,7 @@ class SupplierForm extends Supplier
 
         $q = new SupplierQuery();
         $q = $this->setAclFilter($q);
-        
+        if (method_exists($this, 'beforeListSearch')){ $this->beforeListSearch($q, $search);}
 
         if(is_array( $this->searchMs )){
             # main search form
@@ -166,7 +166,7 @@ class SupplierForm extends Supplier
         
         
         
-        $this->pmpoData =  $q;
+        $this->pmpoData = $q;
         
         
         return $this->pmpoData;
@@ -180,6 +180,8 @@ class SupplierForm extends Supplier
     public function getListHeader($act)
     {
         $this->in = 'getListHeader';
+        $trSearch = '';
+        $trHeadMod = '';
         
         switch($act) {
             case 'head':
@@ -247,6 +249,8 @@ class SupplierForm extends Supplier
      */
     public function getList( $request, $uiTabsId = 'tabsContain', $IdParent = null , $pmpoDataIn = null)
     {
+        $HelpDivJs = '';
+        $HelpDiv = '';
         $this->in = 'getList';
         $this->isChild = '';
         $this->TableName = 'Supplier';
@@ -276,6 +280,7 @@ class SupplierForm extends Supplier
         $hook = [];
         $editEvent = '';
         $return = ['html', 'js', 'onReadyJs'];
+        $cCmoreCols = '';
 
         
 
@@ -293,7 +298,7 @@ class SupplierForm extends Supplier
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Supplier/');
 
-        
+        if (method_exists($this, 'beforeList')){ $this->beforeList($request, $pmpoDataIn );}
         
         
         
@@ -345,31 +350,32 @@ class SupplierForm extends Supplier
                                     if($data->getCountry()){
                                         $Country_Name = $data->getCountry()->getName();
                                     }
+                if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                     
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteSupplier' ") . $this->listActionCell, " class='actionrow' ");
 
-                $tr .= tr(
-                td(span(\htmlentities((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editSupplier'") . 
-                td(span(\htmlentities((($altValue['IdCountry']) ? $altValue['IdCountry'] : $Country_Name) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdCountry' class=''  j='editSupplier'") . 
-                td(span(\htmlentities((($altValue['Phone']) ? $altValue['Phone'] : $data->getPhone()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Phone' class=''  j='editSupplier'") . 
-                td(span(\htmlentities((($altValue['PhoneWork']) ? $altValue['PhoneWork'] : $data->getPhoneWork()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='PhoneWork' class=''  j='editSupplier'") . 
-                td(span(\htmlentities((($altValue['Ext']) ? $altValue['Ext'] : $data->getExt()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Ext' class=''  j='editSupplier'") . 
-                td(span(\htmlentities((($altValue['Email']) ? $altValue['Email'] : $data->getEmail()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Email' class=''  j='editSupplier'") . 
-                td(span(\htmlentities((($altValue['Contact']) ? $altValue['Contact'] : $data->getContact()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Contact' class=''  j='editSupplier'") . 
-                td(span(\htmlentities((($altValue['Email2']) ? $altValue['Email2'] : $data->getEmail2()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Email2' class=''  j='editSupplier'") . 
-                td(span(\htmlentities((($altValue['PhoneMobile']) ? $altValue['PhoneMobile'] : $data->getPhoneMobile()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='PhoneMobile' class=''  j='editSupplier'") . 
-                td(span(\htmlentities((($altValue['Address1']) ? $altValue['Address1'] : substr(strip_tags($data->getAddress1()), 0, 100)) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Address1' class=''  j='editSupplier'") . 
-                td(span(\htmlentities((($altValue['Address2']) ? $altValue['Address2'] : substr(strip_tags($data->getAddress2()), 0, 100)) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Address2' class=''  j='editSupplier'") . 
-                td(span(\htmlentities((($altValue['Address3']) ? $altValue['Address3'] : substr(strip_tags($data->getAddress3()), 0, 100)) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Address3' class=''  j='editSupplier'") . 
-                td(span(\htmlentities((($altValue['Zip']) ? $altValue['Zip'] : $data->getZip()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Zip' class=''  j='editSupplier'") . $cCmoreCols.$actionCell
-                , " 
+                $tr .= $hook['tr_before'].tr(
+                td(span((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editSupplier'") . 
+                td(span((($altValue['IdCountry']) ? $altValue['IdCountry'] : $Country_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdCountry' class=''  j='editSupplier'") . 
+                td(span((($altValue['Phone']) ? $altValue['Phone'] : $data->getPhone()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Phone' class=''  j='editSupplier'") . 
+                td(span((($altValue['PhoneWork']) ? $altValue['PhoneWork'] : $data->getPhoneWork()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='PhoneWork' class=''  j='editSupplier'") . 
+                td(span((($altValue['Ext']) ? $altValue['Ext'] : $data->getExt()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Ext' class=''  j='editSupplier'") . 
+                td(span((($altValue['Email']) ? $altValue['Email'] : $data->getEmail()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Email' class=''  j='editSupplier'") . 
+                td(span((($altValue['Contact']) ? $altValue['Contact'] : $data->getContact()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Contact' class=''  j='editSupplier'") . 
+                td(span((($altValue['Email2']) ? $altValue['Email2'] : $data->getEmail2()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Email2' class=''  j='editSupplier'") . 
+                td(span((($altValue['PhoneMobile']) ? $altValue['PhoneMobile'] : $data->getPhoneMobile()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='PhoneMobile' class=''  j='editSupplier'") . 
+                td(span((($altValue['Address1']) ? $altValue['Address1'] : substr(strip_tags($data->getAddress1()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Address1' class=''  j='editSupplier'") . 
+                td(span((($altValue['Address2']) ? $altValue['Address2'] : substr(strip_tags($data->getAddress2()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Address2' class=''  j='editSupplier'") . 
+                td(span((($altValue['Address3']) ? $altValue['Address3'] : substr(strip_tags($data->getAddress3()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Address3' class=''  j='editSupplier'") . 
+                td(span((($altValue['Zip']) ? $altValue['Zip'] : $data->getZip()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Zip' class=''  j='editSupplier'") . $hook['td'].$cCmoreCols.$actionCell
+                , " ".$hook['tr']."
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
                         class='".$hook['class']." '
                         id='SupplierRow".$data->getPrimaryKey()."'")
-                ;
+                .$hook['tr_after'];
                 $i++;
             }
             $tr .= input('hidden', 'rowCountSupplier', $i);
@@ -381,7 +387,7 @@ class SupplierForm extends Supplier
         $pagerRow = $this->getPager($pmpoData, $resultsCount, $search);
         $bottomRow = div($pagerRow,'bottomPagerRow', "class='tablesorter'");
 
-        
+        if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
         
@@ -554,6 +560,12 @@ class SupplierForm extends Supplier
     {
         $this->in = "getEditForm";
 
+        $HelpDivJs = '';
+        $HelpDiv = '';
+        $childTable = [];
+        $script_autoc_one = '';
+        $ongletf = '';
+        $mceInclude = '';
         $ip_save = '';
         $ip_save = '';
         $IdParent = 0;
@@ -716,7 +728,7 @@ $this->fields['Supplier']['Zip']['html'] = stdFieldRow(_("Zip"), input('text', '
                         $ChildOnglet .= li(
                                         htmlLink(	_($value['t'])
                                             ,'javascript:',"p='".$value['p']."' act='list' j=conglet_Supplier ip='".$dataObj->$getLocalKey()."' class='ui-state-default' ")
-                                    ,"  class='".$class_has_child."' j=sm  ");
+                                    ,"  class='' j=sm  ");
                     }
                 }
             }
@@ -752,7 +764,7 @@ $this->fields['Supplier']['Zip']['html'] = stdFieldRow(_("Zip"), input('text', '
                             .$this->hookListSearchButton
                         ,"", " class='divtd' colspan='2' style='text-align:right;'"),""," class='divtr divbut' ");
         }
-        
+        if (method_exists($this, 'afterFormObj')){ $this->afterFormObj($data, $dataObj);}
         
 
         //Form header
@@ -949,6 +961,9 @@ $this->fields['Supplier']['Name']['html']
     public function selectBoxCostLine_IdSupplier(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
         $q = SupplierQuery::create();
 
+    if(method_exists($this, 'beginSelectboxCostLine_IdSupplier') and $array)
+        $ret = $this->beginSelectboxCostLine_IdSupplier($q, $dataObj, $data, $obj);
+    if($ret !== false)
             $q->select(array('Name', 'IdSupplier'));
             $q->orderBy('Name', 'ASC');
         
@@ -957,6 +972,8 @@ $this->fields['Supplier']['Name']['html']
             }else{
                 $pcDataO = $q->find();
             }
+
+                if(function_exists('selectboxDataCostLine_IdSupplier')){ $this->selectboxDataCostLine_IdSupplier($pcDataO, $q); }
 
 
         $arrayOpt = $pcDataO->toArray();
@@ -973,6 +990,9 @@ $this->fields['Supplier']['Name']['html']
     public function selectBoxCostLine_IdProject(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
         $q = ProjectQuery::create();
 
+    if(method_exists($this, 'beginSelectboxCostLine_IdProject') and $array)
+        $ret = $this->beginSelectboxCostLine_IdProject($q, $dataObj, $data, $obj);
+    if($ret !== false)
             $q->select(array('Name', 'IdProject'));
             $q->orderBy('Name', 'ASC');
         
@@ -981,6 +1001,8 @@ $this->fields['Supplier']['Name']['html']
             }else{
                 $pcDataO = $q->find();
             }
+
+                if(function_exists('selectboxDataCostLine_IdProject')){ $this->selectboxDataCostLine_IdProject($pcDataO, $q); }
 
 
         $arrayOpt = $pcDataO->toArray();
@@ -997,6 +1019,9 @@ $this->fields['Supplier']['Name']['html']
     public function selectBoxCostLine_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
         $q = BillingCategoryQuery::create();
 
+    if(method_exists($this, 'beginSelectboxCostLine_IdBillingCategory') and $array)
+        $ret = $this->beginSelectboxCostLine_IdBillingCategory($q, $dataObj, $data, $obj);
+    if($ret !== false)
             $q->select(array('Name', 'IdBillingCategory'));
             $q->orderBy('Name', 'ASC');
         
@@ -1005,6 +1030,8 @@ $this->fields['Supplier']['Name']['html']
             }else{
                 $pcDataO = $q->find();
             }
+
+                if(function_exists('selectboxDataCostLine_IdBillingCategory')){ $this->selectboxDataCostLine_IdBillingCategory($pcDataO, $q); }
 
 
         $arrayOpt = $pcDataO->toArray();
@@ -1054,6 +1081,8 @@ $this->fields['Supplier']['Name']['html']
         $uiTabsId = (empty($request['cui'])) ? 'cntSupplierChild' : $request['cui'];
         $parentContainer = $request['pc'];
         $orderReadyJs = '';
+        $param = [];
+        $total_child = '';
 
         // if Search params
         $this->searchMs = $this->setSearchVar($request['ms'] ?? '', 'Supplier/CostLine');
@@ -1104,7 +1133,6 @@ $this->fields['Supplier']['Name']['html']
         });";
 
         if($_SESSION[_AUTH_VAR]->hasRights('CostLine', 'r')){
-            $parentObjName = (isset($params['pc'])) ? $params['pc'] : 'Supplier';
             $this->CostLine['list_edit'] = "
         $(\"#CostLineTable tr td[j='editCostLine']\").bind('click', function (){
             
@@ -1168,11 +1196,15 @@ $this->fields['Supplier']['Name']['html']
             // group by
            
         
+            //custom hook
+            if (method_exists($this, 'beforeChildSearchCostLine')){ $this->beforeChildSearchCostLine($q);}
         $this->queryObj = $q;
         
         $pmpoData =$q->paginate($search['page'], $maxPerPage);
         $resultsCount = $pmpoData->getNbResults();
         
+            //custom hook
+            if (method_exists($this, 'beforeChildListCostLine')){ $this->beforeChildListCostLine($q, $filterKey, $param);}
          
         #options building
         
@@ -1192,19 +1224,19 @@ $this->fields['Supplier']['Name']['html']
             $actionRowHeader = th('&nbsp;', " r='delrow' class='actionrow' ");
         }
 
-        $header = tr( th(_("Title"), " th='sorted' c='Title' title='" . _('Title')."' ")
-.th(_("Supplier"), " th='sorted' c='Supplier.Name' title='"._('Supplier.Name')."' ")
-.th(_("Invoice no."), " th='sorted' c='InvoiceNo' title='" . _('Invoice no.')."' ")
-.th(_("Project"), " th='sorted' c='Project.Name' title='"._('Project.Name')."' ")
-.th(_("Category"), " th='sorted' c='BillingCategory.Name' title='"._('BillingCategory.Name')."' ")
-.th(_("Date"), " th='sorted' c='SpendDate' title='" . _('Date')."' ")
-.th(_("Recuring"), " th='sorted' c='Recuring' title='" . _('Recuring')."' ")
-.th(_("Renewal date"), " th='sorted' c='RenewalDate' title='" . _('Renewal date')."' ")
-.th(_("Quantity"), " th='sorted' c='Quantity' title='" . _('Quantity')."' ")
-.th(_("Amount"), " th='sorted' c='Amount' title='" . _('Amount')."' ")
-.th(_("Total"), " th='sorted' c='Total' title='" . _('Total')."' ")
-.th(_("Add to bill"), " th='sorted' c='Bill' title='" . _('Add to bill')."' ")
-.th(_("Note"), " th='sorted' c='NoteBillingLigne' title='" . _('Note')."' ")
+        $header = tr( th(_("Title"), " th='sorted' c='Title' title='" . _('Title')."' " . $param['th']['Title']."")
+.th(_("Supplier"), " th='sorted' c='Supplier.Name' title='"._('Supplier.Name')."' " . $param['th']['IdSupplier']."")
+.th(_("Invoice no."), " th='sorted' c='InvoiceNo' title='" . _('Invoice no.')."' " . $param['th']['InvoiceNo']."")
+.th(_("Project"), " th='sorted' c='Project.Name' title='"._('Project.Name')."' " . $param['th']['IdProject']."")
+.th(_("Category"), " th='sorted' c='BillingCategory.Name' title='"._('BillingCategory.Name')."' " . $param['th']['IdBillingCategory']."")
+.th(_("Date"), " th='sorted' c='SpendDate' title='" . _('Date')."' " . $param['th']['SpendDate']."")
+.th(_("Recuring"), " th='sorted' c='Recuring' title='" . _('Recuring')."' " . $param['th']['Recuring']."")
+.th(_("Renewal date"), " th='sorted' c='RenewalDate' title='" . _('Renewal date')."' " . $param['th']['RenewalDate']."")
+.th(_("Quantity"), " th='sorted' c='Quantity' title='" . _('Quantity')."' " . $param['th']['Quantity']."")
+.th(_("Amount"), " th='sorted' c='Amount' title='" . _('Amount')."' " . $param['th']['Amount']."")
+.th(_("Total"), " th='sorted' c='Total' title='" . _('Total')."' " . $param['th']['Total']."")
+.th(_("Add to bill"), " th='sorted' c='Bill' title='" . _('Add to bill')."' " . $param['th']['Bill']."")
+.th(_("Note"), " th='sorted' c='NoteBillingLigne' title='" . _('Note')."' " . $param['th']['NoteBillingLigne']."")
 .'' . $actionRowHeader, " ln='CostLine' class=''");
 
         
@@ -1215,12 +1247,14 @@ $this->fields['Supplier']['Name']['html']
             
         }else{
             //$pcData = $pmpoData->getResults();
-            
             foreach($pmpoData as $data){
                 $this->listActionCellCostLine = '';
-                
-                
                 $actionRow = '';
+                
+            // custom hooks
+            if (method_exists($this, 'startChildListRowCostLine')){ $this->startChildListRowCostLine($altValue, $data, $i, $param, $this, $hookListColumnsCostLine, $actionRow);}
+            
+                
                 
                 if($_SESSION[_AUTH_VAR]->hasRights('CostLine', 'd')){
                     $actionRow = htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteCostLine' i='".json_encode($data->getPrimaryKey())."'");
@@ -1251,27 +1285,27 @@ $this->fields['Supplier']['Name']['html']
                 
                 
                 
-                $tr .= 
+                $tr .= $param['tr_before'].
                         tr(
                             (isset($hookListColumnsCostLineFirst)?$hookListColumnsCostLineFirst:'').
                             
-                td(span(\htmlentities((($altValue['Title']) ? $altValue['Title'] : $data->getTitle()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Title' class=''  j='editCostLine'") . 
-                td(span(\htmlentities((($altValue['IdSupplier']) ? $altValue['IdSupplier'] : $Supplier_Name) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdSupplier' class=''  j='editCostLine'") . 
-                td(span(\htmlentities((($altValue['InvoiceNo']) ? $altValue['InvoiceNo'] : $data->getInvoiceNo()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='InvoiceNo' class=''  j='editCostLine'") . 
-                td(span(\htmlentities((($altValue['IdProject']) ? $altValue['IdProject'] : $Project_Name) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdProject' class=''  j='editCostLine'") . 
-                td(span(\htmlentities((($altValue['IdBillingCategory']) ? $altValue['IdBillingCategory'] : $BillingCategory_Name) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBillingCategory' class=''  j='editCostLine'") . 
-                td(span(\htmlentities((($altValue['SpendDate']) ? $altValue['SpendDate'] : $data->getSpendDate()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='SpendDate' class=''  j='editCostLine'") . 
-                td(span(\htmlentities((($altValue['Recuring']) ? $altValue['Recuring'] : isntPo($data->getRecuring())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Recuring' class='center'  j='editCostLine'") . 
-                td(span(\htmlentities((($altValue['RenewalDate']) ? $altValue['RenewalDate'] : $data->getRenewalDate()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='RenewalDate' class=''  j='editCostLine'") . 
-                td(span(\htmlentities((($altValue['Quantity']) ? $altValue['Quantity'] : str_replace(',', '.', $data->getQuantity())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Quantity' class='right'  j='editCostLine'") . 
-                td(span(\htmlentities((($altValue['Amount']) ? $altValue['Amount'] : str_replace(',', '.', $data->getAmount())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Amount' class='right'  j='editCostLine'") . 
-                td(span(\htmlentities((($altValue['Total']) ? $altValue['Total'] : str_replace(',', '.', $data->getTotal())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Total' class='right'  j='editCostLine'") . 
-                td(span(\htmlentities((($altValue['Bill']) ? $altValue['Bill'] : isntPo($data->getBill())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Bill' class='center'  j='editCostLine'") . 
-                td(span(\htmlentities((($altValue['NoteBillingLigne']) ? $altValue['NoteBillingLigne'] : substr(strip_tags($data->getNoteBillingLigne()), 0, 100)) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='NoteBillingLigne' class=''  j='editCostLine'") . 
+                td(span((($altValue['Title']) ? $altValue['Title'] : $data->getTitle()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Title' class='' " . $param['Title']." j='editCostLine'") . 
+                td(span((($altValue['IdSupplier']) ? $altValue['IdSupplier'] : $Supplier_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdSupplier' class='' " . $param['IdSupplier']." j='editCostLine'") . 
+                td(span((($altValue['InvoiceNo']) ? $altValue['InvoiceNo'] : $data->getInvoiceNo()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='InvoiceNo' class='' " . $param['InvoiceNo']." j='editCostLine'") . 
+                td(span((($altValue['IdProject']) ? $altValue['IdProject'] : $Project_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdProject' class='' " . $param['IdProject']." j='editCostLine'") . 
+                td(span((($altValue['IdBillingCategory']) ? $altValue['IdBillingCategory'] : $BillingCategory_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBillingCategory' class='' " . $param['IdBillingCategory']." j='editCostLine'") . 
+                td(span((($altValue['SpendDate']) ? $altValue['SpendDate'] : $data->getSpendDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='SpendDate' class='' " . $param['SpendDate']." j='editCostLine'") . 
+                td(span((($altValue['Recuring']) ? $altValue['Recuring'] : isntPo($data->getRecuring())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Recuring' class='center' " . $param['Recuring']." j='editCostLine'") . 
+                td(span((($altValue['RenewalDate']) ? $altValue['RenewalDate'] : $data->getRenewalDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='RenewalDate' class='' " . $param['RenewalDate']." j='editCostLine'") . 
+                td(span((($altValue['Quantity']) ? $altValue['Quantity'] : str_replace(',', '.', $data->getQuantity())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Quantity' class='right' " . $param['Quantity']." j='editCostLine'") . 
+                td(span((($altValue['Amount']) ? $altValue['Amount'] : str_replace(',', '.', $data->getAmount())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Amount' class='right' " . $param['Amount']." j='editCostLine'") . 
+                td(span((($altValue['Total']) ? $altValue['Total'] : str_replace(',', '.', $data->getTotal())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Total' class='right' " . $param['Total']." j='editCostLine'") . 
+                td(span((($altValue['Bill']) ? $altValue['Bill'] : isntPo($data->getBill())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Bill' class='center' " . $param['Bill']." j='editCostLine'") . 
+                td(span((($altValue['NoteBillingLigne']) ? $altValue['NoteBillingLigne'] : substr(strip_tags($data->getNoteBillingLigne()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='NoteBillingLigne' class='' " . $param['NoteBillingLigne']." j='editCostLine'") . 
                             (isset($hookListColumnsCostLine)?$hookListColumnsCostLine:'').
                             $actionRow
-                        ,"id='CostLineRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='CostLine'  ")
-                        ;
+                        ,"id='CostLineRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='CostLine' ".$param['tr']." ")
+                        .$param['tr_after'];
                 
                 $i++;
             }
@@ -1283,7 +1317,7 @@ $this->fields['Supplier']['Name']['html']
                             div(
                                 div(
                                     div($total_child,'','class="nolink"')
-                            ,'trCostLine'," style='$hide_CostLine' ln='CostLine' class=''").$this->cCMainTableHeader, '', "class='listHeaderItem' ");
+                            ,'trCostLine'," ln='CostLine' class=''").$this->cCMainTableHeader, '', "class='listHeaderItem' ");
     if(($_SESSION[_AUTH_VAR]->hasRights('CostLine', 'a')) ){
         $add_button_child = htmlLink(span(_("Add")), "Javascript:","title='Add "._('Expense')."' id='addCostLine' class='button-link-blue add-button'");
     }

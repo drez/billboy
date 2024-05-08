@@ -41,30 +41,14 @@ class TemplateFormWrapper extends TemplateForm
         ";
     }
 
-    public function beforeTemplateFileListTr(&$altValue, $data, $i, $param, $Template, $s, $hookListColumnsTemplateFile, $actionRow)
+    public function startChildListRowTemplateFile(&$altValue, $data, $i, $param, $Template, $hookListColumnsTemplateFile, $actionRow)
     {
-        $altValue['File'] = div(href(img(_SITE_URL . 'public/css/img/remix/input-cursor-move.svg'), "Javascript:;", "title='Insert image at cursor' j='insertToCursor' f='" . _SITE_URL . $data->getFile() . "'"), '', "style='position: absolute;top: -1px;'")
+        $altValue['File'] = div(href(img(_SITE_URL . 'public/img/remix/input-cursor-move.svg'), "Javascript:;", "title='Insert image at cursor' j='insertToCursor' f='" . _SITE_URL . $data->getFile() . "'"), '', "style='position: absolute;top: -1px;'")
             . div($data->getFile(), '', "style='margin-left:35px;'");
     }
-
-    public function afterList($request, $search, $pmpoData)
+    public function beforeChildListTemplateFile($q, $filterKey, $param)
     {
-    }
-
-    public function beforeListTr($altValue, $data, $i, $param, $hookListColumns)
-    {
-    }
-
-    public function beforeListSearch($q, $search)
-    {
-    }
-    public function afterListSearch($q, $search)
-    {
-    }
-
-    public function beforeChildTemplateFileList($q, $filterKey, $param)
-    {
-        $this->CcToTemplateFileListJsFirst .= "
+        $this->hookListReadyJsFirstTemplateFile .= "
             $('[j=insertToCursor]').click(function (e){
                 var fileUrl = $(this).attr('f');
                 var currentInstance = null;
@@ -83,4 +67,15 @@ class TemplateFormWrapper extends TemplateForm
             });
         ";
     }
+    public function afterList(&$request, &$pmpoData){}
+
+    public function beforeListTr(&$altValue, $data, $i, $param, &$hookListColumns){}
+
+    public function beforeListSearch(&$q, &$search){}
+    public function afterListSearch(&$q, &$search){}
+
+    public function beforeChildSearchTemplateFile(&$q){}
+    public function beginSelectbox(&$pcDataO, &$q){}
+
+    
 }

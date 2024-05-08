@@ -37,7 +37,5 @@ class CostLineFormWrapper extends CostLineForm
         }
     }
 
-    public function beforeSave(CostLineService $Class, array &$data, bool $isNew, string|null &$messages, array|false &$extValidationErr){
-        $data['Total'] = bcmul($data['Quantity'], $data['Amout']);
-    }
+   
 }

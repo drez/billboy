@@ -26,7 +26,6 @@ class ApiRbacForm extends ApiRbac
     public $model_name = '';
     public $isChild;
     public $IdPk;
-    public $queryObj;
     public $in;
     public $TableName;
     public $tableDescription;
@@ -74,6 +73,7 @@ class ApiRbacForm extends ApiRbac
     public $formTitle;
     public $ccStdFormOptions;
     public $cCMainTableHeader;
+    public $cCmoreColsHeader;
     
     public $canDelete;
 
@@ -116,7 +116,7 @@ class ApiRbacForm extends ApiRbac
 
         $q = new ApiRbacQuery();
         $q = $this->setAclFilter($q);
-        
+        if (method_exists($this, 'beforeListSearch')){ $this->beforeListSearch($q, $search);}
 
         if(is_array( $this->searchMs )){
             # main search form
@@ -184,7 +184,7 @@ class ApiRbacForm extends ApiRbac
         
         
         
-        $this->pmpoData =  $q;
+        $this->pmpoData = $q;
         
         
         return $this->pmpoData;
@@ -198,6 +198,8 @@ class ApiRbacForm extends ApiRbac
     public function getListHeader($act)
     {
         $this->in = 'getListHeader';
+        $trSearch = '';
+        $trHeadMod = '';
         
         switch($act) {
             case 'head':
@@ -225,7 +227,7 @@ class ApiRbacForm extends ApiRbac
 
             case 'search':
                 
-                unset($data);
+                $data = [];
             
 
             $trSearch = button(span(_("Show search")),'class="trigger-search button-link-blue"')
@@ -272,6 +274,8 @@ class ApiRbacForm extends ApiRbac
      */
     public function getList( $request, $uiTabsId = 'tabsContain', $IdParent = null , $pmpoDataIn = null)
     {
+        $HelpDivJs = '';
+        $HelpDiv = '';
         $this->in = 'getList';
         $this->isChild = '';
         $this->TableName = 'ApiRbac';
@@ -296,6 +300,7 @@ class ApiRbacForm extends ApiRbac
         $hook = [];
         $editEvent = '';
         $return = ['html', 'js', 'onReadyJs'];
+        $cCmoreCols = '';
 
         
 
@@ -313,7 +318,7 @@ class ApiRbacForm extends ApiRbac
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'ApiRbac/');
 
-        
+        if (method_exists($this, 'beforeList')){ $this->beforeList($request, $pmpoDataIn );}
         
         $default_order[]['DateCreation']='DESC';
         if(empty($this->searchOrder)){
@@ -364,28 +369,29 @@ class ApiRbacForm extends ApiRbac
                 $this->listActionCell = '';
                 
                 
-                
+
+                if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                     
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteApiRbac' ") . $this->listActionCell, " class='actionrow' ");
 
-                $tr .= tr(
-                td(span(\htmlentities((($altValue['DateCreation']) ? $altValue['DateCreation'] : $data->getDateCreation()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DateCreation' class=''  j='editApiRbac'") . 
-                td(span(\htmlentities((($altValue['Description']) ? $altValue['Description'] : substr(strip_tags($data->getDescription()), 0, 100)) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Description' class=''  j='editApiRbac'") . 
-                td(span(\htmlentities((($altValue['Model']) ? $altValue['Model'] : $data->getModel()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Model' class=''  j='editApiRbac'") . 
-                td(span(\htmlentities((($altValue['Action']) ? $altValue['Action'] : $data->getAction()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Action' class=''  j='editApiRbac'") . 
-                td(span(\htmlentities((($altValue['Body']) ? $altValue['Body'] : substr(strip_tags($data->getBody()), 0, 100)) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Body' class=''  j='editApiRbac'") . 
-                td(span(\htmlentities((($altValue['Method']) ? $altValue['Method'] : isntPo($data->getMethod())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Method' class='center'  j='editApiRbac'") . 
-                td(span(\htmlentities((($altValue['Scope']) ? $altValue['Scope'] : isntPo($data->getScope())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Scope' class='center'  j='editApiRbac'") . 
-                td(span(\htmlentities((($altValue['Rule']) ? $altValue['Rule'] : isntPo($data->getRule())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Rule' class='center'  j='editApiRbac'") . 
-                td(span(\htmlentities((($altValue['Count']) ? $altValue['Count'] : $data->getCount()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Count' class=''  j='editApiRbac'") . $cCmoreCols.$actionCell
-                , " 
+                $tr .= $hook['tr_before'].tr(
+                td(span((($altValue['DateCreation']) ? $altValue['DateCreation'] : $data->getDateCreation()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DateCreation' class=''  j='editApiRbac'") . 
+                td(span((($altValue['Description']) ? $altValue['Description'] : substr(strip_tags($data->getDescription()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Description' class=''  j='editApiRbac'") . 
+                td(span((($altValue['Model']) ? $altValue['Model'] : $data->getModel()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Model' class=''  j='editApiRbac'") . 
+                td(span((($altValue['Action']) ? $altValue['Action'] : $data->getAction()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Action' class=''  j='editApiRbac'") . 
+                td(span((($altValue['Body']) ? $altValue['Body'] : substr(strip_tags($data->getBody()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Body' class=''  j='editApiRbac'") . 
+                td(span((($altValue['Method']) ? $altValue['Method'] : isntPo($data->getMethod())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Method' class='center'  j='editApiRbac'") . 
+                td(span((($altValue['Scope']) ? $altValue['Scope'] : isntPo($data->getScope())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Scope' class='center'  j='editApiRbac'") . 
+                td(span((($altValue['Rule']) ? $altValue['Rule'] : isntPo($data->getRule())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Rule' class='center'  j='editApiRbac'") . 
+                td(span((($altValue['Count']) ? $altValue['Count'] : $data->getCount()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Count' class=''  j='editApiRbac'") . $hook['td'].$cCmoreCols.$actionCell
+                , " ".$hook['tr']."
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
                         class='".$hook['class']." '
                         id='ApiRbacRow".$data->getPrimaryKey()."'")
-                ;
+                .$hook['tr_after'];
                 $i++;
             }
             $tr .= input('hidden', 'rowCountApiRbac', $i);
@@ -397,7 +403,7 @@ class ApiRbacForm extends ApiRbac
         $pagerRow = $this->getPager($pmpoData, $resultsCount, $search);
         $bottomRow = div($pagerRow,'bottomPagerRow', "class='tablesorter'");
 
-        
+        if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
         
@@ -624,6 +630,12 @@ class ApiRbacForm extends ApiRbac
     {
         $this->in = "getEditForm";
 
+        $HelpDivJs = '';
+        $HelpDiv = '';
+        $childTable = [];
+        $script_autoc_one = '';
+        $ongletf = '';
+        $mceInclude = '';
         $ip_save = '';
         $ip_save = '';
         $IdParent = 0;
@@ -776,7 +788,7 @@ $this->fields['ApiRbac']['Count']['html'] = stdFieldRow(_("Used count"), input('
                         $ChildOnglet .= li(
                                         htmlLink(	_($value['t'])
                                             ,'javascript:',"p='".$value['p']."' act='list' j=conglet_ApiRbac ip='".$dataObj->$getLocalKey()."' class='ui-state-default' ")
-                                    ,"  class='".$class_has_child."' j=sm  ");
+                                    ,"  class='' j=sm  ");
                     }
                 }
             }
@@ -812,7 +824,7 @@ $this->fields['ApiRbac']['Count']['html'] = stdFieldRow(_("Used count"), input('
                             .$this->hookListSearchButton
                         ,"", " class='divtd' colspan='2' style='text-align:right;'"),""," class='divtr divbut' ");
         }
-        
+        if (method_exists($this, 'afterFormObj')){ $this->afterFormObj($data, $dataObj);}
         
 
         //Form header
@@ -973,6 +985,9 @@ $this->fields['ApiRbac']['DateCreation']['html']
     public function selectBoxApiLog_IdApiRbac(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
         $q = ApiRbacQuery::create();
 
+    if(method_exists($this, 'beginSelectboxApiLog_IdApiRbac') and $array)
+        $ret = $this->beginSelectboxApiLog_IdApiRbac($q, $dataObj, $data, $obj);
+    if($ret !== false)
             $q->addAsColumn('selDisplay', 'CONCAT_WS ( " ", '.ApiRbacPeer::MODEL.' ,'.ApiRbacPeer::ACTION.' ,'.ApiRbacPeer::QUERY.' , "" )');
             $q->select(array('selDisplay', 'IdApiRbac'));
             $q->orderBy('selDisplay', 'ASC');
@@ -982,6 +997,8 @@ $this->fields['ApiRbac']['DateCreation']['html']
             }else{
                 $pcDataO = $q->find();
             }
+
+                if(function_exists('selectboxDataApiLog_IdApiRbac')){ $this->selectboxDataApiLog_IdApiRbac($pcDataO, $q); }
 
 
         $arrayOpt = $pcDataO->toArray();
@@ -1014,6 +1031,8 @@ $this->fields['ApiRbac']['DateCreation']['html']
         $uiTabsId = (empty($request['cui'])) ? 'cntApiRbacChild' : $request['cui'];
         $parentContainer = $request['pc'];
         $orderReadyJs = '';
+        $param = [];
+        $total_child = '';
 
         // if Search params
         $this->searchMs = $this->setSearchVar($request['ms'] ?? '', 'ApiRbac/ApiLog');
@@ -1064,7 +1083,6 @@ $this->fields['ApiRbac']['DateCreation']['html']
         });";
 
         if($_SESSION[_AUTH_VAR]->hasRights('ApiLog', 'r')){
-            $parentObjName = (isset($params['pc'])) ? $params['pc'] : 'ApiRbac';
             $this->ApiLog['list_edit'] = "
         $(\"#ApiLogTable tr td[j='editApiLog']\").bind('click', function (){
             
@@ -1124,11 +1142,15 @@ $this->fields['ApiRbac']['DateCreation']['html']
             // group by
            
         
+            //custom hook
+            if (method_exists($this, 'beforeChildSearchApiLog')){ $this->beforeChildSearchApiLog($q);}
         $this->queryObj = $q;
         
         $pmpoData =$q->paginate($search['page'], $maxPerPage);
         $resultsCount = $pmpoData->getNbResults();
         
+            //custom hook
+            if (method_exists($this, 'beforeChildListApiLog')){ $this->beforeChildListApiLog($q, $filterKey, $param);}
          
         #options building
         
@@ -1146,8 +1168,8 @@ $this->fields['ApiRbac']['DateCreation']['html']
             $actionRowHeader = th('&nbsp;', " r='delrow' class='actionrow' ");
         }
 
-        $header = tr( th(_("API ACL model"), " th='sorted' c='ApiRbac.Model' title='"._('ApiRbac.Model')."' ")
-.th(_('API ACL action'), "t='mc' th='sorted' c='ApiRbac.Action'").th(_('API ACL query'), "t='mc' th='sorted' c='ApiRbac.Query'").th(_("Time"), " th='sorted' c='Time' title='" . _('Time')."' ")
+        $header = tr( th(_("API ACL model"), " th='sorted' c='ApiRbac.Model' title='"._('ApiRbac.Model')."' " . $param['th']['IdApiRbac']."")
+.th(_('API ACL action'), "t='mc' th='sorted' c='ApiRbac.Action'").th(_('API ACL query'), "t='mc' th='sorted' c='ApiRbac.Query'").th(_("Time"), " th='sorted' c='Time' title='" . _('Time')."' " . $param['th']['Time']."")
 .'' . $actionRowHeader, " ln='ApiLog' class=''");
 
         
@@ -1158,12 +1180,14 @@ $this->fields['ApiRbac']['DateCreation']['html']
             
         }else{
             //$pcData = $pmpoData->getResults();
-            
             foreach($pmpoData as $data){
                 $this->listActionCellApiLog = '';
-                
-                
                 $actionRow = '';
+                
+            // custom hooks
+            if (method_exists($this, 'startChildListRowApiLog')){ $this->startChildListRowApiLog($altValue, $data, $i, $param, $this, $hookListColumnsApiLog, $actionRow);}
+            
+                
                 
                 if($_SESSION[_AUTH_VAR]->hasRights('ApiLog', 'd')){
                     $actionRow = htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteApiLog' i='".json_encode($data->getPrimaryKey())."'");
@@ -1194,18 +1218,18 @@ $this->fields['ApiRbac']['DateCreation']['html']
                 
                 
                 
-                $tr .= 
+                $tr .= $param['tr_before'].
                         tr(
                             (isset($hookListColumnsApiLogFirst)?$hookListColumnsApiLogFirst:'').
                             
-                td(span(\htmlentities((($altValue['IdApiRbac']) ? $altValue['IdApiRbac'] : $altValue['ApiRbac_Model']) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdApiRbac' class=''  j='editApiLog'") . td(span($altValue['ApiRbac_Action'].""), " c='ApiRbac__Action' j='editApiLog' i='".json_encode($data->getPrimaryKey())."'").
+                td(span((($altValue['IdApiRbac']) ? $altValue['IdApiRbac'] : $altValue['ApiRbac_Model']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdApiRbac' class='' " . $param['IdApiRbac']." j='editApiLog'") . td(span($altValue['ApiRbac_Action'].""), " c='ApiRbac__Action' j='editApiLog' i='".json_encode($data->getPrimaryKey())."'").
                             td(span($altValue['ApiRbac_Query'].""), " c='ApiRbac__Query' j='editApiLog' i='".json_encode($data->getPrimaryKey())."'").
                             
-                td(span(\htmlentities((($altValue['Time']) ? $altValue['Time'] : $data->getTime()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Time' class=''  j='editApiLog'") . 
+                td(span((($altValue['Time']) ? $altValue['Time'] : $data->getTime()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Time' class='' " . $param['Time']." j='editApiLog'") . 
                             (isset($hookListColumnsApiLog)?$hookListColumnsApiLog:'').
                             $actionRow
-                        ,"id='ApiLogRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='ApiLog'  ")
-                        ;
+                        ,"id='ApiLogRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='ApiLog' ".$param['tr']." ")
+                        .$param['tr_after'];
                 
                 $i++;
             }
@@ -1217,7 +1241,7 @@ $this->fields['ApiRbac']['DateCreation']['html']
                             div(
                                 div(
                                     div($total_child,'','class="nolink"')
-                            ,'trApiLog'," style='$hide_ApiLog' ln='ApiLog' class=''").$this->cCMainTableHeader, '', "class='listHeaderItem' ");
+                            ,'trApiLog'," ln='ApiLog' class=''").$this->cCMainTableHeader, '', "class='listHeaderItem' ");
     if(($_SESSION[_AUTH_VAR]->hasRights('ApiLog', 'a')) ){
         $add_button_child = htmlLink(span(_("Add")), "Javascript:","title='Add "._('API log')."' id='addApiLog' class='button-link-blue add-button'");
     }

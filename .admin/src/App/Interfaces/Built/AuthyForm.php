@@ -26,7 +26,6 @@ class AuthyForm extends Authy
     public $model_name = '';
     public $isChild;
     public $IdPk;
-    public $queryObj;
     public $in;
     public $TableName;
     public $tableDescription;
@@ -74,6 +73,7 @@ class AuthyForm extends Authy
     public $formTitle;
     public $ccStdFormOptions;
     public $cCMainTableHeader;
+    public $cCmoreColsHeader;
     
     public $canDelete;
 
@@ -212,7 +212,7 @@ class AuthyForm extends Authy
 
         $q = new AuthyQuery();
         $q = $this->setAclFilter($q);
-        
+        if (method_exists($this, 'beforeListSearch')){ $this->beforeListSearch($q, $search);}
 
         if(is_array( $this->searchMs )){
             # main search form
@@ -276,7 +276,7 @@ class AuthyForm extends Authy
         
         
         
-        $this->pmpoData =  $q;
+        $this->pmpoData = $q;
         
         
         return $this->pmpoData;
@@ -290,6 +290,8 @@ class AuthyForm extends Authy
     public function getListHeader($act)
     {
         $this->in = 'getListHeader';
+        $trSearch = '';
+        $trHeadMod = '';
         
         switch($act) {
             case 'head':
@@ -315,7 +317,7 @@ class AuthyForm extends Authy
             case 'search':
                 
         $this->arrayIdAuthyGroupOptions = $this->selectBoxAuthy_IdAuthyGroup($this, $emptyVar, $data);
-                unset($data);
+                $data = [];
             
 
             $trSearch = button(span(_("Show search")),'class="trigger-search button-link-blue"')
@@ -362,6 +364,8 @@ class AuthyForm extends Authy
      */
     public function getList( $request, $uiTabsId = 'tabsContain', $IdParent = null , $pmpoDataIn = null)
     {
+        $HelpDivJs = '';
+        $HelpDiv = '';
         $this->in = 'getList';
         $this->isChild = '';
         $this->TableName = 'Authy';
@@ -391,6 +395,7 @@ class AuthyForm extends Authy
         $hook = [];
         $editEvent = '';
         $return = ['html', 'js', 'onReadyJs'];
+        $cCmoreCols = '';
 
         
 
@@ -408,7 +413,7 @@ class AuthyForm extends Authy
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Authy/');
 
-        
+        if (method_exists($this, 'beforeList')){ $this->beforeList($request, $pmpoDataIn );}
         
         
         
@@ -460,24 +465,25 @@ class AuthyForm extends Authy
                                     if($data->getAuthyGroupRelatedByIdAuthyGroup()){
                                         $AuthyGroupRelatedByIdAuthyGroup_Name = $data->getAuthyGroupRelatedByIdAuthyGroup()->getName();
                                     }
+                if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                     
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteAuthy' ") . $this->listActionCell, " class='actionrow' ");
 
-                $tr .= tr(
-                td(span(\htmlentities((($altValue['Username']) ? $altValue['Username'] : $data->getUsername()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Username' class=''  j='editAuthy'") . 
-                td(span(\htmlentities((($altValue['Fullname']) ? $altValue['Fullname'] : $data->getFullname()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Fullname' class=''  j='editAuthy'") . 
-                td(span(\htmlentities((($altValue['Email']) ? $altValue['Email'] : $data->getEmail()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Email' class=''  j='editAuthy'") . 
-                td(span(\htmlentities((($altValue['Expire']) ? $altValue['Expire'] : $data->getExpire()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Expire' class=''  j='editAuthy'") . 
-                td(span(\htmlentities((($altValue['Deactivate']) ? $altValue['Deactivate'] : isntPo($data->getDeactivate())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Deactivate' class='center'  j='editAuthy'") . 
-                td(span(\htmlentities((($altValue['IdAuthyGroup']) ? $altValue['IdAuthyGroup'] : $AuthyGroupRelatedByIdAuthyGroup_Name) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdAuthyGroup' class=''  j='editAuthy'") . $cCmoreCols.$actionCell
-                , " 
+                $tr .= $hook['tr_before'].tr(
+                td(span((($altValue['Username']) ? $altValue['Username'] : $data->getUsername()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Username' class=''  j='editAuthy'") . 
+                td(span((($altValue['Fullname']) ? $altValue['Fullname'] : $data->getFullname()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Fullname' class=''  j='editAuthy'") . 
+                td(span((($altValue['Email']) ? $altValue['Email'] : $data->getEmail()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Email' class=''  j='editAuthy'") . 
+                td(span((($altValue['Expire']) ? $altValue['Expire'] : $data->getExpire()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Expire' class=''  j='editAuthy'") . 
+                td(span((($altValue['Deactivate']) ? $altValue['Deactivate'] : isntPo($data->getDeactivate())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Deactivate' class='center'  j='editAuthy'") . 
+                td(span((($altValue['IdAuthyGroup']) ? $altValue['IdAuthyGroup'] : $AuthyGroupRelatedByIdAuthyGroup_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdAuthyGroup' class=''  j='editAuthy'") . $hook['td'].$cCmoreCols.$actionCell
+                , " ".$hook['tr']."
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
                         class='".$hook['class']." '
                         id='AuthyRow".$data->getPrimaryKey()."'")
-                ;
+                .$hook['tr_after'];
                 $i++;
             }
             $tr .= input('hidden', 'rowCountAuthy', $i);
@@ -489,7 +495,7 @@ class AuthyForm extends Authy
         $pagerRow = $this->getPager($pmpoData, $resultsCount, $search);
         $bottomRow = div($pagerRow,'bottomPagerRow', "class='tablesorter'");
 
-        
+        if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
         
@@ -744,6 +750,12 @@ class AuthyForm extends Authy
     {
         $this->in = "getEditForm";
 
+        $HelpDivJs = '';
+        $HelpDiv = '';
+        $childTable = [];
+        $script_autoc_one = '';
+        $ongletf = '';
+        $mceInclude = '';
         $ip_save = '';
         $ip_save = '';
         $IdParent = 0;
@@ -951,7 +963,7 @@ $this->fields['Authy']['RightsOwner']['html'] = stdFieldRow(_("Rights owner"), $
                         $ChildOnglet .= li(
                                         htmlLink(	_($value['t'])
                                             ,'javascript:',"p='".$value['p']."' act='list' j=conglet_Authy ip='".$dataObj->$getLocalKey()."' class='ui-state-default' ")
-                                    ,"  class='".$class_has_child."' j=sm  ");
+                                    ,"  class='' j=sm  ");
                     }
                 }
             }
@@ -992,7 +1004,7 @@ $this->fields['Authy']['RightsOwner']['html'] = stdFieldRow(_("Rights owner"), $
                             .$this->hookListSearchButton
                         ,"", " class='divtd' colspan='2' style='text-align:right;'"),""," class='divtr divbut' ");
         }
-        
+        if (method_exists($this, 'afterFormObj')){ $this->afterFormObj($data, $dataObj);}
         
 
         //Form header
@@ -1209,6 +1221,9 @@ $('.cntOnglet').parent().tabs();
     public function selectBoxAuthyGroupX_IdAuthyGroup(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
         $q = AuthyGroupQuery::create();
 
+    if(method_exists($this, 'beginSelectboxAuthyGroupX_IdAuthyGroup') and $array)
+        $ret = $this->beginSelectboxAuthyGroupX_IdAuthyGroup($q, $dataObj, $data, $obj);
+    if($ret !== false)
             $q->select(array('Name', 'IdAuthyGroup'));
             $q->orderBy('Name', 'ASC');
         
@@ -1217,6 +1232,8 @@ $('.cntOnglet').parent().tabs();
             }else{
                 $pcDataO = $q->find();
             }
+
+                if(function_exists('selectboxDataAuthyGroupX_IdAuthyGroup')){ $this->selectboxDataAuthyGroupX_IdAuthyGroup($pcDataO, $q); }
 
 
         $arrayOpt = $pcDataO->toArray();
@@ -1247,6 +1264,8 @@ $('.cntOnglet').parent().tabs();
         $uiTabsId = (empty($request['cui'])) ? 'cntAuthyChild' : $request['cui'];
         $parentContainer = $request['pc'];
         $orderReadyJs = '';
+        $param = [];
+        $total_child = '';
 
         // if Search params
         $this->searchMs = $this->setSearchVar($request['ms'] ?? '', 'Authy/AuthyGroupX');
@@ -1287,7 +1306,6 @@ $('.cntOnglet').parent().tabs();
         });";
 
         if($_SESSION[_AUTH_VAR]->hasRights('AuthyGroupX', 'r')){
-            $parentObjName = (isset($params['pc'])) ? $params['pc'] : 'Authy';
             $this->AuthyGroupX['list_edit'] = "
         $(\"#AuthyGroupXTable tr td[j='editAuthyGroupX']\").bind('click', function (){
             
@@ -1352,11 +1370,12 @@ $('.cntOnglet').parent().tabs();
             }
         }
         
+            //custom hook
+            if (method_exists($this, 'beforeChildSearchAuthyGroupX')){ $this->beforeChildSearchAuthyGroupX($q);}
         $this->queryObj = $q;
         
         $pmpoData = $q->paginate( $search['page'], $maxPerPage );
         $resultsCount = $pmpoData->getNbResults();
-        
         
         #options building
         
@@ -1374,7 +1393,7 @@ $('.cntOnglet').parent().tabs();
             $actionRowHeader = th('&nbsp;', " r='delrow' class='actionrow' ");
         }
 
-        $header = tr( th(_("Group"), " th='sorted' c='AuthyGroup.Name' title='"._('AuthyGroup.Name')."' ")
+        $header = tr( th(_("Group"), " th='sorted' c='AuthyGroup.Name' title='"._('AuthyGroup.Name')."' " . $param['th']['IdAuthyGroup']."")
 .'' . $actionRowHeader, " ln='AuthyGroupX' class=''");
 
         
@@ -1385,12 +1404,14 @@ $('.cntOnglet').parent().tabs();
             
         }else{
             //$pcData = $pmpoData->getResults();
-            
             foreach($pmpoData as $data){
                 $this->listActionCellAuthyGroupX = '';
-                
-                
                 $actionRow = '';
+                
+            // custom hooks
+            if (method_exists($this, 'startChildListRowAuthyGroupX')){ $this->startChildListRowAuthyGroupX($altValue, $data, $i, $param, $this, $hookListColumnsAuthyGroupX, $actionRow);}
+            
+                
                 
             $checkboxPk = array(intval($IdAuthy), ($data->getAuthyGroup()) ? $data->getAuthyGroup()->getPrimaryKey():0 );
             
@@ -1423,15 +1444,15 @@ $('.cntOnglet').parent().tabs();
                 
                 
                 
-                $tr .= 
+                $tr .= $param['tr_before'].
                         tr(
                             (isset($hookListColumnsAuthyGroupXFirst)?$hookListColumnsAuthyGroupXFirst:'').
                             
-                td(span(\htmlentities((($altValue['IdAuthyGroup']) ? $altValue['IdAuthyGroup'] : $AuthyGroup_Name) ?? '')." "), " crPk = '".(($data->getAuthyGroup())?$data->getAuthyGroup()->getIdAuthyGroup():0)."' i='" . json_encode($data->getPrimaryKey()) . "' c='IdAuthyGroup' class=''  j='editAuthyGroupX'") . 
+                td(span((($altValue['IdAuthyGroup']) ? $altValue['IdAuthyGroup'] : $AuthyGroup_Name) ?? ''." "), " crPk = '".(($data->getAuthyGroup())?$data->getAuthyGroup()->getIdAuthyGroup():0)."' i='" . json_encode($data->getPrimaryKey()) . "' c='IdAuthyGroup' class='' " . $param['IdAuthyGroup']." j='editAuthyGroupX'") . 
                             (isset($hookListColumnsAuthyGroupX)?$hookListColumnsAuthyGroupX:'').
                             $actionRow
-                        ,"id='AuthyGroupXRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='AuthyGroupX'  ")
-                        ;
+                        ,"id='AuthyGroupXRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='AuthyGroupX' ".$param['tr']." ")
+                        .$param['tr_after'];
                 
                 $i++;
             }
@@ -1571,6 +1592,8 @@ $('.cntOnglet').parent().tabs();
         $uiTabsId = (empty($request['cui'])) ? 'cntAuthyChild' : $request['cui'];
         $parentContainer = $request['pc'];
         $orderReadyJs = '';
+        $param = [];
+        $total_child = '';
 
         // if Search params
         $this->searchMs = $this->setSearchVar($request['ms'] ?? '', 'Authy/AuthyLog');
@@ -1621,7 +1644,6 @@ $('.cntOnglet').parent().tabs();
         });";
 
         if($_SESSION[_AUTH_VAR]->hasRights('AuthyLog', 'r')){
-            $parentObjName = (isset($params['pc'])) ? $params['pc'] : 'Authy';
             $this->AuthyLog['list_edit'] = "
         $(\"#AuthyLogTable tr td[j='editAuthyLog']\").bind('click', function (){
             
@@ -1679,11 +1701,15 @@ $('.cntOnglet').parent().tabs();
             // group by
            
         
+            //custom hook
+            if (method_exists($this, 'beforeChildSearchAuthyLog')){ $this->beforeChildSearchAuthyLog($q);}
         $this->queryObj = $q;
         
         $pmpoData =$q->paginate($search['page'], $maxPerPage);
         $resultsCount = $pmpoData->getNbResults();
         
+            //custom hook
+            if (method_exists($this, 'beforeChildListAuthyLog')){ $this->beforeChildListAuthyLog($q, $filterKey, $param);}
          
         #options building
         
@@ -1700,10 +1726,10 @@ $('.cntOnglet').parent().tabs();
             $actionRowHeader = th('&nbsp;', " r='delrow' class='actionrow' ");
         }
 
-        $header = tr( th(_("Date"), " th='sorted' c='Timestamp' title='" . _('Date')."' ")
-.th(_("Username"), " th='sorted' c='Login' title='" . _('Username')."' ")
-.th(_("Ip"), " th='sorted' c='Ip' title='" . _('Ip')."' ")
-.th(_("Count"), " th='sorted' c='Count' title='" . _('Count')."' ")
+        $header = tr( th(_("Date"), " th='sorted' c='Timestamp' title='" . _('Date')."' " . $param['th']['Timestamp']."")
+.th(_("Username"), " th='sorted' c='Login' title='" . _('Username')."' " . $param['th']['Login']."")
+.th(_("Ip"), " th='sorted' c='Ip' title='" . _('Ip')."' " . $param['th']['Ip']."")
+.th(_("Count"), " th='sorted' c='Count' title='" . _('Count')."' " . $param['th']['Count']."")
 .'' . $actionRowHeader, " ln='AuthyLog' class=''");
 
         
@@ -1714,12 +1740,14 @@ $('.cntOnglet').parent().tabs();
             
         }else{
             //$pcData = $pmpoData->getResults();
-            
             foreach($pmpoData as $data){
                 $this->listActionCellAuthyLog = '';
-                
-                
                 $actionRow = '';
+                
+            // custom hooks
+            if (method_exists($this, 'startChildListRowAuthyLog')){ $this->startChildListRowAuthyLog($altValue, $data, $i, $param, $this, $hookListColumnsAuthyLog, $actionRow);}
+            
+                
                 
                 if($_SESSION[_AUTH_VAR]->hasRights('AuthyLog', 'd')){
                     $actionRow = htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteAuthyLog' i='".json_encode($data->getPrimaryKey())."'");
@@ -1738,18 +1766,18 @@ $('.cntOnglet').parent().tabs();
                 
                 
                 
-                $tr .= 
+                $tr .= $param['tr_before'].
                         tr(
                             (isset($hookListColumnsAuthyLogFirst)?$hookListColumnsAuthyLogFirst:'').
                             
-                td(span(\htmlentities((($altValue['Timestamp']) ? $altValue['Timestamp'] : $data->getTimestamp()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Timestamp' class=''  j='editAuthyLog'") . 
-                td(span(\htmlentities((($altValue['Login']) ? $altValue['Login'] : $data->getLogin()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Login' class=''  j='editAuthyLog'") . 
-                td(span(\htmlentities((($altValue['Ip']) ? $altValue['Ip'] : $data->getIp()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Ip' class=''  j='editAuthyLog'") . 
-                td(span(\htmlentities((($altValue['Count']) ? $altValue['Count'] : $data->getCount()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Count' class=''  j='editAuthyLog'") . 
+                td(span((($altValue['Timestamp']) ? $altValue['Timestamp'] : $data->getTimestamp()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Timestamp' class='' " . $param['Timestamp']." j='editAuthyLog'") . 
+                td(span((($altValue['Login']) ? $altValue['Login'] : $data->getLogin()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Login' class='' " . $param['Login']." j='editAuthyLog'") . 
+                td(span((($altValue['Ip']) ? $altValue['Ip'] : $data->getIp()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Ip' class='' " . $param['Ip']." j='editAuthyLog'") . 
+                td(span((($altValue['Count']) ? $altValue['Count'] : $data->getCount()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Count' class='' " . $param['Count']." j='editAuthyLog'") . 
                             (isset($hookListColumnsAuthyLog)?$hookListColumnsAuthyLog:'').
                             $actionRow
-                        ,"id='AuthyLogRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='AuthyLog'  ")
-                        ;
+                        ,"id='AuthyLogRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='AuthyLog' ".$param['tr']." ")
+                        .$param['tr_after'];
                 
                 $i++;
             }
@@ -1761,7 +1789,7 @@ $('.cntOnglet').parent().tabs();
                             div(
                                 div(
                                     div($total_child,'','class="nolink"')
-                            ,'trAuthyLog'," style='$hide_AuthyLog' ln='AuthyLog' class=''").$this->cCMainTableHeader, '', "class='listHeaderItem' ");
+                            ,'trAuthyLog'," ln='AuthyLog' class=''").$this->cCMainTableHeader, '', "class='listHeaderItem' ");
     if(($_SESSION[_AUTH_VAR]->hasRights('AuthyLog', 'a')) ){
         $add_button_child = htmlLink(span(_("Add")), "Javascript:","title='Add "._('Login log')."' id='addAuthyLog' class='button-link-blue add-button'");
     }

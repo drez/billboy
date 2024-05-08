@@ -70,7 +70,7 @@ class TemplateFileService
 
     /**
      * Get the proper response
-     * @return html
+     * @return string
      */
     public function getResponse()
     {
@@ -112,7 +112,7 @@ class TemplateFileService
                 }
         }
 
-
+        if (method_exists($this, 'afterGetResponseSwitch')){ $this->afterGetResponseSwitch(); }
 
         if($this->request['ui']){
             return $this->BuilderLayout->renderXHR($this->content);
@@ -219,21 +219,21 @@ class TemplateFileService
                         $e = $this->Form->setCreateDefaultsTemplateFile($data['data']);
                         $e->setIdTemplate($ip);
                         $e->setName($_FILES['file']['name']);
-                        $path_rep_fichier = 'public/file/';
-                        $path_fichier = 'public/file/TemplateFile/';
+                        $path_dest = 'public/file/';
+                        $path_file= 'public/file/TemplateFile/';
 
 
                         if($data['error'] == '') {
 
-                            if(!is_dir(_INSTALL_PATH.$path_rep_fichier)) {
-                                mkdir(_INSTALL_PATH.$path_rep_fichier);
+                            if(!is_dir(_INSTALL_PATH.\path_dest)) {
+                                mkdir(_INSTALL_PATH.\path_dest);
                                 $fp = fopen(_INSTALL_PATH."public/file/index.php", "w");
                                 fwrite($fp, '<?php header(\'Location:'._SITE_URL.'\'); ');
                                 fclose($fp);
                             }
-                            if(!is_dir(_INSTALL_PATH.$path_fichier)) {
-                                mkdir(_INSTALL_PATH.$path_fichier);
-                                $fp = fopen(_INSTALL_PATH.$path_fichier."/index.php", "w");
+                            if(!is_dir(_INSTALL_PATH.$path_file)) {
+                                mkdir(_INSTALL_PATH.$path_file);
+                                $fp = fopen(_INSTALL_PATH.$path_file."/index.php", "w");
                                 fwrite($fp, '<?php header(\'Location:'._SITE_URL.'\'); ');
                                 fclose($fp);
                             }
@@ -243,8 +243,8 @@ class TemplateFileService
                             if ($e->validate()) {
                                 $e->save();
                                 $data['idPk'] = $e->getPrimaryKey();
-                                copy($_FILES['file']['tmp_name'], _INSTALL_PATH.$path_fichier.md5($data['idPk']) . "." . $path_info["extension"] . "");
-                                $data['File'] = $path_fichier.md5($data['idPk']) . "." . $path_info["extension"];
+                                copy($_FILES['file']['tmp_name'], _INSTALL_PATH.$path_file.md5($data['idPk']) . "." . $path_info["extension"] . "");
+                                $data['File'] = $path_file.md5($data['idPk']) . "." . $path_info["extension"];
 
                                 $e->setFile($data['File']);
                                 $e->save();
@@ -275,11 +275,13 @@ class TemplateFileService
 
     public function deleteOne()
     {
+        $error = [];
+        $messages = '';
 
         $obj = TemplateFileQuery::create()->findPk(json_decode($this->request['i']));
 
 
-
+        if (method_exists($this, 'beforeDelete')){ $this->beforeDelete($obj, $this->request, $error, $messages);}
         $obj->delete();
 
             if(is_file(_INSTALL_PATH.$obj->getFile())) {
@@ -287,9 +289,9 @@ class TemplateFileService
             }
 
 
+        if (method_exists($this, 'afterDelete')){ $this->afterDelete($obj, $this->request, $error, $messages);}
 
-
-        $BuilderReturn = new BuilderReturn($this->request);
+        $BuilderReturn = new BuilderReturn($this->request, $error, $messages);
         return $BuilderReturn->return();
     }
 
@@ -308,14 +310,14 @@ class TemplateFileService
 
         if(!empty($data['i'])) {
             ## Save
-
+            if (method_exists($this, 'beforeSave')){ $this->beforeSave($this, $data, false, $messages, $extValidationErr, $error);}
             $e = $this->Form->setUpdateDefaultsTemplateFile($data);
 
 
             if ($e->validate() && !$extValidationErr) {
                 $e->save();
                 $this->request['i'] = json_encode($e->getPrimaryKey());
-
+                if (method_exists($this, 'afterSave')){ $this->afterSave($e, $data, false, $messages, $extValidationErr, $error);}
 
             }else{
                 $PropelErrorHandler = new PropelErrorHandler($e, $this->request['data']['ui'],_('Form field'), $extValidationErr, $this->virtualClassName);
@@ -323,14 +325,14 @@ class TemplateFileService
             }
         } else {
             ## Create
-
+            if (method_exists($this, 'beforeSave')){ $this->beforeSave($this, $data, true, $messages, $extValidationErr, $error);}
 
             $e = $this->Form->setCreateDefaultsTemplateFile($data);
 
             if ($e->validate() && !$extValidationErr) {
                 $e->save();
                 $this->request['i'] = json_encode($e->getPrimaryKey());
-
+                if (method_exists($this, 'afterSave')){ $this->afterSave($e, $data, true, $messages, $extValidationErr, $error);}
 
                 $data['IdTemplate'] = json_encode($e->getIdTemplate());
             }else{

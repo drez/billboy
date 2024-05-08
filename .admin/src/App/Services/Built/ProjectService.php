@@ -70,7 +70,7 @@ class ProjectService
 
     /**
      * Get the proper response
-     * @return html
+     * @return string
      */
     public function getResponse()
     {
@@ -118,7 +118,7 @@ class ProjectService
                 }
         }
 
-
+        if (method_exists($this, 'afterGetResponseSwitch')){ $this->afterGetResponseSwitch(); }
 
         if($this->request['ui']){
             return $this->BuilderLayout->renderXHR($this->content);
@@ -176,6 +176,8 @@ class ProjectService
 
     public function deleteOne()
     {
+        $error = [];
+        $messages = '';
 
         $obj = ProjectQuery::create()->findPk(json_decode($this->request['i']));
 
@@ -189,12 +191,12 @@ class ProjectService
             if($obj->countCostLines()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Expense'. ", '', true,'Project'); die( $error['onReadyJs'] );
             }
-
+        if (method_exists($this, 'beforeDelete')){ $this->beforeDelete($obj, $this->request, $error, $messages);}
         $obj->delete();
 
+        if (method_exists($this, 'afterDelete')){ $this->afterDelete($obj, $this->request, $error, $messages);}
 
-
-        $BuilderReturn = new BuilderReturn($this->request);
+        $BuilderReturn = new BuilderReturn($this->request, $error, $messages);
         return $BuilderReturn->return();
     }
 
@@ -213,14 +215,14 @@ class ProjectService
 
         if(!empty($data['i'])) {
             ## Save
-
+            if (method_exists($this, 'beforeSave')){ $this->beforeSave($this, $data, false, $messages, $extValidationErr, $error);}
             $e = $this->Form->setUpdateDefaultsProject($data);
 
 
             if ($e->validate() && !$extValidationErr) {
                 $e->save();
                 $this->request['i'] = json_encode($e->getPrimaryKey());
-
+                if (method_exists($this, 'afterSave')){ $this->afterSave($e, $data, false, $messages, $extValidationErr, $error);}
 
             }else{
                 $PropelErrorHandler = new PropelErrorHandler($e, $this->request['data']['ui'],_('Form field'), $extValidationErr, $this->virtualClassName);
@@ -228,14 +230,14 @@ class ProjectService
             }
         } else {
             ## Create
-
+            if (method_exists($this, 'beforeSave')){ $this->beforeSave($this, $data, true, $messages, $extValidationErr, $error);}
 
             $e = $this->Form->setCreateDefaultsProject($data);
 
             if ($e->validate() && !$extValidationErr) {
                 $e->save();
                 $this->request['i'] = json_encode($e->getPrimaryKey());
-
+                if (method_exists($this, 'afterSave')){ $this->afterSave($e, $data, true, $messages, $extValidationErr, $error);}
 
 
             }else{

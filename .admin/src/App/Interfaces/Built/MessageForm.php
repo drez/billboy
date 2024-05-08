@@ -26,7 +26,6 @@ class MessageForm extends Message
     public $model_name = '';
     public $isChild;
     public $IdPk;
-    public $queryObj;
     public $in;
     public $TableName;
     public $tableDescription;
@@ -74,6 +73,7 @@ class MessageForm extends Message
     public $formTitle;
     public $ccStdFormOptions;
     public $cCMainTableHeader;
+    public $cCmoreColsHeader;
     
     public $canDelete;
 
@@ -116,7 +116,7 @@ class MessageForm extends Message
 
         $q = new MessageQuery();
         $q = $this->setAclFilter($q);
-        
+        if (method_exists($this, 'beforeListSearch')){ $this->beforeListSearch($q, $search);}
 
         if(is_array( $this->searchMs )){
             # main search form
@@ -170,7 +170,7 @@ class MessageForm extends Message
         
         
         
-        $this->pmpoData =  $q;
+        $this->pmpoData = $q;
         
         
         return $this->pmpoData;
@@ -184,6 +184,8 @@ class MessageForm extends Message
     public function getListHeader($act)
     {
         $this->in = 'getListHeader';
+        $trSearch = '';
+        $trHeadMod = '';
         
         switch($act) {
             case 'head':
@@ -204,7 +206,7 @@ class MessageForm extends Message
 
             case 'search':
                 
-                unset($data);
+                $data = [];
             
 
             $trSearch = button(span(_("Show search")),'class="trigger-search button-link-blue"')
@@ -251,6 +253,8 @@ class MessageForm extends Message
      */
     public function getList( $request, $uiTabsId = 'tabsContain', $IdParent = null , $pmpoDataIn = null)
     {
+        $HelpDivJs = '';
+        $HelpDiv = '';
         $this->in = 'getList';
         $this->isChild = '';
         $this->TableName = 'Message';
@@ -263,6 +267,7 @@ class MessageForm extends Message
         $hook = [];
         $editEvent = '';
         $return = ['html', 'js', 'onReadyJs'];
+        $cCmoreCols = '';
 
         
 
@@ -280,7 +285,7 @@ class MessageForm extends Message
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Message/');
 
-        
+        if (method_exists($this, 'beforeList')){ $this->beforeList($request, $pmpoDataIn );}
         
         
         
@@ -335,20 +340,21 @@ try{
     $mt->setLocale('en_US')->setText('');
     $data->addMessageI18n($mt)->save();
 }
+                if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                     
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteMessage' ") . $this->listActionCell, " class='actionrow' ");
 
-                $tr .= tr(
-                td(span(\htmlentities((($altValue['Label']) ? $altValue['Label'] : $data->getLabel()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Label' class=''  j='editMessage'") . 
-                td(span(\htmlentities((($altValue['MessageI18n_Text_en_US']) ? $altValue['MessageI18n_Text_en_US'] : $data->getTranslation('en_US')->getText()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='MessageI18n_Text_en_US' class=''  j='editMessage'") . $cCmoreCols.$actionCell
-                , " 
+                $tr .= $hook['tr_before'].tr(
+                td(span((($altValue['Label']) ? $altValue['Label'] : $data->getLabel()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Label' class=''  j='editMessage'") . 
+                td(span((($altValue['MessageI18n_Text_en_US']) ? $altValue['MessageI18n_Text_en_US'] : $data->getTranslation('en_US')->getText()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='MessageI18n_Text_en_US' class=''  j='editMessage'") . $hook['td'].$cCmoreCols.$actionCell
+                , " ".$hook['tr']."
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
                         class='".$hook['class']." '
                         id='MessageRow".$data->getPrimaryKey()."'")
-                ;
+                .$hook['tr_after'];
                 $i++;
             }
             $tr .= input('hidden', 'rowCountMessage', $i);
@@ -360,7 +366,7 @@ try{
         $pagerRow = $this->getPager($pmpoData, $resultsCount, $search);
         $bottomRow = div($pagerRow,'bottomPagerRow', "class='tablesorter'");
 
-        
+        if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
         
@@ -538,6 +544,12 @@ try{
     {
         $this->in = "getEditForm";
 
+        $HelpDivJs = '';
+        $HelpDiv = '';
+        $childTable = [];
+        $script_autoc_one = '';
+        $ongletf = '';
+        $mceInclude = '';
         $ip_save = '';
         $ip_save = '';
         $IdParent = 0;
@@ -682,7 +694,7 @@ $this->fields['Message']['MessageI18n_Text_en_US']['html'] = stdFieldRow(_("Text
                             .$this->hookListSearchButton
                         ,"", " class='divtd' colspan='2' style='text-align:right;'"),""," class='divtr divbut' ");
         }
-        
+        if (method_exists($this, 'afterFormObj')){ $this->afterFormObj($data, $dataObj);}
         
 
         //Form header

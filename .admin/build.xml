@@ -148,7 +148,7 @@
             </filterchain>
         </reflexive>
 
-        <copy file=".build/classes/config/basedata.sql.php" tofile="config/Built/basedata.sql" overwrite="true" mode="0775"/>
+        <copy2 file=".build/classes/config/basedata.sql.php" tofile="config/Built/basedata.sql" overwrite="false" mode="0775"/>
 
     </target>
    

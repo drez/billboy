@@ -23,6 +23,7 @@ class TemplateServiceWrapper extends TemplateService{
 
         $this->Form = new TemplateFormWrapper($request, $args);
 
+        # add a custom action to the current route
         $this->customActions['viewVar'] = 'viewVar';
     }
 
@@ -39,7 +40,16 @@ class TemplateServiceWrapper extends TemplateService{
                         , '', "class='divStdform'")
                     , '', "class='mainForm'"),
             'onReadyJs' => $content['onReadyJs']
-
         ];
     }
+
+    public function afterGetResponseSwitch(){}
+    public function beforeDelete(&$this, &$request, &$error, &$messages){}
+    public function beforeSave(&$this, array &$data, bool $isNew, string|null &$messages, array|false &$extValidationErr, $error){}
+    public function afterSave(&$this, array &$data, bool $isNew, string|null &$messages, array|false &$extValidationErr, $error){}
+    public function afterDelete(&$this, &$request, &$error, &$messages){}
+    public function beforeFileUpload($file, $path, $this, $data){}
+    public function afterFileUpload($data, $this){}
+
+    
 }

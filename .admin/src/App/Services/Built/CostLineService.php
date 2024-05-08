@@ -70,7 +70,7 @@ class CostLineService
 
     /**
      * Get the proper response
-     * @return html
+     * @return string
      */
     public function getResponse()
     {
@@ -104,7 +104,7 @@ class CostLineService
                 }
         }
 
-
+        if (method_exists($this, 'afterGetResponseSwitch')){ $this->afterGetResponseSwitch(); }
 
         if($this->request['ui']){
             return $this->BuilderLayout->renderXHR($this->content);
@@ -162,16 +162,18 @@ class CostLineService
 
     public function deleteOne()
     {
+        $error = [];
+        $messages = '';
 
         $obj = CostLineQuery::create()->findPk(json_decode($this->request['i']));
 
 
-
+        if (method_exists($this, 'beforeDelete')){ $this->beforeDelete($obj, $this->request, $error, $messages);}
         $obj->delete();
 
+        if (method_exists($this, 'afterDelete')){ $this->afterDelete($obj, $this->request, $error, $messages);}
 
-
-        $BuilderReturn = new BuilderReturn($this->request);
+        $BuilderReturn = new BuilderReturn($this->request, $error, $messages);
         return $BuilderReturn->return();
     }
 
@@ -190,14 +192,14 @@ class CostLineService
 
         if(!empty($data['i'])) {
             ## Save
-            $this->beforeSave($this, $data, false, $messages, $extValidationErr);
+            if (method_exists($this, 'beforeSave')){ $this->beforeSave($this, $data, false, $messages, $extValidationErr, $error);}
             $e = $this->Form->setUpdateDefaultsCostLine($data);
 
 
             if ($e->validate() && !$extValidationErr) {
                 $e->save();
                 $this->request['i'] = json_encode($e->getPrimaryKey());
-
+                if (method_exists($this, 'afterSave')){ $this->afterSave($e, $data, false, $messages, $extValidationErr, $error);}
 
             }else{
                 $PropelErrorHandler = new PropelErrorHandler($e, $this->request['data']['ui'],_('Form field'), $extValidationErr, $this->virtualClassName);
@@ -205,14 +207,14 @@ class CostLineService
             }
         } else {
             ## Create
-            $this->beforeSave($this, $data, true, $messages, $extValidationErr);
+            if (method_exists($this, 'beforeSave')){ $this->beforeSave($this, $data, true, $messages, $extValidationErr, $error);}
 
             $e = $this->Form->setCreateDefaultsCostLine($data);
 
             if ($e->validate() && !$extValidationErr) {
                 $e->save();
                 $this->request['i'] = json_encode($e->getPrimaryKey());
-
+                if (method_exists($this, 'afterSave')){ $this->afterSave($e, $data, true, $messages, $extValidationErr, $error);}
 
                 $data['IdBilling'] = json_encode($e->getIdBilling());
             }else{

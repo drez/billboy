@@ -1,4 +1,17 @@
-Billboy is a small billing, crm and accounting software for those with basic needs.
+Billboy is a small billing, crm and accounting software for Freelancer with basic needs.
+
+It supports:
+
+- Billing, Quote
+- Client, Supplier
+- Revenues, Expenses
+- Project budgeting (basic for now)
+- Bill, Quote printing with custom header
+- Report charts
+- Full API
+
+It is build on top of Slim4 and Proel Orm via ApiGoat build engine.
+For documentation on APIgoat build, check apigoat.com
 
 ### Getting started
 

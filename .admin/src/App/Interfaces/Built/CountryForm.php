@@ -25,7 +25,6 @@ class CountryForm extends Country
     public $model_name = '';
     public $isChild;
     public $IdPk;
-    public $queryObj;
     public $in;
     public $TableName;
     public $tableDescription;
@@ -73,6 +72,7 @@ class CountryForm extends Country
     public $formTitle;
     public $ccStdFormOptions;
     public $cCMainTableHeader;
+    public $cCmoreColsHeader;
     
     public $canDelete;
 
@@ -115,7 +115,7 @@ class CountryForm extends Country
 
         $q = new CountryQuery();
         $q = $this->setAclFilter($q);
-        
+        if (method_exists($this, 'beforeListSearch')){ $this->beforeListSearch($q, $search);}
 
         if(is_array( $this->searchMs )){
             # main search form
@@ -161,7 +161,7 @@ class CountryForm extends Country
         
         
         
-        $this->pmpoData =  $q;
+        $this->pmpoData = $q;
         
         
         return $this->pmpoData;
@@ -175,6 +175,8 @@ class CountryForm extends Country
     public function getListHeader($act)
     {
         $this->in = 'getListHeader';
+        $trSearch = '';
+        $trHeadMod = '';
         
         switch($act) {
             case 'head':
@@ -233,6 +235,8 @@ class CountryForm extends Country
      */
     public function getList( $request, $uiTabsId = 'tabsContain', $IdParent = null , $pmpoDataIn = null)
     {
+        $HelpDivJs = '';
+        $HelpDiv = '';
         $this->in = 'getList';
         $this->isChild = '';
         $this->TableName = 'Country';
@@ -253,6 +257,7 @@ class CountryForm extends Country
         $hook = [];
         $editEvent = '';
         $return = ['html', 'js', 'onReadyJs'];
+        $cCmoreCols = '';
 
         
 
@@ -270,7 +275,7 @@ class CountryForm extends Country
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Country/');
 
-        
+        if (method_exists($this, 'beforeList')){ $this->beforeList($request, $pmpoDataIn );}
         
         
         
@@ -317,24 +322,25 @@ class CountryForm extends Country
                 $this->listActionCell = '';
                 
                 
-                
+
+                if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                     
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteCountry' ") . $this->listActionCell, " class='actionrow' ");
 
-                $tr .= tr(
-                td(span(\htmlentities((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editCountry'") . 
-                td(span(\htmlentities((($altValue['Code']) ? $altValue['Code'] : $data->getCode()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Code' class=''  j='editCountry'") . 
-                td(span(\htmlentities((($altValue['Timezone']) ? $altValue['Timezone'] : $data->getTimezone()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Timezone' class=''  j='editCountry'") . 
-                td(span(\htmlentities((($altValue['TimezoneCode']) ? $altValue['TimezoneCode'] : $data->getTimezoneCode()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='TimezoneCode' class=''  j='editCountry'") . 
-                td(span(\htmlentities((($altValue['Priority']) ? $altValue['Priority'] : $data->getPriority()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Priority' class=''  j='editCountry'") . $cCmoreCols.$actionCell
-                , " 
+                $tr .= $hook['tr_before'].tr(
+                td(span((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editCountry'") . 
+                td(span((($altValue['Code']) ? $altValue['Code'] : $data->getCode()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Code' class=''  j='editCountry'") . 
+                td(span((($altValue['Timezone']) ? $altValue['Timezone'] : $data->getTimezone()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Timezone' class=''  j='editCountry'") . 
+                td(span((($altValue['TimezoneCode']) ? $altValue['TimezoneCode'] : $data->getTimezoneCode()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='TimezoneCode' class=''  j='editCountry'") . 
+                td(span((($altValue['Priority']) ? $altValue['Priority'] : $data->getPriority()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Priority' class=''  j='editCountry'") . $hook['td'].$cCmoreCols.$actionCell
+                , " ".$hook['tr']."
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
                         class='".$hook['class']." '
                         id='CountryRow".$data->getPrimaryKey()."'")
-                ;
+                .$hook['tr_after'];
                 $i++;
             }
             $tr .= input('hidden', 'rowCountCountry', $i);
@@ -346,7 +352,7 @@ class CountryForm extends Country
         $pagerRow = $this->getPager($pmpoData, $resultsCount, $search);
         $bottomRow = div($pagerRow,'bottomPagerRow', "class='tablesorter'");
 
-        
+        if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
         
@@ -513,6 +519,12 @@ class CountryForm extends Country
     {
         $this->in = "getEditForm";
 
+        $HelpDivJs = '';
+        $HelpDiv = '';
+        $childTable = [];
+        $script_autoc_one = '';
+        $ongletf = '';
+        $mceInclude = '';
         $ip_save = '';
         $ip_save = '';
         $IdParent = 0;
@@ -654,7 +666,7 @@ $this->fields['Country']['Priority']['html'] = stdFieldRow(_("Priority"), input(
                             .$this->hookListSearchButton
                         ,"", " class='divtd' colspan='2' style='text-align:right;'"),""," class='divtr divbut' ");
         }
-        
+        if (method_exists($this, 'afterFormObj')){ $this->afterFormObj($data, $dataObj);}
         
 
         //Form header

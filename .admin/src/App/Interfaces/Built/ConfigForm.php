@@ -25,7 +25,6 @@ class ConfigForm extends Config
     public $model_name = '';
     public $isChild;
     public $IdPk;
-    public $queryObj;
     public $in;
     public $TableName;
     public $tableDescription;
@@ -73,6 +72,7 @@ class ConfigForm extends Config
     public $formTitle;
     public $ccStdFormOptions;
     public $cCMainTableHeader;
+    public $cCmoreColsHeader;
     
     public $canDelete;
 
@@ -115,7 +115,7 @@ class ConfigForm extends Config
 
         $q = new ConfigQuery();
         $q = $this->setAclFilter($q);
-        
+        if (method_exists($this, 'beforeListSearch')){ $this->beforeListSearch($q, $search);}
 
         if(is_array( $this->searchMs )){
             # main search form
@@ -161,7 +161,7 @@ class ConfigForm extends Config
         
         
         
-        $this->pmpoData =  $q;
+        $this->pmpoData = $q;
         
         
         return $this->pmpoData;
@@ -175,6 +175,8 @@ class ConfigForm extends Config
     public function getListHeader($act)
     {
         $this->in = 'getListHeader';
+        $trSearch = '';
+        $trHeadMod = '';
         
         switch($act) {
             case 'head':
@@ -232,6 +234,8 @@ class ConfigForm extends Config
      */
     public function getList( $request, $uiTabsId = 'tabsContain', $IdParent = null , $pmpoDataIn = null)
     {
+        $HelpDivJs = '';
+        $HelpDiv = '';
         $this->in = 'getList';
         $this->isChild = '';
         $this->TableName = 'Config';
@@ -253,6 +257,7 @@ class ConfigForm extends Config
         $hook = [];
         $editEvent = '';
         $return = ['html', 'js', 'onReadyJs'];
+        $cCmoreCols = '';
 
         
 
@@ -270,7 +275,7 @@ class ConfigForm extends Config
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Config/');
 
-        
+        if (method_exists($this, 'beforeList')){ $this->beforeList($request, $pmpoDataIn );}
         
         
         
@@ -317,23 +322,24 @@ class ConfigForm extends Config
                 $this->listActionCell = '';
                 
                 
-                
+
+                if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                     
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteConfig' ") . $this->listActionCell, " class='actionrow' ");
 
-                $tr .= tr(
-                td(span(\htmlentities((($altValue['Category']) ? $altValue['Category'] : isntPo($data->getCategory())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Category' class='center'  j='editConfig'") . 
-                td(span(\htmlentities((($altValue['Config']) ? $altValue['Config'] : $data->getConfig()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Config' class=''  j='editConfig'") . 
-                td(span(\htmlentities((($altValue['Value']) ? $altValue['Value'] : substr(strip_tags($data->getValue()), 0, 100)) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Value' class=''  j='editConfig'") . 
-                td(span(\htmlentities((($altValue['Description']) ? $altValue['Description'] : $data->getDescription()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Description' class=''  j='editConfig'") . $cCmoreCols.$actionCell
-                , " 
+                $tr .= $hook['tr_before'].tr(
+                td(span((($altValue['Category']) ? $altValue['Category'] : isntPo($data->getCategory())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Category' class='center'  j='editConfig'") . 
+                td(span((($altValue['Config']) ? $altValue['Config'] : $data->getConfig()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Config' class=''  j='editConfig'") . 
+                td(span((($altValue['Value']) ? $altValue['Value'] : substr(strip_tags($data->getValue()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Value' class=''  j='editConfig'") . 
+                td(span((($altValue['Description']) ? $altValue['Description'] : $data->getDescription()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Description' class=''  j='editConfig'") . $hook['td'].$cCmoreCols.$actionCell
+                , " ".$hook['tr']."
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
                         class='".$hook['class']." '
                         id='ConfigRow".$data->getPrimaryKey()."'")
-                ;
+                .$hook['tr_after'];
                 $i++;
             }
             $tr .= input('hidden', 'rowCountConfig', $i);
@@ -345,7 +351,7 @@ class ConfigForm extends Config
         $pagerRow = $this->getPager($pmpoData, $resultsCount, $search);
         $bottomRow = div($pagerRow,'bottomPagerRow', "class='tablesorter'");
 
-        
+        if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
         
@@ -530,6 +536,12 @@ class ConfigForm extends Config
     {
         $this->in = "getEditForm";
 
+        $HelpDivJs = '';
+        $HelpDiv = '';
+        $childTable = [];
+        $script_autoc_one = '';
+        $ongletf = '';
+        $mceInclude = '';
         $ip_save = '';
         $ip_save = '';
         $IdParent = 0;
@@ -670,7 +682,7 @@ $this->fields['Config']['Description']['html'] = stdFieldRow(_("Description"), i
                             .$this->hookListSearchButton
                         ,"", " class='divtd' colspan='2' style='text-align:right;'"),""," class='divtr divbut' ");
         }
-        
+        if (method_exists($this, 'afterFormObj')){ $this->afterFormObj($data, $dataObj);}
         
 
         //Form header

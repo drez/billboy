@@ -23,12 +23,12 @@ class BillingLineServiceWrapper extends BillingLineService
         $this->Form = new BillingLineFormWrapper($request, $args);
     }
 
-    public function beforeSave(BillingLineService $Class, array &$data, bool $isNew, string|null &$messages, array|false &$extValidationErr)
+    public function beforeSave(BillingLineService $Class, array &$data, bool $isNew, string|null &$messages, array|false &$extValidationErr, $error)
     {
         $data['Total'] = bcmul($data['Quantity'], $data['Amount']);
     }
 
-    public function afterSave(BillingLine $Class, array &$data, bool $isNew, string|null &$messages, array|false &$extValidationErr)
+    public function afterSave(BillingLine $Class, array &$data, bool $isNew, string|null &$messages, array|false &$extValidationErr, $error)
     {
         $this->setBillingTotal($data['IdBilling']);
         $this->setProjectSpent($Class);

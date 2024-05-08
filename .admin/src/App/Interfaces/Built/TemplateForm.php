@@ -26,7 +26,6 @@ class TemplateForm extends Template
     public $model_name = '';
     public $isChild;
     public $IdPk;
-    public $queryObj;
     public $in;
     public $TableName;
     public $tableDescription;
@@ -74,6 +73,7 @@ class TemplateForm extends Template
     public $formTitle;
     public $ccStdFormOptions;
     public $cCMainTableHeader;
+    public $cCmoreColsHeader;
     
     public $canDelete;
 
@@ -116,7 +116,7 @@ class TemplateForm extends Template
 
         $q = new TemplateQuery();
         $q = $this->setAclFilter($q);
-        
+        if (method_exists($this, 'beforeListSearch')){ $this->beforeListSearch($q, $search);}
 
         if(is_array( $this->searchMs )){
             # main search form
@@ -170,7 +170,7 @@ class TemplateForm extends Template
         
         
         
-        $this->pmpoData =  $q;
+        $this->pmpoData = $q;
         
         
         return $this->pmpoData;
@@ -184,6 +184,8 @@ class TemplateForm extends Template
     public function getListHeader($act)
     {
         $this->in = 'getListHeader';
+        $trSearch = '';
+        $trHeadMod = '';
         
         switch($act) {
             case 'head':
@@ -205,7 +207,7 @@ class TemplateForm extends Template
 
             case 'search':
                 
-                unset($data);
+                $data = [];
             
 
             $trSearch = button(span(_("Show search")),'class="trigger-search button-link-blue"')
@@ -252,6 +254,8 @@ class TemplateForm extends Template
      */
     public function getList( $request, $uiTabsId = 'tabsContain', $IdParent = null , $pmpoDataIn = null)
     {
+        $HelpDivJs = '';
+        $HelpDiv = '';
         $this->in = 'getList';
         $this->isChild = '';
         $this->TableName = 'Template';
@@ -274,6 +278,7 @@ class TemplateForm extends Template
         $hook = [];
         $editEvent = '';
         $return = ['html', 'js', 'onReadyJs'];
+        $cCmoreCols = '';
 
         
 
@@ -291,7 +296,7 @@ class TemplateForm extends Template
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Template/');
 
-        
+        if (method_exists($this, 'beforeList')){ $this->beforeList($request, $pmpoDataIn );}
         
         $default_order[]['DateCreation']='DESC';
         if(empty($this->searchOrder)){
@@ -342,22 +347,23 @@ class TemplateForm extends Template
                 $this->listActionCell = '';
                 
                 
-                
+
+                if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                     
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteTemplate' ") . $this->listActionCell, " class='actionrow' ");
 
-                $tr .= tr(
-                td(span(\htmlentities((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editTemplate'") . 
-                td(span(\htmlentities((($altValue['Subject']) ? $altValue['Subject'] : $data->getSubject()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Subject' class=''  j='editTemplate'") . 
-                td(span(\htmlentities((($altValue['Status']) ? $altValue['Status'] : isntPo($data->getStatus())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Status' class='center'  j='editTemplate'") . $cCmoreCols.$actionCell
-                , " 
+                $tr .= $hook['tr_before'].tr(
+                td(span((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editTemplate'") . 
+                td(span((($altValue['Subject']) ? $altValue['Subject'] : $data->getSubject()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Subject' class=''  j='editTemplate'") . 
+                td(span((($altValue['Status']) ? $altValue['Status'] : isntPo($data->getStatus())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Status' class='center'  j='editTemplate'") . $hook['td'].$cCmoreCols.$actionCell
+                , " ".$hook['tr']."
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
                         class='".$hook['class']." '
                         id='TemplateRow".$data->getPrimaryKey()."'")
-                ;
+                .$hook['tr_after'];
                 $i++;
             }
             $tr .= input('hidden', 'rowCountTemplate', $i);
@@ -369,7 +375,7 @@ class TemplateForm extends Template
         $pagerRow = $this->getPager($pmpoData, $resultsCount, $search);
         $bottomRow = div($pagerRow,'bottomPagerRow', "class='tablesorter'");
 
-        
+        if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
         
@@ -586,6 +592,12 @@ class TemplateForm extends Template
     {
         $this->in = "getEditForm";
 
+        $HelpDivJs = '';
+        $HelpDiv = '';
+        $childTable = [];
+        $script_autoc_one = '';
+        $ongletf = '';
+        $mceInclude = '';
         $ip_save = '';
         $ip_save = '';
         $IdParent = 0;
@@ -735,7 +747,7 @@ $this->fields['Template']['Body']['html'] = stdFieldRow(_("Body"), textarea('Bod
                         $ChildOnglet .= li(
                                         htmlLink(	_($value['t'])
                                             ,'javascript:',"p='".$value['p']."' act='list' j=conglet_Template ip='".$dataObj->$getLocalKey()."' class='ui-state-default' ")
-                                    ,"  class='".$class_has_child."' j=sm  ");
+                                    ,"  class='' j=sm  ");
                     }
                 }
             }
@@ -771,7 +783,7 @@ $this->fields['Template']['Body']['html'] = stdFieldRow(_("Body"), textarea('Bod
                             .$this->hookListSearchButton
                         ,"", " class='divtd' colspan='2' style='text-align:right;'"),""," class='divtr divbut' ");
         }
-        $this->afterFormObj($data, $dataObj);
+        if (method_exists($this, 'afterFormObj')){ $this->afterFormObj($data, $dataObj);}
         
 
         //Form header
@@ -947,6 +959,8 @@ $this->fields['Template']['Name']['html']
         $uiTabsId = (empty($request['cui'])) ? 'cntTemplateChild' : $request['cui'];
         $parentContainer = $request['pc'];
         $orderReadyJs = '';
+        $param = [];
+        $total_child = '';
 
         // if Search params
         $this->searchMs = $this->setSearchVar($request['ms'] ?? '', 'Template/TemplateFile');
@@ -997,7 +1011,6 @@ $this->fields['Template']['Name']['html']
         });";
 
         if($_SESSION[_AUTH_VAR]->hasRights('TemplateFile', 'r')){
-            $parentObjName = (isset($params['pc'])) ? $params['pc'] : 'Template';
             $this->TemplateFile['list_edit'] = "
         $(\"#TemplateFileTable tr td[j='editTemplateFile']\").bind('click', function (){
             
@@ -1055,11 +1068,15 @@ $this->fields['Template']['Name']['html']
             // group by
            
         
+            //custom hook
+            if (method_exists($this, 'beforeChildSearchTemplateFile')){ $this->beforeChildSearchTemplateFile($q);}
         $this->queryObj = $q;
         
         $pmpoData =$q->paginate($search['page'], $maxPerPage);
         $resultsCount = $pmpoData->getNbResults();
         
+            //custom hook
+            if (method_exists($this, 'beforeChildListTemplateFile')){ $this->beforeChildListTemplateFile($q, $filterKey, $param);}
          
         #options building
         
@@ -1076,8 +1093,8 @@ $this->fields['Template']['Name']['html']
             $actionRowHeader = th('&nbsp;', " r='delrow' class='actionrow' ");
         }
 
-        $header = tr( th(_("Name"), " th='sorted' c='Name' title='" . _('Name')."' ")
-.th(_("File"), " th='sorted' c='File' title='" . _('File')."' ")
+        $header = tr( th(_("Name"), " th='sorted' c='Name' title='" . _('Name')."' " . $param['th']['Name']."")
+.th(_("File"), " th='sorted' c='File' title='" . _('File')."' " . $param['th']['File']."")
 .'' . th('Tools') . $actionRowHeader, " ln='TemplateFile' class=''");
 
         
@@ -1088,12 +1105,14 @@ $this->fields['Template']['Name']['html']
             
         }else{
             //$pcData = $pmpoData->getResults();
-            
             foreach($pmpoData as $data){
                 $this->listActionCellTemplateFile = '';
-                
-                
                 $actionRow = '';
+                
+            // custom hooks
+            if (method_exists($this, 'startChildListRowTemplateFile')){ $this->startChildListRowTemplateFile($altValue, $data, $i, $param, $this, $hookListColumnsTemplateFile, $actionRow);}
+            
+                
                 
                 if($_SESSION[_AUTH_VAR]->hasRights('TemplateFile', 'd')){
                     $actionRow = htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteTemplateFile' i='".json_encode($data->getPrimaryKey())."'");
@@ -1115,18 +1134,18 @@ $this->fields['Template']['Name']['html']
                 
                 
                 
-                $tr .= 
+                $tr .= $param['tr_before'].
                         tr(
                             (isset($hookListColumnsTemplateFileFirst)?$hookListColumnsTemplateFileFirst:'').
                             
-                td(span(\htmlentities((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editTemplateFile'") . 
-                td(span(\htmlentities((($altValue['File']) ? $altValue['File'] : $data->getFile()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='File' class=''  j='editTemplateFile'") . 
+                td(span((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class='' " . $param['Name']." j='editTemplateFile'") . 
+                td(span((($altValue['File']) ? $altValue['File'] : $data->getFile()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='File' class='' " . $param['File']." j='editTemplateFile'") . 
                             (isset($hookListColumnsTemplateFile)?$hookListColumnsTemplateFile:'')
                 .td(htmlLink(span(addslashes(_('To editor'))),'javascript:', " class='button-link-blue' data-clipboard-text='"._SITE_URL.$data->getFile()."' title='Click to copy me.' i='".$data->getPrimaryKey()."'  j='copy_link' "))
                 .
                             $actionRow
-                        ,"id='TemplateFileRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='TemplateFile'  ")
-                        ;
+                        ,"id='TemplateFileRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='TemplateFile' ".$param['tr']." ")
+                        .$param['tr_after'];
                 
                 $i++;
             }
@@ -1138,7 +1157,7 @@ $this->fields['Template']['Name']['html']
                             div(
                                 div(
                                     div($total_child,'','class="nolink"')
-                            ,'trTemplateFile'," style='$hide_TemplateFile' ln='TemplateFile' class=''").$this->cCMainTableHeader, '', "class='listHeaderItem' ");
+                            ,'trTemplateFile'," ln='TemplateFile' class=''").$this->cCMainTableHeader, '', "class='listHeaderItem' ");
     if(($_SESSION[_AUTH_VAR]->hasRights('TemplateFile', 'a')) ){
         $add_button_child =
         $add_button_child .=

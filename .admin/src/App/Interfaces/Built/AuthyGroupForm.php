@@ -26,7 +26,6 @@ class AuthyGroupForm extends AuthyGroup
     public $model_name = '';
     public $isChild;
     public $IdPk;
-    public $queryObj;
     public $in;
     public $TableName;
     public $tableDescription;
@@ -74,6 +73,7 @@ class AuthyGroupForm extends AuthyGroup
     public $formTitle;
     public $ccStdFormOptions;
     public $cCMainTableHeader;
+    public $cCmoreColsHeader;
     
     public $canDelete;
 
@@ -116,7 +116,7 @@ class AuthyGroupForm extends AuthyGroup
 
         $q = new AuthyGroupQuery();
         $q = $this->setAclFilter($q);
-        
+        if (method_exists($this, 'beforeListSearch')){ $this->beforeListSearch($q, $search);}
 
         if(is_array( $this->searchMs )){
             # main search form
@@ -162,7 +162,7 @@ class AuthyGroupForm extends AuthyGroup
         
         
         
-        $this->pmpoData =  $q;
+        $this->pmpoData = $q;
         
         
         return $this->pmpoData;
@@ -176,6 +176,8 @@ class AuthyGroupForm extends AuthyGroup
     public function getListHeader($act)
     {
         $this->in = 'getListHeader';
+        $trSearch = '';
+        $trHeadMod = '';
         
         switch($act) {
             case 'head':
@@ -236,6 +238,8 @@ class AuthyGroupForm extends AuthyGroup
      */
     public function getList( $request, $uiTabsId = 'tabsContain', $IdParent = null , $pmpoDataIn = null)
     {
+        $HelpDivJs = '';
+        $HelpDiv = '';
         $this->in = 'getList';
         $this->isChild = '';
         $this->TableName = 'AuthyGroup';
@@ -258,6 +262,7 @@ class AuthyGroupForm extends AuthyGroup
         $hook = [];
         $editEvent = '';
         $return = ['html', 'js', 'onReadyJs'];
+        $cCmoreCols = '';
 
         
 
@@ -275,7 +280,7 @@ class AuthyGroupForm extends AuthyGroup
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'AuthyGroup/');
 
-        
+        if (method_exists($this, 'beforeList')){ $this->beforeList($request, $pmpoDataIn );}
         
         
         
@@ -322,26 +327,27 @@ class AuthyGroupForm extends AuthyGroup
                 $this->listActionCell = '';
                 
                 
-                
+
+                if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                     
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteAuthyGroup' ") . $this->listActionCell, " class='actionrow' ");
 
-                $tr .= tr(
-                td(span(\htmlentities((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editAuthyGroup'") . 
-                td(span(\htmlentities((($altValue['Desc']) ? $altValue['Desc'] : $data->getDesc()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Desc' class=''  j='editAuthyGroup'") . 
-                td(span(\htmlentities((($altValue['DefaultGroup']) ? $altValue['DefaultGroup'] : isntPo($data->getDefaultGroup())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DefaultGroup' class='center'  j='editAuthyGroup'") . 
-                td(span(\htmlentities((($altValue['Admin']) ? $altValue['Admin'] : isntPo($data->getAdmin())) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Admin' class='center'  j='editAuthyGroup'") . 
-                td(span(\htmlentities((($altValue['RightsAll']) ? $altValue['RightsAll'] : $data->getRightsAll()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='RightsAll' class=''  j='editAuthyGroup'") . 
-                td(span(\htmlentities((($altValue['RightsOwner']) ? $altValue['RightsOwner'] : $data->getRightsOwner()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='RightsOwner' class=''  j='editAuthyGroup'") . 
-                td(span(\htmlentities((($altValue['RightsGroup']) ? $altValue['RightsGroup'] : $data->getRightsGroup()) ?? '')." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='RightsGroup' class=''  j='editAuthyGroup'") . $cCmoreCols.$actionCell
-                , " 
+                $tr .= $hook['tr_before'].tr(
+                td(span((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editAuthyGroup'") . 
+                td(span((($altValue['Desc']) ? $altValue['Desc'] : $data->getDesc()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Desc' class=''  j='editAuthyGroup'") . 
+                td(span((($altValue['DefaultGroup']) ? $altValue['DefaultGroup'] : isntPo($data->getDefaultGroup())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DefaultGroup' class='center'  j='editAuthyGroup'") . 
+                td(span((($altValue['Admin']) ? $altValue['Admin'] : isntPo($data->getAdmin())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Admin' class='center'  j='editAuthyGroup'") . 
+                td(span((($altValue['RightsAll']) ? $altValue['RightsAll'] : $data->getRightsAll()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='RightsAll' class=''  j='editAuthyGroup'") . 
+                td(span((($altValue['RightsOwner']) ? $altValue['RightsOwner'] : $data->getRightsOwner()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='RightsOwner' class=''  j='editAuthyGroup'") . 
+                td(span((($altValue['RightsGroup']) ? $altValue['RightsGroup'] : $data->getRightsGroup()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='RightsGroup' class=''  j='editAuthyGroup'") . $hook['td'].$cCmoreCols.$actionCell
+                , " ".$hook['tr']."
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
                         class='".$hook['class']." '
                         id='AuthyGroupRow".$data->getPrimaryKey()."'")
-                ;
+                .$hook['tr_after'];
                 $i++;
             }
             $tr .= input('hidden', 'rowCountAuthyGroup', $i);
@@ -353,7 +359,7 @@ class AuthyGroupForm extends AuthyGroup
         $pagerRow = $this->getPager($pmpoData, $resultsCount, $search);
         $bottomRow = div($pagerRow,'bottomPagerRow', "class='tablesorter'");
 
-        
+        if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
         
@@ -554,6 +560,12 @@ class AuthyGroupForm extends AuthyGroup
     {
         $this->in = "getEditForm";
 
+        $HelpDivJs = '';
+        $HelpDiv = '';
+        $childTable = [];
+        $script_autoc_one = '';
+        $ongletf = '';
+        $mceInclude = '';
         $ip_save = '';
         $ip_save = '';
         $IdParent = 0;
@@ -748,7 +760,7 @@ $this->fields['AuthyGroup']['RightsGroup']['html'] = stdFieldRow(_("Rights group
                             .$this->hookListSearchButton
                         ,"", " class='divtd' colspan='2' style='text-align:right;'"),""," class='divtr divbut' ");
         }
-        
+        if (method_exists($this, 'afterFormObj')){ $this->afterFormObj($data, $dataObj);}
         
 
         //Form header
