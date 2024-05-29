@@ -88,7 +88,12 @@ foreach ($builderRoutes['html']['POST'] as $route => $params) {
     $app->post(_SUB_DIR_URL . $route . '[/{a}[/{params:.*}]]', function (Request $request, Response $response, $args) {
         $RouteHelper = new RouteHelper($request, $args);
         $Service = $RouteHelper->getService($response);
-        $response->getBody()->write($Service->getResponse());
+        if ($Service->contentType == 'json') {
+            $response->getBody()->write($Service->getApiResponse());
+        } else {
+            $response->getBody()->write($Service->getResponse());
+        }
+        
         if($Service->contentType){
             $response = $response->withHeader('Content-Type', $Service->contentType);
         }
@@ -126,7 +131,7 @@ $app->post(_SUB_DIR_URL . 'api/v' . API_VERSION . '/Authy/{a:auth|renew}', funct
 })->setName('api/Auth');
 
 foreach ($builderRoutes['json']['GET'] as $route => $params) {
-    $app->map(['GET', 'DELETE', 'PATCH', 'PUT', 'POST'], _SUB_DIR_URL . "api/v" . API_VERSION . "/{$route}[/{i:[A-Za-z0-9_-]+}]", function ($request, $response, $args) {
+    $app->map(['GET', 'DELETE', 'PATCH', 'PUT', 'POST'], _SUB_DIR_URL . "api/v" . API_VERSION . "/{$route}[/{a}[/{params:.*}]]", function ($request, $response, $args) {
         $RouteHelper = new RouteHelper($request, $args);
         $Service = $RouteHelper->getService($response);
         return $Service->getApiResponse();
