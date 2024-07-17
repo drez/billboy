@@ -172,7 +172,7 @@ DROP TABLE IF EXISTS `payment_line`;
 CREATE TABLE `payment_line`
 (
     `id_payment_line` INTEGER(10) NOT NULL AUTO_INCREMENT,
-    `id_billing` INTEGER(11) NOT NULL,
+    `id_billing` INTEGER(11) COMMENT 'Bill',
     `Reference` VARCHAR(40),
     `date` DATE COMMENT 'Date',
     `note` TEXT(500) COMMENT 'Note',

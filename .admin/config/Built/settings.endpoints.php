@@ -254,6 +254,7 @@ $table['payment_line'] = [
     ],
     'id_billing' => [
         'type' => 'INTEGER',
+        'description' => 'Bill',
     ],
     'Reference' => [
         'type' => 'VARCHAR',

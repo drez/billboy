@@ -3246,7 +3246,7 @@ abstract class BaseBilling extends BaseObject implements Persistent
                 $this->paymentLinesScheduledForDeletion = clone $this->collPaymentLines;
                 $this->paymentLinesScheduledForDeletion->clear();
             }
-            $this->paymentLinesScheduledForDeletion[]= clone $paymentLine;
+            $this->paymentLinesScheduledForDeletion[]= $paymentLine;
             $paymentLine->setBilling(null);
         }
 

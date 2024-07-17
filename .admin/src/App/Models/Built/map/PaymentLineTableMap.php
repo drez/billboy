@@ -43,7 +43,7 @@ class PaymentLineTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id_payment_line', 'IdPaymentLine', 'INTEGER', true, 10, null);
-        $this->addForeignKey('id_billing', 'IdBilling', 'INTEGER', 'billing', 'id_billing', true, 11, null);
+        $this->addForeignKey('id_billing', 'IdBilling', 'INTEGER', 'billing', 'id_billing', false, 11, null);
         $this->addColumn('Reference', 'Reference', 'VARCHAR', false, 40, null);
         $this->addColumn('date', 'Date', 'DATE', false, null, null);
         $this->addColumn('note', 'Note', 'LONGVARCHAR', false, 500, null);
@@ -57,7 +57,6 @@ class PaymentLineTableMap extends TableMap
         $this->addValidator('amount', 'minLength', 'propel.validator.MinLengthValidator', '1', 'payment_line_amount_required');
         $this->addValidator('id_payment_line', 'required', 'propel.validator.RequiredValidator', '', ('PaymentLine_IdPaymentLine_required'));
         $this->addValidator('id_payment_line', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('PaymentLine_IdPaymentLine_match_/^(?:[0-9]*|null)$/'));
-        $this->addValidator('id_billing', 'required', 'propel.validator.RequiredValidator', '', ('PaymentLine_IdBilling_required'));
         $this->addValidator('id_billing', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('PaymentLine_IdBilling_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('Reference', 'type', 'propel.validator.TypeValidator', 'string', ('PaymentLine_Reference_type_string'));
         $this->addValidator('date', 'match', 'propel.validator.MatchValidator', '', ('PaymentLine_Date_match'));
@@ -88,7 +87,9 @@ class PaymentLineTableMap extends TableMap
             'GoatCheese' =>  array (
   'i18n_langs' => '["en_US"]',
   'set_parent_table' => 'billing',
+  'set_menu_priority' => '5',
   'set_selectbox_filters' => '{"id_project":[["id_client","%billing%.id_client"]]}',
+  'set_child_colunms' => '{"id_billing":["title"]}',
 ),
             'add_validator' =>  array (
 ),

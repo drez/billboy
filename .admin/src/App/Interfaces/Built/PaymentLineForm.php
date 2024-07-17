@@ -120,7 +120,9 @@ class PaymentLineForm extends PaymentLine
         if(is_array( $this->searchMs )){
             # main search form
             $q::create()
-                ;
+                
+                #default
+                ->leftJoinWith('Billing');
                 
                 
         }else{
@@ -129,6 +131,8 @@ class PaymentLineForm extends PaymentLine
                         $pmpoData = $q::create()
                             ->filterBy(json_decode($IdParent))
                             
+                #default
+                ->leftJoinWith('Billing')
                             
 
                             ->paginate($page, $maxPerPage);
@@ -137,7 +141,9 @@ class PaymentLineForm extends PaymentLine
             $hasParent = json_decode($IdParent);
             if(empty($hasParent)) {
                 $q::create()
-                ;
+                
+                #default
+                ->leftJoinWith('Billing');
                 
             }
         }
@@ -188,7 +194,8 @@ class PaymentLineForm extends PaymentLine
         
         switch($act) {
             case 'head':
-                $trHead = th(_("Date"), " th='sorted' c='Date' title='" . _('Date')."' ")
+                $trHead = th(_("Billing title"), " th='sorted' c='Billing.Title' title='"._('Billing.Title')."' ")
+.th(_("Date"), " th='sorted' c='Date' title='" . _('Date')."' ")
 .th(_("Note"), " th='sorted' c='Note' title='" . _('Note')."' ")
 .th(_("Amount"), " th='sorted' c='Amount' title='" . _('Amount')."' ")
 . $this->cCmoreColsHeader;
@@ -206,6 +213,7 @@ class PaymentLineForm extends PaymentLine
 
             case 'search':
                 
+        $this->arrayIdBillingOptions = $this->selectBoxPaymentLine_IdBilling($this, $emptyVar, $data);
                 
                 ;
                 return $trSearch;
@@ -328,7 +336,11 @@ class PaymentLineForm extends PaymentLine
                 $this->listActionCell = '';
                 
                 
-
+                
+        $altValue['Billing_Title'] = "";
+        if($data->getBilling()){
+            $altValue['Billing_Title'] = $data->getBilling()->getTitle();
+        }
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                     
 
@@ -336,6 +348,7 @@ class PaymentLineForm extends PaymentLine
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deletePaymentLine' ") . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= $hook['tr_before'].tr(
+                td(span((($altValue['IdBilling']) ? $altValue['IdBilling'] : $altValue['Billing_Title']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBilling' class=''  j='editPaymentLine'") . 
                 td(span((($altValue['Date']) ? $altValue['Date'] : $data->getDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class=''  j='editPaymentLine'") . 
                 td(span((($altValue['Note']) ? $altValue['Note'] : substr(strip_tags($data->getNote()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Note' class=''  j='editPaymentLine'") . 
                 td(span((($altValue['Amount']) ? $altValue['Amount'] : str_replace(',', '.', $data->getAmount())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Amount' class='right'  j='editPaymentLine'") . $hook['td'].$cCmoreCols.$actionCell
@@ -463,6 +476,8 @@ class PaymentLineForm extends PaymentLine
         
         #
         
+        //foreign
+        $e->setIdBilling(( $data['IdBilling'] == '' ) ? null : $data['IdBilling']);
         $e->setDate( ($data['Date'] == '' || $data['Date'] == 'null' || substr($data['Date'],0,10) == '-0001-11-30') ? null : $data['Date'] );
         //integer not required
         $e->setNote( ($data['Note'] == '' ) ? null : $data['Note']);
@@ -493,6 +508,9 @@ class PaymentLineForm extends PaymentLine
         
         
         
+        if( isset($data['IdBilling']) ){
+            $e->setIdBilling(( $data['IdBilling'] == '' ) ? null : $data['IdBilling']);
+        }
         if(isset($data['Date'])){
             $e->setDate( ($data['Date'] == '' || $data['Date'] == 'null' || substr($data['Date'],0,10) == '-0001-11-30') ? null : $data['Date'] );
         }
@@ -618,6 +636,8 @@ class PaymentLineForm extends PaymentLine
 
             $q = PaymentLineQuery::create()
             
+                #default
+                ->leftJoinWith('Billing')
             ;
             
 
@@ -646,14 +666,17 @@ class PaymentLineForm extends PaymentLine
         
 
 
+                                    ($dataObj->getBilling())?'':$dataObj->setBilling( new Billing() );
 
         
+        $this->arrayIdBillingOptions = $this->selectBoxPaymentLine_IdBilling($this, $dataObj, $data);
         
         
         
         
         
         
+$this->fields['PaymentLine']['IdBilling']['html'] = stdFieldRow(_("Bill"), selectboxCustomArray('IdBilling', $this->arrayIdBillingOptions, _('Bill'), "v='ID_BILLING'  s='d'  val='".$dataObj->getIdBilling()."'", $dataObj->getIdBilling()), 'IdBilling', "", $this->commentsIdBilling, $this->commentsIdBilling_css, '', ' ', 'no');
 $this->fields['PaymentLine']['Date']['html'] = stdFieldRow(_("Date"), input('date', 'Date', $dataObj->getDate(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'Date', "", $this->commentsDate, $this->commentsDate_css, '', ' ', 'no');
 $this->fields['PaymentLine']['Note']['html'] = stdFieldRow(_("Note"), textarea('Note', htmlentities($dataObj->getNote()) ,"placeholder='".str_replace("'","&#39;",_('Note'))."' cols='71' v='NOTE' s='d'  class=' ' style='' spellcheck='false'"), 'Note', "", $this->commentsNote, $this->commentsNote_css, '', ' ', 'no');
 $this->fields['PaymentLine']['Amount']['html'] = stdFieldRow(_("Amount"), input('text', 'Amount', $dataObj->getAmount(), "  placeholder='".str_replace("'","&#39;",_('Amount'))."'  v='AMOUNT' size='5' s='d' class=''"), 'Amount', "", $this->commentsAmount, $this->commentsAmount_css, '', ' ', 'no');
@@ -673,7 +696,7 @@ $this->fields['PaymentLine']['Amount']['html'] = stdFieldRow(_("Amount"), input(
             $this->formSaveBar = div(	div( input('button', 'savePaymentLine', _('Save'),' class="button-link-blue can-save"')
                                 .input('hidden', 'formChangedPaymentLine','', 'j="formChanged"')
                                 .input('hidden', 'idPk', urlencode($id), "s='d'")
-                            .input('hidden', 'IdPaymentLine', $dataObj->getIdPaymentLine(), " s='d' pk").input('hidden', 'IdBilling', $dataObj->getIdBilling(), " s='d' nodesc").input('hidden', 'IdGroupCreation', $dataObj->getIdGroupCreation(), " s='d' nodesc").input('hidden', 'IdCreation', $dataObj->getIdCreation(), " s='d' nodesc").input('hidden', 'IdModification', $dataObj->getIdModification(), " s='d' nodesc")
+                            .input('hidden', 'IdPaymentLine', $dataObj->getIdPaymentLine(), " s='d' pk").input('hidden', 'IdGroupCreation', $dataObj->getIdGroupCreation(), " s='d' nodesc").input('hidden', 'IdCreation', $dataObj->getIdCreation(), " s='d' nodesc").input('hidden', 'IdModification', $dataObj->getIdModification(), " s='d' nodesc")
                             .$this->hookListSearchButton
                         ,"", " class='divtd' colspan='2' style='text-align:right;'"),""," class='divtr divbut' ");
         }
@@ -710,7 +733,8 @@ $this->fields['PaymentLine']['Amount']['html'] = stdFieldRow(_("Amount"), input(
                 $this->hookFormInnerTop
                 
                 .
-$this->fields['PaymentLine']['Date']['html']
+$this->fields['PaymentLine']['IdBilling']['html']
+.$this->fields['PaymentLine']['Date']['html']
 .$this->fields['PaymentLine']['Note']['html']
 .$this->fields['PaymentLine']['Amount']['html']
                 
@@ -771,6 +795,9 @@ $this->fields['PaymentLine']['Date']['html']
     function lockFormField($fields, $dataObj)	
     {
         
+        $this->fieldsRo['PaymentLine']['IdBilling']['html'] = stdFieldRow(_("Bill"), div( ($dataObj->getBilling())?$dataObj->getBilling()->getTitle():'', 'IdBilling_label' , "class='readonly' s='d'")
+                .input('hidden', 'IdBilling', $dataObj->getIdBilling(), "s='d'"), 'IdBilling', "", $this->commentsIdBilling, $this->commentsIdBilling_css, 'readonly', ' ', 'no');
+
         $this->fieldsRo['PaymentLine']['Date']['html'] = stdFieldRow(_("Date"), div( $dataObj->getDate(), 'Date_label' , "class='readonly' s='d'")
                 .input('hidden', 'Date', $dataObj->getDate(), "s='d'"), 'Date', "", $this->commentsDate, $this->commentsDate_css, 'readonly', ' ', 'no');
 
@@ -790,5 +817,30 @@ $this->fields['PaymentLine']['Date']['html']
                 $this->fields['PaymentLine'][$field]['html'] = $this->fieldsRo['PaymentLine'][$field]['html'];
             }
         }
+    }
+
+    /**
+     * Query for PaymentLine_IdBilling selectBox 
+     * @param class $obj
+     * @param class $dataObj
+     * @param array $data
+    **/
+    public function selectBoxPaymentLine_IdBilling(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+        $q = BillingQuery::create();
+
+            $q->addAsColumn('selDisplay', ''.BillingPeer::TITLE.' ');
+            $q->select(array('selDisplay', 'IdBilling'));
+            $q->orderBy('selDisplay', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+
+        $arrayOpt = $pcDataO->toArray();
+
+        return assocToNum($arrayOpt , true);
     }
 }

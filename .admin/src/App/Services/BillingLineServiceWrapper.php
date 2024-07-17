@@ -34,6 +34,11 @@ class BillingLineServiceWrapper extends BillingLineService
         $this->setProjectSpent($Class);
     }
 
+    public function afterDelete(BillingLine $Class, &$request, &$error, &$messages){
+        $this->setBillingTotal($Class->getBilling()->getIdBilling());
+        $this->setProjectSpent($Class);
+    }
+
     private function setBillingTotal(int $IdBilling)
     {
         $total = 0;

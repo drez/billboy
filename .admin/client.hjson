@@ -62,17 +62,17 @@
 			"date_due('Due date')": ["date()"],
 			
 			"note_billing('Note')": ["longvarchar(400)"],
-            "date_paid('Paid date')": ["date()"],
+      "date_paid('Paid date')": ["date()"],
 			"net('Net')": ["decimal(8, 2)"],
 			"reference('Paiement Reference')": ["varchar(100)"],
 			"validator": {"title":{"required":{"msg":"billing_title_required"}}},
 		},
 		"billing_line('Entries')": {
-            "set_parent_table": 'billing',
-            "set_readonly_columns":["total"],
+      "set_parent_table": 'billing',
+      "set_readonly_columns":["total"],
 			"set_selectbox_filters":{
-					"id_project":[ ["id_client", "%billing%.id_client"]]
-					}
+        "id_project":[ ["id_client", "%billing%.id_client"]]
+      }
 			"set_child_colunms":{"id_creation":["fullname"], "id_assign":["fullname"]}
 			is_wysiwyg_colunms: ["note_billing_ligne"],
 			"add_tab_columns": {"Note":"note_billing_ligne"},
@@ -88,7 +88,7 @@
 			"title('Title')": ["varchar(100)"],
 			"work_date('Date')": ["date()"],
 			
-            "quantity('Quantity')": ["decimal(8, 2)", 'default:1.00', 'required'],
+      "quantity('Quantity')": ["decimal(8, 2)", 'default:1.00', 'required'],
 			"amount('Amount')": ["decimal(8, 2)", 'default:0.00', 'required'],
 			"total('Total')": ["decimal(8, 2)"],
 			"id_billing_category('Category')": ["integer()","foreign(billing_category)",'not-required', 'default:null'],
@@ -103,13 +103,16 @@
 					}
 				},
 		},
-		"payment_line('Payment entry')": {
-            "set_parent_table": 'billing',
+    "payment_line('Payment entry')": {
+      "set_parent_table": 'billing',
+			set_menu_priority: 5,
 			"set_selectbox_filters":{
-					"id_project":[ ["id_client", "%billing%.id_client"]]
-					}
+        "id_project":[ ["id_client", "%billing%.id_client"]]
+      },
+      "set_child_colunms":{"id_billing":["title"]},
+
 			"id_payment_line()": ["primary()"],
-			"id_billing()": ["integer()","foreign(billing)","onDelete:cascade","foreign:id_billing"],
+			"id_billing('Bill')": ["integer()","foreign(billing)","onDelete:cascade","foreign:id_billing",'not-required', 'default:null'],
 			"Reference()": ["varchar(40)"],
 			//"prod_id('Produit')": ["integer()","foreign(product)","onDelete:restrict","foreign:id_product"],
 			"date('Date')": ["date()"],
@@ -122,9 +125,9 @@
 					}
 				},
 		},
-        "cost_line('Expense')": {
-            "set_parent_table": 'billing',
-            "set_readonly_columns":["total"],
+    "cost_line('Expense')": {
+      "set_parent_table": 'billing',
+      "set_readonly_columns":["total"],
 			set_menu_priority: 1,
 
 			"id_cost_line()": ["primary()"],
@@ -140,9 +143,9 @@
 			"recuring('Recuring')": ["enum(Once, Monthly, Yearly)", 'required'],
 			"renewal_date('Renewal date')": ["date()"],
 			
-            "quantity('Quantity')": ["decimal(8, 2)", 'required', 'default:1.00'],
+      "quantity('Quantity')": ["decimal(8, 2)", 'required', 'default:1.00'],
 			"amount('Amount')": ["decimal(8, 2)", 'default:0.00', 'required'],
-            "total('Total')": ["decimal(8, 2)"],
+      "total('Total')": ["decimal(8, 2)"],
 			"bill('Add to bill')": ["enum(No, Yes)", 'required'],
 			"note_billing_ligne('Note')": ["longvarchar(500)"],
 			

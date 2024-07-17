@@ -2132,6 +2132,36 @@ $this->fields['Billing']['Title']['html']
                 "
                 . $this->hookListReadyJsCostLine;
         return $return;
+    }
+
+    /**
+     * Query for PaymentLine_IdBilling selectBox 
+     * @param class $obj
+     * @param class $dataObj
+     * @param array $data
+    **/
+    public function selectBoxPaymentLine_IdBilling(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+        $q = BillingQuery::create();
+
+    if(method_exists($this, 'beginSelectboxPaymentLine_IdBilling') and $array)
+        $ret = $this->beginSelectboxPaymentLine_IdBilling($q, $dataObj, $data, $obj);
+    if($ret !== false)
+            $q->addAsColumn('selDisplay', ''.BillingPeer::TITLE.' ');
+            $q->select(array('selDisplay', 'IdBilling'));
+            $q->orderBy('selDisplay', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+                if(function_exists('selectboxDataPaymentLine_IdBilling')){ $this->selectboxDataPaymentLine_IdBilling($pcDataO, $q); }
+
+
+        $arrayOpt = $pcDataO->toArray();
+
+        return assocToNum($arrayOpt , true);
     }	
     /**
      * function getPaymentLineList
@@ -2245,7 +2275,9 @@ $this->fields['Billing']['Title']['html']
         $q = PaymentLineQuery::create();
         
         
-        $q 
+        $q
+                #default
+                ->leftJoinWith('Billing') 
             
             ->filterByIdBilling( $filterKey );; 
                // Search
@@ -2287,6 +2319,7 @@ $this->fields['Billing']['Title']['html']
          
         #options building
         
+        $this->arrayIdBillingOptions = $this->selectBoxPaymentLine_IdBilling($this, $dataObj, $data);
         
         
           
@@ -2300,7 +2333,8 @@ $this->fields['Billing']['Title']['html']
             $actionRowHeader = th('&nbsp;', " r='delrow' class='actionrow' ");
         }
 
-        $header = tr( th(_("Date"), " th='sorted' c='Date' title='" . _('Date')."' " . $param['th']['Date']."")
+        $header = tr( th(_("Billing title"), " th='sorted' c='Billing.Title' title='"._('Billing.Title')."' " . $param['th']['IdBilling']."")
+.th(_("Date"), " th='sorted' c='Date' title='" . _('Date')."' " . $param['th']['Date']."")
 .th(_("Note"), " th='sorted' c='Note' title='" . _('Note')."' " . $param['th']['Note']."")
 .th(_("Amount"), " th='sorted' c='Amount' title='" . _('Amount')."' " . $param['th']['Amount']."")
 .'' . $actionRowHeader, " ln='PaymentLine' class=''");
@@ -2333,6 +2367,10 @@ $this->fields['Billing']['Title']['html']
                 $actionRow = $actionRow;
                 $actionRow = (!empty($actionRow)) ? td($this->listActionCellPaymentLine.$actionRow," class='actionrow'") : "";
                 
+        $altValue['Billing_Title'] = "";
+        if($data->getBilling()){
+            $altValue['Billing_Title'] = $data->getBilling()->getTitle();
+        }
                 
                 
                 ;
@@ -2343,6 +2381,7 @@ $this->fields['Billing']['Title']['html']
                         tr(
                             (isset($hookListColumnsPaymentLineFirst)?$hookListColumnsPaymentLineFirst:'').
                             
+                td(span((($altValue['IdBilling']) ? $altValue['IdBilling'] : $altValue['Billing_Title']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBilling' class='' " . $param['IdBilling']." j='editPaymentLine'") . 
                 td(span((($altValue['Date']) ? $altValue['Date'] : $data->getDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class='' " . $param['Date']." j='editPaymentLine'") . 
                 td(span((($altValue['Note']) ? $altValue['Note'] : substr(strip_tags($data->getNote()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Note' class='' " . $param['Note']." j='editPaymentLine'") . 
                 td(span((($altValue['Amount']) ? $altValue['Amount'] : str_replace(',', '.', $data->getAmount())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Amount' class='right' " . $param['Amount']." j='editPaymentLine'") . 

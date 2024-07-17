@@ -194,7 +194,7 @@ abstract class BasePaymentLine extends BaseObject implements Persistent
     /**
      * @Field()
      * Get the [id_billing] column value.
-     *
+     * Bill
      * @return int
      */
     public function getIdBilling()
@@ -421,7 +421,7 @@ abstract class BasePaymentLine extends BaseObject implements Persistent
 
     /**
      * Set the value of [id_billing] column.
-     *
+     * Bill
      * @param  int $v new value
      * @return PaymentLine The current object (for fluent API support)
      */

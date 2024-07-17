@@ -88,12 +88,7 @@ foreach ($builderRoutes['html']['POST'] as $route => $params) {
     $app->post(_SUB_DIR_URL . $route . '[/{a}[/{params:.*}]]', function (Request $request, Response $response, $args) {
         $RouteHelper = new RouteHelper($request, $args);
         $Service = $RouteHelper->getService($response);
-        if ($Service->contentType == 'json') {
-            $response->getBody()->write($Service->getApiResponse());
-        } else {
-            $response->getBody()->write($Service->getResponse());
-        }
-        
+        $response->getBody()->write($Service->getResponse());
         if($Service->contentType){
             $response = $response->withHeader('Content-Type', $Service->contentType);
         }

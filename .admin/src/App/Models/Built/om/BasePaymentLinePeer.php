@@ -2084,9 +2084,6 @@ abstract class BasePaymentLinePeer
         if ($obj->isNew() || $obj->isColumnModified(PaymentLinePeer::ID_BILLING))
             $columns[PaymentLinePeer::ID_BILLING] = $obj->getIdBilling();
 
-        if ($obj->isNew() || $obj->isColumnModified(PaymentLinePeer::ID_BILLING))
-            $columns[PaymentLinePeer::ID_BILLING] = $obj->getIdBilling();
-
         if ($obj->isNew() || $obj->isColumnModified(PaymentLinePeer::REFERENCE))
             $columns[PaymentLinePeer::REFERENCE] = $obj->getReference();
 

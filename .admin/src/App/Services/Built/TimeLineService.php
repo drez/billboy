@@ -122,34 +122,36 @@ class TimeLineService
         $this->body = ['status' => 'failure', 'errors' => ['Unknown method'], 'data' => null, 'messages' => null];
         $Api = new Api('TimeLine', $this);
 
-        if (method_exists($this, $this->customActions[$this->request['action']])) {
-            $callable = $this->customActions[$this->request['action']];
-            $this->content = $this->$callable($Api);
+        if (method_exists($this, $this->customActions[$this->request['a']])) {
+            $callable = $this->customActions[$this->request['a']];
+            $this->body = $this->$callable($Api);
+        }else{
+            switch($this->request['method']){
+                case 'AUTH':
+                    $dispatch = $this->request['a'];
+                    $this->body = $this->$dispatch();
+                    break;
+                case 'GET':
+                    $this->body = $Api->getJson($this->request);
+                    break;
+                case 'POST':
+                case 'PATCH':
+                    if ($this->request['a'] == 'list') {
+                        $this->body = $Api->getJson($this->request);
+                    } else {
+                        $this->body = $Api->setJson($this->request);
+                    }
+                    break;
+                case 'PUT':
+                    $this->body = $Api->file($this->request);
+                    break;
+                case 'DELETE':
+                    $this->body = $Api->deleteJson($this->request);
+                    break;
+            }
         }
 
-        switch($this->request['method']){
-            case 'AUTH':
-                $dispatch = $this->request['action'];
-                $this->body = $this->$dispatch();
-                break;
-            case 'GET':
-                $this->body = $Api->getJson($this->request);
-                break;
-            case 'POST':
-            case 'PATCH':
-                if ($this->request['action'] == 'list') {
-                    $this->body = $Api->getJson($this->request);
-                } else {
-                    $this->body = $Api->setJson($this->request);
-                }
-                break;
-            case 'PUT':
-                $this->body = $Api->file($this->request);
-                break;
-            case 'DELETE':
-                $this->body = $Api->deleteJson($this->request);
-                break;
-        }
+        
         
         $ApiResponse = new ApiResponse($this->request, $this->response, $this->body);
         return $ApiResponse->getResponse();

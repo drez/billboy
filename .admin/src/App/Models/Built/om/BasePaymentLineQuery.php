@@ -774,7 +774,7 @@ abstract class BasePaymentLineQuery extends ModelCriteria
      *
      * @return PaymentLineQuery The current query, for fluid interface
      */
-    public function joinBilling($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinBilling($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('Billing');
@@ -809,7 +809,7 @@ abstract class BasePaymentLineQuery extends ModelCriteria
      *
      * @return   \App\BillingQuery A secondary query class using the current class as primary query
      */
-    public function useBillingQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useBillingQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinBilling($relationAlias, $joinType)

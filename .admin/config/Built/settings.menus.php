@@ -11,6 +11,12 @@ return [
         'parent_menu' => null,
     ],
     [
+        'name' => 'PaymentLine',
+        'desc' => 'Payment entries',
+        'index' => 5,
+        'parent_menu' => null,
+    ],
+    [
         'name' => 'Project',
         'desc' => 'Projects',
         'index' => 5,
