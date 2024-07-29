@@ -969,8 +969,8 @@ $this->fields['CostLine']['Title']['html']
 
     /**
      * Query for CostLine_IdSupplier selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxCostLine_IdSupplier(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -993,8 +993,8 @@ $this->fields['CostLine']['Title']['html']
 
     /**
      * Query for CostLine_IdProject selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxCostLine_IdProject(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -1017,8 +1017,8 @@ $this->fields['CostLine']['Title']['html']
 
     /**
      * Query for CostLine_IdBillingCategory selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxCostLine_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){

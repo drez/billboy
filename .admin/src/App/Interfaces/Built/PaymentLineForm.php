@@ -194,7 +194,7 @@ class PaymentLineForm extends PaymentLine
         
         switch($act) {
             case 'head':
-                $trHead = th(_("Billing title"), " th='sorted' c='Billing.Title' title='"._('Billing.Title')."' ")
+                $trHead = th(_("Client name"), " th='sorted' c='Billing.Name' title='"._('Billing.Name')."' ")
 .th(_("Date"), " th='sorted' c='Date' title='" . _('Date')."' ")
 .th(_("Note"), " th='sorted' c='Note' title='" . _('Note')."' ")
 .th(_("Amount"), " th='sorted' c='Amount' title='" . _('Amount')."' ")
@@ -337,9 +337,10 @@ class PaymentLineForm extends PaymentLine
                 
                 
                 
-        $altValue['Billing_Title'] = "";
-        if($data->getBilling()){
-            $altValue['Billing_Title'] = $data->getBilling()->getTitle();
+        $altValue['Billing_Client_Name'] = "";
+        if($data->getBilling() ){
+            if($data->getBilling()->getClient() )
+                $altValue['Billing_Client_Name'] = $data->getBilling()->getClient()->getName();
         }
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                     
@@ -348,7 +349,7 @@ class PaymentLineForm extends PaymentLine
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deletePaymentLine' ") . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= $hook['tr_before'].tr(
-                td(span((($altValue['IdBilling']) ? $altValue['IdBilling'] : $altValue['Billing_Title']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBilling' class=''  j='editPaymentLine'") . 
+                td(span((($altValue['IdBilling']) ? $altValue['IdBilling'] : $altValue['Billing_Client_Name']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBilling' class=''  j='editPaymentLine'") . 
                 td(span((($altValue['Date']) ? $altValue['Date'] : $data->getDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class=''  j='editPaymentLine'") . 
                 td(span((($altValue['Note']) ? $altValue['Note'] : substr(strip_tags($data->getNote()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Note' class=''  j='editPaymentLine'") . 
                 td(span((($altValue['Amount']) ? $altValue['Amount'] : str_replace(',', '.', $data->getAmount())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Amount' class='right'  j='editPaymentLine'") . $hook['td'].$cCmoreCols.$actionCell
@@ -795,7 +796,7 @@ $this->fields['PaymentLine']['IdBilling']['html']
     function lockFormField($fields, $dataObj)	
     {
         
-        $this->fieldsRo['PaymentLine']['IdBilling']['html'] = stdFieldRow(_("Bill"), div( ($dataObj->getBilling())?$dataObj->getBilling()->getTitle():'', 'IdBilling_label' , "class='readonly' s='d'")
+        $this->fieldsRo['PaymentLine']['IdBilling']['html'] = stdFieldRow(_("Bill"), div( ($dataObj->getBilling())?$dataObj->getBilling()->getName():'', 'IdBilling_label' , "class='readonly' s='d'")
                 .input('hidden', 'IdBilling', $dataObj->getIdBilling(), "s='d'"), 'IdBilling', "", $this->commentsIdBilling, $this->commentsIdBilling_css, 'readonly', ' ', 'no');
 
         $this->fieldsRo['PaymentLine']['Date']['html'] = stdFieldRow(_("Date"), div( $dataObj->getDate(), 'Date_label' , "class='readonly' s='d'")
@@ -821,14 +822,16 @@ $this->fields['PaymentLine']['IdBilling']['html']
 
     /**
      * Query for PaymentLine_IdBilling selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxPaymentLine_IdBilling(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
         $q = BillingQuery::create();
 
-            $q->addAsColumn('selDisplay', ''.BillingPeer::TITLE.' ');
+            $q->filterByType('Bill' );
+            $q->join('Client client');
+            $q->addAsColumn('selDisplay', 'CONCAT_WS ( ", ", client.Name, '.BillingPeer::TITLE.', '.BillingPeer::DATE.' )');
             $q->select(array('selDisplay', 'IdBilling'));
             $q->orderBy('selDisplay', 'ASC');
         

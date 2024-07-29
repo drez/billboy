@@ -930,8 +930,8 @@ $this->fields['Client']['Name']['html']
 
     /**
      * Query for Client_IdCountry selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxClient_IdCountry(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -954,8 +954,8 @@ $this->fields['Client']['Name']['html']
 
     /**
      * Query for Billing_IdClient selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxBilling_IdClient(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -983,8 +983,8 @@ $this->fields['Client']['Name']['html']
 
     /**
      * Query for Billing_IdProject selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxBilling_IdProject(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -1012,8 +1012,8 @@ $this->fields['Client']['Name']['html']
 
     /**
      * Query for Billing_IdBillingCategory selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxBilling_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){

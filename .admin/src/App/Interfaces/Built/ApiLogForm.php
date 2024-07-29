@@ -772,14 +772,14 @@ $this->fields['ApiLog']['IdApiRbac']['html']
 
     /**
      * Query for ApiLog_IdApiRbac selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxApiLog_IdApiRbac(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
         $q = ApiRbacQuery::create();
 
-            $q->addAsColumn('selDisplay', 'CONCAT_WS ( " ", '.ApiRbacPeer::MODEL.' ,'.ApiRbacPeer::ACTION.' ,'.ApiRbacPeer::QUERY.' , "" )');
+            $q->addAsColumn('selDisplay', 'CONCAT_WS ( ", ", '.ApiRbacPeer::MODEL.', '.ApiRbacPeer::ACTION.', '.ApiRbacPeer::QUERY.' )');
             $q->select(array('selDisplay', 'IdApiRbac'));
             $q->orderBy('selDisplay', 'ASC');
         

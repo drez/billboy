@@ -1136,8 +1136,8 @@ $this->fields['Billing']['Title']['html']
 
     /**
      * Query for Billing_IdClient selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxBilling_IdClient(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -1160,8 +1160,8 @@ $this->fields['Billing']['Title']['html']
 
     /**
      * Query for Billing_IdProject selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxBilling_IdProject(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -1184,8 +1184,8 @@ $this->fields['Billing']['Title']['html']
 
     /**
      * Query for Billing_IdBillingCategory selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxBilling_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -1208,8 +1208,8 @@ $this->fields['Billing']['Title']['html']
 
     /**
      * Query for BillingLine_IdAssign selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxBillingLine_IdAssign(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -1218,7 +1218,7 @@ $this->fields['Billing']['Title']['html']
     if(method_exists($this, 'beginSelectboxBillingLine_IdAssign') and $array)
         $ret = $this->beginSelectboxBillingLine_IdAssign($q, $dataObj, $data, $obj);
     if($ret !== false)
-            $q->addAsColumn('selDisplay', ''.AuthyPeer::FULLNAME.' ');
+            $q->addAsColumn('selDisplay', ''.AuthyPeer::FULLNAME.'');
             $q->select(array('selDisplay', 'IdCreation'));
             $q->orderBy('selDisplay', 'ASC');
         
@@ -1238,8 +1238,8 @@ $this->fields['Billing']['Title']['html']
 
     /**
      * Query for BillingLine_IdProject selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxBillingLine_IdProject(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -1267,8 +1267,8 @@ $this->fields['Billing']['Title']['html']
 
     /**
      * Query for BillingLine_IdBillingCategory selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxBillingLine_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -1699,8 +1699,8 @@ $this->fields['Billing']['Title']['html']
 
     /**
      * Query for CostLine_IdSupplier selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxCostLine_IdSupplier(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -1728,8 +1728,8 @@ $this->fields['Billing']['Title']['html']
 
     /**
      * Query for CostLine_IdProject selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxCostLine_IdProject(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -1757,8 +1757,8 @@ $this->fields['Billing']['Title']['html']
 
     /**
      * Query for CostLine_IdBillingCategory selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxCostLine_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -2136,8 +2136,8 @@ $this->fields['Billing']['Title']['html']
 
     /**
      * Query for PaymentLine_IdBilling selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxPaymentLine_IdBilling(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -2146,7 +2146,8 @@ $this->fields['Billing']['Title']['html']
     if(method_exists($this, 'beginSelectboxPaymentLine_IdBilling') and $array)
         $ret = $this->beginSelectboxPaymentLine_IdBilling($q, $dataObj, $data, $obj);
     if($ret !== false)
-            $q->addAsColumn('selDisplay', ''.BillingPeer::TITLE.' ');
+            $q->join('Client client');
+            $q->addAsColumn('selDisplay', 'CONCAT_WS ( ", ", client.Name, '.BillingPeer::TITLE.', '.BillingPeer::DATE.' )');
             $q->select(array('selDisplay', 'IdBilling'));
             $q->orderBy('selDisplay', 'ASC');
         
@@ -2333,7 +2334,7 @@ $this->fields['Billing']['Title']['html']
             $actionRowHeader = th('&nbsp;', " r='delrow' class='actionrow' ");
         }
 
-        $header = tr( th(_("Billing title"), " th='sorted' c='Billing.Title' title='"._('Billing.Title')."' " . $param['th']['IdBilling']."")
+        $header = tr( th(_("Client name"), " th='sorted' c='Billing.Name' title='"._('Billing.Name')."' " . $param['th']['IdBilling']."")
 .th(_("Date"), " th='sorted' c='Date' title='" . _('Date')."' " . $param['th']['Date']."")
 .th(_("Note"), " th='sorted' c='Note' title='" . _('Note')."' " . $param['th']['Note']."")
 .th(_("Amount"), " th='sorted' c='Amount' title='" . _('Amount')."' " . $param['th']['Amount']."")
@@ -2367,9 +2368,10 @@ $this->fields['Billing']['Title']['html']
                 $actionRow = $actionRow;
                 $actionRow = (!empty($actionRow)) ? td($this->listActionCellPaymentLine.$actionRow," class='actionrow'") : "";
                 
-        $altValue['Billing_Title'] = "";
-        if($data->getBilling()){
-            $altValue['Billing_Title'] = $data->getBilling()->getTitle();
+        $altValue['Billing_Client_Name'] = "";
+        if($data->getBilling() ){
+            if($data->getBilling()->getClient() )
+                $altValue['Billing_Client_Name'] = $data->getBilling()->getClient()->getName();
         }
                 
                 
@@ -2381,7 +2383,7 @@ $this->fields['Billing']['Title']['html']
                         tr(
                             (isset($hookListColumnsPaymentLineFirst)?$hookListColumnsPaymentLineFirst:'').
                             
-                td(span((($altValue['IdBilling']) ? $altValue['IdBilling'] : $altValue['Billing_Title']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBilling' class='' " . $param['IdBilling']." j='editPaymentLine'") . 
+                td(span((($altValue['IdBilling']) ? $altValue['IdBilling'] : $altValue['Billing_Client_Name']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBilling' class='' " . $param['IdBilling']." j='editPaymentLine'") . 
                 td(span((($altValue['Date']) ? $altValue['Date'] : $data->getDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class='' " . $param['Date']." j='editPaymentLine'") . 
                 td(span((($altValue['Note']) ? $altValue['Note'] : substr(strip_tags($data->getNote()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Note' class='' " . $param['Note']." j='editPaymentLine'") . 
                 td(span((($altValue['Amount']) ? $altValue['Amount'] : str_replace(',', '.', $data->getAmount())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Amount' class='right' " . $param['Amount']." j='editPaymentLine'") . 

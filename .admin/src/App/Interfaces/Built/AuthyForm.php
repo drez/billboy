@@ -1190,8 +1190,8 @@ $('.cntOnglet').parent().tabs();
 
     /**
      * Query for Authy_IdAuthyGroup selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxAuthy_IdAuthyGroup(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -1214,8 +1214,8 @@ $('.cntOnglet').parent().tabs();
 
     /**
      * Query for AuthyGroupX_IdAuthyGroup selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxAuthyGroupX_IdAuthyGroup(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){

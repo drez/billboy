@@ -997,8 +997,8 @@ $this->fields['Project']['Name']['html']
 
     /**
      * Query for Project_IdClient selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxProject_IdClient(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -1021,8 +1021,8 @@ $this->fields['Project']['Name']['html']
 
     /**
      * Query for BillingLine_IdAssign selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxBillingLine_IdAssign(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -1031,7 +1031,7 @@ $this->fields['Project']['Name']['html']
     if(method_exists($this, 'beginSelectboxBillingLine_IdAssign') and $array)
         $ret = $this->beginSelectboxBillingLine_IdAssign($q, $dataObj, $data, $obj);
     if($ret !== false)
-            $q->addAsColumn('selDisplay', ''.AuthyPeer::FULLNAME.' ');
+            $q->addAsColumn('selDisplay', ''.AuthyPeer::FULLNAME.'');
             $q->select(array('selDisplay', 'IdCreation'));
             $q->orderBy('selDisplay', 'ASC');
         
@@ -1051,8 +1051,8 @@ $this->fields['Project']['Name']['html']
 
     /**
      * Query for BillingLine_IdProject selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxBillingLine_IdProject(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -1080,8 +1080,8 @@ $this->fields['Project']['Name']['html']
 
     /**
      * Query for BillingLine_IdBillingCategory selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxBillingLine_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){

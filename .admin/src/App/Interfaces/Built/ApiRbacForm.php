@@ -978,8 +978,8 @@ $this->fields['ApiRbac']['DateCreation']['html']
 
     /**
      * Query for ApiLog_IdApiRbac selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxApiLog_IdApiRbac(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
@@ -988,7 +988,7 @@ $this->fields['ApiRbac']['DateCreation']['html']
     if(method_exists($this, 'beginSelectboxApiLog_IdApiRbac') and $array)
         $ret = $this->beginSelectboxApiLog_IdApiRbac($q, $dataObj, $data, $obj);
     if($ret !== false)
-            $q->addAsColumn('selDisplay', 'CONCAT_WS ( " ", '.ApiRbacPeer::MODEL.' ,'.ApiRbacPeer::ACTION.' ,'.ApiRbacPeer::QUERY.' , "" )');
+            $q->addAsColumn('selDisplay', 'CONCAT_WS ( ", ", '.ApiRbacPeer::MODEL.', '.ApiRbacPeer::ACTION.', '.ApiRbacPeer::QUERY.' )');
             $q->select(array('selDisplay', 'IdApiRbac'));
             $q->orderBy('selDisplay', 'ASC');
         

@@ -22,27 +22,27 @@
 			"zip('Zip')": ["varchar(12)"],
 			
 			"validator": {
-                    "phone":{"unique":{"msg":"client_phone_not_unique"},
-                    "minLength":{"msg":"client_phone_required","value":"7"}},
-                    "name":{"minLength":{"msg":"client_name_required","value":"1"}},
-                    "id_country":{"required":{"msg":"client_country_required"}}},
+        "phone":{"unique":{"msg":"client_phone_not_unique"},
+        "minLength":{"msg":"client_phone_required","value":"7"}},
+        "name":{"minLength":{"msg":"client_name_required","value":"1"}},
+        "id_country":{"required":{"msg":"client_country_required"}}},
 		},
 
-        "billing('Billing')": {
-            set_menu_priority: 5,
-            "set_parent_table": 'client',
-            "with_child_tables": ["billing_line", "cost_line", "payment_line"],
-			"add_child_search_columns":{ "billing_line":{"Assigned to": [["id_assign", "%val"]]} },
-            "add_tab_columns": {"Note":"note_billing", "Paiement":"date_paid"},
-            is_wysiwyg_colunms: ["note_billing"],
-            add_search_columns:{"Type": [["type", "%val", "multiple"]], "Client": [["id_client", "%val", "multiple"]], "Date": [["date", "%val"]], "Title": [["title", "%val"]], "State": [["state", "%val", "multiple"]],},
-			"set_readonly_columns":["gross", "tax"],
-			"set_list_hide_columns":["note_billing", "reference"],
-			set_order_list_columns:[["date", "DESC"]],
-			set_order_child_list_columns:{"billing_line":[["work_date", "DESC"]]},
-			#add_child_bulk:{"billing_line": ["id_project"]},
-			#checkbox_all_child:{"billing_line": ["id_project"]}
-			add_total:{"billing":[["gross"], ["net"]], "billing_line":[["total"]]},
+    "billing('Billing')": {
+        set_menu_priority: 5,
+        "set_parent_table": 'client',
+        "with_child_tables": ["billing_line", "cost_line", "payment_line"],
+        "add_child_search_columns":{ "billing_line":{"Assigned to": [["id_assign", "%val"]]} },
+        "add_tab_columns": {"Note":"note_billing", "Paiement":"date_paid"},
+        is_wysiwyg_colunms: ["note_billing"],
+        add_search_columns:{"Type": [["type", "%val", "multiple"]], "Client": [["id_client", "%val", "multiple"]], "Date": [["date", "%val"]], "Title": [["title", "%val"]], "State": [["state", "%val", "multiple"]],},
+        "set_readonly_columns":["gross", "tax"],
+        "set_list_hide_columns":["note_billing", "reference"],
+        set_order_list_columns:[["date", "DESC"]],
+        set_order_child_list_columns:{"billing_line":[["work_date", "DESC"]]},
+        #add_child_bulk:{"billing_line": ["id_project"]},
+        #checkbox_all_child:{"billing_line": ["id_project"]}
+        add_total:{"billing":[["gross"], ["net"]], "billing_line":[["total"]]},
 
 			"id_billing()": ["primary()"],
 			"calc_id()": ["varchar(20)"],
@@ -107,9 +107,11 @@
       "set_parent_table": 'billing',
 			set_menu_priority: 5,
 			"set_selectbox_filters":{
-        "id_project":[ ["id_client", "%billing%.id_client"]]
+        "id_project":[ ["id_client", "%billing%.id_client"]],
+        "id_billing":[ ["state", ["New", "Approved", "Sent", "Partial paiement"], "in"]],
+        "id_billing":[ ["type", "Bill"]],
       },
-      "set_child_colunms":{"id_billing":["title"]},
+      "set_child_colunms":{"id_billing":["client.name", "title", "date"]},
 
 			"id_payment_line()": ["primary()"],
 			"id_billing('Bill')": ["integer()","foreign(billing)","onDelete:cascade","foreign:id_billing",'not-required', 'default:null'],

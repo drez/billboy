@@ -88,8 +88,8 @@ class PaymentLineTableMap extends TableMap
   'i18n_langs' => '["en_US"]',
   'set_parent_table' => 'billing',
   'set_menu_priority' => '5',
-  'set_selectbox_filters' => '{"id_project":[["id_client","%billing%.id_client"]]}',
-  'set_child_colunms' => '{"id_billing":["title"]}',
+  'set_selectbox_filters' => '{"id_project":[["id_client","%billing%.id_client"]],"id_billing":[["type","Bill"]]}',
+  'set_child_colunms' => '{"id_billing":["client.name","title","date"]}',
 ),
             'add_validator' =>  array (
 ),

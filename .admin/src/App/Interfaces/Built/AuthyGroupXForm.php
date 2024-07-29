@@ -744,8 +744,8 @@ $this->fields['AuthyGroupX']['IdAuthyGroup']['html']
 
     /**
      * Query for AuthyGroupX_IdAuthyGroup selectBox 
-     * @param class $obj
-     * @param class $dataObj
+     * @param object $obj
+     * @param object $dataObj
      * @param array $data
     **/
     public function selectBoxAuthyGroupX_IdAuthyGroup(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
