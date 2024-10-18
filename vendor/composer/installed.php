@@ -3,7 +3,7 @@
         'name' => 'apigoat/billboy',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '683f55d5bea335fcdc6a868b156a331ce6f07994',
+        'reference' => '233d1c97db8faa3ca7de228f1387afcef07b17b2',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'apigoat/billboy' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '683f55d5bea335fcdc6a868b156a331ce6f07994',
+            'reference' => '233d1c97db8faa3ca7de228f1387afcef07b17b2',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

@@ -2,7 +2,6 @@
 
 namespace App;
 
-
 /**
  * Skeleton subclass for representing a services for the BillingForm entity.
  *
@@ -26,33 +25,42 @@ class BillingFormWrapper extends BillingForm
      * @param array $data
      * @param Billing $dataObj
      * @return void
-    **/
+     **/
 
-    public function afterFormObj( array $data, Billing &$dataObj)
+    public function afterFormObj(array $data, Billing &$dataObj)
     {
         if (is_null($dataObj->getDate())) {
             $this->hookFormReadyJs = "
-        $('#formBilling #Date').val('".date('Y-m-d')."');
+        $('#formBilling #Date').val('" . date('Y-m-d') . "');
             ";
         }
 
         $this->hookFormReadyJs = "
             $('.sw-header .default-controls').append( $('<a>').html('Print').addClass('button-link-blue header-controls').attr('href', 'Javascript:;').attr('id', 'billPrint') );
             $('#billPrint').click(()=>{
-                window.open('"._SITE_URL."Billing/print/'+$('#formBilling #idPk').val(), 'BillingPrint');
+                window.open('" . _SITE_URL . "Billing/print/'+$('#formBilling #idPk').val(), 'BillingPrint');
             });
         ";
     }
 
+    public function beforeListTr($altValue, $data, $i, &$hook, $cCmoreCols)
+    {
+        $hook['td'] = td(
+            htmlLink("<i class='ri-file-copy-2-line'></i>", "Javascript:", "class='ac-delete-link' i='" . $data->getPrimaryKey() . "' j='copyBilling' "));
+    }
     public function beforeList(&$request, &$pmpoData)
     {
 
-        if(empty(array_filter($this->searchMs))){
+        if (empty(array_filter($this->searchMs))) {
             $this->searchMs['State'] = ['New', 'Sent'];
             $this->searchMs['Type'] = 'Bill';
         }
         $this->hookListReadyJs = "
-        
+            $('[j=copyBilling]').click((e)=>{
+                $.post('" . _SITE_URL . $this->virtualClassName . "/copy/'+$(e.currentTarget).attr('i'), {ui:'list'}, (data)=>{
+                    $('body').append(data);
+                });
+            });
         ";
     }
 
