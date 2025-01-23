@@ -9,7 +9,7 @@ gc
 .admin/public/css/*.min.css
 .admin/public/js/*.min.js
 vendor/*
-error.myproject1.log
+error.*
 .admin/tmp/db-backup.sql
 .admin/client.schema.xml
 .admin/client.schema.xml.1
