@@ -43,7 +43,7 @@ class BillingServiceWrapper extends BillingService
 
     public function print($request)
     {
-        $q = TemplateQuery::create()->filterBySubject('print_billing_header')->orderBy('DateCreation', 'DESC');
+        $q = TemplateQuery::create()->filterByName('Print Billing Header')->orderBy('DateCreation', 'DESC');
         if ($request['query']['IdTemplate']) {
             $q->filterByIdTemplate($request['query']['IdTemplate']);
         }
@@ -219,7 +219,7 @@ class BillingServiceWrapper extends BillingService
             $BillingLineForm       = new BillingLineForm(null, $request);
             $arrayIdAssignOptions  = $BillingLineForm->selectBoxBillingLine_IdAssign();
             $arrayIdProjectOptions = $BillingLineForm->selectBoxBillingLine_IdProject($null, BillingLineQuery::create()->filterByBilling($Billing)->findOne());
-            $arrayIdHeaderOptions  = array_map(fn($a) => array_values($a), TemplateQuery::create()->select(['Name', 'IdTemplate'])->filterBySubject('print_billing_header')->find()->toArray());
+            $arrayIdHeaderOptions  = array_map(fn($a) => array_values($a), TemplateQuery::create()->select(['Subject', 'IdTemplate'])->filterByName('Print Billing Header')->find()->toArray());
 
             $filters     = "";
             $scriptReady = "";
