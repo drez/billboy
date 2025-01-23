@@ -306,7 +306,7 @@ class AuthyGroupXForm extends AuthyGroupX
             
             if(!$this->setReadOnly && !$this->setListRemoveDelete){
                 if($_SESSION[_AUTH_VAR]->hasRights('AuthyGroupX', 'd')){
-                    $this->canDelete = true;
+                    $this->canDelete = htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteAuthyGroupX' ");
                 }
             }
         
@@ -322,8 +322,7 @@ class AuthyGroupXForm extends AuthyGroupX
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                 
 
-                $actionCell =  td(
-        htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteAuthyGroupX' ") . $this->listActionCell, " class='actionrow' ");
+                $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= $hook['tr_before'].tr(
                 td(span((($altValue['IdAuthyGroup']) ? $altValue['IdAuthyGroup'] : $AuthyGroup_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdAuthyGroup' class=''  j='editAuthyGroupX'") . $hook['td'].$cCmoreCols.$actionCell
@@ -400,14 +399,7 @@ class AuthyGroupXForm extends AuthyGroupX
         });
 ";
 
-        /*if(!isMobile()) {
-            $jqueryDatePicker = "
-                $(\"#formMsAuthyGroupX [j='date']\").attr('type', 'input');
-                $(\"#formMsAuthyGroupX [j='date']\").each(function(){
-                    $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
-                });
-            ";
-        }*/
+
 
         $return['onReadyJs'] =
             $HelpDivJs
@@ -432,7 +424,6 @@ class AuthyGroupXForm extends AuthyGroupX
         }
         
         
-        ".$jqueryDatePicker."
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
         $return['js'] .= " ";

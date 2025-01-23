@@ -339,7 +339,7 @@ class TemplateForm extends Template
             
             if(!$this->setReadOnly && !$this->setListRemoveDelete){
                 if($_SESSION[_AUTH_VAR]->hasRights('Template', 'd')){
-                    $this->canDelete = true;
+                    $this->canDelete = htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteTemplate' ");
                 }
             }
         
@@ -351,8 +351,7 @@ class TemplateForm extends Template
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                 
 
-                $actionCell =  td(
-        htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteTemplate' ") . $this->listActionCell, " class='actionrow' ");
+                $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= $hook['tr_before'].tr(
                 td(span((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editTemplate'") . 
@@ -431,14 +430,7 @@ class TemplateForm extends Template
         });
 ";
 
-        /*if(!isMobile()) {
-            $jqueryDatePicker = "
-                $(\"#formMsTemplate [j='date']\").attr('type', 'input');
-                $(\"#formMsTemplate [j='date']\").each(function(){
-                    $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
-                });
-            ";
-        }*/
+
 
         $return['onReadyJs'] =
             $HelpDivJs
@@ -497,7 +489,6 @@ class TemplateForm extends Template
         }
         
         
-        ".$jqueryDatePicker."
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
         $return['js'] .= " ";

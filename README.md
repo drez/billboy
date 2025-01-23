@@ -30,8 +30,9 @@ For documentation on APIgoat build, check apigoat.com
 #### 2. Install
 
 1. copy the files to the server
-2. rename .env.example and add your database and configurations
-3. run the deplaoy script in console:
+2. run `composer install` in .admin folder
+3. rename .env.example and add your database and configurations
+4. run the deploy script in console:
 
 ```
 $ composer run-script deploy
@@ -43,7 +44,7 @@ run public/install.php
 
 5. Navigate to /.admin
 
-4. Log in with your chosen root user
+6. Log in with your chosen root user
   
 
 #### 5. Attributions

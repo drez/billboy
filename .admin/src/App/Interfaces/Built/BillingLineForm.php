@@ -358,7 +358,7 @@ class BillingLineForm extends BillingLine
             
             if(!$this->setReadOnly && !$this->setListRemoveDelete){
                 if($_SESSION[_AUTH_VAR]->hasRights('BillingLine', 'd')){
-                    $this->canDelete = true;
+                    $this->canDelete = htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteBillingLine' ");
                 }
             }
         
@@ -382,8 +382,7 @@ class BillingLineForm extends BillingLine
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                 
 
-                $actionCell =  td(
-        htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteBillingLine' ") . $this->listActionCell, " class='actionrow' ");
+                $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= $hook['tr_before'].tr(
                 td(span((($altValue['IdAssign']) ? $altValue['IdAssign'] : $altValue['AuthyRelatedByIdAssign_Fullname']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdAssign' class=''  j='editBillingLine'") . 
@@ -468,14 +467,7 @@ class BillingLineForm extends BillingLine
         });
 ";
 
-        /*if(!isMobile()) {
-            $jqueryDatePicker = "
-                $(\"#formMsBillingLine [j='date']\").attr('type', 'input');
-                $(\"#formMsBillingLine [j='date']\").each(function(){
-                    $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
-                });
-            ";
-        }*/
+
 
         $return['onReadyJs'] =
             $HelpDivJs
@@ -500,7 +492,6 @@ class BillingLineForm extends BillingLine
         }
         
         
-        ".$jqueryDatePicker."
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
         $return['js'] .= " ";

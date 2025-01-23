@@ -361,7 +361,7 @@ class ApiRbacForm extends ApiRbac
             
             if(!$this->setReadOnly && !$this->setListRemoveDelete){
                 if($_SESSION[_AUTH_VAR]->hasRights('ApiRbac', 'd')){
-                    $this->canDelete = true;
+                    $this->canDelete = htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteApiRbac' ");
                 }
             }
         
@@ -373,8 +373,7 @@ class ApiRbacForm extends ApiRbac
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                 
 
-                $actionCell =  td(
-        htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteApiRbac' ") . $this->listActionCell, " class='actionrow' ");
+                $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= $hook['tr_before'].tr(
                 td(span((($altValue['DateCreation']) ? $altValue['DateCreation'] : $data->getDateCreation()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DateCreation' class=''  j='editApiRbac'") . 
@@ -459,14 +458,7 @@ class ApiRbacForm extends ApiRbac
         });
 ";
 
-        /*if(!isMobile()) {
-            $jqueryDatePicker = "
-                $(\"#formMsApiRbac [j='date']\").attr('type', 'input');
-                $(\"#formMsApiRbac [j='date']\").each(function(){
-                    $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
-                });
-            ";
-        }*/
+
 
         $return['onReadyJs'] =
             $HelpDivJs
@@ -525,7 +517,6 @@ class ApiRbacForm extends ApiRbac
         }
         
         
-        ".$jqueryDatePicker."
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
         $return['js'] .= " ";

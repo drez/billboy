@@ -452,7 +452,7 @@ class AuthyForm extends Authy
             
             if(!$this->setReadOnly && !$this->setListRemoveDelete){
                 if($_SESSION[_AUTH_VAR]->hasRights('Authy', 'd')){
-                    $this->canDelete = true;
+                    $this->canDelete = htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteAuthy' ");
                 }
             }
         
@@ -468,8 +468,7 @@ class AuthyForm extends Authy
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                 
 
-                $actionCell =  td(
-        htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteAuthy' ") . $this->listActionCell, " class='actionrow' ");
+                $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= $hook['tr_before'].tr(
                 td(span((($altValue['Username']) ? $altValue['Username'] : $data->getUsername()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Username' class=''  j='editAuthy'") . 
@@ -551,14 +550,7 @@ class AuthyForm extends Authy
         });
 ";
 
-        /*if(!isMobile()) {
-            $jqueryDatePicker = "
-                $(\"#formMsAuthy [j='date']\").attr('type', 'input');
-                $(\"#formMsAuthy [j='date']\").each(function(){
-                    $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
-                });
-            ";
-        }*/
+
 
         $return['onReadyJs'] =
             $HelpDivJs
@@ -617,7 +609,6 @@ class AuthyForm extends Authy
         }
         
         
-        ".$jqueryDatePicker."
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
         $return['js'] .= " ";
@@ -886,14 +877,14 @@ class AuthyForm extends Authy
                 $getColumn = "get{$columnName}";
                 $userRightsAr[$group] = json_decode($dataObj->$getColumn(), true);
             }
-            
+
             if(!isset($this->omMap)){
                 require _BASE_DIR."config/permissions.php";
                 $this->omMap = $omMap;
             }
             unset($rightTables);
             foreach($this->omMap as $key => $row){
-                $name[$key] = $row['display']; 
+                $name[$key] = $row['display'];
             }
                 array_multisort($name,SORT_ASC,$this->omMap);
                 $rightTables = \ApiGoat\Renderers\Rights::getRightsTable('All', $this->omMap, $userRightsAr['All']);
@@ -917,7 +908,7 @@ class AuthyForm extends Authy
                     'RigthsContainer'
                 );
         }
-        
+
     }
     
         
@@ -1092,7 +1083,7 @@ $this->fields['Authy']['Username']['html']
         ".$this->bindEditJs."
         ".$this->SaveButtonJs."
         
-{$tabRights->getOnReadyJs()}
+{$tabRights?->getOnReadyJs()}
 $('[j=mass-action-Rights]').bind('click', function(){
     var target = $(this).attr('target');
     if( $(this).prop('checked')){
@@ -1108,16 +1099,16 @@ $(\"[j='chkRights']\").click(function(){
         $(\"[ent='\"+$(this).attr('i')+\"']\").prop('checked',true);
     }
 });
-if($('#formAuthy #Group').val() == 'Admin'){ 
-    $('#formAuthy #genRightsCtnr').hide(); 
-}else{ 
-    $('#formAuthy #genRightsCtnr').show(); 
+if($('#formAuthy #Group').val() == 'Admin'){
+    $('#formAuthy #genRightsCtnr').hide();
+}else{
+    $('#formAuthy #genRightsCtnr').show();
 }
 $('#formAuthy #Group').change(function (){
-    if($('#formAuthy #Group').val() == 'Admin'){ 
-        $('#formAuthy #genRightsCtnr').hide(); 
-    }else{ 
-        $('#formAuthy #genRightsCtnr').show(); 
+    if($('#formAuthy #Group').val() == 'Admin'){
+        $('#formAuthy #genRightsCtnr').hide();
+    }else{
+        $('#formAuthy #genRightsCtnr').show();
     }
 });
 

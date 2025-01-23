@@ -22,3 +22,4 @@ error.myproject1.log
 .admin/config/Built/config.php
 .admin/config/Built/db.php
 .admin/public/js/chart.js/**
+.admin/gentime.php
