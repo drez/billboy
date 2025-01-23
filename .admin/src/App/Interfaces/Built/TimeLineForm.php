@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'TimeLine' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Utility\FormHelper as Helper;
@@ -39,7 +39,7 @@ class TimeLineForm extends TimeLine
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -73,17 +73,17 @@ class TimeLineForm extends TimeLine
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -101,7 +101,7 @@ class TimeLineForm extends TimeLine
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -141,7 +141,7 @@ class TimeLineForm extends TimeLine
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -168,10 +168,10 @@ class TimeLineForm extends TimeLine
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -185,7 +185,7 @@ class TimeLineForm extends TimeLine
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("Title"), " th='sorted' c='Name' title='" . _('Title')."' ")
@@ -224,7 +224,7 @@ class TimeLineForm extends TimeLine
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -274,7 +274,7 @@ class TimeLineForm extends TimeLine
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -283,7 +283,7 @@ class TimeLineForm extends TimeLine
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'TimeLine/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'TimeLine/');
 
@@ -318,7 +318,7 @@ class TimeLineForm extends TimeLine
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -336,7 +336,7 @@ class TimeLineForm extends TimeLine
                 
 
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteTimeLine' ") . $this->listActionCell, " class='actionrow' ");
@@ -355,6 +355,7 @@ class TimeLineForm extends TimeLine
                         id='TimeLineRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountTimeLine', $i);
         }
@@ -368,7 +369,7 @@ class TimeLineForm extends TimeLine
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -411,7 +412,7 @@ class TimeLineForm extends TimeLine
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#TimeLinePager').bindPaging({
             tableName:'TimeLine'
@@ -420,16 +421,16 @@ class TimeLineForm extends TimeLine
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsTimeLine [j='date']\").attr('type', 'input');
                 $(\"#formMsTimeLine [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -442,7 +443,7 @@ class TimeLineForm extends TimeLine
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addTimeLineAutoc').length > 0) {
             $('#addTimeLineAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -469,7 +470,7 @@ class TimeLineForm extends TimeLine
         
         
         $e->fromArray($data );
-        
+
         #
         
         $e->setDate( ($data['Date'] == '' || $data['Date'] == 'null' || substr($data['Date'],0,10) == '-0001-11-30') ? null : $data['Date'] );
@@ -493,7 +494,7 @@ class TimeLineForm extends TimeLine
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -505,7 +506,7 @@ class TimeLineForm extends TimeLine
         
         
         $e->fromArray($data );
-        
+
         
         
         if(isset($data['Date'])){
@@ -565,13 +566,13 @@ class TimeLineForm extends TimeLine
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "TimeLineTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -581,7 +582,7 @@ class TimeLineForm extends TimeLine
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -597,13 +598,13 @@ class TimeLineForm extends TimeLine
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('TimeLine', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('TimeLine', 'w') and $id) || $this->setReadOnly) {
@@ -636,7 +637,7 @@ class TimeLineForm extends TimeLine
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -689,8 +690,8 @@ $this->fields['TimeLine']['Total']['html'] = stdFieldRow(_("Total"), input('text
         $this->lockFormField(array(0=>'Total',), $dataObj);
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
         
@@ -716,12 +717,12 @@ $this->fields['TimeLine']['Total']['html'] = stdFieldRow(_("Total"), input('text
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formTimeLine [j='date']\").attr('type', 'text');
             $(\"#formTimeLine [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -729,7 +730,7 @@ $this->fields['TimeLine']['Total']['html'] = stdFieldRow(_("Total"), input('text
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('Time', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -752,7 +753,7 @@ $this->fields['TimeLine']['Name']['html']
 
 
         
-        
+
         if($id and $_SESSION['mem']['TimeLine']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['TimeLine']['ogf']."\"]').click();";
         }
@@ -766,8 +767,8 @@ $this->fields['TimeLine']['Name']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -788,7 +789,7 @@ $this->fields['TimeLine']['Name']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formTimeLine [s='d'], #formTimeLine .js-select-label, #formTimeLine [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -798,7 +799,7 @@ $this->fields['TimeLine']['Name']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['TimeLine']['Name']['html'] = stdFieldRow(_("Title"), div( $dataObj->getName(), 'Name_label' , "class='readonly' s='d'")

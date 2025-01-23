@@ -1,5 +1,4 @@
 <?php
-
 namespace App;
 
 /**
@@ -43,8 +42,20 @@ class BillingFormWrapper extends BillingForm
         ";
     }
 
-    public function beforeListTr($altValue, $data, $i, &$hook, $cCmoreCols)
+    public function beforeListTr(&$altValue, $data, $i, &$hook, $cCmoreCols)
     {
+        if ($data->getState() == "New") {
+            $altValue['State'] = span($data->getState(), "style='color:#bfc400;'");
+        }
+
+        if ($data->getState() == "Sent") {
+            $altValue['State'] = span($data->getState(), "style='color:#00c462;'");
+        }
+
+        if ($data->getState() == "Approved") {
+            $altValue['State'] = span($data->getState(), "style='color:#00c411;'");
+        }
+
         $hook['td'] = td(
             htmlLink("<i class='ri-file-copy-2-line'></i>", "Javascript:", "class='ac-delete-link' i='" . $data->getPrimaryKey() . "' j='copyBilling' "));
     }
@@ -52,8 +63,8 @@ class BillingFormWrapper extends BillingForm
     {
 
         if (empty(array_filter($this->searchMs))) {
-            $this->searchMs['State'] = ['New', 'Sent'];
-            $this->searchMs['Type'] = 'Bill';
+            $this->searchMs['State'] = ['New', 'Sent', 'Approved'];
+            $this->searchMs['Type']  = 'Bill';
         }
         $this->hookListReadyJs = "
             $('[j=copyBilling]').click((e)=>{

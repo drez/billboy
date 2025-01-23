@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'Authy' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Html\Tabs;
@@ -40,7 +40,7 @@ class AuthyForm extends Authy
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -74,17 +74,17 @@ class AuthyForm extends Authy
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -102,22 +102,22 @@ class AuthyForm extends Authy
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     public function login($username='', $mobile = false)
     {
         if(defined('LOGO_URL_LOGIN')) {
-            if(file_exists(_INSTALL_PATH . 'public/img/' . LOGO_URL_LOGIN)) { 
-                $logoAdmin = LOGO_URL_LOGIN; 
+            if(file_exists(_INSTALL_PATH . 'public/img/' . LOGO_URL_LOGIN)) {
+                $logoAdmin = LOGO_URL_LOGIN;
             }
-        } else { 
-            $logoAdmin = _SITE_URL.'public/img/logo-admin.png'; 
+        } else {
+            $logoAdmin = _SITE_URL.'public/img/logo-admin.png';
         }
-        
+
         if(empty($_SESSION[_AUTH_VAR]->getCsrf())) {
             $_SESSION[_AUTH_VAR]->setCsrf( md5(uniqid('GoAt').uniqid('', true)) );
         }
-            
+
         $return['html'] =
                 div(
                     div(
@@ -152,7 +152,7 @@ class AuthyForm extends Authy
                 });
             } else {
                 $('#login-form').removeClass('forgot-password');
-                $('#login-form .lost-password,#login-form #logMe').fadeOut(250,function() 
+                $('#login-form .lost-password,#login-form #logMe').fadeOut(250,function()
                 {
                     $('#login-form #passwd').slideDown(250);
                     $('#login-form #user').attr('placeholder','".addslashes(_("Username"))."');
@@ -175,7 +175,7 @@ class AuthyForm extends Authy
                     $.post('"._SITE_URL."Authy/auth', {'u':$('#user').val(), 'csrf':$('#csrf').val(), 'p':passwdHash, 'stay':$('#login-form #stay').val()}, function (data){
                         sw_message(data.messages, true, data.status);
 
-                        if(data.status == 'success') 
+                        if(data.status == 'success')
                         {
                             $.post('"._SITE_URL."GuiManager', { a: 'login', t:getTimeZoneData() }, function (data) {
                                 window.location.href = '"._SITE_URL."';
@@ -188,7 +188,7 @@ class AuthyForm extends Authy
                 } else {
                     $.post('"._SITE_URL."Authy/reset', { 'c':$('#login-form #user').val() }, function (data){
                         sw_message(data.messages, true, data.status);
-                        window.location.href = '"._SITE_URL."'; 
+                        window.location.href = '"._SITE_URL."';
                         login_ready = true;
                     }, 'json');
                 }
@@ -248,7 +248,7 @@ class AuthyForm extends Authy
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -275,10 +275,10 @@ class AuthyForm extends Authy
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -292,7 +292,7 @@ class AuthyForm extends Authy
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("Username"), " th='sorted' c='Username' title='" . _('Username')."' ")
@@ -344,7 +344,7 @@ class AuthyForm extends Authy
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -400,7 +400,7 @@ class AuthyForm extends Authy
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -409,7 +409,7 @@ class AuthyForm extends Authy
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'Authy/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Authy/');
 
@@ -444,7 +444,7 @@ class AuthyForm extends Authy
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -466,7 +466,7 @@ class AuthyForm extends Authy
                                         $AuthyGroupRelatedByIdAuthyGroup_Name = $data->getAuthyGroupRelatedByIdAuthyGroup()->getName();
                                     }
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteAuthy' ") . $this->listActionCell, " class='actionrow' ");
@@ -485,6 +485,7 @@ class AuthyForm extends Authy
                         id='AuthyRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountAuthy', $i);
         }
@@ -498,7 +499,7 @@ class AuthyForm extends Authy
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -541,7 +542,7 @@ class AuthyForm extends Authy
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#AuthyPager').bindPaging({
             tableName:'Authy'
@@ -550,16 +551,16 @@ class AuthyForm extends Authy
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsAuthy [j='date']\").attr('type', 'input');
                 $(\"#formMsAuthy [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -606,7 +607,7 @@ class AuthyForm extends Authy
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addAuthyAutoc').length > 0) {
             $('#addAuthyAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -649,7 +650,7 @@ class AuthyForm extends Authy
             $data['IsSystem'] = "No";
         } 
         $e->fromArray($data );
-        
+
         #
         
         //integer not required
@@ -680,7 +681,7 @@ class AuthyForm extends Authy
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -708,7 +709,7 @@ class AuthyForm extends Authy
             $data['IsSystem'] = "No";
         } 
         $e->fromArray($data );
-        
+
         
         
         if(isset($data['Expire'])){
@@ -762,13 +763,13 @@ class AuthyForm extends Authy
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "AuthyTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -778,7 +779,7 @@ class AuthyForm extends Authy
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -791,13 +792,13 @@ class AuthyForm extends Authy
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('Authy', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('Authy', 'w') and $id) || $this->setReadOnly) {
@@ -830,7 +831,7 @@ class AuthyForm extends Authy
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -937,8 +938,8 @@ $this->fields['Authy']['RightsOwner']['html'] = stdFieldRow(_("Rights owner"), $
         
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
 
@@ -1016,12 +1017,12 @@ $this->fields['Authy']['RightsOwner']['html'] = stdFieldRow(_("Rights owner"), $
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formAuthy [j='date']\").attr('type', 'text');
             $(\"#formAuthy [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -1029,7 +1030,7 @@ $this->fields['Authy']['RightsOwner']['html'] = stdFieldRow(_("Rights owner"), $
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('User', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -1067,7 +1068,7 @@ $this->fields['Authy']['Username']['html']
                                     , 'pannelAuthy', " class='child_pannel ui-tabs childCntClass'");
             }
         }
-        
+
         if($id and $_SESSION['mem']['Authy']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['Authy']['ogf']."\"]').click();";
         }
@@ -1081,8 +1082,8 @@ $this->fields['Authy']['Username']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -1133,7 +1134,7 @@ $('.cntOnglet').parent().tabs();
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formAuthy [s='d'], #formAuthy .js-select-label, #formAuthy [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -1143,7 +1144,7 @@ $('.cntOnglet').parent().tabs();
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['Authy']['Username']['html'] = stdFieldRow(_("Username"), div( $dataObj->getUsername(), 'Username_label' , "class='readonly' s='d'")

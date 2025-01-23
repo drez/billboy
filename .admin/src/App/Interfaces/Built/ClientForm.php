@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'Client' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Html\Tabs;
@@ -40,7 +40,7 @@ class ClientForm extends Client
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -74,17 +74,17 @@ class ClientForm extends Client
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -102,7 +102,7 @@ class ClientForm extends Client
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -138,7 +138,7 @@ class ClientForm extends Client
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -165,10 +165,10 @@ class ClientForm extends Client
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -182,7 +182,7 @@ class ClientForm extends Client
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("Name"), " th='sorted' c='Name' title='" . _('Name')."' ")
@@ -229,7 +229,7 @@ class ClientForm extends Client
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -285,7 +285,7 @@ class ClientForm extends Client
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -294,7 +294,7 @@ class ClientForm extends Client
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'Client/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Client/');
 
@@ -329,7 +329,7 @@ class ClientForm extends Client
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -351,7 +351,7 @@ class ClientForm extends Client
                                         $Country_Name = $data->getCountry()->getName();
                                     }
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteClient' ") . $this->listActionCell, " class='actionrow' ");
@@ -377,6 +377,7 @@ class ClientForm extends Client
                         id='ClientRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountClient', $i);
         }
@@ -390,7 +391,7 @@ class ClientForm extends Client
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -433,7 +434,7 @@ class ClientForm extends Client
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#ClientPager').bindPaging({
             tableName:'Client'
@@ -442,16 +443,16 @@ class ClientForm extends Client
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsClient [j='date']\").attr('type', 'input');
                 $(\"#formMsClient [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -464,7 +465,7 @@ class ClientForm extends Client
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addClientAutoc').length > 0) {
             $('#addClientAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -491,7 +492,7 @@ class ClientForm extends Client
         
         
         $e->fromArray($data );
-        
+
         #
         
         //integer not required
@@ -512,7 +513,7 @@ class ClientForm extends Client
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -524,7 +525,7 @@ class ClientForm extends Client
         
         
         $e->fromArray($data );
-        
+
         
         
         if(isset($data['DateCreation'])){
@@ -572,13 +573,13 @@ class ClientForm extends Client
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "ClientTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -588,7 +589,7 @@ class ClientForm extends Client
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -604,13 +605,13 @@ class ClientForm extends Client
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('Client', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('Client', 'w') and $id) || $this->setReadOnly) {
@@ -643,7 +644,7 @@ class ClientForm extends Client
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -707,8 +708,8 @@ $this->fields['Client']['Zip']['html'] = stdFieldRow(_("Zip"), input('text', 'Zi
         
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
 
@@ -776,12 +777,12 @@ $this->fields['Client']['Zip']['html'] = stdFieldRow(_("Zip"), input('text', 'Zi
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formClient [j='date']\").attr('type', 'text');
             $(\"#formClient [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -789,7 +790,7 @@ $this->fields['Client']['Zip']['html'] = stdFieldRow(_("Zip"), input('text', 'Zi
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('Client', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -828,7 +829,7 @@ $this->fields['Client']['Name']['html']
                                     , 'pannelClient', " class='child_pannel ui-tabs childCntClass'");
             }
         }
-        
+
         if($id and $_SESSION['mem']['Client']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['Client']['ogf']."\"]').click();";
         }
@@ -842,8 +843,8 @@ $this->fields['Client']['Name']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -864,7 +865,7 @@ $this->fields['Client']['Name']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formClient [s='d'], #formClient .js-select-label, #formClient [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -874,7 +875,7 @@ $this->fields['Client']['Name']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['Client']['Name']['html'] = stdFieldRow(_("Name"), div( $dataObj->getName(), 'Name_label' , "class='readonly' s='d'")
@@ -1056,14 +1057,16 @@ $this->fields['Client']['Name']['html']
         $altValue = array (
   'IdBilling' => '',
   'CalcId' => '',
-  'Title' => '',
+  'State' => '',
   'IdClient' => '',
+  'Title' => '',
   'IdProject' => '',
   'IdBillingCategory' => '',
   'Date' => '',
   'Type' => '',
-  'State' => '',
   'Gross' => '',
+  'GrossCurrency' => '',
+  'Gross2' => '',
   'Tax' => '',
   'DateDue' => '',
   'NoteBilling' => '',
@@ -1216,15 +1219,15 @@ $this->fields['Client']['Name']['html']
             $actionRowHeader = th('&nbsp;', " r='delrow' class='actionrow' ");
         }
 
-        $header = tr( th(_("Title"), " th='sorted' c='Title' title='" . _('Title')."' " . $param['th']['Title']."")
+        $header = tr( th(_("State"), " th='sorted' c='State' title='" . _('State')."' " . $param['th']['State']."")
 .th(_("Client"), " th='sorted' c='Client.Name' title='"._('Client.Name')."' " . $param['th']['IdClient']."")
+.th(_("Title"), " th='sorted' c='Title' title='" . _('Title')."' " . $param['th']['Title']."")
 .th(_("Project"), " th='sorted' c='Project.Name' title='"._('Project.Name')."' " . $param['th']['IdProject']."")
-.th(_("Category"), " th='sorted' c='BillingCategory.Name' title='"._('BillingCategory.Name')."' " . $param['th']['IdBillingCategory']."")
 .th(_("Date"), " th='sorted' c='Date' title='" . _('Date')."' " . $param['th']['Date']."")
 .th(_("Type"), " th='sorted' c='Type' title='" . _('Type')."' " . $param['th']['Type']."")
-.th(_("State"), " th='sorted' c='State' title='" . _('State')."' " . $param['th']['State']."")
 .th(_("Gross"), " th='sorted' c='Gross' title='" . _('Gross')."' " . $param['th']['Gross']."")
-.th(_("Tax"), " th='sorted' c='Tax' title='" . _('Tax')."' " . $param['th']['Tax']."")
+.th(_("Currency"), " th='sorted' c='GrossCurrency' title='" . _('Currency')."' " . $param['th']['GrossCurrency']."")
+.th(_("Gross"), " th='sorted' c='Gross2' title='" . _('Gross')."' " . $param['th']['Gross2']."")
 .th(_("Due date"), " th='sorted' c='DateDue' title='" . _('Due date')."' " . $param['th']['DateDue']."")
 .th(_("Paid date"), " th='sorted' c='DatePaid' title='" . _('Paid date')."' " . $param['th']['DatePaid']."")
 .th(_("Net"), " th='sorted' c='Net' title='" . _('Net')."' " . $param['th']['Net']."")
@@ -1266,10 +1269,6 @@ $this->fields['Client']['Name']['html']
                                     if($data->getProject()){
                                         $Project_Name = $data->getProject()->getName();
                                     }
-                                    $BillingCategory_Name = "";
-                                    if($data->getBillingCategory()){
-                                        $BillingCategory_Name = $data->getBillingCategory()->getName();
-                                    }
                 
                 
                 ;
@@ -1280,15 +1279,15 @@ $this->fields['Client']['Name']['html']
                         tr(
                             (isset($hookListColumnsBillingFirst)?$hookListColumnsBillingFirst:'').
                             
-                td(span((($altValue['Title']) ? $altValue['Title'] : $data->getTitle()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Title' class='' " . $param['Title']." j='editBilling'") . 
+                td(span((($altValue['State']) ? $altValue['State'] : isntPo($data->getState())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='State' class='center' " . $param['State']." j='editBilling'") . 
                 td(span((($altValue['IdClient']) ? $altValue['IdClient'] : $Client_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdClient' class='' " . $param['IdClient']." j='editBilling'") . 
+                td(span((($altValue['Title']) ? $altValue['Title'] : $data->getTitle()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Title' class='' " . $param['Title']." j='editBilling'") . 
                 td(span((($altValue['IdProject']) ? $altValue['IdProject'] : $Project_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdProject' class='' " . $param['IdProject']." j='editBilling'") . 
-                td(span((($altValue['IdBillingCategory']) ? $altValue['IdBillingCategory'] : $BillingCategory_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBillingCategory' class='' " . $param['IdBillingCategory']." j='editBilling'") . 
                 td(span((($altValue['Date']) ? $altValue['Date'] : $data->getDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class='' " . $param['Date']." j='editBilling'") . 
                 td(span((($altValue['Type']) ? $altValue['Type'] : isntPo($data->getType())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center' " . $param['Type']." j='editBilling'") . 
-                td(span((($altValue['State']) ? $altValue['State'] : isntPo($data->getState())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='State' class='center' " . $param['State']." j='editBilling'") . 
                 td(span((($altValue['Gross']) ? $altValue['Gross'] : str_replace(',', '.', $data->getGross())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Gross' class='right' " . $param['Gross']." j='editBilling'") . 
-                td(span((($altValue['Tax']) ? $altValue['Tax'] : str_replace(',', '.', $data->getTax())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Tax' class='right' " . $param['Tax']." j='editBilling'") . 
+                td(span((($altValue['GrossCurrency']) ? $altValue['GrossCurrency'] : isntPo($data->getGrossCurrency())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='GrossCurrency' class='center' " . $param['GrossCurrency']." j='editBilling'") . 
+                td(span((($altValue['Gross2']) ? $altValue['Gross2'] : str_replace(',', '.', $data->getGross2())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Gross2' class='right' " . $param['Gross2']." j='editBilling'") . 
                 td(span((($altValue['DateDue']) ? $altValue['DateDue'] : $data->getDateDue()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DateDue' class='' " . $param['DateDue']." j='editBilling'") . 
                 td(span((($altValue['DatePaid']) ? $altValue['DatePaid'] : $data->getDatePaid()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DatePaid' class='' " . $param['DatePaid']." j='editBilling'") . 
                 td(span((($altValue['Net']) ? $altValue['Net'] : str_replace(',', '.', $data->getNet())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Net' class='right' " . $param['Net']." j='editBilling'") . 

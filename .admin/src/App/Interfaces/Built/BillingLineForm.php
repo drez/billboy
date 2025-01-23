@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'BillingLine' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Html\Tabs;
@@ -40,7 +40,7 @@ class BillingLineForm extends BillingLine
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -74,17 +74,17 @@ class BillingLineForm extends BillingLine
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -102,7 +102,7 @@ class BillingLineForm extends BillingLine
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -160,7 +160,7 @@ class BillingLineForm extends BillingLine
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -187,10 +187,10 @@ class BillingLineForm extends BillingLine
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -204,7 +204,7 @@ class BillingLineForm extends BillingLine
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("User fullname"), " th='sorted' c='AuthyRelatedByIdAssign.Fullname' title='"._('AuthyRelatedByIdAssign.Fullname')."' ")
@@ -249,7 +249,7 @@ class BillingLineForm extends BillingLine
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -302,7 +302,7 @@ class BillingLineForm extends BillingLine
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -311,7 +311,7 @@ class BillingLineForm extends BillingLine
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'BillingLine/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'BillingLine/');
 
@@ -350,7 +350,7 @@ class BillingLineForm extends BillingLine
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -380,7 +380,7 @@ class BillingLineForm extends BillingLine
                                         $BillingCategory_Name = $data->getBillingCategory()->getName();
                                     }
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteBillingLine' ") . $this->listActionCell, " class='actionrow' ");
@@ -402,6 +402,7 @@ class BillingLineForm extends BillingLine
                         id='BillingLineRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountBillingLine', $i);
         }
@@ -415,7 +416,7 @@ class BillingLineForm extends BillingLine
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -458,7 +459,7 @@ class BillingLineForm extends BillingLine
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#BillingLinePager').bindPaging({
             tableName:'BillingLine'
@@ -467,16 +468,16 @@ class BillingLineForm extends BillingLine
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsBillingLine [j='date']\").attr('type', 'input');
                 $(\"#formMsBillingLine [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -489,7 +490,7 @@ class BillingLineForm extends BillingLine
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addBillingLineAutoc').length > 0) {
             $('#addBillingLineAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -516,7 +517,7 @@ class BillingLineForm extends BillingLine
         
         
         $e->fromArray($data );
-        
+
         #
         
         //foreign
@@ -542,7 +543,7 @@ class BillingLineForm extends BillingLine
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -554,7 +555,7 @@ class BillingLineForm extends BillingLine
         
         
         $e->fromArray($data );
-        
+
         
         
         if( isset($data['IdAssign']) ){
@@ -617,13 +618,13 @@ class BillingLineForm extends BillingLine
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "BillingLineTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -633,7 +634,7 @@ class BillingLineForm extends BillingLine
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -655,13 +656,13 @@ class BillingLineForm extends BillingLine
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('BillingLine', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('BillingLine', 'w') and $id) || $this->setReadOnly) {
@@ -694,7 +695,7 @@ class BillingLineForm extends BillingLine
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -762,8 +763,8 @@ $this->fields['BillingLine']['NoteBillingLigne']['html'] = stdFieldRow(_("Note")
         $this->lockFormField(array(0=>'Total',), $dataObj);
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
         
@@ -794,12 +795,12 @@ $this->fields['BillingLine']['NoteBillingLigne']['html'] = stdFieldRow(_("Note")
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formBillingLine [j='date']\").attr('type', 'text');
             $(\"#formBillingLine [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -807,7 +808,7 @@ $this->fields['BillingLine']['NoteBillingLigne']['html'] = stdFieldRow(_("Note")
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('Entries', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -835,7 +836,7 @@ $this->fields['BillingLine']['IdAssign']['html']
 
 
         
-        
+
         if($id and $_SESSION['mem']['BillingLine']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['BillingLine']['ogf']."\"]').click();";
         }
@@ -849,8 +850,8 @@ $this->fields['BillingLine']['IdAssign']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -877,7 +878,7 @@ $this->fields['BillingLine']['IdAssign']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formBillingLine [s='d'], #formBillingLine .js-select-label, #formBillingLine [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -887,7 +888,7 @@ $this->fields['BillingLine']['IdAssign']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['BillingLine']['IdAssign']['html'] = stdFieldRow(_("Assigned to"), div( ($dataObj->getAuthyRelatedByIdAssign())?$dataObj->getAuthyRelatedByIdAssign()->getFullname():'', 'IdAssign_label' , "class='readonly' s='d'")

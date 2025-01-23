@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'AuthyGroupX' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Utility\FormHelper as Helper;
@@ -39,7 +39,7 @@ class AuthyGroupXForm extends AuthyGroupX
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -73,17 +73,17 @@ class AuthyGroupXForm extends AuthyGroupX
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -101,7 +101,7 @@ class AuthyGroupXForm extends AuthyGroupX
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -137,7 +137,7 @@ class AuthyGroupXForm extends AuthyGroupX
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -164,10 +164,10 @@ class AuthyGroupXForm extends AuthyGroupX
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -181,7 +181,7 @@ class AuthyGroupXForm extends AuthyGroupX
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("Group"), " th='sorted' c='AuthyGroup.Name' title='"._('AuthyGroup.Name')."' ")
@@ -216,7 +216,7 @@ class AuthyGroupXForm extends AuthyGroupX
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -254,7 +254,7 @@ class AuthyGroupXForm extends AuthyGroupX
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -263,7 +263,7 @@ class AuthyGroupXForm extends AuthyGroupX
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'AuthyGroupX/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'AuthyGroupX/');
 
@@ -298,7 +298,7 @@ class AuthyGroupXForm extends AuthyGroupX
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -320,7 +320,7 @@ class AuthyGroupXForm extends AuthyGroupX
                                         $AuthyGroup_Name = $data->getAuthyGroup()->getName();
                                     }
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteAuthyGroupX' ") . $this->listActionCell, " class='actionrow' ");
@@ -334,6 +334,7 @@ class AuthyGroupXForm extends AuthyGroupX
                         id='AuthyGroupXRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountAuthyGroupX', $i);
         }
@@ -347,7 +348,7 @@ class AuthyGroupXForm extends AuthyGroupX
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -390,7 +391,7 @@ class AuthyGroupXForm extends AuthyGroupX
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#AuthyGroupXPager').bindPaging({
             tableName:'AuthyGroupX'
@@ -399,16 +400,16 @@ class AuthyGroupXForm extends AuthyGroupX
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsAuthyGroupX [j='date']\").attr('type', 'input');
                 $(\"#formMsAuthyGroupX [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -421,7 +422,7 @@ class AuthyGroupXForm extends AuthyGroupX
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addAuthyGroupXAutoc').length > 0) {
             $('#addAuthyGroupXAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -448,14 +449,14 @@ class AuthyGroupXForm extends AuthyGroupX
         
         
         $e->fromArray($data );
-        
+
         #
         
         #
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -467,7 +468,7 @@ class AuthyGroupXForm extends AuthyGroupX
         
         
         $e->fromArray($data );
-        
+
         
         
         $e->setNew(false);
@@ -500,13 +501,13 @@ class AuthyGroupXForm extends AuthyGroupX
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "AuthyGroupXTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -516,7 +517,7 @@ class AuthyGroupXForm extends AuthyGroupX
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -529,13 +530,13 @@ class AuthyGroupXForm extends AuthyGroupX
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('AuthyGroupX', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('AuthyGroupX', 'w') and $id) || $this->setReadOnly) {
@@ -568,7 +569,7 @@ class AuthyGroupXForm extends AuthyGroupX
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -620,8 +621,8 @@ $this->fields['AuthyGroupX']['IdAuthyGroup']['html'] = stdFieldRow(_("Group"), s
         
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
         
@@ -647,12 +648,12 @@ $this->fields['AuthyGroupX']['IdAuthyGroup']['html'] = stdFieldRow(_("Group"), s
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formAuthyGroupX [j='date']\").attr('type', 'text');
             $(\"#formAuthyGroupX [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -660,7 +661,7 @@ $this->fields['AuthyGroupX']['IdAuthyGroup']['html'] = stdFieldRow(_("Group"), s
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('Group', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -678,7 +679,7 @@ $this->fields['AuthyGroupX']['IdAuthyGroup']['html']
 
 
         
-        
+
         if($id and $_SESSION['mem']['AuthyGroupX']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['AuthyGroupX']['ogf']."\"]').click();";
         }
@@ -692,8 +693,8 @@ $this->fields['AuthyGroupX']['IdAuthyGroup']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -714,7 +715,7 @@ $this->fields['AuthyGroupX']['IdAuthyGroup']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formAuthyGroupX [s='d'], #formAuthyGroupX .js-select-label, #formAuthyGroupX [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -724,7 +725,7 @@ $this->fields['AuthyGroupX']['IdAuthyGroup']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['AuthyGroupX']['IdAuthyGroup']['html'] = stdFieldRow(_("Group"), div( ($dataObj->getAuthyGroup())?$dataObj->getAuthyGroup()->getName():'', 'IdAuthyGroup_label' , "class='readonly' s='d'")

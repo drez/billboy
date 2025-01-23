@@ -153,7 +153,7 @@ class AuthyService
         $this->body = ['status' => 'failure', 'errors' => ['Unknown method'], 'data' => null, 'messages' => null];
         $Api = new Api('Authy', $this);
 
-        if (method_exists($this, $this->customActions[$this->request['a']])) {
+        if (isset($this->customActions[$this->request['a']]) && method_exists($this, $this->customActions[$this->request['a']])) {
             $callable = $this->customActions[$this->request['a']];
             $this->body = $this->$callable($Api);
         }else{
@@ -182,8 +182,8 @@ class AuthyService
             }
         }
 
-        
-        
+
+
         $ApiResponse = new ApiResponse($this->request, $this->response, $this->body);
         return $ApiResponse->getResponse();
     }

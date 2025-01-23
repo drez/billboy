@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'ApiRbac' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Html\Tabs;
@@ -40,7 +40,7 @@ class ApiRbacForm extends ApiRbac
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -74,17 +74,17 @@ class ApiRbacForm extends ApiRbac
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -102,7 +102,7 @@ class ApiRbacForm extends ApiRbac
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -156,7 +156,7 @@ class ApiRbacForm extends ApiRbac
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -183,10 +183,10 @@ class ApiRbacForm extends ApiRbac
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -200,7 +200,7 @@ class ApiRbacForm extends ApiRbac
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("Date"), " th='sorted' c='DateCreation' title='" . _('Date')."' ")
@@ -254,7 +254,7 @@ class ApiRbacForm extends ApiRbac
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -305,7 +305,7 @@ class ApiRbacForm extends ApiRbac
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -314,7 +314,7 @@ class ApiRbacForm extends ApiRbac
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'ApiRbac/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'ApiRbac/');
 
@@ -353,7 +353,7 @@ class ApiRbacForm extends ApiRbac
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -371,7 +371,7 @@ class ApiRbacForm extends ApiRbac
                 
 
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteApiRbac' ") . $this->listActionCell, " class='actionrow' ");
@@ -393,6 +393,7 @@ class ApiRbacForm extends ApiRbac
                         id='ApiRbacRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountApiRbac', $i);
         }
@@ -406,7 +407,7 @@ class ApiRbacForm extends ApiRbac
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -449,7 +450,7 @@ class ApiRbacForm extends ApiRbac
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#ApiRbacPager').bindPaging({
             tableName:'ApiRbac'
@@ -458,16 +459,16 @@ class ApiRbacForm extends ApiRbac
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsApiRbac [j='date']\").attr('type', 'input');
                 $(\"#formMsApiRbac [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -514,7 +515,7 @@ class ApiRbacForm extends ApiRbac
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addApiRbacAutoc').length > 0) {
             $('#addApiRbacAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -550,7 +551,7 @@ class ApiRbacForm extends ApiRbac
             $data['Rule'] = "Deny";
         } 
         $e->fromArray($data );
-        
+
         #
         
         $e->setDateCreation( ($data['DateCreation'] == '' || $data['DateCreation'] == 'null' || substr($data['DateCreation'], 0, 10) == '-0001-11-30')?date('Y-m-d'):$data['DateCreation'] );
@@ -573,7 +574,7 @@ class ApiRbacForm extends ApiRbac
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -594,7 +595,7 @@ class ApiRbacForm extends ApiRbac
             $data['Rule'] = "Deny";
         } 
         $e->fromArray($data );
-        
+
         
         
         if(isset($data['DateCreation'])){
@@ -642,13 +643,13 @@ class ApiRbacForm extends ApiRbac
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "ApiRbacTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -658,7 +659,7 @@ class ApiRbacForm extends ApiRbac
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -671,13 +672,13 @@ class ApiRbacForm extends ApiRbac
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('ApiRbac', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('ApiRbac', 'w') and $id) || $this->setReadOnly) {
@@ -710,7 +711,7 @@ class ApiRbacForm extends ApiRbac
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -767,8 +768,8 @@ $this->fields['ApiRbac']['Count']['html'] = stdFieldRow(_("Used count"), input('
         
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
 
@@ -836,12 +837,12 @@ $this->fields['ApiRbac']['Count']['html'] = stdFieldRow(_("Used count"), input('
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formApiRbac [j='date']\").attr('type', 'text');
             $(\"#formApiRbac [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -849,7 +850,7 @@ $this->fields['ApiRbac']['Count']['html'] = stdFieldRow(_("Used count"), input('
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('API ACL', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -885,7 +886,7 @@ $this->fields['ApiRbac']['DateCreation']['html']
                                     , 'pannelApiRbac', " class='child_pannel ui-tabs childCntClass'");
             }
         }
-        
+
         if($id and $_SESSION['mem']['ApiRbac']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['ApiRbac']['ogf']."\"]').click();";
         }
@@ -899,8 +900,8 @@ $this->fields['ApiRbac']['DateCreation']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -921,7 +922,7 @@ $this->fields['ApiRbac']['DateCreation']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formApiRbac [s='d'], #formApiRbac .js-select-label, #formApiRbac [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -931,7 +932,7 @@ $this->fields['ApiRbac']['DateCreation']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['ApiRbac']['DateCreation']['html'] = stdFieldRow(_("Date"), div( $dataObj->getDateCreation(), 'DateCreation_label' , "class='readonly' s='d'")

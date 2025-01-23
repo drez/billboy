@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'BillingCategory' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Utility\FormHelper as Helper;
@@ -39,7 +39,7 @@ class BillingCategoryForm extends BillingCategory
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -73,17 +73,17 @@ class BillingCategoryForm extends BillingCategory
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -101,7 +101,7 @@ class BillingCategoryForm extends BillingCategory
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -133,7 +133,7 @@ class BillingCategoryForm extends BillingCategory
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -160,10 +160,10 @@ class BillingCategoryForm extends BillingCategory
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -177,7 +177,7 @@ class BillingCategoryForm extends BillingCategory
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("Name"), " th='sorted' c='Name' title='" . _('Name')."' ")
@@ -211,7 +211,7 @@ class BillingCategoryForm extends BillingCategory
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -254,7 +254,7 @@ class BillingCategoryForm extends BillingCategory
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -263,7 +263,7 @@ class BillingCategoryForm extends BillingCategory
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'BillingCategory/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'BillingCategory/');
 
@@ -298,7 +298,7 @@ class BillingCategoryForm extends BillingCategory
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -316,7 +316,7 @@ class BillingCategoryForm extends BillingCategory
                 
 
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteBillingCategory' ") . $this->listActionCell, " class='actionrow' ");
@@ -330,6 +330,7 @@ class BillingCategoryForm extends BillingCategory
                         id='BillingCategoryRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountBillingCategory', $i);
         }
@@ -343,7 +344,7 @@ class BillingCategoryForm extends BillingCategory
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -386,7 +387,7 @@ class BillingCategoryForm extends BillingCategory
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#BillingCategoryPager').bindPaging({
             tableName:'BillingCategory'
@@ -395,16 +396,16 @@ class BillingCategoryForm extends BillingCategory
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsBillingCategory [j='date']\").attr('type', 'input');
                 $(\"#formMsBillingCategory [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -417,7 +418,7 @@ class BillingCategoryForm extends BillingCategory
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addBillingCategoryAutoc').length > 0) {
             $('#addBillingCategoryAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -444,7 +445,7 @@ class BillingCategoryForm extends BillingCategory
         
         
         $e->fromArray($data );
-        
+
         #
         
         $e->setDateCreation( ($data['DateCreation'] == '' || $data['DateCreation'] == 'null' || substr($data['DateCreation'],0,10) == '-0001-11-30') ? null : $data['DateCreation'] );
@@ -459,7 +460,7 @@ class BillingCategoryForm extends BillingCategory
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -471,7 +472,7 @@ class BillingCategoryForm extends BillingCategory
         
         
         $e->fromArray($data );
-        
+
         
         
         if(isset($data['DateCreation'])){
@@ -519,13 +520,13 @@ class BillingCategoryForm extends BillingCategory
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "BillingCategoryTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -535,7 +536,7 @@ class BillingCategoryForm extends BillingCategory
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -548,13 +549,13 @@ class BillingCategoryForm extends BillingCategory
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('BillingCategory', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('BillingCategory', 'w') and $id) || $this->setReadOnly) {
@@ -587,7 +588,7 @@ class BillingCategoryForm extends BillingCategory
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -635,8 +636,8 @@ $this->fields['BillingCategory']['Name']['html'] = stdFieldRow(_("Name"), input(
         
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
         
@@ -662,12 +663,12 @@ $this->fields['BillingCategory']['Name']['html'] = stdFieldRow(_("Name"), input(
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formBillingCategory [j='date']\").attr('type', 'text');
             $(\"#formBillingCategory [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -675,7 +676,7 @@ $this->fields['BillingCategory']['Name']['html'] = stdFieldRow(_("Name"), input(
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('Category billing', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -693,7 +694,7 @@ $this->fields['BillingCategory']['Name']['html']
 
 
         
-        
+
         if($id and $_SESSION['mem']['BillingCategory']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['BillingCategory']['ogf']."\"]').click();";
         }
@@ -707,8 +708,8 @@ $this->fields['BillingCategory']['Name']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -729,7 +730,7 @@ $this->fields['BillingCategory']['Name']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formBillingCategory [s='d'], #formBillingCategory .js-select-label, #formBillingCategory [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -739,7 +740,7 @@ $this->fields['BillingCategory']['Name']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['BillingCategory']['Name']['html'] = stdFieldRow(_("Name"), div( $dataObj->getName(), 'Name_label' , "class='readonly' s='d'")

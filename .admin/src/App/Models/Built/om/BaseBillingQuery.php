@@ -31,14 +31,16 @@ use App\Project;
  *
  * @method BillingQuery orderByIdBilling($order = Criteria::ASC) Order by the id_billing column
  * @method BillingQuery orderByCalcId($order = Criteria::ASC) Order by the calc_id column
- * @method BillingQuery orderByTitle($order = Criteria::ASC) Order by the title column
+ * @method BillingQuery orderByState($order = Criteria::ASC) Order by the state column
  * @method BillingQuery orderByIdClient($order = Criteria::ASC) Order by the id_client column
+ * @method BillingQuery orderByTitle($order = Criteria::ASC) Order by the title column
  * @method BillingQuery orderByIdProject($order = Criteria::ASC) Order by the id_project column
  * @method BillingQuery orderByIdBillingCategory($order = Criteria::ASC) Order by the id_billing_category column
  * @method BillingQuery orderByDate($order = Criteria::ASC) Order by the date column
  * @method BillingQuery orderByType($order = Criteria::ASC) Order by the type column
- * @method BillingQuery orderByState($order = Criteria::ASC) Order by the state column
  * @method BillingQuery orderByGross($order = Criteria::ASC) Order by the gross column
+ * @method BillingQuery orderByGrossCurrency($order = Criteria::ASC) Order by the gross_currency column
+ * @method BillingQuery orderByGross2($order = Criteria::ASC) Order by the gross_2 column
  * @method BillingQuery orderByTax($order = Criteria::ASC) Order by the tax column
  * @method BillingQuery orderByDateDue($order = Criteria::ASC) Order by the date_due column
  * @method BillingQuery orderByNoteBilling($order = Criteria::ASC) Order by the note_billing column
@@ -53,14 +55,16 @@ use App\Project;
  *
  * @method BillingQuery groupByIdBilling() Group by the id_billing column
  * @method BillingQuery groupByCalcId() Group by the calc_id column
- * @method BillingQuery groupByTitle() Group by the title column
+ * @method BillingQuery groupByState() Group by the state column
  * @method BillingQuery groupByIdClient() Group by the id_client column
+ * @method BillingQuery groupByTitle() Group by the title column
  * @method BillingQuery groupByIdProject() Group by the id_project column
  * @method BillingQuery groupByIdBillingCategory() Group by the id_billing_category column
  * @method BillingQuery groupByDate() Group by the date column
  * @method BillingQuery groupByType() Group by the type column
- * @method BillingQuery groupByState() Group by the state column
  * @method BillingQuery groupByGross() Group by the gross column
+ * @method BillingQuery groupByGrossCurrency() Group by the gross_currency column
+ * @method BillingQuery groupByGross2() Group by the gross_2 column
  * @method BillingQuery groupByTax() Group by the tax column
  * @method BillingQuery groupByDateDue() Group by the date_due column
  * @method BillingQuery groupByNoteBilling() Group by the note_billing column
@@ -117,14 +121,16 @@ use App\Project;
  * @method Billing findOneOrCreate(PropelPDO $con = null) Return the first Billing matching the query, or a new Billing object populated from the query conditions when no match is found
  *
  * @method Billing findOneByCalcId(string $calc_id) Return the first Billing filtered by the calc_id column
- * @method Billing findOneByTitle(string $title) Return the first Billing filtered by the title column
+ * @method Billing findOneByState(int $state) Return the first Billing filtered by the state column
  * @method Billing findOneByIdClient(int $id_client) Return the first Billing filtered by the id_client column
+ * @method Billing findOneByTitle(string $title) Return the first Billing filtered by the title column
  * @method Billing findOneByIdProject(int $id_project) Return the first Billing filtered by the id_project column
  * @method Billing findOneByIdBillingCategory(int $id_billing_category) Return the first Billing filtered by the id_billing_category column
  * @method Billing findOneByDate(string $date) Return the first Billing filtered by the date column
  * @method Billing findOneByType(int $type) Return the first Billing filtered by the type column
- * @method Billing findOneByState(int $state) Return the first Billing filtered by the state column
  * @method Billing findOneByGross(string $gross) Return the first Billing filtered by the gross column
+ * @method Billing findOneByGrossCurrency(int $gross_currency) Return the first Billing filtered by the gross_currency column
+ * @method Billing findOneByGross2(string $gross_2) Return the first Billing filtered by the gross_2 column
  * @method Billing findOneByTax(string $tax) Return the first Billing filtered by the tax column
  * @method Billing findOneByDateDue(string $date_due) Return the first Billing filtered by the date_due column
  * @method Billing findOneByNoteBilling(string $note_billing) Return the first Billing filtered by the note_billing column
@@ -139,14 +145,16 @@ use App\Project;
  *
  * @method array findByIdBilling(int $id_billing) Return Billing objects filtered by the id_billing column
  * @method array findByCalcId(string $calc_id) Return Billing objects filtered by the calc_id column
- * @method array findByTitle(string $title) Return Billing objects filtered by the title column
+ * @method array findByState(int $state) Return Billing objects filtered by the state column
  * @method array findByIdClient(int $id_client) Return Billing objects filtered by the id_client column
+ * @method array findByTitle(string $title) Return Billing objects filtered by the title column
  * @method array findByIdProject(int $id_project) Return Billing objects filtered by the id_project column
  * @method array findByIdBillingCategory(int $id_billing_category) Return Billing objects filtered by the id_billing_category column
  * @method array findByDate(string $date) Return Billing objects filtered by the date column
  * @method array findByType(int $type) Return Billing objects filtered by the type column
- * @method array findByState(int $state) Return Billing objects filtered by the state column
  * @method array findByGross(string $gross) Return Billing objects filtered by the gross column
+ * @method array findByGrossCurrency(int $gross_currency) Return Billing objects filtered by the gross_currency column
+ * @method array findByGross2(string $gross_2) Return Billing objects filtered by the gross_2 column
  * @method array findByTax(string $tax) Return Billing objects filtered by the tax column
  * @method array findByDateDue(string $date_due) Return Billing objects filtered by the date_due column
  * @method array findByNoteBilling(string $note_billing) Return Billing objects filtered by the note_billing column
@@ -266,7 +274,7 @@ abstract class BaseBillingQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_billing`, `calc_id`, `title`, `id_client`, `id_project`, `id_billing_category`, `date`, `type`, `state`, `gross`, `tax`, `date_due`, `note_billing`, `date_paid`, `net`, `reference`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `billing` WHERE `id_billing` = :p0';
+        $sql = 'SELECT `id_billing`, `calc_id`, `state`, `id_client`, `title`, `id_project`, `id_billing_category`, `date`, `type`, `gross`, `gross_currency`, `gross_2`, `tax`, `date_due`, `note_billing`, `date_paid`, `net`, `reference`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `billing` WHERE `id_billing` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -430,32 +438,30 @@ abstract class BaseBillingQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the title column
+     * Filter the query on the state column
      *
-     * Example usage:
-     * <code>
-     * $query->filterByTitle('fooValue');   // WHERE title = 'fooValue'
-     * $query->filterByTitle('%fooValue%'); // WHERE title LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $title The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     mixed $state The value to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return BillingQuery The current query, for fluid interface
+     * @throws PropelException - if the value is not accepted by the enum.
      */
-    public function filterByTitle($title = null, $comparison = null)
+    public function filterByState($state = null, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($title)) {
+        if (is_scalar($state)) {
+            $state = BillingPeer::getSqlValueForEnum(BillingPeer::STATE, $state);
+        } elseif (is_array($state)) {
+            $convertedValues = array();
+            foreach ($state as $value) {
+                $convertedValues[] = BillingPeer::getSqlValueForEnum(BillingPeer::STATE, $value);
+            }
+            $state = $convertedValues;
+            if (null === $comparison) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $title)) {
-                $title = str_replace('*', '%', $title);
-                $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(BillingPeer::TITLE, $title, $comparison);
+        return $this->addUsingAlias(BillingPeer::STATE, $state, $comparison);
     }
 
     /**
@@ -500,6 +506,35 @@ abstract class BaseBillingQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(BillingPeer::ID_CLIENT, $idClient, $comparison);
+    }
+
+    /**
+     * Filter the query on the title column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByTitle('fooValue');   // WHERE title = 'fooValue'
+     * $query->filterByTitle('%fooValue%'); // WHERE title LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $title The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return BillingQuery The current query, for fluid interface
+     */
+    public function filterByTitle($title = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($title)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $title)) {
+                $title = str_replace('*', '%', $title);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(BillingPeer::TITLE, $title, $comparison);
     }
 
     /**
@@ -661,33 +696,6 @@ abstract class BaseBillingQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the state column
-     *
-     * @param     mixed $state The value to use as filter
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return BillingQuery The current query, for fluid interface
-     * @throws PropelException - if the value is not accepted by the enum.
-     */
-    public function filterByState($state = null, $comparison = null)
-    {
-        if (is_scalar($state)) {
-            $state = BillingPeer::getSqlValueForEnum(BillingPeer::STATE, $state);
-        } elseif (is_array($state)) {
-            $convertedValues = array();
-            foreach ($state as $value) {
-                $convertedValues[] = BillingPeer::getSqlValueForEnum(BillingPeer::STATE, $value);
-            }
-            $state = $convertedValues;
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(BillingPeer::STATE, $state, $comparison);
-    }
-
-    /**
      * Filter the query on the gross column
      *
      * Example usage:
@@ -727,6 +735,75 @@ abstract class BaseBillingQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(BillingPeer::GROSS, $gross, $comparison);
+    }
+
+    /**
+     * Filter the query on the gross_currency column
+     *
+     * @param     mixed $grossCurrency The value to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return BillingQuery The current query, for fluid interface
+     * @throws PropelException - if the value is not accepted by the enum.
+     */
+    public function filterByGrossCurrency($grossCurrency = null, $comparison = null)
+    {
+        if (is_scalar($grossCurrency)) {
+            $grossCurrency = BillingPeer::getSqlValueForEnum(BillingPeer::GROSS_CURRENCY, $grossCurrency);
+        } elseif (is_array($grossCurrency)) {
+            $convertedValues = array();
+            foreach ($grossCurrency as $value) {
+                $convertedValues[] = BillingPeer::getSqlValueForEnum(BillingPeer::GROSS_CURRENCY, $value);
+            }
+            $grossCurrency = $convertedValues;
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(BillingPeer::GROSS_CURRENCY, $grossCurrency, $comparison);
+    }
+
+    /**
+     * Filter the query on the gross_2 column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByGross2(1234); // WHERE gross_2 = 1234
+     * $query->filterByGross2(array(12, 34)); // WHERE gross_2 IN (12, 34)
+     * $query->filterByGross2(array('min' => 12)); // WHERE gross_2 >= 12
+     * $query->filterByGross2(array('max' => 12)); // WHERE gross_2 <= 12
+     * </code>
+     *
+     * @param     mixed $gross2 The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return BillingQuery The current query, for fluid interface
+     */
+    public function filterByGross2($gross2 = null, $comparison = null)
+    {
+        if (is_array($gross2)) {
+            $useMinMax = false;
+            if (isset($gross2['min'])) {
+                $this->addUsingAlias(BillingPeer::GROSS_2, $gross2['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($gross2['max'])) {
+                $this->addUsingAlias(BillingPeer::GROSS_2, $gross2['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(BillingPeer::GROSS_2, $gross2, $comparison);
     }
 
     /**

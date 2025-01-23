@@ -1,8 +1,8 @@
 <?php
-
 namespace App;
 
 use ApiGoat\Handlers\BuilderReturn;
+use Dompdf\Dompdf;
 
 /**
  * Skeleton subclass for representing a services for the BillingService entity.
@@ -21,21 +21,22 @@ class BillingServiceWrapper extends BillingService
     {
         parent::__construct($request, $response, $args);
         $this->customActions['print'] = 'print';
-        $this->customActions['copy'] = 'copy';
+        $this->customActions['pdf']   = 'print';
+        $this->customActions['copy']  = 'copy';
 
         $this->Form = new BillingFormWrapper($request, $args);
     }
 
     public function copy($request)
     {
-        $Billing = BillingQuery::create()->findPk($request['i']);
+        $Billing     = BillingQuery::create()->findPk($request['i']);
         $BillingCopy = $Billing->copy(true);
         $BillingCopy->setState('New');
         $BillingCopy->setDate(date('Y-m-d'));
         $BillingCopy->save();
 
         $this->request['action'] = "list";
-        $BuilderReturn = new BuilderReturn($this->request);
+        $BuilderReturn           = new BuilderReturn($this->request);
         $BuilderReturn->setReturnFunction('update_return');
         return $BuilderReturn->return();
     }
@@ -61,8 +62,25 @@ class BillingServiceWrapper extends BillingService
 
             if ($Template->getColor1()) {
                 $colors = style("
+                @media print {
+                    size: letter;
+                }
+
                 .head1 {color:" . $Template->getColor1() . "; }
                 .head1 td {border-color:" . $Template->getColor1() . "; }
+                body {background: white;}
+                tr td{
+                    vertical-align: top;
+                }
+                #items table {
+                    border-collapse: separate;
+                    border-spacing: 0 1em;
+                }
+
+                #items .note {
+
+                }
+
             ");
             }
 
@@ -131,7 +149,8 @@ class BillingServiceWrapper extends BillingService
                 } else {
                     foreach ($BillingItems as $BillingItem) {
                         $items .= tr(
-                            td($BillingItem->getNoteBillingLigne())
+                            td(span(b($BillingItem->getTitle()))
+                                . span($BillingItem->getNoteBillingLigne(), "class='note'"))
                             . td($BillingItem->getWorkDate())
                             . td($BillingItem->getQuantity(), "style='text-align:right;'")
                             . td($BillingItem->getAmount(), "style='text-align:right;'")
@@ -163,33 +182,46 @@ class BillingServiceWrapper extends BillingService
                     ,
                     "class='head1 col-2' "
                 );
-                $colspan = 3;
+                $colspan = 2;
+            }
+
+            if ($Billing->getGross2()) {
+                $currencyTotal = tr(
+                    td("&nbsp;", "colspan='$colspan'")
+                    . td("Total $" . $Billing->getGrossCurrency(), "colspan='2'")
+                    . td($Billing->getGross2()), "class='totalRow2'");
             }
 
             $itemsContent = div(
                 table(
                     $headRow
                     . $items
-                    . tr(td("&nbsp;", "colspan='$colspan'") . td("Total <sup>1,2,3</sup>") . td($total), "class='totalRow'")
+                    . tr(
+                        td("&nbsp;", "colspan='$colspan'")
+                        . td("<sup>1,2,3</sup> Total \$USD", "colspan='2'")
+                        . td($total)
+                        , "class='totalRow'")
+                    . $currencyTotal
                 )
+
                 , "items");
 
             $disclaimer = div(
                 ul(
                     li("All quotes are valid for a period of 1 month.")
+                    . li("All amounts are in <b>US dollars</b> unless otherwise stated.")
                     . li("Payment is due within 30 days. Service may be suspended if the account becomes delinquent after this period.")
-                    . li("All amounts are in US dollars unless otherwise stated.")
                     . li("Any additional work requested that is not included in the original brief will be quoted separately and added to the final invoice.")
                     . li("Recurring payments for hosting or other services will be billed annually on December 31.")
 
                 )
                 , 'disclaimer', "class='disclaimer'");
-            $BillingLineForm = new BillingLineForm(null, $request);
-            $arrayIdAssignOptions = $BillingLineForm->selectBoxBillingLine_IdAssign();
+            $BillingLineForm       = new BillingLineForm(null, $request);
+            $arrayIdAssignOptions  = $BillingLineForm->selectBoxBillingLine_IdAssign();
             $arrayIdProjectOptions = $BillingLineForm->selectBoxBillingLine_IdProject($null, BillingLineQuery::create()->filterByBilling($Billing)->findOne());
-            $arrayIdHeaderOptions = array_map(fn($a) => array_values($a), TemplateQuery::create()->select(['Name', 'IdTemplate'])->filterBySubject('print_billing_header')->find()->toArray());
+            $arrayIdHeaderOptions  = array_map(fn($a) => array_values($a), TemplateQuery::create()->select(['Name', 'IdTemplate'])->filterBySubject('print_billing_header')->find()->toArray());
 
-            $filters = "";
+            $filters     = "";
             $scriptReady = "";
             if ($request['query']['aa'] != 'filter') {
                 $scriptReady = "
@@ -199,23 +231,49 @@ class BillingServiceWrapper extends BillingService
                             $('#main').html(data);
                         });
                     });
+
+                    $('#filterForm #printPdf').click(()=>{
+                        $.get('', $('#filterForm').serialize(), (data)=>{
+                            window.open('" . _SITE_URL . "Billing/pdf/" . $request['i'] . "', '_blank')
+                        });
+                    });
+
+
+                    $('#filtersHead').click(()=>{
+                        console.log('hide');
+                        $('#filters').hide()
+                    });
                     ";
 
                 $filters = div(
-                    div("Filters", "", "class='panel-heading'")
+                    div("Filters", "filtersHead", "class='panel-heading'")
                     . div(
                         form(
                             stdFieldRow(_("Assigned to"), selectboxCustomArray('IdAssign', $arrayIdAssignOptions, _('Assigned to'), "", $request['query']['IdAssign']), 'IdAssign', "", '', '', '', ' ', 'no')
                             . stdFieldRow(_("Project"), selectboxCustomArray('IdProject', $arrayIdProjectOptions, _('Project'), "", $request['query']['IdProject']), 'IdProject', "", '', '', '', ' ', 'no')
                             . stdFieldRow(_("Header"), selectboxCustomArray('IdTemplate', $arrayIdHeaderOptions, _('Header'), "", $request['query']['IdTemplate']), 'IdTemplate', "", '', '', '', ' ', 'no')
-                            . div(div(input('button', 'postFilter', _('Filter'), ' class="button-link-blue can-save"')
-                                . input('hidden', 'idPk', $request['i'], "s='d'")
-                                . input('hidden', 'aa', 'filter', "s='d'")
-                                , "", " class='divtd' colspan='2' style='text-align:right;'"), "", " class='divtr divbut' ")
+                            . div(
+                                div(input('button', 'postFilter', _('Filter'), ' class="button-link-blue can-save"')
+                                    . input('button', 'printPdf', _('Pdf'), ' class="button-link-blue can-save" style="margin-left:20px;"')
+
+                                    . input('hidden', 'idPk', $request['i'], "s='d'")
+                                    . input('hidden', 'aa', 'filter', "s='d'")
+                                    , "", " class='divtd' colspan='2' style='text-align:right;'"), "", " class='divtr divbut' ")
                             , "id='filterForm'")
 
                         , '', "class='divStdform ui-tabs ui-widget ui-widget-content ui-corner-all '")
-                    , "", "class='mainForm'");
+                    , "filters", "class='mainForm' ");
+            }
+
+            if ($request['action'] == 'pdf') {
+                $cssStyle = file_get_contents(_BASE_DIR . "public/css/main.css");
+                $cssStyle .= file_get_contents(_BASE_DIR . "public/css/print.css");
+                $cssStyle .= file_get_contents(_BASE_DIR . "public/css/apigoat.css");
+                $css = style($cssStyle);
+            } else {
+                $css = loadcss(_SITE_URL . 'public/css/main.css')
+                . loadcss(_SITE_URL . 'public/css/apigoat.css')
+                . loadCss(_SITE_URL . "public/css/print.css");
             }
 
             $content =
@@ -234,7 +292,7 @@ class BillingServiceWrapper extends BillingService
                 . $disclaimer
                 ,
                 "main",
-                "class='print'"
+                "class='print' style='height:100%'"
             );
 
             $this->request['ui'] = 'blank';
@@ -243,22 +301,79 @@ class BillingServiceWrapper extends BillingService
                 return $content;
             }
 
-            return docType()
+            if ($request['action'] == 'pdf') {
+                $filters = "";
+            }
+
+            $out = docType()
             . htmlTag(
-                htmlHeader($Billing->getType() . " " . bcadd($Billing->getPrimaryKey(), 333), loadCss(_SITE_URL . "public/css/print.css"))
+                htmlHeader($Billing->getType() . " " . bcadd($Billing->getPrimaryKey(), 333) . " " . $Billing?->getClient()?->getName(), $css)
                 . body(
                     loadjs(_SITE_URL . 'vendor/components/jquery/jquery.min.js')
                     . loadjs(_SITE_URL . 'public/js/selectbox.js')
-                    . loadcss(_SITE_URL . 'public/css/main.css')
-                    . loadcss(_SITE_URL . 'public/css/apigoat.css')
-                    . scriptReady($scriptReady) .
-                    $filters
-                    . $content)
+                    . scriptReady($scriptReady)
+
+                    . $filters
+                    . $content, "style='height:100%'")
             );
         } else {
-            return "Missing 'print_billing_header' template";
+            $out = "Missing 'print_billing_header' template";
         }
 
+        if ($request['action'] == 'pdf') {
+            /*global $_dompdf_warnings;
+            $_dompdf_warnings = [];
+            global $_dompdf_show_warnings;
+            $_dompdf_show_warnings = true;*/
+
+            sendPdf($out, $Billing->getType() . " " . bcadd($Billing->getPrimaryKey(), 333) . " " . $Billing?->getClient()?->getName() . ".pdf");
+
+            $out = script("window.close();");
+            /* $out =
+            "Error"
+            . print_r($_dompdf_warnings, true)
+                . $out;*/
+
+        }
+
+        return $out;
+
     }
+
+}
+
+function sendPdf($html, $name)
+{
+    $dom = new \DOMDocument();
+    $dom->loadHTML($html);
+    $images = $dom->getElementsByTagName('img');
+    foreach ($images as $image) {
+        $src    = $image->getAttribute('src');
+        $type   = pathinfo($src, PATHINFO_EXTENSION);
+        $stream = stream_context_create([
+            'ssl'  => [
+                'verify_peer'      => false,
+                'verify_peer_name' => false,
+            ],
+            'http' => [
+                'timeout' => 2,
+            ],
+        ]);
+
+        $data   = file_get_contents($src, 0, $stream);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        $image->setAttribute("src", $base64);
+    }
+    $html = $dom->saveHTML();
+
+    $dompdf = new Dompdf();
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('letter');
+
+// Render the HTML as PDF
+    $dompdf->render();
+
+// Output the generated PDF to Browser
+    $dompdf->stream($name);
 
 }

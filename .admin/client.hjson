@@ -33,11 +33,11 @@
         "set_parent_table": 'client',
         "with_child_tables": ["billing_line", "cost_line", "payment_line"],
         "add_child_search_columns":{ "billing_line":{"Assigned to": [["id_assign", "%val"]]} },
-        "add_tab_columns": {"Note":"note_billing", "Paiement":"date_paid"},
+        "add_tab_columns": {"Note":"note_billing", "Payment":"date_paid"},
         is_wysiwyg_colunms: ["note_billing"],
         add_search_columns:{"Type": [["type", "%val", "multiple"]], "Client": [["id_client", "%val", "multiple"]], "Date": [["date", "%val"]], "Title": [["title", "%val"]], "State": [["state", "%val", "multiple"]],},
         "set_readonly_columns":["gross", "tax"],
-        "set_list_hide_columns":["note_billing", "reference"],
+        "set_list_hide_columns":["note_billing", "reference", "tax", "id_billing_category"],
         set_order_list_columns:[["date", "DESC"]],
         set_order_child_list_columns:{"billing_line":[["work_date", "DESC"]]},
         #add_child_bulk:{"billing_line": ["id_project"]},
@@ -46,16 +46,18 @@
 
 			"id_billing()": ["primary()"],
 			"calc_id()": ["varchar(20)"],
+      "state('State')": ["enum(New, Approved, Sent, Partial payment, Paid,Cancelled, To send)",'required'],
+      "id_client('Client')": ["integer()","foreign(client)",null,"foreign:id_client"],
 			"title('Title')": ["varchar(100)"],
-			"id_client('Client')": ["integer()","foreign(client)",null,"foreign:id_client"],
 			"id_project('Project')": ["integer()","foreign(project)",'not-required', 'default:null',"foreign:id_project"],
 			"id_billing_category('Category')": ["integer()","foreign(billing_category)",'not-required', 'default:null'],
 
 			"date('Date')": ["date()"],
 			//"id_project('Project')": ["integer()","foreign(project)",null,"foreign:id_project"],
 			"type('Type')": ["enum(Quote, Bill)",'required', "default:'Bill'"],
-			"state('State')": ["enum(New, Approved, Sent, Partial paiement, Paid,Cancelled, To send)",'required'],
 			"gross('Gross')": ["decimal(8, 2)"],
+      "gross_currency('Currency')": ["enum( CAD, AUS, SGD)",'not-required', 'default:null'],
+			"gross_2('Gross')": ["decimal(8, 2)"],
 
 			"tax('Tax')": ["decimal(8, 2)"],
 
@@ -64,7 +66,7 @@
 			"note_billing('Note')": ["longvarchar(400)"],
       "date_paid('Paid date')": ["date()"],
 			"net('Net')": ["decimal(8, 2)"],
-			"reference('Paiement Reference')": ["varchar(100)"],
+			"reference('Payment Reference')": ["varchar(100)"],
 			"validator": {"title":{"required":{"msg":"billing_title_required"}}},
 		},
 		"billing_line('Entries')": {
@@ -108,7 +110,7 @@
 			set_menu_priority: 5,
 			"set_selectbox_filters":{
         "id_project":[ ["id_client", "%billing%.id_client"]],
-        "id_billing":[ ["state", ["New", "Approved", "Sent", "Partial paiement"], "in"]],
+        "id_billing":[ ["state", ["New", "Approved", "Sent", "Partial payment"], "in"]],
         "id_billing":[ ["type", "Bill"]],
       },
       "set_child_colunms":{"id_billing":["client.name", "title", "date"]},
@@ -183,7 +185,7 @@
 
 			"budget('Budget')": ["decimal(8, 2)"],
 			"spent('Spent')": ["decimal(8, 2)"],
-			"reference('Paiement Reference')": ["varchar(100)"],
+			"reference('Payment Reference')": ["varchar(100)"],
 
 			"validator": {"name":{"required":{"msg":"project_name__required"}}},
 		},

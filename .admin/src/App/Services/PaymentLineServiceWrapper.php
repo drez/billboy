@@ -2,7 +2,6 @@
 
 namespace App;
 
-
 /**
  * Skeleton subclass for representing a services for the PaymentLineService entity.
  *
@@ -23,12 +22,19 @@ class PaymentLineServiceWrapper extends PaymentLineService
         $this->Form = new PaymentLineFormWrapper($request, $args);
     }
 
-    public function afterSave(PaymentLine $Class, array &$data, bool $isNew, string|null &$messages, array|false &$extValidationErr, $error)
+    public function afterDelete(PaymentLine $Class, &$request, &$error, &$messages)
+    {
+        $this->setBillingPayment($Class->getBilling()->getIdBilling());
+
+    }
+
+    public function afterSave(PaymentLine $Class, array &$data, bool $isNew, string | null &$messages, array | false &$extValidationErr, $error)
     {
         $this->setBillingPayment($data['IdBilling']);
     }
 
-    private function setBillingPayment($IdBilling){
+    private function setBillingPayment($IdBilling)
+    {
         $total = 0;
         $PaymentLine = PaymentLineQuery::Create()->findByIdBilling($IdBilling);
 

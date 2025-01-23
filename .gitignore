@@ -20,3 +20,4 @@ error.myproject1.log
 .admin/build.properties
 .admin/config/Built/config.php
 .admin/config/Built/db.php
+.admin/public/js/chart.js/**

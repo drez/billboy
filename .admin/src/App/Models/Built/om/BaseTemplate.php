@@ -227,7 +227,7 @@ abstract class BaseTemplate extends BaseObject implements Persistent
     /**
      * @Field()
      * Get the [subject] column value.
-     * Action
+     * Subject
      * @return string
      */
     public function getSubject()
@@ -466,7 +466,7 @@ abstract class BaseTemplate extends BaseObject implements Persistent
 
     /**
      * Set the value of [subject] column.
-     * Action
+     * Subject
      * @param  string $v new value
      * @return Template The current object (for fluent API support)
      */

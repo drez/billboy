@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'Config' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Utility\FormHelper as Helper;
@@ -39,7 +39,7 @@ class ConfigForm extends Config
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -73,17 +73,17 @@ class ConfigForm extends Config
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -101,7 +101,7 @@ class ConfigForm extends Config
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -133,7 +133,7 @@ class ConfigForm extends Config
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -160,10 +160,10 @@ class ConfigForm extends Config
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -177,7 +177,7 @@ class ConfigForm extends Config
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("Category"), " th='sorted' c='Category' title='" . _('Category')."' ")
@@ -214,7 +214,7 @@ class ConfigForm extends Config
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -262,7 +262,7 @@ class ConfigForm extends Config
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -271,7 +271,7 @@ class ConfigForm extends Config
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'Config/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Config/');
 
@@ -306,7 +306,7 @@ class ConfigForm extends Config
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -324,7 +324,7 @@ class ConfigForm extends Config
                 
 
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteConfig' ") . $this->listActionCell, " class='actionrow' ");
@@ -341,6 +341,7 @@ class ConfigForm extends Config
                         id='ConfigRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountConfig', $i);
         }
@@ -354,7 +355,7 @@ class ConfigForm extends Config
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -397,7 +398,7 @@ class ConfigForm extends Config
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#ConfigPager').bindPaging({
             tableName:'Config'
@@ -406,16 +407,16 @@ class ConfigForm extends Config
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsConfig [j='date']\").attr('type', 'input');
                 $(\"#formMsConfig [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -428,7 +429,7 @@ class ConfigForm extends Config
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addConfigAutoc').length > 0) {
             $('#addConfigAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -459,7 +460,7 @@ class ConfigForm extends Config
         } 
         if( $data['System'] == '' )unset($data['System']);
         $e->fromArray($data );
-        
+
         #
         
         //integer not required
@@ -481,7 +482,7 @@ class ConfigForm extends Config
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -497,7 +498,7 @@ class ConfigForm extends Config
         } 
         if( $data['System'] == '' )unset($data['System']);
         $e->fromArray($data );
-        
+
         
         
         if(isset($data['System'])){
@@ -548,13 +549,13 @@ class ConfigForm extends Config
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "ConfigTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -564,7 +565,7 @@ class ConfigForm extends Config
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -577,13 +578,13 @@ class ConfigForm extends Config
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('Config', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('Config', 'w') and $id) || $this->setReadOnly) {
@@ -616,7 +617,7 @@ class ConfigForm extends Config
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -667,8 +668,8 @@ $this->fields['Config']['Description']['html'] = stdFieldRow(_("Description"), i
         
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
         
@@ -694,12 +695,12 @@ $this->fields['Config']['Description']['html'] = stdFieldRow(_("Description"), i
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formConfig [j='date']\").attr('type', 'text');
             $(\"#formConfig [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -707,7 +708,7 @@ $this->fields['Config']['Description']['html'] = stdFieldRow(_("Description"), i
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('Setting', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -728,7 +729,7 @@ $this->fields['Config']['Category']['html']
 
 
         
-        
+
         if($id and $_SESSION['mem']['Config']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['Config']['ogf']."\"]').click();";
         }
@@ -742,8 +743,8 @@ $this->fields['Config']['Category']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -764,7 +765,7 @@ $this->fields['Config']['Category']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formConfig [s='d'], #formConfig .js-select-label, #formConfig [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -774,7 +775,7 @@ $this->fields['Config']['Category']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['Config']['Category']['html'] = stdFieldRow(_("Category"), div( $dataObj->getCategory(), 'Category_label' , "class='readonly' s='d'")

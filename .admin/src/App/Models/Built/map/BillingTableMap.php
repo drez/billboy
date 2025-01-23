@@ -44,16 +44,6 @@ class BillingTableMap extends TableMap
         // columns
         $this->addPrimaryKey('id_billing', 'IdBilling', 'INTEGER', true, 10, null);
         $this->addColumn('calc_id', 'CalcId', 'VARCHAR', false, 20, null);
-        $this->addColumn('title', 'Title', 'VARCHAR', false, 100, null);
-        $this->addForeignKey('id_client', 'IdClient', 'INTEGER', 'client', 'id_client', true, 11, null);
-        $this->addForeignKey('id_project', 'IdProject', 'INTEGER', 'project', 'id_project', false, 11, null);
-        $this->addForeignKey('id_billing_category', 'IdBillingCategory', 'INTEGER', 'billing_category', 'id_billing_category', false, 11, null);
-        $this->addColumn('date', 'Date', 'DATE', false, null, null);
-        $this->addColumn('type', 'Type', 'ENUM', true, null, 'Bill');
-        $this->getColumn('type', false)->setValueSet(array (
-  0 => 'Quote',
-  1 => 'Bill',
-));
         $this->addColumn('state', 'State', 'ENUM', true, null, null);
         $this->getColumn('state', false)->setValueSet(array (
   0 => 'New',
@@ -64,7 +54,24 @@ class BillingTableMap extends TableMap
   5 => 'Cancelled',
   6 => 'To send',
 ));
+        $this->addForeignKey('id_client', 'IdClient', 'INTEGER', 'client', 'id_client', true, 11, null);
+        $this->addColumn('title', 'Title', 'VARCHAR', false, 100, null);
+        $this->addForeignKey('id_project', 'IdProject', 'INTEGER', 'project', 'id_project', false, 11, null);
+        $this->addForeignKey('id_billing_category', 'IdBillingCategory', 'INTEGER', 'billing_category', 'id_billing_category', false, 11, null);
+        $this->addColumn('date', 'Date', 'DATE', false, null, null);
+        $this->addColumn('type', 'Type', 'ENUM', true, null, 'Bill');
+        $this->getColumn('type', false)->setValueSet(array (
+  0 => 'Quote',
+  1 => 'Bill',
+));
         $this->addColumn('gross', 'Gross', 'DECIMAL', false, 8, null);
+        $this->addColumn('gross_currency', 'GrossCurrency', 'ENUM', false, null, null);
+        $this->getColumn('gross_currency', false)->setValueSet(array (
+  0 => 'CAD',
+  1 => 'AUS',
+  2 => 'SGD',
+));
+        $this->addColumn('gross_2', 'Gross2', 'DECIMAL', false, 8, null);
         $this->addColumn('tax', 'Tax', 'DECIMAL', false, 8, null);
         $this->addColumn('date_due', 'DateDue', 'DATE', false, null, null);
         $this->addColumn('note_billing', 'NoteBilling', 'LONGVARCHAR', false, 400, null);
@@ -81,16 +88,17 @@ class BillingTableMap extends TableMap
         $this->addValidator('id_billing', 'required', 'propel.validator.RequiredValidator', '', ('Billing_IdBilling_required'));
         $this->addValidator('id_billing', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Billing_IdBilling_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('calc_id', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_CalcId_type_string'));
-        $this->addValidator('title', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_Title_type_string'));
+        $this->addValidator('state', 'required', 'propel.validator.RequiredValidator', '', ('Billing_State_required'));
+        $this->addValidator('state', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_State_type_string'));
         $this->addValidator('id_client', 'required', 'propel.validator.RequiredValidator', '', ('Billing_IdClient_required'));
         $this->addValidator('id_client', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Billing_IdClient_match_/^(?:[0-9]*|null)$/'));
+        $this->addValidator('title', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_Title_type_string'));
         $this->addValidator('id_project', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Billing_IdProject_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('id_billing_category', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Billing_IdBillingCategory_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('date', 'match', 'propel.validator.MatchValidator', '', ('Billing_Date_match'));
         $this->addValidator('type', 'required', 'propel.validator.RequiredValidator', '', ('Billing_Type_required'));
         $this->addValidator('type', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_Type_type_string'));
-        $this->addValidator('state', 'required', 'propel.validator.RequiredValidator', '', ('Billing_State_required'));
-        $this->addValidator('state', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_State_type_string'));
+        $this->addValidator('gross_currency', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_GrossCurrency_type_string'));
         $this->addValidator('date_due', 'match', 'propel.validator.MatchValidator', '', ('Billing_DateDue_match'));
         $this->addValidator('note_billing', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_NoteBilling_type_string'));
         $this->addValidator('date_paid', 'match', 'propel.validator.MatchValidator', '', ('Billing_DatePaid_match'));
@@ -132,7 +140,7 @@ class BillingTableMap extends TableMap
   'is_wysiwyg_colunms' => '["note_billing"]',
   'add_search_columns' => '{"Type":[["type","%val","multiple"]],"Client":[["id_client","%val","multiple"]],"Date":[["date","%val"]],"Title":[["title","%val"]],"State":[["state","%val","multiple"]]}',
   'set_readonly_columns' => '["gross","tax"]',
-  'set_list_hide_columns' => '["note_billing","reference"]',
+  'set_list_hide_columns' => '["note_billing","reference","tax","id_billing_category"]',
   'set_order_list_columns' => '[["date","DESC"]]',
   'set_order_child_list_columns' => '{"billing_line":[["work_date","DESC"]]}',
   'add_total' => '{"billing":[["gross"],["net"]],"billing_line":[["total"]]}',

@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'Supplier' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Html\Tabs;
@@ -40,7 +40,7 @@ class SupplierForm extends Supplier
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -74,17 +74,17 @@ class SupplierForm extends Supplier
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -102,7 +102,7 @@ class SupplierForm extends Supplier
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -138,7 +138,7 @@ class SupplierForm extends Supplier
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -165,10 +165,10 @@ class SupplierForm extends Supplier
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -182,7 +182,7 @@ class SupplierForm extends Supplier
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("Name"), " th='sorted' c='Name' title='" . _('Name')."' ")
@@ -229,7 +229,7 @@ class SupplierForm extends Supplier
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -285,7 +285,7 @@ class SupplierForm extends Supplier
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -294,7 +294,7 @@ class SupplierForm extends Supplier
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'Supplier/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Supplier/');
 
@@ -329,7 +329,7 @@ class SupplierForm extends Supplier
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -351,7 +351,7 @@ class SupplierForm extends Supplier
                                         $Country_Name = $data->getCountry()->getName();
                                     }
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteSupplier' ") . $this->listActionCell, " class='actionrow' ");
@@ -377,6 +377,7 @@ class SupplierForm extends Supplier
                         id='SupplierRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountSupplier', $i);
         }
@@ -390,7 +391,7 @@ class SupplierForm extends Supplier
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -433,7 +434,7 @@ class SupplierForm extends Supplier
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#SupplierPager').bindPaging({
             tableName:'Supplier'
@@ -442,16 +443,16 @@ class SupplierForm extends Supplier
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsSupplier [j='date']\").attr('type', 'input');
                 $(\"#formMsSupplier [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -464,7 +465,7 @@ class SupplierForm extends Supplier
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addSupplierAutoc').length > 0) {
             $('#addSupplierAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -491,7 +492,7 @@ class SupplierForm extends Supplier
         
         
         $e->fromArray($data );
-        
+
         #
         
         //integer not required
@@ -512,7 +513,7 @@ class SupplierForm extends Supplier
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -524,7 +525,7 @@ class SupplierForm extends Supplier
         
         
         $e->fromArray($data );
-        
+
         
         
         if(isset($data['DateCreation'])){
@@ -572,13 +573,13 @@ class SupplierForm extends Supplier
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "SupplierTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -588,7 +589,7 @@ class SupplierForm extends Supplier
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -604,13 +605,13 @@ class SupplierForm extends Supplier
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('Supplier', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('Supplier', 'w') and $id) || $this->setReadOnly) {
@@ -643,7 +644,7 @@ class SupplierForm extends Supplier
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -707,8 +708,8 @@ $this->fields['Supplier']['Zip']['html'] = stdFieldRow(_("Zip"), input('text', '
         
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
 
@@ -776,12 +777,12 @@ $this->fields['Supplier']['Zip']['html'] = stdFieldRow(_("Zip"), input('text', '
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formSupplier [j='date']\").attr('type', 'text');
             $(\"#formSupplier [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -789,7 +790,7 @@ $this->fields['Supplier']['Zip']['html'] = stdFieldRow(_("Zip"), input('text', '
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('Supplier', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -828,7 +829,7 @@ $this->fields['Supplier']['Name']['html']
                                     , 'pannelSupplier', " class='child_pannel ui-tabs childCntClass'");
             }
         }
-        
+
         if($id and $_SESSION['mem']['Supplier']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['Supplier']['ogf']."\"]').click();";
         }
@@ -842,8 +843,8 @@ $this->fields['Supplier']['Name']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -864,7 +865,7 @@ $this->fields['Supplier']['Name']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formSupplier [s='d'], #formSupplier .js-select-label, #formSupplier [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -874,7 +875,7 @@ $this->fields['Supplier']['Name']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['Supplier']['Name']['html'] = stdFieldRow(_("Name"), div( $dataObj->getName(), 'Name_label' , "class='readonly' s='d'")

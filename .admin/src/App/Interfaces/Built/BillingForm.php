@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'Billing' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Html\Tabs;
@@ -40,7 +40,7 @@ class BillingForm extends Billing
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -74,17 +74,17 @@ class BillingForm extends Billing
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -102,7 +102,7 @@ class BillingForm extends Billing
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -194,7 +194,7 @@ class BillingForm extends Billing
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -221,10 +221,10 @@ class BillingForm extends Billing
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -238,18 +238,18 @@ class BillingForm extends Billing
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
-                $trHead = th(_("Title"), " th='sorted' c='Title' title='" . _('Title')."' ")
+                $trHead = th(_("State"), " th='sorted' c='State' title='" . _('State')."' ")
 .th(_("Client"), " th='sorted' c='Client.Name' title='"._('Client.Name')."' ")
+.th(_("Title"), " th='sorted' c='Title' title='" . _('Title')."' ")
 .th(_("Project"), " th='sorted' c='Project.Name' title='"._('Project.Name')."' ")
-.th(_("Category"), " th='sorted' c='BillingCategory.Name' title='"._('BillingCategory.Name')."' ")
 .th(_("Date"), " th='sorted' c='Date' title='" . _('Date')."' ")
 .th(_("Type"), " th='sorted' c='Type' title='" . _('Type')."' ")
-.th(_("State"), " th='sorted' c='State' title='" . _('State')."' ")
 .th(_("Gross"), " th='sorted' c='Gross' title='" . _('Gross')."' ")
-.th(_("Tax"), " th='sorted' c='Tax' title='" . _('Tax')."' ")
+.th(_("Currency"), " th='sorted' c='GrossCurrency' title='" . _('Currency')."' ")
+.th(_("Gross"), " th='sorted' c='Gross2' title='" . _('Gross')."' ")
 .th(_("Due date"), " th='sorted' c='DateDue' title='" . _('Due date')."' ")
 .th(_("Paid date"), " th='sorted' c='DatePaid' title='" . _('Paid date')."' ")
 .th(_("Net"), " th='sorted' c='Net' title='" . _('Net')."' ")
@@ -277,7 +277,7 @@ class BillingForm extends Billing
             $trSearch = button(span(_("Show search")),'class="trigger-search button-link-blue"')
 
             .div(
-                form(div(selectboxCustomArray('Type[]', array( '0' => array('0'=>_("Quote"), '1'=>"Quote"),'1' => array('0'=>_("Bill"), '1'=>"Bill"), ), _('Type'), '  size="1" t="1"   multiple  ', $this->searchMs['Type']), '', 'class="multiple-select ac-search-item"').div(selectboxCustomArray('IdClient[]', $this->arrayIdClientOptions, 'Client' , "v='ID_CLIENT'  s='d' class='select-label js-select-label' multiple size='1'  ", $this->searchMs['IdClient'], '', false), '', ' class="ac-search-item multiple-select"').div(input('text', 'Date', $this->searchMs['Date'], '  j="date"  placeholder="'._('Date').'"',''),'','class="ac-search-item"').div(input('text', 'Title', $this->searchMs['Title'], '  placeholder="'._('Title').'"',''),'','class="ac-search-item"').div(selectboxCustomArray('State[]', array( '0' => array('0'=>_("New"), '1'=>"New"),'1' => array('0'=>_("Approved"), '1'=>"Approved"),'2' => array('0'=>_("Sent"), '1'=>"Sent"),'3' => array('0'=>_("Partial paiement"), '1'=>"Partial paiement"),'4' => array('0'=>_("Paid"), '1'=>"Paid"),'5' => array('0'=>_("Cancelled"), '1'=>"Cancelled"),'6' => array('0'=>_("To send"), '1'=>"To send"), ), _('State'), '  size="1" t="1"   multiple  ', $this->searchMs['State']), '', 'class="multiple-select ac-search-item"').$this->hookListSearchTop
+                form(div(selectboxCustomArray('Type[]', array( '0' => array('0'=>_("Quote"), '1'=>"Quote"),'1' => array('0'=>_("Bill"), '1'=>"Bill"), ), _('Type'), '  size="1" t="1"   multiple  ', $this->searchMs['Type']), '', 'class="multiple-select ac-search-item"').div(selectboxCustomArray('IdClient[]', $this->arrayIdClientOptions, 'Client' , "v='ID_CLIENT'  s='d' class='select-label js-select-label' multiple size='1'  ", $this->searchMs['IdClient'], '', false), '', ' class="ac-search-item multiple-select"').div(input('date', 'Date', $this->searchMs['Date'], '  j="date"  placeholder="'._('Date').'"',''),'','class="ac-search-item"').div(input('text', 'Title', $this->searchMs['Title'], '  placeholder="'._('Title').'"',''),'','class="ac-search-item"').div(selectboxCustomArray('State[]', array( '0' => array('0'=>_("New"), '1'=>"New"),'1' => array('0'=>_("Approved"), '1'=>"Approved"),'2' => array('0'=>_("Sent"), '1'=>"Sent"),'3' => array('0'=>_("Partial paiement"), '1'=>"Partial paiement"),'4' => array('0'=>_("Paid"), '1'=>"Paid"),'5' => array('0'=>_("Cancelled"), '1'=>"Cancelled"),'6' => array('0'=>_("To send"), '1'=>"To send"), ), _('State'), '  size="1" t="1"   multiple  ', $this->searchMs['State']), '', 'class="multiple-select ac-search-item"').$this->hookListSearchTop
                     .div(
                        button(span(_("Search")),'id="msBillingBt" title="'._('Search').'" class="icon search"')
                        .button(span(_("Clear")),' title="'._('Clear search').'" id="msBillingBtClear"')
@@ -298,7 +298,7 @@ class BillingForm extends Billing
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -326,14 +326,16 @@ class BillingForm extends Billing
         $altValue = array (
   'IdBilling' => '',
   'CalcId' => '',
-  'Title' => '',
+  'State' => '',
   'IdClient' => '',
+  'Title' => '',
   'IdProject' => '',
   'IdBillingCategory' => '',
   'Date' => '',
   'Type' => '',
-  'State' => '',
   'Gross' => '',
+  'GrossCurrency' => '',
+  'Gross2' => '',
   'Tax' => '',
   'DateDue' => '',
   'NoteBilling' => '',
@@ -355,7 +357,7 @@ class BillingForm extends Billing
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -364,7 +366,7 @@ class BillingForm extends Billing
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'Billing/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Billing/');
 
@@ -403,7 +405,7 @@ class BillingForm extends Billing
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -417,7 +419,7 @@ class BillingForm extends Billing
         
             foreach($pcData as $data) {
                 $this->listActionCell = '';
-                    $total[7] += $data->getGross();
+                    $total[6] += $data->getGross();
 $total[11] += $data->getNet();
 
                 
@@ -430,26 +432,22 @@ $total[11] += $data->getNet();
                                     if($data->getProject()){
                                         $Project_Name = $data->getProject()->getName();
                                     }
-                                    $BillingCategory_Name = "";
-                                    if($data->getBillingCategory()){
-                                        $BillingCategory_Name = $data->getBillingCategory()->getName();
-                                    }
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteBilling' ") . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= $hook['tr_before'].tr(
-                td(span((($altValue['Title']) ? $altValue['Title'] : $data->getTitle()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Title' class=''  j='editBilling'") . 
+                td(span((($altValue['State']) ? $altValue['State'] : isntPo($data->getState())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='State' class='center'  j='editBilling'") . 
                 td(span((($altValue['IdClient']) ? $altValue['IdClient'] : $Client_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdClient' class=''  j='editBilling'") . 
+                td(span((($altValue['Title']) ? $altValue['Title'] : $data->getTitle()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Title' class=''  j='editBilling'") . 
                 td(span((($altValue['IdProject']) ? $altValue['IdProject'] : $Project_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdProject' class=''  j='editBilling'") . 
-                td(span((($altValue['IdBillingCategory']) ? $altValue['IdBillingCategory'] : $BillingCategory_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBillingCategory' class=''  j='editBilling'") . 
                 td(span((($altValue['Date']) ? $altValue['Date'] : $data->getDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class=''  j='editBilling'") . 
                 td(span((($altValue['Type']) ? $altValue['Type'] : isntPo($data->getType())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editBilling'") . 
-                td(span((($altValue['State']) ? $altValue['State'] : isntPo($data->getState())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='State' class='center'  j='editBilling'") . 
                 td(span((($altValue['Gross']) ? $altValue['Gross'] : str_replace(',', '.', $data->getGross())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Gross' class='right'  j='editBilling'") . 
-                td(span((($altValue['Tax']) ? $altValue['Tax'] : str_replace(',', '.', $data->getTax())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Tax' class='right'  j='editBilling'") . 
+                td(span((($altValue['GrossCurrency']) ? $altValue['GrossCurrency'] : isntPo($data->getGrossCurrency())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='GrossCurrency' class='center'  j='editBilling'") . 
+                td(span((($altValue['Gross2']) ? $altValue['Gross2'] : str_replace(',', '.', $data->getGross2())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Gross2' class='right'  j='editBilling'") . 
                 td(span((($altValue['DateDue']) ? $altValue['DateDue'] : $data->getDateDue()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DateDue' class=''  j='editBilling'") . 
                 td(span((($altValue['DatePaid']) ? $altValue['DatePaid'] : $data->getDatePaid()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DatePaid' class=''  j='editBilling'") . 
                 td(span((($altValue['Net']) ? $altValue['Net'] : str_replace(',', '.', $data->getNet())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Net' class='right'  j='editBilling'") . $hook['td'].$cCmoreCols.$actionCell
@@ -460,11 +458,12 @@ $total[11] += $data->getNet();
                         id='BillingRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountBilling', $i);
         }
 
-            $tr .= "".td('').td('').td('').td('').td('').td('').td('').td(number_format($total[7], 2), "class='right total'").td('').td('').td('').td(number_format($total[11], 2), "class='right total'");
+            $tr .= "".td('').td('').td('').td('').td('').td('').td(number_format($total[6], 2), "class='right total'").td('').td('').td('').td('').td(number_format($total[11], 2), "class='right total'");
 
         ## @Paging
         $pagerRow = $this->getPager($pmpoData, $resultsCount, $search);
@@ -473,7 +472,7 @@ $total[11] += $data->getNet();
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -516,7 +515,7 @@ $total[11] += $data->getNet();
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#BillingPager').bindPaging({
             tableName:'Billing'
@@ -525,16 +524,16 @@ $total[11] += $data->getNet();
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsBilling [j='date']\").attr('type', 'input');
                 $(\"#formMsBilling [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -581,7 +580,7 @@ $total[11] += $data->getNet();
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addBillingAutoc').length > 0) {
             $('#addBillingAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -607,14 +606,15 @@ $total[11] += $data->getNet();
         $e = new Billing();
         
         
-        if(!$data['Type']){
-            $data['Type'] = "Bill";
-        } 
         if(!$data['State']){
             $data['State'] = "New";
         } 
+        if(!$data['Type']){
+            $data['Type'] = "Bill";
+        } 
+        if( $data['GrossCurrency'] == '' )unset($data['GrossCurrency']);
         $e->fromArray($data );
-        
+
         #
         
         //foreign
@@ -624,6 +624,9 @@ $total[11] += $data->getNet();
         $e->setDate( ($data['Date'] == '' || $data['Date'] == 'null' || substr($data['Date'],0,10) == '-0001-11-30') ? null : $data['Date'] );
         //integer not required
         $e->setGross( ($data['Gross'] == '' ) ? null : $data['Gross']);
+        $e->setGrossCurrency(($data['GrossCurrency'] == '' ) ? null : $data['GrossCurrency']);
+        //integer not required
+        $e->setGross2( ($data['Gross2'] == '' ) ? null : $data['Gross2']);
         //integer not required
         $e->setTax( ($data['Tax'] == '' ) ? null : $data['Tax']);
         $e->setDateDue( ($data['DateDue'] == '' || $data['DateDue'] == 'null' || substr($data['DateDue'],0,10) == '-0001-11-30') ? null : $data['DateDue'] );
@@ -644,7 +647,7 @@ $total[11] += $data->getNet();
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -655,14 +658,15 @@ $total[11] += $data->getNet();
         $e = BillingQuery::create()->findPk(json_decode($data['i']));
         
         
-        if(!$data['Type']){
-            $data['Type'] = "Bill";
-        } 
         if(!$data['State']){
             $data['State'] = "New";
         } 
+        if(!$data['Type']){
+            $data['Type'] = "Bill";
+        } 
+        if( $data['GrossCurrency'] == '' )unset($data['GrossCurrency']);
         $e->fromArray($data );
-        
+
         
         
         if( isset($data['IdProject']) ){
@@ -676,6 +680,12 @@ $total[11] += $data->getNet();
         }
         if(isset($data['Gross'])){
             $e->setGross( ($data['Gross'] == '' ) ? null : $data['Gross']);
+        }
+        if(isset($data['GrossCurrency'])){
+            $e->setGrossCurrency(($data['GrossCurrency'] == '' ) ? null : $data['GrossCurrency']);
+        }
+        if(isset($data['Gross2'])){
+            $e->setGross2( ($data['Gross2'] == '' ) ? null : $data['Gross2']);
         }
         if(isset($data['Tax'])){
             $e->setTax( ($data['Tax'] == '' ) ? null : $data['Tax']);
@@ -734,13 +744,13 @@ $total[11] += $data->getNet();
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "BillingTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -750,7 +760,7 @@ $total[11] += $data->getNet();
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -772,13 +782,13 @@ $total[11] += $data->getNet();
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('Billing', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('Billing', 'w') and $id) || $this->setReadOnly) {
@@ -811,7 +821,7 @@ $total[11] += $data->getNet();
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -865,14 +875,16 @@ $total[11] += $data->getNet();
         
         
         
-$this->fields['Billing']['Title']['html'] = stdFieldRow(_("Title"), input('text', 'Title', htmlentities($dataObj->getTitle()), "   placeholder='".str_replace("'","&#39;",_('Title'))."' size='35'  v='TITLE' s='d' class='req'  ")."", 'Title', "", $this->commentsTitle, $this->commentsTitle_css, '', ' ', 'no');
+$this->fields['Billing']['State']['html'] = stdFieldRow(_("State"), selectboxCustomArray('State', array( '0' => array('0'=>_("New"), '1'=>"New"),'1' => array('0'=>_("Approved"), '1'=>"Approved"),'2' => array('0'=>_("Sent"), '1'=>"Sent"),'3' => array('0'=>_("Partial paiement"), '1'=>"Partial paiement"),'4' => array('0'=>_("Paid"), '1'=>"Paid"),'5' => array('0'=>_("Cancelled"), '1'=>"Cancelled"),'6' => array('0'=>_("To send"), '1'=>"To send"), ), "", "s='d'  ", $dataObj->getState(), '', false), 'State', "", $this->commentsState, $this->commentsState_css, '', ' ', 'no');
 $this->fields['Billing']['IdClient']['html'] = stdFieldRow(_("Client"), selectboxCustomArray('IdClient', $this->arrayIdClientOptions, "", "v='ID_CLIENT'  s='d'  val='".$dataObj->getIdClient()."'", $dataObj->getIdClient()), 'IdClient', "", $this->commentsIdClient, $this->commentsIdClient_css, '', ' ', 'no');
+$this->fields['Billing']['Title']['html'] = stdFieldRow(_("Title"), input('text', 'Title', htmlentities($dataObj->getTitle()), "   placeholder='".str_replace("'","&#39;",_('Title'))."' size='35'  v='TITLE' s='d' class='req'  ")."", 'Title', "", $this->commentsTitle, $this->commentsTitle_css, '', ' ', 'no');
 $this->fields['Billing']['IdProject']['html'] = stdFieldRow(_("Project"), selectboxCustomArray('IdProject', $this->arrayIdProjectOptions, _('Project'), "v='ID_PROJECT'  s='d'  val='".$dataObj->getIdProject()."'", $dataObj->getIdProject()), 'IdProject', "", $this->commentsIdProject, $this->commentsIdProject_css, '', ' ', 'no');
 $this->fields['Billing']['IdBillingCategory']['html'] = stdFieldRow(_("Category"), selectboxCustomArray('IdBillingCategory', $this->arrayIdBillingCategoryOptions, _('Category'), "v='ID_BILLING_CATEGORY'  s='d'  val='".$dataObj->getIdBillingCategory()."'", $dataObj->getIdBillingCategory()), 'IdBillingCategory', "", $this->commentsIdBillingCategory, $this->commentsIdBillingCategory_css, '', ' ', 'no');
 $this->fields['Billing']['Date']['html'] = stdFieldRow(_("Date"), input('date', 'Date', $dataObj->getDate(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'Date', "", $this->commentsDate, $this->commentsDate_css, '', ' ', 'no');
 $this->fields['Billing']['Type']['html'] = stdFieldRow(_("Type"), selectboxCustomArray('Type', array( '0' => array('0'=>_("Quote"), '1'=>"Quote"),'1' => array('0'=>_("Bill"), '1'=>"Bill"), ), "", "s='d'  ", $dataObj->getType(), '', false), 'Type', "", $this->commentsType, $this->commentsType_css, '', ' ', 'no');
-$this->fields['Billing']['State']['html'] = stdFieldRow(_("State"), selectboxCustomArray('State', array( '0' => array('0'=>_("New"), '1'=>"New"),'1' => array('0'=>_("Approved"), '1'=>"Approved"),'2' => array('0'=>_("Sent"), '1'=>"Sent"),'3' => array('0'=>_("Partial paiement"), '1'=>"Partial paiement"),'4' => array('0'=>_("Paid"), '1'=>"Paid"),'5' => array('0'=>_("Cancelled"), '1'=>"Cancelled"),'6' => array('0'=>_("To send"), '1'=>"To send"), ), "", "s='d'  ", $dataObj->getState(), '', false), 'State', "", $this->commentsState, $this->commentsState_css, '', ' ', 'no');
 $this->fields['Billing']['Gross']['html'] = stdFieldRow(_("Gross"), input('text', 'Gross', $dataObj->getGross(), "  placeholder='".str_replace("'","&#39;",_('Gross'))."'  v='GROSS' size='5' s='d' class=''"), 'Gross', "", $this->commentsGross, $this->commentsGross_css, '', ' ', 'no');
+$this->fields['Billing']['GrossCurrency']['html'] = stdFieldRow(_("Currency"), selectboxCustomArray('GrossCurrency', array( '0' => array('0'=>_("CAD"), '1'=>"CAD"),'1' => array('0'=>_("AUS"), '1'=>"AUS"),'2' => array('0'=>_("SGD"), '1'=>"SGD"), ), _('Currency'), "s='d'  ", $dataObj->getGrossCurrency(), '', true), 'GrossCurrency', "", $this->commentsGrossCurrency, $this->commentsGrossCurrency_css, '', ' ', 'no');
+$this->fields['Billing']['Gross2']['html'] = stdFieldRow(_("Gross"), input('text', 'Gross2', $dataObj->getGross2(), "  placeholder='".str_replace("'","&#39;",_('Gross'))."'  v='GROSS_2' size='5' s='d' class=''"), 'Gross2', "", $this->commentsGross2, $this->commentsGross2_css, '', ' ', 'no');
 $this->fields['Billing']['Tax']['html'] = stdFieldRow(_("Tax"), input('text', 'Tax', $dataObj->getTax(), "  placeholder='".str_replace("'","&#39;",_('Tax'))."'  v='TAX' size='5' s='d' class=''"), 'Tax', "", $this->commentsTax, $this->commentsTax_css, '', ' ', 'no');
 $this->fields['Billing']['DateDue']['html'] = stdFieldRow(_("Due date"), input('date', 'DateDue', $dataObj->getDateDue(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'DateDue', "", $this->commentsDateDue, $this->commentsDateDue_css, '', ' ', 'no');
 $this->fields['Billing']['NoteBilling']['html'] = stdFieldRow(_("Note"), textarea('NoteBilling', htmlentities($dataObj->getNoteBilling()) ,"placeholder='".str_replace("'","&#39;",_('Note'))."' cols='71' v='NOTE_BILLING' s='d'  class=' tinymce ' style='' spellcheck='false'"), 'NoteBilling', "", $this->commentsNoteBilling, $this->commentsNoteBilling_css, 'istinymce', ' ', 'no');
@@ -884,8 +896,8 @@ $this->fields['Billing']['Reference']['html'] = stdFieldRow(_("Paiement Referenc
         $this->lockFormField(array(0=>'Gross',1=>'Tax',), $dataObj);
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
 
@@ -969,12 +981,12 @@ $this->fields['Billing']['Reference']['html'] = stdFieldRow(_("Paiement Referenc
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formBilling [j='date']\").attr('type', 'text');
             $(\"#formBilling [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -982,7 +994,7 @@ $this->fields['Billing']['Reference']['html'] = stdFieldRow(_("Paiement Referenc
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('Billing', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -991,14 +1003,16 @@ $this->fields['Billing']['Reference']['html'] = stdFieldRow(_("Paiement Referenc
                 
                 .
                     '<div id="ogf_Billing">'.
-$this->fields['Billing']['Title']['html']
+$this->fields['Billing']['State']['html']
 .$this->fields['Billing']['IdClient']['html']
+.$this->fields['Billing']['Title']['html']
 .$this->fields['Billing']['IdProject']['html']
 .$this->fields['Billing']['IdBillingCategory']['html']
 .$this->fields['Billing']['Date']['html']
 .$this->fields['Billing']['Type']['html']
-.$this->fields['Billing']['State']['html']
 .$this->fields['Billing']['Gross']['html']
+.$this->fields['Billing']['GrossCurrency']['html']
+.$this->fields['Billing']['Gross2']['html']
 .$this->fields['Billing']['Tax']['html']
 .$this->fields['Billing']['DateDue']['html']
 .'</div><div id="ogf_note_billing"  class=" ui-tabs-panel">'
@@ -1025,7 +1039,7 @@ $this->fields['Billing']['Title']['html']
                                     , 'pannelBilling', " class='child_pannel ui-tabs childCntClass'");
             }
         }
-        
+
         if($id and $_SESSION['mem']['Billing']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['Billing']['ogf']."\"]').click();";
         }
@@ -1039,8 +1053,8 @@ $this->fields['Billing']['Title']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -1067,7 +1081,7 @@ $this->fields['Billing']['Title']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formBilling [s='d'], #formBilling .js-select-label, #formBilling [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -1077,14 +1091,17 @@ $this->fields['Billing']['Title']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
-        $this->fieldsRo['Billing']['Title']['html'] = stdFieldRow(_("Title"), div( $dataObj->getTitle(), 'Title_label' , "class='readonly' s='d'")
-                .input('hidden', 'Title', $dataObj->getTitle(), "s='d'"), 'Title', "", $this->commentsTitle, $this->commentsTitle_css, 'readonly', ' ', 'no');
+        $this->fieldsRo['Billing']['State']['html'] = stdFieldRow(_("State"), div( $dataObj->getState(), 'State_label' , "class='readonly' s='d'")
+                .input('hidden', 'State', $dataObj->getState(), "s='d'"), 'State', "", $this->commentsState, $this->commentsState_css, 'readonly', ' ', 'no');
 
         $this->fieldsRo['Billing']['IdClient']['html'] = stdFieldRow(_("Client"), div( ($dataObj->getClient())?$dataObj->getClient()->getName():'', 'IdClient_label' , "class='readonly' s='d'")
                 .input('hidden', 'IdClient', $dataObj->getIdClient(), "s='d'"), 'IdClient', "", $this->commentsIdClient, $this->commentsIdClient_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['Billing']['Title']['html'] = stdFieldRow(_("Title"), div( $dataObj->getTitle(), 'Title_label' , "class='readonly' s='d'")
+                .input('hidden', 'Title', $dataObj->getTitle(), "s='d'"), 'Title', "", $this->commentsTitle, $this->commentsTitle_css, 'readonly', ' ', 'no');
 
         $this->fieldsRo['Billing']['IdProject']['html'] = stdFieldRow(_("Project"), div( ($dataObj->getProject())?$dataObj->getProject()->getName():'', 'IdProject_label' , "class='readonly' s='d'")
                 .input('hidden', 'IdProject', $dataObj->getIdProject(), "s='d'"), 'IdProject', "", $this->commentsIdProject, $this->commentsIdProject_css, 'readonly', ' ', 'no');
@@ -1098,11 +1115,14 @@ $this->fields['Billing']['Title']['html']
         $this->fieldsRo['Billing']['Type']['html'] = stdFieldRow(_("Type"), div( $dataObj->getType(), 'Type_label' , "class='readonly' s='d'")
                 .input('hidden', 'Type', $dataObj->getType(), "s='d'"), 'Type', "", $this->commentsType, $this->commentsType_css, 'readonly', ' ', 'no');
 
-        $this->fieldsRo['Billing']['State']['html'] = stdFieldRow(_("State"), div( $dataObj->getState(), 'State_label' , "class='readonly' s='d'")
-                .input('hidden', 'State', $dataObj->getState(), "s='d'"), 'State', "", $this->commentsState, $this->commentsState_css, 'readonly', ' ', 'no');
-
         $this->fieldsRo['Billing']['Gross']['html'] = stdFieldRow(_("Gross"), div( $dataObj->getGross(), 'Gross_label' , "class='readonly' s='d'")
                 .input('hidden', 'Gross', $dataObj->getGross(), "s='d'"), 'Gross', "", $this->commentsGross, $this->commentsGross_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['Billing']['GrossCurrency']['html'] = stdFieldRow(_("Currency"), div( $dataObj->getGrossCurrency(), 'GrossCurrency_label' , "class='readonly' s='d'")
+                .input('hidden', 'GrossCurrency', $dataObj->getGrossCurrency(), "s='d'"), 'GrossCurrency', "", $this->commentsGrossCurrency, $this->commentsGrossCurrency_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['Billing']['Gross2']['html'] = stdFieldRow(_("Gross"), div( $dataObj->getGross2(), 'Gross2_label' , "class='readonly' s='d'")
+                .input('hidden', 'Gross2', $dataObj->getGross2(), "s='d'"), 'Gross2', "", $this->commentsGross2, $this->commentsGross2_css, 'readonly', ' ', 'no');
 
         $this->fieldsRo['Billing']['Tax']['html'] = stdFieldRow(_("Tax"), div( $dataObj->getTax(), 'Tax_label' , "class='readonly' s='d'")
                 .input('hidden', 'Tax', $dataObj->getTax(), "s='d'"), 'Tax', "", $this->commentsTax, $this->commentsTax_css, 'readonly', ' ', 'no');

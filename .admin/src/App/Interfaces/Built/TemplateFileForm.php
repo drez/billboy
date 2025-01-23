@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'TemplateFile' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Utility\FormHelper as Helper;
@@ -39,7 +39,7 @@ class TemplateFileForm extends TemplateFile
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -73,17 +73,17 @@ class TemplateFileForm extends TemplateFile
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -101,7 +101,7 @@ class TemplateFileForm extends TemplateFile
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -133,7 +133,7 @@ class TemplateFileForm extends TemplateFile
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -160,10 +160,10 @@ class TemplateFileForm extends TemplateFile
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -177,7 +177,7 @@ class TemplateFileForm extends TemplateFile
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("Name"), " th='sorted' c='Name' title='" . _('Name')."' ")
@@ -218,7 +218,7 @@ class TemplateFileForm extends TemplateFile
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -263,7 +263,7 @@ class TemplateFileForm extends TemplateFile
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -272,7 +272,7 @@ class TemplateFileForm extends TemplateFile
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'TemplateFile/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'TemplateFile/');
 
@@ -307,7 +307,7 @@ class TemplateFileForm extends TemplateFile
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -325,7 +325,7 @@ class TemplateFileForm extends TemplateFile
                 
 
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                $this->listActionCell .= htmlLink(img(_SITE_URL.$data->getFile(), '25', '25'), _SITE_URL.$data->getFile(), "j='imageTemplateFile' i='".$data->getPrimaryKey()."' target='_blank'");	
+                $this->listActionCell .= htmlLink(img(_SITE_URL.$data->getFile(), '25', '25'), _SITE_URL.$data->getFile(), "j='imageTemplateFile' i='".$data->getPrimaryKey()."' target='_blank'");
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteTemplateFile' ") . $this->listActionCell, " class='actionrow' ");
@@ -340,6 +340,7 @@ class TemplateFileForm extends TemplateFile
                         id='TemplateFileRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountTemplateFile', $i);
         }
@@ -353,7 +354,7 @@ class TemplateFileForm extends TemplateFile
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -396,7 +397,7 @@ class TemplateFileForm extends TemplateFile
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#TemplateFilePager').bindPaging({
             tableName:'TemplateFile'
@@ -405,16 +406,16 @@ class TemplateFileForm extends TemplateFile
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsTemplateFile [j='date']\").attr('type', 'input');
                 $(\"#formMsTemplateFile [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -486,7 +487,7 @@ $(function(){
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addTemplateFileAutoc').length > 0) {
             $('#addTemplateFileAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -513,7 +514,7 @@ $(function(){
         
         
         $e->fromArray($data );
-        
+
         #
         
         //integer not required
@@ -532,7 +533,7 @@ $(function(){
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -544,7 +545,7 @@ $(function(){
         
         
         $e->fromArray($data );
-        
+
         
         
         if(isset($data['DateCreation'])){
@@ -592,13 +593,13 @@ $(function(){
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "TemplateFileTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -608,7 +609,7 @@ $(function(){
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -624,13 +625,13 @@ $(function(){
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('TemplateFile', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('TemplateFile', 'w') and $id) || $this->setReadOnly) {
@@ -663,7 +664,7 @@ $(function(){
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -712,8 +713,8 @@ $this->fields['TemplateFile']['File']['html'] = stdFieldRow(_("File"), input('te
         
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
         
@@ -739,12 +740,12 @@ $this->fields['TemplateFile']['File']['html'] = stdFieldRow(_("File"), input('te
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formTemplateFile [j='date']\").attr('type', 'text');
             $(\"#formTemplateFile [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -752,7 +753,7 @@ $this->fields['TemplateFile']['File']['html'] = stdFieldRow(_("File"), input('te
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('File', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -771,7 +772,7 @@ $this->fields['TemplateFile']['Name']['html']
 
 
         
-        
+
         if($id and $_SESSION['mem']['TemplateFile']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['TemplateFile']['ogf']."\"]').click();";
         }
@@ -785,8 +786,8 @@ $this->fields['TemplateFile']['Name']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -807,7 +808,7 @@ $this->fields['TemplateFile']['Name']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formTemplateFile [s='d'], #formTemplateFile .js-select-label, #formTemplateFile [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -817,7 +818,7 @@ $this->fields['TemplateFile']['Name']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['TemplateFile']['Name']['html'] = stdFieldRow(_("Name"), div( $dataObj->getName(), 'Name_label' , "class='readonly' s='d'")

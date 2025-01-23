@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'ApiLog' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Utility\FormHelper as Helper;
@@ -39,7 +39,7 @@ class ApiLogForm extends ApiLog
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -73,17 +73,17 @@ class ApiLogForm extends ApiLog
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -101,7 +101,7 @@ class ApiLogForm extends ApiLog
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -137,7 +137,7 @@ class ApiLogForm extends ApiLog
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -164,10 +164,10 @@ class ApiLogForm extends ApiLog
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -181,7 +181,7 @@ class ApiLogForm extends ApiLog
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("API ACL model"), " th='sorted' c='ApiRbac.Model' title='"._('ApiRbac.Model')."' ")
@@ -217,7 +217,7 @@ class ApiLogForm extends ApiLog
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -257,7 +257,7 @@ class ApiLogForm extends ApiLog
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -266,7 +266,7 @@ class ApiLogForm extends ApiLog
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'ApiLog/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'ApiLog/');
 
@@ -301,7 +301,7 @@ class ApiLogForm extends ApiLog
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -331,7 +331,7 @@ class ApiLogForm extends ApiLog
             $altValue['ApiRbac_Query'] = $data->getApiRbac()->getQuery();
         }
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteApiLog' ") . $this->listActionCell, " class='actionrow' ");
@@ -348,6 +348,7 @@ class ApiLogForm extends ApiLog
                         id='ApiLogRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountApiLog', $i);
         }
@@ -361,7 +362,7 @@ class ApiLogForm extends ApiLog
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -404,7 +405,7 @@ class ApiLogForm extends ApiLog
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#ApiLogPager').bindPaging({
             tableName:'ApiLog'
@@ -413,16 +414,16 @@ class ApiLogForm extends ApiLog
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsApiLog [j='date']\").attr('type', 'input');
                 $(\"#formMsApiLog [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -435,7 +436,7 @@ class ApiLogForm extends ApiLog
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addApiLogAutoc').length > 0) {
             $('#addApiLogAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -462,7 +463,7 @@ class ApiLogForm extends ApiLog
         
         
         $e->fromArray($data );
-        
+
         #
         
         //foreign
@@ -472,7 +473,7 @@ class ApiLogForm extends ApiLog
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -484,7 +485,7 @@ class ApiLogForm extends ApiLog
         
         
         $e->fromArray($data );
-        
+
         
         
         if( isset($data['IdAuthy']) ){
@@ -523,13 +524,13 @@ class ApiLogForm extends ApiLog
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "ApiLogTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -539,7 +540,7 @@ class ApiLogForm extends ApiLog
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -552,13 +553,13 @@ class ApiLogForm extends ApiLog
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('ApiLog', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('ApiLog', 'w') and $id) || $this->setReadOnly) {
@@ -591,7 +592,7 @@ class ApiLogForm extends ApiLog
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -644,8 +645,8 @@ $this->fields['ApiLog']['Time']['html'] = stdFieldRow(_("Time"), input('text', '
         
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
         
@@ -671,12 +672,12 @@ $this->fields['ApiLog']['Time']['html'] = stdFieldRow(_("Time"), input('text', '
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formApiLog [j='date']\").attr('type', 'text');
             $(\"#formApiLog [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -684,7 +685,7 @@ $this->fields['ApiLog']['Time']['html'] = stdFieldRow(_("Time"), input('text', '
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('API log', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -703,7 +704,7 @@ $this->fields['ApiLog']['IdApiRbac']['html']
 
 
         
-        
+
         if($id and $_SESSION['mem']['ApiLog']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['ApiLog']['ogf']."\"]').click();";
         }
@@ -717,8 +718,8 @@ $this->fields['ApiLog']['IdApiRbac']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -739,7 +740,7 @@ $this->fields['ApiLog']['IdApiRbac']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formApiLog [s='d'], #formApiLog .js-select-label, #formApiLog [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -749,7 +750,7 @@ $this->fields['ApiLog']['IdApiRbac']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['ApiLog']['IdApiRbac']['html'] = stdFieldRow(_("Rule"), div( ($dataObj->getApiRbac())?$dataObj->getApiRbac()->getModel():'', 'IdApiRbac_label' , "class='readonly' s='d'")

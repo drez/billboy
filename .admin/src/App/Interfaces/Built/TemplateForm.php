@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'Template' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Html\Tabs;
@@ -40,7 +40,7 @@ class TemplateForm extends Template
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -74,17 +74,17 @@ class TemplateForm extends Template
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -102,7 +102,7 @@ class TemplateForm extends Template
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -142,7 +142,7 @@ class TemplateForm extends Template
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -169,10 +169,10 @@ class TemplateForm extends Template
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -186,11 +186,11 @@ class TemplateForm extends Template
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("Name"), " th='sorted' c='Name' title='" . _('Name')."' ")
-.th(_("Action"), " th='sorted' c='Subject' title='" . _('Action')."' ")
+.th(_("Subject"), " th='sorted' c='Subject' title='" . _('Subject')."' ")
 .th(_("Status"), " th='sorted' c='Status' title='" . _('Status')."' ")
 . $this->cCmoreColsHeader;
                 if(!$this->setReadOnly){
@@ -234,7 +234,7 @@ class TemplateForm extends Template
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -283,7 +283,7 @@ class TemplateForm extends Template
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -292,7 +292,7 @@ class TemplateForm extends Template
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'Template/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Template/');
 
@@ -331,7 +331,7 @@ class TemplateForm extends Template
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -349,7 +349,7 @@ class TemplateForm extends Template
                 
 
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteTemplate' ") . $this->listActionCell, " class='actionrow' ");
@@ -365,6 +365,7 @@ class TemplateForm extends Template
                         id='TemplateRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountTemplate', $i);
         }
@@ -378,7 +379,7 @@ class TemplateForm extends Template
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -421,7 +422,7 @@ class TemplateForm extends Template
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#TemplatePager').bindPaging({
             tableName:'Template'
@@ -430,16 +431,16 @@ class TemplateForm extends Template
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsTemplate [j='date']\").attr('type', 'input');
                 $(\"#formMsTemplate [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -486,7 +487,7 @@ class TemplateForm extends Template
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addTemplateAutoc').length > 0) {
             $('#addTemplateAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -516,7 +517,7 @@ class TemplateForm extends Template
             $data['Status'] = "Active";
         } 
         $e->fromArray($data );
-        
+
         #
         
         //integer not required
@@ -541,7 +542,7 @@ class TemplateForm extends Template
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -556,7 +557,7 @@ class TemplateForm extends Template
             $data['Status'] = "Active";
         } 
         $e->fromArray($data );
-        
+
         
         
         if(isset($data['DateCreation'])){
@@ -604,13 +605,13 @@ class TemplateForm extends Template
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "TemplateTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -620,7 +621,7 @@ class TemplateForm extends Template
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -633,13 +634,13 @@ class TemplateForm extends Template
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('Template', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('Template', 'w') and $id) || $this->setReadOnly) {
@@ -672,7 +673,7 @@ class TemplateForm extends Template
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -715,7 +716,7 @@ class TemplateForm extends Template
         
         
 $this->fields['Template']['Name']['html'] = stdFieldRow(_("Name"), input('text', 'Name', htmlentities($dataObj->getName()), "   placeholder='".str_replace("'","&#39;",_('Name'))."' size='35'  v='NAME' s='d' class='req'  ")."", 'Name', "", $this->commentsName, $this->commentsName_css, '', ' ', 'no');
-$this->fields['Template']['Subject']['html'] = stdFieldRow(_("Action"), input('text', 'Subject', htmlentities($dataObj->getSubject()), "   placeholder='".str_replace("'","&#39;",_('Action'))."' size='69'  v='SUBJECT' s='d' class=''  ")."", 'Subject', "", $this->commentsSubject, $this->commentsSubject_css, '', ' ', 'no');
+$this->fields['Template']['Subject']['html'] = stdFieldRow(_("Subject"), input('text', 'Subject', htmlentities($dataObj->getSubject()), "   placeholder='".str_replace("'","&#39;",_('Subject'))."' size='69'  v='SUBJECT' s='d' class=''  ")."", 'Subject', "", $this->commentsSubject, $this->commentsSubject_css, '', ' ', 'no');
 $this->fields['Template']['Color1']['html'] = stdFieldRow(_("Color 1"), input('text', 'Color1', htmlentities($dataObj->getColor1()), "   placeholder='".str_replace("'","&#39;",_('Color 1'))."' size='15'  v='COLOR_1' s='d' class=''  ")."", 'Color1', "", $this->commentsColor1, $this->commentsColor1_css, '', ' ', 'no');
 $this->fields['Template']['Color2']['html'] = stdFieldRow(_("Color 2"), input('text', 'Color2', htmlentities($dataObj->getColor2()), "   placeholder='".str_replace("'","&#39;",_('Color 2'))."' size='15'  v='COLOR_2' s='d' class=''  ")."", 'Color2', "", $this->commentsColor2, $this->commentsColor2_css, '', ' ', 'no');
 $this->fields['Template']['Color3']['html'] = stdFieldRow(_("Color 3"), input('text', 'Color3', htmlentities($dataObj->getColor3()), "   placeholder='".str_replace("'","&#39;",_('Color 3'))."' size='15'  v='COLOR_3' s='d' class=''  ")."", 'Color3', "", $this->commentsColor3, $this->commentsColor3_css, '', ' ', 'no');
@@ -726,8 +727,8 @@ $this->fields['Template']['Body']['html'] = stdFieldRow(_("Body"), textarea('Bod
         
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
 
@@ -795,12 +796,12 @@ $this->fields['Template']['Body']['html'] = stdFieldRow(_("Body"), textarea('Bod
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formTemplate [j='date']\").attr('type', 'text');
             $(\"#formTemplate [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -808,7 +809,7 @@ $this->fields['Template']['Body']['html'] = stdFieldRow(_("Body"), textarea('Bod
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('Template', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -841,7 +842,7 @@ $this->fields['Template']['Name']['html']
                                     , 'pannelTemplate', " class='child_pannel ui-tabs childCntClass'");
             }
         }
-        
+
         if($id and $_SESSION['mem']['Template']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['Template']['ogf']."\"]').click();";
         }
@@ -855,8 +856,8 @@ $this->fields['Template']['Name']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -883,7 +884,7 @@ $this->fields['Template']['Name']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formTemplate [s='d'], #formTemplate .js-select-label, #formTemplate [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -893,13 +894,13 @@ $this->fields['Template']['Name']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['Template']['Name']['html'] = stdFieldRow(_("Name"), div( $dataObj->getName(), 'Name_label' , "class='readonly' s='d'")
                 .input('hidden', 'Name', $dataObj->getName(), "s='d'"), 'Name', "", $this->commentsName, $this->commentsName_css, 'readonly', ' ', 'no');
 
-        $this->fieldsRo['Template']['Subject']['html'] = stdFieldRow(_("Action"), div( $dataObj->getSubject(), 'Subject_label' , "class='readonly' s='d'")
+        $this->fieldsRo['Template']['Subject']['html'] = stdFieldRow(_("Subject"), div( $dataObj->getSubject(), 'Subject_label' , "class='readonly' s='d'")
                 .input('hidden', 'Subject', $dataObj->getSubject(), "s='d'"), 'Subject', "", $this->commentsSubject, $this->commentsSubject_css, 'readonly', ' ', 'no');
 
         $this->fieldsRo['Template']['Color1']['html'] = stdFieldRow(_("Color 1"), div( $dataObj->getColor1(), 'Color1_label' , "class='readonly' s='d'")

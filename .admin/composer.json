@@ -26,7 +26,8 @@
         "propel/propel1": "dev-master",
         "apigoat/phing-copy2": "dev-master",
         "peppeocchi/php-cron-scheduler": "dev-master",
-        "adhocore/env": "^0.1.0"
+        "adhocore/env": "^0.1.0",
+        "dompdf/dompdf": "dev-master"
     },
     "repositories": [
         {

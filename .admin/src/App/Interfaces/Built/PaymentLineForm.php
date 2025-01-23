@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'PaymentLine' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Utility\FormHelper as Helper;
@@ -39,7 +39,7 @@ class PaymentLineForm extends PaymentLine
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -73,17 +73,17 @@ class PaymentLineForm extends PaymentLine
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -101,7 +101,7 @@ class PaymentLineForm extends PaymentLine
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -147,7 +147,7 @@ class PaymentLineForm extends PaymentLine
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -174,10 +174,10 @@ class PaymentLineForm extends PaymentLine
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -191,7 +191,7 @@ class PaymentLineForm extends PaymentLine
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("Client name"), " th='sorted' c='Billing.Name' title='"._('Billing.Name')."' ")
@@ -229,7 +229,7 @@ class PaymentLineForm extends PaymentLine
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -276,7 +276,7 @@ class PaymentLineForm extends PaymentLine
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -285,7 +285,7 @@ class PaymentLineForm extends PaymentLine
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'PaymentLine/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'PaymentLine/');
 
@@ -320,7 +320,7 @@ class PaymentLineForm extends PaymentLine
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -343,7 +343,7 @@ class PaymentLineForm extends PaymentLine
                 $altValue['Billing_Client_Name'] = $data->getBilling()->getClient()->getName();
         }
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deletePaymentLine' ") . $this->listActionCell, " class='actionrow' ");
@@ -360,6 +360,7 @@ class PaymentLineForm extends PaymentLine
                         id='PaymentLineRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountPaymentLine', $i);
         }
@@ -373,7 +374,7 @@ class PaymentLineForm extends PaymentLine
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -416,7 +417,7 @@ class PaymentLineForm extends PaymentLine
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#PaymentLinePager').bindPaging({
             tableName:'PaymentLine'
@@ -425,16 +426,16 @@ class PaymentLineForm extends PaymentLine
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsPaymentLine [j='date']\").attr('type', 'input');
                 $(\"#formMsPaymentLine [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -447,7 +448,7 @@ class PaymentLineForm extends PaymentLine
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addPaymentLineAutoc').length > 0) {
             $('#addPaymentLineAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -474,7 +475,7 @@ class PaymentLineForm extends PaymentLine
         
         
         $e->fromArray($data );
-        
+
         #
         
         //foreign
@@ -494,7 +495,7 @@ class PaymentLineForm extends PaymentLine
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -506,7 +507,7 @@ class PaymentLineForm extends PaymentLine
         
         
         $e->fromArray($data );
-        
+
         
         
         if( isset($data['IdBilling']) ){
@@ -560,13 +561,13 @@ class PaymentLineForm extends PaymentLine
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "PaymentLineTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -576,7 +577,7 @@ class PaymentLineForm extends PaymentLine
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -592,13 +593,13 @@ class PaymentLineForm extends PaymentLine
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('PaymentLine', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('PaymentLine', 'w') and $id) || $this->setReadOnly) {
@@ -631,7 +632,7 @@ class PaymentLineForm extends PaymentLine
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -686,8 +687,8 @@ $this->fields['PaymentLine']['Amount']['html'] = stdFieldRow(_("Amount"), input(
         
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
         
@@ -713,12 +714,12 @@ $this->fields['PaymentLine']['Amount']['html'] = stdFieldRow(_("Amount"), input(
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formPaymentLine [j='date']\").attr('type', 'text');
             $(\"#formPaymentLine [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -726,7 +727,7 @@ $this->fields['PaymentLine']['Amount']['html'] = stdFieldRow(_("Amount"), input(
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('Payment entry', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -747,7 +748,7 @@ $this->fields['PaymentLine']['IdBilling']['html']
 
 
         
-        
+
         if($id and $_SESSION['mem']['PaymentLine']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['PaymentLine']['ogf']."\"]').click();";
         }
@@ -761,8 +762,8 @@ $this->fields['PaymentLine']['IdBilling']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -783,7 +784,7 @@ $this->fields['PaymentLine']['IdBilling']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formPaymentLine [s='d'], #formPaymentLine .js-select-label, #formPaymentLine [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -793,7 +794,7 @@ $this->fields['PaymentLine']['IdBilling']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['PaymentLine']['IdBilling']['html'] = stdFieldRow(_("Bill"), div( ($dataObj->getBilling())?$dataObj->getBilling()->getName():'', 'IdBilling_label' , "class='readonly' s='d'")

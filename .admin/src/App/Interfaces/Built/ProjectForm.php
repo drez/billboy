@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'Project' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Html\Tabs;
@@ -40,7 +40,7 @@ class ProjectForm extends Project
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -74,17 +74,17 @@ class ProjectForm extends Project
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -102,7 +102,7 @@ class ProjectForm extends Project
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -163,7 +163,7 @@ class ProjectForm extends Project
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -190,10 +190,10 @@ class ProjectForm extends Project
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -207,7 +207,7 @@ class ProjectForm extends Project
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("Name"), " th='sorted' c='Name' title='" . _('Name')."' ")
@@ -239,7 +239,7 @@ class ProjectForm extends Project
             $trSearch = button(span(_("Show search")),'class="trigger-search button-link-blue"')
 
             .div(
-                form(div(selectboxCustomArray('IdClient', $this->arrayIdClientOptions, 'Client' , "v='ID_CLIENT'  s='d' ", $this->searchMs['IdClient'], '', true), '', ' class="ac-search-item "').div(input('text', 'Date', $this->searchMs['Date'], '  j="date"  placeholder="'._('Date').'"',''),'','class="ac-search-item"').div(input('text', 'Title', $this->searchMs['Title'], '  placeholder="'._('Title').'"',''),'','class="ac-search-item"').$this->hookListSearchTop
+                form(div(selectboxCustomArray('IdClient', $this->arrayIdClientOptions, 'Client' , "v='ID_CLIENT'  s='d' ", $this->searchMs['IdClient'], '', true), '', ' class="ac-search-item "').div(input('date', 'Date', $this->searchMs['Date'], '  j="date"  placeholder="'._('Date').'"',''),'','class="ac-search-item"').div(input('text', 'Title', $this->searchMs['Title'], '  placeholder="'._('Title').'"',''),'','class="ac-search-item"').$this->hookListSearchTop
                     .div(
                        button(span(_("Search")),'id="msProjectBt" title="'._('Search').'" class="icon search"')
                        .button(span(_("Clear")),' title="'._('Clear search').'" id="msProjectBtClear"')
@@ -260,7 +260,7 @@ class ProjectForm extends Project
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -311,7 +311,7 @@ class ProjectForm extends Project
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -320,7 +320,7 @@ class ProjectForm extends Project
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'Project/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Project/');
 
@@ -355,7 +355,7 @@ class ProjectForm extends Project
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -377,7 +377,7 @@ class ProjectForm extends Project
                                         $Client_Name = $data->getClient()->getName();
                                     }
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteProject' ") . $this->listActionCell, " class='actionrow' ");
@@ -397,6 +397,7 @@ class ProjectForm extends Project
                         id='ProjectRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountProject', $i);
         }
@@ -410,7 +411,7 @@ class ProjectForm extends Project
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -453,7 +454,7 @@ class ProjectForm extends Project
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#ProjectPager').bindPaging({
             tableName:'Project'
@@ -462,16 +463,16 @@ class ProjectForm extends Project
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsProject [j='date']\").attr('type', 'input');
                 $(\"#formMsProject [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -518,7 +519,7 @@ class ProjectForm extends Project
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addProjectAutoc').length > 0) {
             $('#addProjectAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -547,7 +548,7 @@ class ProjectForm extends Project
         if( $data['Type'] == '' )unset($data['Type']);
         if( $data['State'] == '' )unset($data['State']);
         $e->fromArray($data );
-        
+
         #
         
         //foreign
@@ -571,7 +572,7 @@ class ProjectForm extends Project
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -585,7 +586,7 @@ class ProjectForm extends Project
         if( $data['Type'] == '' )unset($data['Type']);
         if( $data['State'] == '' )unset($data['State']);
         $e->fromArray($data );
-        
+
         
         
         if( isset($data['IdClient']) ){
@@ -651,13 +652,13 @@ class ProjectForm extends Project
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "ProjectTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -667,7 +668,7 @@ class ProjectForm extends Project
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -683,13 +684,13 @@ class ProjectForm extends Project
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('Project', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('Project', 'w') and $id) || $this->setReadOnly) {
@@ -722,7 +723,7 @@ class ProjectForm extends Project
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -780,8 +781,8 @@ $this->fields['Project']['Reference']['html'] = stdFieldRow(_("Paiement Referenc
         $this->lockFormField(array(0=>'Spent',), $dataObj);
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
 
@@ -859,12 +860,12 @@ $this->fields['Project']['Reference']['html'] = stdFieldRow(_("Paiement Referenc
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formProject [j='date']\").attr('type', 'text');
             $(\"#formProject [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -872,7 +873,7 @@ $this->fields['Project']['Reference']['html'] = stdFieldRow(_("Paiement Referenc
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('Project', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -907,7 +908,7 @@ $this->fields['Project']['Name']['html']
                                     , 'pannelProject', " class='child_pannel ui-tabs childCntClass'");
             }
         }
-        
+
         if($id and $_SESSION['mem']['Project']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['Project']['ogf']."\"]').click();";
         }
@@ -921,8 +922,8 @@ $this->fields['Project']['Name']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -949,7 +950,7 @@ $this->fields['Project']['Name']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formProject [s='d'], #formProject .js-select-label, #formProject [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -959,7 +960,7 @@ $this->fields['Project']['Name']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['Project']['Name']['html'] = stdFieldRow(_("Name"), div( $dataObj->getName(), 'Name_label' , "class='readonly' s='d'")

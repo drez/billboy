@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'AuthyLog' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Utility\FormHelper as Helper;
@@ -39,7 +39,7 @@ class AuthyLogForm extends AuthyLog
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -73,17 +73,17 @@ class AuthyLogForm extends AuthyLog
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -101,7 +101,7 @@ class AuthyLogForm extends AuthyLog
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -133,7 +133,7 @@ class AuthyLogForm extends AuthyLog
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -160,10 +160,10 @@ class AuthyLogForm extends AuthyLog
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -177,7 +177,7 @@ class AuthyLogForm extends AuthyLog
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("Date"), " th='sorted' c='Timestamp' title='" . _('Date')."' ")
@@ -214,7 +214,7 @@ class AuthyLogForm extends AuthyLog
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -258,7 +258,7 @@ class AuthyLogForm extends AuthyLog
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -267,7 +267,7 @@ class AuthyLogForm extends AuthyLog
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'AuthyLog/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'AuthyLog/');
 
@@ -306,7 +306,7 @@ class AuthyLogForm extends AuthyLog
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -324,7 +324,7 @@ class AuthyLogForm extends AuthyLog
                 
 
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteAuthyLog' ") . $this->listActionCell, " class='actionrow' ");
@@ -341,6 +341,7 @@ class AuthyLogForm extends AuthyLog
                         id='AuthyLogRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountAuthyLog', $i);
         }
@@ -354,7 +355,7 @@ class AuthyLogForm extends AuthyLog
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -397,7 +398,7 @@ class AuthyLogForm extends AuthyLog
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#AuthyLogPager').bindPaging({
             tableName:'AuthyLog'
@@ -406,16 +407,16 @@ class AuthyLogForm extends AuthyLog
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsAuthyLog [j='date']\").attr('type', 'input');
                 $(\"#formMsAuthyLog [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -428,7 +429,7 @@ class AuthyLogForm extends AuthyLog
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addAuthyLogAutoc').length > 0) {
             $('#addAuthyLogAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -455,7 +456,7 @@ class AuthyLogForm extends AuthyLog
         
         
         $e->fromArray($data );
-        
+
         #
         
         //foreign
@@ -469,7 +470,7 @@ class AuthyLogForm extends AuthyLog
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -481,7 +482,7 @@ class AuthyLogForm extends AuthyLog
         
         
         $e->fromArray($data );
-        
+
         
         
         if( isset($data['IdAuthy']) ){
@@ -526,13 +527,13 @@ class AuthyLogForm extends AuthyLog
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "AuthyLogTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -542,7 +543,7 @@ class AuthyLogForm extends AuthyLog
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -552,13 +553,13 @@ class AuthyLogForm extends AuthyLog
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('AuthyLog', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('AuthyLog', 'w') and $id) || $this->setReadOnly) {
@@ -591,7 +592,7 @@ class AuthyLogForm extends AuthyLog
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -642,8 +643,8 @@ $this->fields['AuthyLog']['Count']['html'] = stdFieldRow(_("Count"), input('numb
         
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
         
@@ -669,12 +670,12 @@ $this->fields['AuthyLog']['Count']['html'] = stdFieldRow(_("Count"), input('numb
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formAuthyLog [j='date']\").attr('type', 'text');
             $(\"#formAuthyLog [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -682,7 +683,7 @@ $this->fields['AuthyLog']['Count']['html'] = stdFieldRow(_("Count"), input('numb
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('Login log', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -703,7 +704,7 @@ $this->fields['AuthyLog']['Timestamp']['html']
 
 
         
-        
+
         if($id and $_SESSION['mem']['AuthyLog']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['AuthyLog']['ogf']."\"]').click();";
         }
@@ -717,8 +718,8 @@ $this->fields['AuthyLog']['Timestamp']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -739,7 +740,7 @@ $this->fields['AuthyLog']['Timestamp']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formAuthyLog [s='d'], #formAuthyLog .js-select-label, #formAuthyLog [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -749,7 +750,7 @@ $this->fields['AuthyLog']['Timestamp']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['AuthyLog']['Timestamp']['html'] = stdFieldRow(_("Date"), div( $dataObj->getTimestamp(), 'Timestamp_label' , "class='readonly' s='d'")

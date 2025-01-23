@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'Country' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Utility\FormHelper as Helper;
@@ -39,7 +39,7 @@ class CountryForm extends Country
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -73,17 +73,17 @@ class CountryForm extends Country
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -101,7 +101,7 @@ class CountryForm extends Country
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -133,7 +133,7 @@ class CountryForm extends Country
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -160,10 +160,10 @@ class CountryForm extends Country
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -177,7 +177,7 @@ class CountryForm extends Country
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("Name"), " th='sorted' c='Name' title='" . _('Name')."' ")
@@ -215,7 +215,7 @@ class CountryForm extends Country
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -262,7 +262,7 @@ class CountryForm extends Country
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -271,7 +271,7 @@ class CountryForm extends Country
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'Country/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Country/');
 
@@ -306,7 +306,7 @@ class CountryForm extends Country
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -324,7 +324,7 @@ class CountryForm extends Country
                 
 
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteCountry' ") . $this->listActionCell, " class='actionrow' ");
@@ -342,6 +342,7 @@ class CountryForm extends Country
                         id='CountryRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountCountry', $i);
         }
@@ -355,7 +356,7 @@ class CountryForm extends Country
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -398,7 +399,7 @@ class CountryForm extends Country
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#CountryPager').bindPaging({
             tableName:'Country'
@@ -407,16 +408,16 @@ class CountryForm extends Country
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsCountry [j='date']\").attr('type', 'input');
                 $(\"#formMsCountry [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -429,7 +430,7 @@ class CountryForm extends Country
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addCountryAutoc').length > 0) {
             $('#addCountryAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -456,7 +457,7 @@ class CountryForm extends Country
         
         
         $e->fromArray($data );
-        
+
         #
         
         $e->setDateCreation( ($data['DateCreation'] == '' || $data['DateCreation'] == 'null' || substr($data['DateCreation'],0,10) == '-0001-11-30') ? null : $data['DateCreation'] );
@@ -471,7 +472,7 @@ class CountryForm extends Country
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -483,7 +484,7 @@ class CountryForm extends Country
         
         
         $e->fromArray($data );
-        
+
         
         
         if(isset($data['DateCreation'])){
@@ -531,13 +532,13 @@ class CountryForm extends Country
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "CountryTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -547,7 +548,7 @@ class CountryForm extends Country
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -560,13 +561,13 @@ class CountryForm extends Country
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('Country', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('Country', 'w') and $id) || $this->setReadOnly) {
@@ -599,7 +600,7 @@ class CountryForm extends Country
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -651,8 +652,8 @@ $this->fields['Country']['Priority']['html'] = stdFieldRow(_("Priority"), input(
         
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
         
@@ -678,12 +679,12 @@ $this->fields['Country']['Priority']['html'] = stdFieldRow(_("Priority"), input(
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formCountry [j='date']\").attr('type', 'text');
             $(\"#formCountry [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -691,7 +692,7 @@ $this->fields['Country']['Priority']['html'] = stdFieldRow(_("Priority"), input(
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('Country', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -713,7 +714,7 @@ $this->fields['Country']['Name']['html']
 
 
         
-        
+
         if($id and $_SESSION['mem']['Country']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['Country']['ogf']."\"]').click();";
         }
@@ -727,8 +728,8 @@ $this->fields['Country']['Name']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -749,7 +750,7 @@ $this->fields['Country']['Name']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formCountry [s='d'], #formCountry .js-select-label, #formCountry [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -759,7 +760,7 @@ $this->fields['Country']['Name']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['Country']['Name']['html'] = stdFieldRow(_("Name"), div( $dataObj->getName(), 'Name_label' , "class='readonly' s='d'")

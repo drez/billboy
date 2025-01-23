@@ -94,13 +94,18 @@ $table['billing'] = [
     'calc_id' => [
         'type' => 'VARCHAR',
     ],
-    'title' => [
-        'type' => 'VARCHAR',
-        'description' => 'Title',
+    'state' => [
+        'type' => 'ENUM',
+        'description' => 'State',
+        'valueSet' => null,
     ],
     'id_client' => [
         'type' => 'INTEGER',
         'description' => 'Client',
+    ],
+    'title' => [
+        'type' => 'VARCHAR',
+        'description' => 'Title',
     ],
     'id_project' => [
         'type' => 'INTEGER',
@@ -119,12 +124,16 @@ $table['billing'] = [
         'description' => 'Type',
         'valueSet' => null,
     ],
-    'state' => [
+    'gross' => [
+        'type' => 'DECIMAL',
+        'description' => 'Gross',
+    ],
+    'gross_currency' => [
         'type' => 'ENUM',
-        'description' => 'State',
+        'description' => 'Currency',
         'valueSet' => null,
     ],
-    'gross' => [
+    'gross_2' => [
         'type' => 'DECIMAL',
         'description' => 'Gross',
     ],
@@ -1046,7 +1055,7 @@ $table['template'] = [
     ],
     'subject' => [
         'type' => 'VARCHAR',
-        'description' => 'Action',
+        'description' => 'Subject',
     ],
     'color_1' => [
         'type' => 'VARCHAR',

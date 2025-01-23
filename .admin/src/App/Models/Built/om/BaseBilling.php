@@ -76,16 +76,22 @@ abstract class BaseBilling extends BaseObject implements Persistent
     protected $calc_id;
 
     /**
-     * The value for the title field.
-     * @var        string
+     * The value for the state field.
+     * @var        int
      */
-    protected $title;
+    protected $state;
 
     /**
      * The value for the id_client field.
      * @var        int
      */
     protected $id_client;
+
+    /**
+     * The value for the title field.
+     * @var        string
+     */
+    protected $title;
 
     /**
      * The value for the id_project field.
@@ -113,16 +119,22 @@ abstract class BaseBilling extends BaseObject implements Persistent
     protected $type;
 
     /**
-     * The value for the state field.
-     * @var        int
-     */
-    protected $state;
-
-    /**
      * The value for the gross field.
      * @var        string
      */
     protected $gross;
+
+    /**
+     * The value for the gross_currency field.
+     * @var        int
+     */
+    protected $gross_currency;
+
+    /**
+     * The value for the gross_2 field.
+     * @var        string
+     */
+    protected $gross_2;
 
     /**
      * The value for the tax field.
@@ -323,14 +335,22 @@ abstract class BaseBilling extends BaseObject implements Persistent
 
     /**
      * @Field()
-     * Get the [title] column value.
-     * Title
-     * @return string
+     * Get the [state] column value.
+     * State
+     * @return int
+     * @throws PropelException - if the stored enum key is unknown.
      */
-    public function getTitle()
+    public function getState()
     {
+        if (null === $this->state) {
+            return null;
+        }
+        $valueSet = BillingPeer::getValueSet(BillingPeer::STATE);
+        if (!isset($valueSet[$this->state])) {
+            throw new PropelException('Unknown stored enum key: ' . $this->state);
+        }
 
-        return $this->title;
+        return $valueSet[$this->state];
     }
 
     /**
@@ -343,6 +363,18 @@ abstract class BaseBilling extends BaseObject implements Persistent
     {
 
         return $this->id_client;
+    }
+
+    /**
+     * @Field()
+     * Get the [title] column value.
+     * Title
+     * @return string
+     */
+    public function getTitle()
+    {
+
+        return $this->title;
     }
 
     /**
@@ -432,26 +464,6 @@ abstract class BaseBilling extends BaseObject implements Persistent
 
     /**
      * @Field()
-     * Get the [state] column value.
-     * State
-     * @return int
-     * @throws PropelException - if the stored enum key is unknown.
-     */
-    public function getState()
-    {
-        if (null === $this->state) {
-            return null;
-        }
-        $valueSet = BillingPeer::getValueSet(BillingPeer::STATE);
-        if (!isset($valueSet[$this->state])) {
-            throw new PropelException('Unknown stored enum key: ' . $this->state);
-        }
-
-        return $valueSet[$this->state];
-    }
-
-    /**
-     * @Field()
      * Get the [gross] column value.
      * Gross
      * @return string
@@ -460,6 +472,38 @@ abstract class BaseBilling extends BaseObject implements Persistent
     {
 
         return $this->gross;
+    }
+
+    /**
+     * @Field()
+     * Get the [gross_currency] column value.
+     * Currency
+     * @return int
+     * @throws PropelException - if the stored enum key is unknown.
+     */
+    public function getGrossCurrency()
+    {
+        if (null === $this->gross_currency) {
+            return null;
+        }
+        $valueSet = BillingPeer::getValueSet(BillingPeer::GROSS_CURRENCY);
+        if (!isset($valueSet[$this->gross_currency])) {
+            throw new PropelException('Unknown stored enum key: ' . $this->gross_currency);
+        }
+
+        return $valueSet[$this->gross_currency];
+    }
+
+    /**
+     * @Field()
+     * Get the [gross_2] column value.
+     * Gross
+     * @return string
+     */
+    public function getGross2()
+    {
+
+        return $this->gross_2;
     }
 
     /**
@@ -753,25 +797,30 @@ abstract class BaseBilling extends BaseObject implements Persistent
     } // setCalcId()
 
     /**
-     * Set the value of [title] column.
-     * Title
-     * @param  string $v new value
+     * Set the value of [state] column.
+     * State
+     * @param  int $v new value
      * @return Billing The current object (for fluent API support)
+     * @throws PropelException - if the value is not accepted by this enum.
      */
-    public function setTitle($v)
+    public function setState($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            $valueSet = BillingPeer::getValueSet(BillingPeer::STATE);
+            if (!in_array($v, $valueSet)) {
+                throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $v));
+            }
+            $v = array_search($v, $valueSet);
         }
 
-        if ($this->title !== $v) {
-            $this->title = $v;
-            $this->modifiedColumns[] = BillingPeer::TITLE;
+        if ($this->state !== $v) {
+            $this->state = $v;
+            $this->modifiedColumns[] = BillingPeer::STATE;
         }
 
 
         return $this;
-    } // setTitle()
+    } // setState()
 
     /**
      * Set the value of [id_client] column.
@@ -797,6 +846,27 @@ abstract class BaseBilling extends BaseObject implements Persistent
 
         return $this;
     } // setIdClient()
+
+    /**
+     * Set the value of [title] column.
+     * Title
+     * @param  string $v new value
+     * @return Billing The current object (for fluent API support)
+     */
+    public function setTitle($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->title !== $v) {
+            $this->title = $v;
+            $this->modifiedColumns[] = BillingPeer::TITLE;
+        }
+
+
+        return $this;
+    } // setTitle()
 
     /**
      * Set the value of [id_project] column.
@@ -898,32 +968,6 @@ abstract class BaseBilling extends BaseObject implements Persistent
     } // setType()
 
     /**
-     * Set the value of [state] column.
-     * State
-     * @param  int $v new value
-     * @return Billing The current object (for fluent API support)
-     * @throws PropelException - if the value is not accepted by this enum.
-     */
-    public function setState($v)
-    {
-        if ($v !== null) {
-            $valueSet = BillingPeer::getValueSet(BillingPeer::STATE);
-            if (!in_array($v, $valueSet)) {
-                throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $v));
-            }
-            $v = array_search($v, $valueSet);
-        }
-
-        if ($this->state !== $v) {
-            $this->state = $v;
-            $this->modifiedColumns[] = BillingPeer::STATE;
-        }
-
-
-        return $this;
-    } // setState()
-
-    /**
      * Set the value of [gross] column.
      * Gross
      * @param  string $v new value
@@ -943,6 +987,53 @@ abstract class BaseBilling extends BaseObject implements Persistent
 
         return $this;
     } // setGross()
+
+    /**
+     * Set the value of [gross_currency] column.
+     * Currency
+     * @param  int $v new value
+     * @return Billing The current object (for fluent API support)
+     * @throws PropelException - if the value is not accepted by this enum.
+     */
+    public function setGrossCurrency($v)
+    {
+        if ($v !== null) {
+            $valueSet = BillingPeer::getValueSet(BillingPeer::GROSS_CURRENCY);
+            if (!in_array($v, $valueSet)) {
+                throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $v));
+            }
+            $v = array_search($v, $valueSet);
+        }
+
+        if ($this->gross_currency !== $v) {
+            $this->gross_currency = $v;
+            $this->modifiedColumns[] = BillingPeer::GROSS_CURRENCY;
+        }
+
+
+        return $this;
+    } // setGrossCurrency()
+
+    /**
+     * Set the value of [gross_2] column.
+     * Gross
+     * @param  string $v new value
+     * @return Billing The current object (for fluent API support)
+     */
+    public function setGross2($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (string) $v;
+        }
+
+        if ($this->gross_2 !== $v) {
+            $this->gross_2 = $v;
+            $this->modifiedColumns[] = BillingPeer::GROSS_2;
+        }
+
+
+        return $this;
+    } // setGross2()
 
     /**
      * Set the value of [tax] column.
@@ -1233,25 +1324,27 @@ abstract class BaseBilling extends BaseObject implements Persistent
 
             $this->id_billing = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
             $this->calc_id = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-            $this->title = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+            $this->state = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
             $this->id_client = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
-            $this->id_project = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
-            $this->id_billing_category = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-            $this->date = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-            $this->type = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
-            $this->state = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
+            $this->title = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+            $this->id_project = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
+            $this->id_billing_category = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+            $this->date = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+            $this->type = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
             $this->gross = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
-            $this->tax = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
-            $this->date_due = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-            $this->note_billing = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-            $this->date_paid = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
-            $this->net = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
-            $this->reference = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
-            $this->date_creation = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
-            $this->date_modification = ($row[$startcol + 17] !== null) ? (string) $row[$startcol + 17] : null;
-            $this->id_group_creation = ($row[$startcol + 18] !== null) ? (int) $row[$startcol + 18] : null;
-            $this->id_creation = ($row[$startcol + 19] !== null) ? (int) $row[$startcol + 19] : null;
-            $this->id_modification = ($row[$startcol + 20] !== null) ? (int) $row[$startcol + 20] : null;
+            $this->gross_currency = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
+            $this->gross_2 = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
+            $this->tax = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+            $this->date_due = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
+            $this->note_billing = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
+            $this->date_paid = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
+            $this->net = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
+            $this->reference = ($row[$startcol + 17] !== null) ? (string) $row[$startcol + 17] : null;
+            $this->date_creation = ($row[$startcol + 18] !== null) ? (string) $row[$startcol + 18] : null;
+            $this->date_modification = ($row[$startcol + 19] !== null) ? (string) $row[$startcol + 19] : null;
+            $this->id_group_creation = ($row[$startcol + 20] !== null) ? (int) $row[$startcol + 20] : null;
+            $this->id_creation = ($row[$startcol + 21] !== null) ? (int) $row[$startcol + 21] : null;
+            $this->id_modification = ($row[$startcol + 22] !== null) ? (int) $row[$startcol + 22] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -1261,7 +1354,7 @@ abstract class BaseBilling extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 21; // 21 = BillingPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 23; // 23 = BillingPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Billing object", $e);
@@ -1627,11 +1720,14 @@ abstract class BaseBilling extends BaseObject implements Persistent
         if ($this->isColumnModified(BillingPeer::CALC_ID)) {
             $modifiedColumns[':p' . $index++]  = '`calc_id`';
         }
-        if ($this->isColumnModified(BillingPeer::TITLE)) {
-            $modifiedColumns[':p' . $index++]  = '`title`';
+        if ($this->isColumnModified(BillingPeer::STATE)) {
+            $modifiedColumns[':p' . $index++]  = '`state`';
         }
         if ($this->isColumnModified(BillingPeer::ID_CLIENT)) {
             $modifiedColumns[':p' . $index++]  = '`id_client`';
+        }
+        if ($this->isColumnModified(BillingPeer::TITLE)) {
+            $modifiedColumns[':p' . $index++]  = '`title`';
         }
         if ($this->isColumnModified(BillingPeer::ID_PROJECT)) {
             $modifiedColumns[':p' . $index++]  = '`id_project`';
@@ -1645,11 +1741,14 @@ abstract class BaseBilling extends BaseObject implements Persistent
         if ($this->isColumnModified(BillingPeer::TYPE)) {
             $modifiedColumns[':p' . $index++]  = '`type`';
         }
-        if ($this->isColumnModified(BillingPeer::STATE)) {
-            $modifiedColumns[':p' . $index++]  = '`state`';
-        }
         if ($this->isColumnModified(BillingPeer::GROSS)) {
             $modifiedColumns[':p' . $index++]  = '`gross`';
+        }
+        if ($this->isColumnModified(BillingPeer::GROSS_CURRENCY)) {
+            $modifiedColumns[':p' . $index++]  = '`gross_currency`';
+        }
+        if ($this->isColumnModified(BillingPeer::GROSS_2)) {
+            $modifiedColumns[':p' . $index++]  = '`gross_2`';
         }
         if ($this->isColumnModified(BillingPeer::TAX)) {
             $modifiedColumns[':p' . $index++]  = '`tax`';
@@ -1701,11 +1800,14 @@ abstract class BaseBilling extends BaseObject implements Persistent
                     case '`calc_id`':
                         $stmt->bindValue($identifier, $this->calc_id, PDO::PARAM_STR);
                         break;
-                    case '`title`':
-                        $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
+                    case '`state`':
+                        $stmt->bindValue($identifier, $this->state, PDO::PARAM_INT);
                         break;
                     case '`id_client`':
                         $stmt->bindValue($identifier, $this->id_client, PDO::PARAM_INT);
+                        break;
+                    case '`title`':
+                        $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
                         break;
                     case '`id_project`':
                         $stmt->bindValue($identifier, $this->id_project, PDO::PARAM_INT);
@@ -1719,11 +1821,14 @@ abstract class BaseBilling extends BaseObject implements Persistent
                     case '`type`':
                         $stmt->bindValue($identifier, $this->type, PDO::PARAM_INT);
                         break;
-                    case '`state`':
-                        $stmt->bindValue($identifier, $this->state, PDO::PARAM_INT);
-                        break;
                     case '`gross`':
                         $stmt->bindValue($identifier, $this->gross, PDO::PARAM_STR);
+                        break;
+                    case '`gross_currency`':
+                        $stmt->bindValue($identifier, $this->gross_currency, PDO::PARAM_INT);
+                        break;
+                    case '`gross_2`':
+                        $stmt->bindValue($identifier, $this->gross_2, PDO::PARAM_STR);
                         break;
                     case '`tax`':
                         $stmt->bindValue($identifier, $this->tax, PDO::PARAM_STR);
@@ -1973,25 +2078,27 @@ abstract class BaseBilling extends BaseObject implements Persistent
         $result = array(
             $keys[0] => $this->getIdBilling(),
             $keys[1] => $this->getCalcId(),
-            $keys[2] => $this->getTitle(),
+            $keys[2] => $this->getState(),
             $keys[3] => $this->getIdClient(),
-            $keys[4] => $this->getIdProject(),
-            $keys[5] => $this->getIdBillingCategory(),
-            $keys[6] => $this->getDate(),
-            $keys[7] => $this->getType(),
-            $keys[8] => $this->getState(),
+            $keys[4] => $this->getTitle(),
+            $keys[5] => $this->getIdProject(),
+            $keys[6] => $this->getIdBillingCategory(),
+            $keys[7] => $this->getDate(),
+            $keys[8] => $this->getType(),
             $keys[9] => $this->getGross(),
-            $keys[10] => $this->getTax(),
-            $keys[11] => $this->getDateDue(),
-            $keys[12] => $this->getNoteBilling(),
-            $keys[13] => $this->getDatePaid(),
-            $keys[14] => $this->getNet(),
-            $keys[15] => $this->getReference(),
-            $keys[16] => $this->getDateCreation(),
-            $keys[17] => $this->getDateModification(),
-            $keys[18] => $this->getIdGroupCreation(),
-            $keys[19] => $this->getIdCreation(),
-            $keys[20] => $this->getIdModification(),
+            $keys[10] => $this->getGrossCurrency(),
+            $keys[11] => $this->getGross2(),
+            $keys[12] => $this->getTax(),
+            $keys[13] => $this->getDateDue(),
+            $keys[14] => $this->getNoteBilling(),
+            $keys[15] => $this->getDatePaid(),
+            $keys[16] => $this->getNet(),
+            $keys[17] => $this->getReference(),
+            $keys[18] => $this->getDateCreation(),
+            $keys[19] => $this->getDateModification(),
+            $keys[20] => $this->getIdGroupCreation(),
+            $keys[21] => $this->getIdCreation(),
+            $keys[22] => $this->getIdModification(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -2067,68 +2174,78 @@ abstract class BaseBilling extends BaseObject implements Persistent
                 $this->setCalcId($value);
                 break;
             case 2:
-                $this->setTitle($value);
-                break;
-            case 3:
-                $this->setIdClient($value);
-                break;
-            case 4:
-                $this->setIdProject($value);
-                break;
-            case 5:
-                $this->setIdBillingCategory($value);
-                break;
-            case 6:
-                $this->setDate($value);
-                break;
-            case 7:
-                $valueSet = BillingPeer::getValueSet(BillingPeer::TYPE);
-                if (isset($valueSet[$value])) {
-                    $value = $valueSet[$value];
-                }
-                $this->setType($value);
-                break;
-            case 8:
                 $valueSet = BillingPeer::getValueSet(BillingPeer::STATE);
                 if (isset($valueSet[$value])) {
                     $value = $valueSet[$value];
                 }
                 $this->setState($value);
                 break;
+            case 3:
+                $this->setIdClient($value);
+                break;
+            case 4:
+                $this->setTitle($value);
+                break;
+            case 5:
+                $this->setIdProject($value);
+                break;
+            case 6:
+                $this->setIdBillingCategory($value);
+                break;
+            case 7:
+                $this->setDate($value);
+                break;
+            case 8:
+                $valueSet = BillingPeer::getValueSet(BillingPeer::TYPE);
+                if (isset($valueSet[$value])) {
+                    $value = $valueSet[$value];
+                }
+                $this->setType($value);
+                break;
             case 9:
                 $this->setGross($value);
                 break;
             case 10:
-                $this->setTax($value);
+                $valueSet = BillingPeer::getValueSet(BillingPeer::GROSS_CURRENCY);
+                if (isset($valueSet[$value])) {
+                    $value = $valueSet[$value];
+                }
+                $this->setGrossCurrency($value);
                 break;
             case 11:
-                $this->setDateDue($value);
+                $this->setGross2($value);
                 break;
             case 12:
-                $this->setNoteBilling($value);
+                $this->setTax($value);
                 break;
             case 13:
-                $this->setDatePaid($value);
+                $this->setDateDue($value);
                 break;
             case 14:
-                $this->setNet($value);
+                $this->setNoteBilling($value);
                 break;
             case 15:
-                $this->setReference($value);
+                $this->setDatePaid($value);
                 break;
             case 16:
-                $this->setDateCreation($value);
+                $this->setNet($value);
                 break;
             case 17:
-                $this->setDateModification($value);
+                $this->setReference($value);
                 break;
             case 18:
-                $this->setIdGroupCreation($value);
+                $this->setDateCreation($value);
                 break;
             case 19:
-                $this->setIdCreation($value);
+                $this->setDateModification($value);
                 break;
             case 20:
+                $this->setIdGroupCreation($value);
+                break;
+            case 21:
+                $this->setIdCreation($value);
+                break;
+            case 22:
                 $this->setIdModification($value);
                 break;
         } // switch()
@@ -2157,25 +2274,27 @@ abstract class BaseBilling extends BaseObject implements Persistent
 
         if (array_key_exists($keys[0], $arr)) $this->setIdBilling($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setCalcId($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setTitle($arr[$keys[2]]);
+        if (array_key_exists($keys[2], $arr)) $this->setState($arr[$keys[2]]);
         if (array_key_exists($keys[3], $arr)) $this->setIdClient($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setIdProject($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setIdBillingCategory($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setDate($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setType($arr[$keys[7]]);
-        if (array_key_exists($keys[8], $arr)) $this->setState($arr[$keys[8]]);
+        if (array_key_exists($keys[4], $arr)) $this->setTitle($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setIdProject($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setIdBillingCategory($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setDate($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setType($arr[$keys[8]]);
         if (array_key_exists($keys[9], $arr)) $this->setGross($arr[$keys[9]]);
-        if (array_key_exists($keys[10], $arr)) $this->setTax($arr[$keys[10]]);
-        if (array_key_exists($keys[11], $arr)) $this->setDateDue($arr[$keys[11]]);
-        if (array_key_exists($keys[12], $arr)) $this->setNoteBilling($arr[$keys[12]]);
-        if (array_key_exists($keys[13], $arr)) $this->setDatePaid($arr[$keys[13]]);
-        if (array_key_exists($keys[14], $arr)) $this->setNet($arr[$keys[14]]);
-        if (array_key_exists($keys[15], $arr)) $this->setReference($arr[$keys[15]]);
-        if (array_key_exists($keys[16], $arr)) $this->setDateCreation($arr[$keys[16]]);
-        if (array_key_exists($keys[17], $arr)) $this->setDateModification($arr[$keys[17]]);
-        if (array_key_exists($keys[18], $arr)) $this->setIdGroupCreation($arr[$keys[18]]);
-        if (array_key_exists($keys[19], $arr)) $this->setIdCreation($arr[$keys[19]]);
-        if (array_key_exists($keys[20], $arr)) $this->setIdModification($arr[$keys[20]]);
+        if (array_key_exists($keys[10], $arr)) $this->setGrossCurrency($arr[$keys[10]]);
+        if (array_key_exists($keys[11], $arr)) $this->setGross2($arr[$keys[11]]);
+        if (array_key_exists($keys[12], $arr)) $this->setTax($arr[$keys[12]]);
+        if (array_key_exists($keys[13], $arr)) $this->setDateDue($arr[$keys[13]]);
+        if (array_key_exists($keys[14], $arr)) $this->setNoteBilling($arr[$keys[14]]);
+        if (array_key_exists($keys[15], $arr)) $this->setDatePaid($arr[$keys[15]]);
+        if (array_key_exists($keys[16], $arr)) $this->setNet($arr[$keys[16]]);
+        if (array_key_exists($keys[17], $arr)) $this->setReference($arr[$keys[17]]);
+        if (array_key_exists($keys[18], $arr)) $this->setDateCreation($arr[$keys[18]]);
+        if (array_key_exists($keys[19], $arr)) $this->setDateModification($arr[$keys[19]]);
+        if (array_key_exists($keys[20], $arr)) $this->setIdGroupCreation($arr[$keys[20]]);
+        if (array_key_exists($keys[21], $arr)) $this->setIdCreation($arr[$keys[21]]);
+        if (array_key_exists($keys[22], $arr)) $this->setIdModification($arr[$keys[22]]);
     }
 
     /**
@@ -2189,14 +2308,16 @@ abstract class BaseBilling extends BaseObject implements Persistent
 
         if ($this->isColumnModified(BillingPeer::ID_BILLING)) $criteria->add(BillingPeer::ID_BILLING, $this->id_billing);
         if ($this->isColumnModified(BillingPeer::CALC_ID)) $criteria->add(BillingPeer::CALC_ID, $this->calc_id);
-        if ($this->isColumnModified(BillingPeer::TITLE)) $criteria->add(BillingPeer::TITLE, $this->title);
+        if ($this->isColumnModified(BillingPeer::STATE)) $criteria->add(BillingPeer::STATE, $this->state);
         if ($this->isColumnModified(BillingPeer::ID_CLIENT)) $criteria->add(BillingPeer::ID_CLIENT, $this->id_client);
+        if ($this->isColumnModified(BillingPeer::TITLE)) $criteria->add(BillingPeer::TITLE, $this->title);
         if ($this->isColumnModified(BillingPeer::ID_PROJECT)) $criteria->add(BillingPeer::ID_PROJECT, $this->id_project);
         if ($this->isColumnModified(BillingPeer::ID_BILLING_CATEGORY)) $criteria->add(BillingPeer::ID_BILLING_CATEGORY, $this->id_billing_category);
         if ($this->isColumnModified(BillingPeer::DATE)) $criteria->add(BillingPeer::DATE, $this->date);
         if ($this->isColumnModified(BillingPeer::TYPE)) $criteria->add(BillingPeer::TYPE, $this->type);
-        if ($this->isColumnModified(BillingPeer::STATE)) $criteria->add(BillingPeer::STATE, $this->state);
         if ($this->isColumnModified(BillingPeer::GROSS)) $criteria->add(BillingPeer::GROSS, $this->gross);
+        if ($this->isColumnModified(BillingPeer::GROSS_CURRENCY)) $criteria->add(BillingPeer::GROSS_CURRENCY, $this->gross_currency);
+        if ($this->isColumnModified(BillingPeer::GROSS_2)) $criteria->add(BillingPeer::GROSS_2, $this->gross_2);
         if ($this->isColumnModified(BillingPeer::TAX)) $criteria->add(BillingPeer::TAX, $this->tax);
         if ($this->isColumnModified(BillingPeer::DATE_DUE)) $criteria->add(BillingPeer::DATE_DUE, $this->date_due);
         if ($this->isColumnModified(BillingPeer::NOTE_BILLING)) $criteria->add(BillingPeer::NOTE_BILLING, $this->note_billing);
@@ -2272,14 +2393,16 @@ abstract class BaseBilling extends BaseObject implements Persistent
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setCalcId($this->getCalcId());
-        $copyObj->setTitle($this->getTitle());
+        $copyObj->setState($this->getState());
         $copyObj->setIdClient($this->getIdClient());
+        $copyObj->setTitle($this->getTitle());
         $copyObj->setIdProject($this->getIdProject());
         $copyObj->setIdBillingCategory($this->getIdBillingCategory());
         $copyObj->setDate($this->getDate());
         $copyObj->setType($this->getType());
-        $copyObj->setState($this->getState());
         $copyObj->setGross($this->getGross());
+        $copyObj->setGrossCurrency($this->getGrossCurrency());
+        $copyObj->setGross2($this->getGross2());
         $copyObj->setTax($this->getTax());
         $copyObj->setDateDue($this->getDateDue());
         $copyObj->setNoteBilling($this->getNoteBilling());
@@ -3638,14 +3761,16 @@ abstract class BaseBilling extends BaseObject implements Persistent
     {
         $this->id_billing = null;
         $this->calc_id = null;
-        $this->title = null;
+        $this->state = null;
         $this->id_client = null;
+        $this->title = null;
         $this->id_project = null;
         $this->id_billing_category = null;
         $this->date = null;
         $this->type = null;
-        $this->state = null;
         $this->gross = null;
+        $this->gross_currency = null;
+        $this->gross_2 = null;
         $this->tax = null;
         $this->date_due = null;
         $this->note_billing = null;

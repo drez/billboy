@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'Message' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Html\Tabs;
@@ -40,7 +40,7 @@ class MessageForm extends Message
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -74,17 +74,17 @@ class MessageForm extends Message
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -102,7 +102,7 @@ class MessageForm extends Message
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -142,7 +142,7 @@ class MessageForm extends Message
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -169,10 +169,10 @@ class MessageForm extends Message
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -186,7 +186,7 @@ class MessageForm extends Message
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("Label"), " th='sorted' c='Label' title='" . _('Label')."' ")
@@ -233,7 +233,7 @@ class MessageForm extends Message
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -272,7 +272,7 @@ class MessageForm extends Message
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -281,7 +281,7 @@ class MessageForm extends Message
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'Message/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Message/');
 
@@ -316,7 +316,7 @@ class MessageForm extends Message
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -341,7 +341,7 @@ try{
     $data->addMessageI18n($mt)->save();
 }
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteMessage' ") . $this->listActionCell, " class='actionrow' ");
@@ -356,6 +356,7 @@ try{
                         id='MessageRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountMessage', $i);
         }
@@ -369,7 +370,7 @@ try{
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -412,7 +413,7 @@ try{
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#MessagePager').bindPaging({
             tableName:'Message'
@@ -421,16 +422,16 @@ try{
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsMessage [j='date']\").attr('type', 'input');
                 $(\"#formMsMessage [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -477,7 +478,7 @@ try{
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addMessageAutoc').length > 0) {
             $('#addMessageAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -504,14 +505,14 @@ try{
         
         
         $e->fromArray($data );
-        
+
         #
         
         #
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -523,7 +524,7 @@ try{
         
         
         $e->fromArray($data );
-        
+
         
         
         $e->setNew(false);
@@ -556,13 +557,13 @@ try{
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "MessageTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -572,20 +573,20 @@ try{
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('Message', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('Message', 'w') and $id) || $this->setReadOnly) {
@@ -618,7 +619,7 @@ try{
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -674,8 +675,8 @@ $this->fields['Message']['MessageI18n_Text_en_US']['html'] = stdFieldRow(_("Text
         $this->lockFormField(array(0=>'Label',), $dataObj);
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
         
@@ -706,12 +707,12 @@ $this->fields['Message']['MessageI18n_Text_en_US']['html'] = stdFieldRow(_("Text
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formMessage [j='date']\").attr('type', 'text');
             $(\"#formMessage [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -719,7 +720,7 @@ $this->fields['Message']['MessageI18n_Text_en_US']['html'] = stdFieldRow(_("Text
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('Message', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -740,7 +741,7 @@ $this->fields['Message']['Label']['html']
 
 
         
-        
+
         if($id and $_SESSION['mem']['Message']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['Message']['ogf']."\"]').click();";
         }
@@ -754,8 +755,8 @@ $this->fields['Message']['Label']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -776,7 +777,7 @@ $this->fields['Message']['Label']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formMessage [s='d'], #formMessage .js-select-label, #formMessage [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -786,7 +787,7 @@ $this->fields['Message']['Label']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['Message']['Label']['html'] = stdFieldRow(_("Label"), div( $dataObj->getLabel(), 'Label_label' , "class='readonly' s='d'")

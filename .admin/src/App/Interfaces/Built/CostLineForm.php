@@ -6,7 +6,7 @@ namespace App;
 /**
  *  @version 1.1
  *  Generated Form class on the 'CostLine' table.
- *  
+ *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Utility\FormHelper as Helper;
@@ -39,7 +39,7 @@ class CostLineForm extends CostLine
     public $forceInlineEdit;
     public $forcePopUpEdit;
     public $arrayData;
-    
+
     public $searchAr;
     public $searchMs;
     public $searchOrder;
@@ -73,17 +73,17 @@ class CostLineForm extends CostLine
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
-    
+
     public $canDelete;
 
-    
+
     
     /**
     *   Ressource object for the database
     *   @type object
     **/
     public $pmpoData;
-    
+
     /**
      * Constructor
      *
@@ -101,7 +101,7 @@ class CostLineForm extends CostLine
         $this->hookFormBottom = '';
         $this->hookFormReadyJs = '';
         
-    }	
+    }
 
     /**
      * function getListSearch
@@ -159,7 +159,7 @@ class CostLineForm extends CostLine
                 
             }
         }
-        
+
         
             if(!empty($this->searchOrder)){
                 $f=0;
@@ -186,10 +186,10 @@ class CostLineForm extends CostLine
             
         
         
-        
+
         $this->pmpoData = $q;
         
-        
+
         return $this->pmpoData;
     }
 
@@ -203,7 +203,7 @@ class CostLineForm extends CostLine
         $this->in = 'getListHeader';
         $trSearch = '';
         $trHeadMod = '';
-        
+
         switch($act) {
             case 'head':
                 $trHead = th(_("Title"), " th='sorted' c='Title' title='" . _('Title')."' ")
@@ -252,7 +252,7 @@ class CostLineForm extends CostLine
 
             return $this->listAddButton;
             break;
-            case 'quickadd': 
+            case 'quickadd':
                 return $trHeadMod;
         }
     }
@@ -309,7 +309,7 @@ class CostLineForm extends CostLine
         
 
         $this->uiTabsId = $uiTabsId;
-        
+
         
         $this->IdParent = $IdParent;
 
@@ -318,7 +318,7 @@ class CostLineForm extends CostLine
 
         // order
         $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'CostLine/');
-        
+
         // page
         $search['page'] = $this->setPageVar($request['pg'] ?? '', 'CostLine/');
 
@@ -353,7 +353,7 @@ class CostLineForm extends CostLine
             }
 
             $this->arrayData = $pcData->toArray();
-            
+
             /**
             *	Main list loop
             **/
@@ -383,7 +383,7 @@ class CostLineForm extends CostLine
                                         $BillingCategory_Name = $data->getBillingCategory()->getName();
                                     }
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
-                    
+                
 
                 $actionCell =  td(
         htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteCostLine' ") . $this->listActionCell, " class='actionrow' ");
@@ -409,6 +409,7 @@ class CostLineForm extends CostLine
                         id='CostLineRow".$data->getPrimaryKey()."'")
                 .$hook['tr_after'];
                 $i++;
+                unset($altValue);
             }
             $tr .= input('hidden', 'rowCountCostLine', $i);
         }
@@ -422,7 +423,7 @@ class CostLineForm extends CostLine
         if (method_exists($this, 'afterList')){ $this->afterList($this->request, $search, $pmpoData);}
 
         $controlsContent = $this->getListHeader('list-button');
-        
+
         $return['html'] =
             $this->hookListTop
             .div(
@@ -465,7 +466,7 @@ class CostLineForm extends CostLine
         title: '".addslashes($this->tableDescription)."',
         message: '".addslashes(message_label('delete_row_confirm_msg'))."'
     });";
-        
+
         $editEvent .= "
         $('#CostLinePager').bindPaging({
             tableName:'CostLine'
@@ -474,16 +475,16 @@ class CostLineForm extends CostLine
         });
 ";
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = "
                 $(\"#formMsCostLine [j='date']\").attr('type', 'input');
                 $(\"#formMsCostLine [j='date']\").each(function(){
                     $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
                 });
             ";
-        }
+        }*/
 
-        $return['onReadyJs'] = 
+        $return['onReadyJs'] =
             $HelpDivJs
             
             ."
@@ -496,7 +497,7 @@ class CostLineForm extends CostLine
             modelName:'".$this->virtualClassName."',
             destUi:'".$uiTabsId."'
         });
-            
+
         if($('#addCostLineAutoc').length > 0) {
             $('#addCostLineAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
@@ -529,7 +530,7 @@ class CostLineForm extends CostLine
             $data['Bill'] = "No";
         } 
         $e->fromArray($data );
-        
+
         #
         
         //foreign
@@ -558,7 +559,7 @@ class CostLineForm extends CostLine
         
         return $e;
     }
-    
+
     /*
     *	Make sure default value are set before save
     */
@@ -576,7 +577,7 @@ class CostLineForm extends CostLine
             $data['Bill'] = "No";
         } 
         $e->fromArray($data );
-        
+
         
         
         if( isset($data['IdBilling']) ){
@@ -645,13 +646,13 @@ class CostLineForm extends CostLine
         $editDialog = ( $data['dialog'] ) ? $data['dialog'] : 'editDialog';
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
-        
+
         $je = "CostLineTable";
-        
+
         if($jsElement)	{
-            $je = $jsElement; 
+            $je = $jsElement;
         }
-        
+
         if($jsElementType)	{
             $jet = $jsElementType;
         }
@@ -661,7 +662,7 @@ class CostLineForm extends CostLine
             $data['pc'] = $data['data']['pc'];
             $data['tp'] = $data['data']['tp'];
         }
-        
+
         if($data['pc']) {
             switch($data['pc']){
                 
@@ -686,13 +687,13 @@ class CostLineForm extends CostLine
             }
             $IdParent = $data['ip'];
         }
-        
+
         if($error == ''){
             unset($error);
         }
 
         
-        
+
         // save button and action
         $this->SaveButtonJs = "";
         if(($_SESSION[_AUTH_VAR]->hasRights('CostLine', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('CostLine', 'w') and $id) || $this->setReadOnly) {
@@ -725,7 +726,7 @@ class CostLineForm extends CostLine
                 jet:'" . $jsElementType . "'
             });";
         }
-        
+
         if($id && !$data['reload']) {
             
 
@@ -797,8 +798,8 @@ $this->fields['CostLine']['NoteBillingLigne']['html'] = stdFieldRow(_("Note"), t
         $this->lockFormField(array(0=>'Total',), $dataObj);
 
         // Whole form read only
-        if($this->setReadOnly == 'all' ) { 
-            $this->lockFormField('all', $dataObj); 
+        if($this->setReadOnly == 'all' ) {
+            $this->lockFormField('all', $dataObj);
         }
 
         
@@ -824,12 +825,12 @@ $this->fields['CostLine']['NoteBillingLigne']['html'] = stdFieldRow(_("Note"), t
                         , '', 'class="sw-header"');
         $header_top_onglet = $this->formTitle.$ongletf;
 
-        if(!isMobile()) {
+        /*if(!isMobile()) {
             $jqueryDatePicker = " $(\"#formCostLine [j='date']\").attr('type', 'text');
             $(\"#formCostLine [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
-        }
+        }*/
 
         // Form
         $return['html'] =
@@ -837,7 +838,7 @@ $this->fields['CostLine']['NoteBillingLigne']['html'] = stdFieldRow(_("Note"), t
         .$mceInclude
         .$header_top
         .form(
-            
+
             div(
                 div('Expense', '', "class='panel-heading'").
                 $header_top_onglet.
@@ -867,7 +868,7 @@ $this->fields['CostLine']['Title']['html']
 
 
         
-        
+
         if($id and $_SESSION['mem']['CostLine']['ogf']) {
             $tabs_act = "$('[href=\"".$_SESSION['mem']['CostLine']['ogf']."\"]').click();";
         }
@@ -881,8 +882,8 @@ $this->fields['CostLine']['Title']['html']
         $return['js'] .= $childTable['js']
         . $this->hookFormIncludeJs."
         ";
-            
-        $return['onReadyJs'] = 
+
+        $return['onReadyJs'] =
         $this->hookFormReadyJsFirst.
         "
         
@@ -903,7 +904,7 @@ $this->fields['CostLine']['Title']['html']
         ".$this->hookFormReadyJs
         .$script_autoc_one
         .$HelpDivJs."
-        
+
         setTimeout(function() {
             $(\"#formCostLine [s='d'], #formCostLine .js-select-label, #formCostLine [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
@@ -913,7 +914,7 @@ $this->fields['CostLine']['Title']['html']
         return $return;
     }
 
-    function lockFormField($fields, $dataObj)	
+    function lockFormField($fields, $dataObj)
     {
         
         $this->fieldsRo['CostLine']['Title']['html'] = stdFieldRow(_("Title"), div( $dataObj->getTitle(), 'Title_label' , "class='readonly' s='d'")
