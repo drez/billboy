@@ -1,9 +1,9 @@
 Billboy is a small billing, crm and accounting software for Freelancer with basic needs.
 It is meant to be simple and flexible.
 
-Demo & doc @ https://billboy.apigoat.com/
+### Demo & doc @ https://billboy.apigoat.com/
 
-Features:
+#### Features:
 
 - Billing, Quote
 - Client, Supplier
@@ -15,6 +15,7 @@ Features:
 - Multiple invoice templates
 - Basic multi currency support
 
+#### Customization:
 - Full API (https://apigoat.com/docs/api/)
 - Easy class hooks to customize (https://apigoat.com/docs/using-hooks-with-php/)
 
