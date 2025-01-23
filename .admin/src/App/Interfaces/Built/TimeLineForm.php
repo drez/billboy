@@ -73,6 +73,7 @@ class TimeLineForm extends TimeLine
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
+    public $hookLogin;
 
     public $canDelete;
 

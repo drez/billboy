@@ -73,6 +73,7 @@ class PaymentLineForm extends PaymentLine
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
+    public $hookLogin;
 
     public $canDelete;
 

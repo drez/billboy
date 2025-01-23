@@ -73,6 +73,7 @@ class CostLineForm extends CostLine
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
+    public $hookLogin;
 
     public $canDelete;
 

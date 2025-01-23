@@ -73,6 +73,7 @@ class AuthyGroupXForm extends AuthyGroupX
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
+    public $hookLogin;
 
     public $canDelete;
 

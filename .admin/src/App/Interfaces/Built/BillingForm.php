@@ -74,6 +74,7 @@ class BillingForm extends Billing
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
+    public $hookLogin;
 
     public $canDelete;
 

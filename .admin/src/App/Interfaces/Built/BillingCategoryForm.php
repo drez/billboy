@@ -73,6 +73,7 @@ class BillingCategoryForm extends BillingCategory
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
+    public $hookLogin;
 
     public $canDelete;
 

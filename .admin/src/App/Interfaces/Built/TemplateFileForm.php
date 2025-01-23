@@ -73,6 +73,7 @@ class TemplateFileForm extends TemplateFile
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
+    public $hookLogin;
 
     public $canDelete;
 

@@ -73,6 +73,7 @@ class ApiLogForm extends ApiLog
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
+    public $hookLogin;
 
     public $canDelete;
 

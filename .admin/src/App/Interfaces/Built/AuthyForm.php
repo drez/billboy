@@ -74,6 +74,7 @@ class AuthyForm extends Authy
     public $ccStdFormOptions;
     public $cCMainTableHeader;
     public $cCmoreColsHeader;
+    public $hookLogin;
 
     public $canDelete;
 
@@ -134,7 +135,8 @@ class AuthyForm extends Authy
                             .input("hidden", "csrf", $_SESSION[_AUTH_VAR]->getCsrf())
                         , 'id="login-form"')
                     , '', 'class="login-content"')
-                , 'logMeContainer', 'class="login-wrapper"');
+                , 'logMeContainer', 'class="login-wrapper"')
+                .$this->hookLogin;
 
         $return['onReadyJs'] .= "
 

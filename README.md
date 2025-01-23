@@ -1,7 +1,7 @@
 Billboy is a small billing, crm and accounting software for Freelancer with basic needs.
 It is meant to be simple and flexible.
 
-Demo @ https://billboy.apigoat.com/
+Demo & doc @ https://billboy.apigoat.com/
 
 Features:
 
@@ -14,6 +14,7 @@ Features:
 - Pdf generation
 - Multiple invoice templates
 - Basic multi currency support
+
 - Full API (https://apigoat.com/docs/api/)
 - Easy class hooks to customize (https://apigoat.com/docs/using-hooks-with-php/)
 
@@ -31,16 +32,12 @@ For documentation on APIgoat build, check apigoat.com
 
 1. copy the files to the server
 2. run `composer install` in .admin folder
-3. rename .env.example and add your database and configurations
-4. run the deploy script in console:
+3. rename .env.example; add your database and configurations
+4. run the deploy script in console or navigate to public/install.php
 
 ```
 $ composer run-script deploy
 ```
-
-OR 
-
-run public/install.php
 
 5. Navigate to /.admin
 
