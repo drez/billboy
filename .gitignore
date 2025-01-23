@@ -1,4 +1,6 @@
 .admin/vendor/*
+.vscode
+vendor
 .admin/.build/*
 .admin/tmp/.*
 .env

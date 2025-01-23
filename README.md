@@ -11,6 +11,9 @@ Features:
 - Project budgeting (basic for now)
 - Bill, Quote printing with custom header
 - Report charts
+- Pdf generation
+- Multiple invoice templates
+- Basic multi currency support
 - Full API (https://apigoat.com/docs/api/)
 - Easy class hooks to customize (https://apigoat.com/docs/using-hooks-with-php/)
 
@@ -27,16 +30,21 @@ For documentation on APIgoat build, check apigoat.com
 #### 2. Install
 
 1. copy the files to the server
-2. rename .env.example and add your database and path configurations
+2. rename .env.example and add your database and configurations
 3. run the deplaoy script in console:
 
 ```
 $ composer run-script deploy
 ```
 
-4. Log in with
-   user: apigoat
-   password: Apigoat2024!
+OR 
+
+run public/install.php
+
+5. Navigate to /.admin
+
+4. Log in with your chosen root user
+  
 
 #### 5. Attributions
 
