@@ -17,7 +17,7 @@ $AssetsAdmin->add('vendor/moxiecode/plupload/js/moxie.js');
 $AssetsAdmin->add('vendor/ckeditor/ckeditor/ckeditor.js');
 $AssetsAdmin->add('vendor/ckeditor/ckeditor/adapters/jquery.js');
 $AssetsAdmin->add('public/js/chart.js/dist/chart.umd.js');
-$Assets->add('public/css/myproject1.css');
+$AssetsAdmin->add('public/js/ckeditor.config.js');
 
 $AssetsHead = new Assets(['deployment_type' => _DEPLOYMENT_TYPE, 'pipeline' => true]);
 $AssetsHead->add('vendor/components/jquery/jquery.min.js');
