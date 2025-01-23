@@ -19,8 +19,8 @@ It is meant to be simple and flexible.
 - Full API (https://apigoat.com/docs/api/)
 - Easy class hooks to customize (https://apigoat.com/docs/using-hooks-with-php/)
 
-It is build on top of Slim4 and Proel Orm via ApiGoat build engine.
-For documentation on APIgoat build, check apigoat.com
+It is build on top of Slim4 and Propel Orm via The ApiGoat build engine.
+For documentation on APIgoat build standards, check [apigoat.com](https://apigoat.com/).
 
 ### Getting started
 
