@@ -277,7 +277,7 @@ class BillingForm extends Billing
             $trSearch = button(span(_("Show search")),'class="trigger-search button-link-blue"')
 
             .div(
-                form(div(selectboxCustomArray('Type[]', array( '0' => array('0'=>_("Quote"), '1'=>"Quote"),'1' => array('0'=>_("Bill"), '1'=>"Bill"), ), _('Type'), '  size="1" t="1"   multiple  ', $this->searchMs['Type']), '', 'class="multiple-select ac-search-item"').div(selectboxCustomArray('IdClient[]', $this->arrayIdClientOptions, 'Client' , "v='ID_CLIENT'  s='d' class='select-label js-select-label' multiple size='1'  ", $this->searchMs['IdClient'], '', false), '', ' class="ac-search-item multiple-select"').div(input('date', 'Date', $this->searchMs['Date'], '  j="date"  placeholder="'._('Date').'"',''),'','class="ac-search-item"').div(input('text', 'Title', $this->searchMs['Title'], '  placeholder="'._('Title').'"',''),'','class="ac-search-item"').div(selectboxCustomArray('State[]', array( '0' => array('0'=>_("New"), '1'=>"New"),'1' => array('0'=>_("Approved"), '1'=>"Approved"),'2' => array('0'=>_("Sent"), '1'=>"Sent"),'3' => array('0'=>_("Partial paiement"), '1'=>"Partial paiement"),'4' => array('0'=>_("Paid"), '1'=>"Paid"),'5' => array('0'=>_("Cancelled"), '1'=>"Cancelled"),'6' => array('0'=>_("To send"), '1'=>"To send"), ), _('State'), '  size="1" t="1"   multiple  ', $this->searchMs['State']), '', 'class="multiple-select ac-search-item"').$this->hookListSearchTop
+                form(div(selectboxCustomArray('Type[]', array( '0' => array('0'=>_("Quote"), '1'=>"Quote"),'1' => array('0'=>_("Bill"), '1'=>"Bill"), ), _('Type'), '  size="1" t="1"   multiple  ', $this->searchMs['Type']), '', 'class="multiple-select ac-search-item"').div(selectboxCustomArray('IdClient[]', $this->arrayIdClientOptions, 'Client' , "v='ID_CLIENT'  s='d' class='select-label js-select-label' multiple size='1'  ", $this->searchMs['IdClient'], '', false), '', ' class="ac-search-item multiple-select"').div(input('date', 'Date', $this->searchMs['Date'], '  j="date"  placeholder="'._('Date').'"',''),'','class="ac-search-item"').div(input('text', 'Title', $this->searchMs['Title'], '  placeholder="'._('Title').'"',''),'','class="ac-search-item"').div(selectboxCustomArray('State[]', array( '0' => array('0'=>_("New"), '1'=>"New"),'1' => array('0'=>_("Approved"), '1'=>"Approved"),'2' => array('0'=>_("Sent"), '1'=>"Sent"),'3' => array('0'=>_("Partial payment"), '1'=>"Partial payment"),'4' => array('0'=>_("Paid"), '1'=>"Paid"),'5' => array('0'=>_("Cancelled"), '1'=>"Cancelled"),'6' => array('0'=>_("To send"), '1'=>"To send"), ), _('State'), '  size="1" t="1"   multiple  ', $this->searchMs['State']), '', 'class="multiple-select ac-search-item"').$this->hookListSearchTop
                     .div(
                        button(span(_("Search")),'id="msBillingBt" title="'._('Search').'" class="icon search"')
                        .button(span(_("Clear")),' title="'._('Clear search').'" id="msBillingBtClear"')
@@ -875,7 +875,7 @@ $total[11] += $data->getNet();
         
         
         
-$this->fields['Billing']['State']['html'] = stdFieldRow(_("State"), selectboxCustomArray('State', array( '0' => array('0'=>_("New"), '1'=>"New"),'1' => array('0'=>_("Approved"), '1'=>"Approved"),'2' => array('0'=>_("Sent"), '1'=>"Sent"),'3' => array('0'=>_("Partial paiement"), '1'=>"Partial paiement"),'4' => array('0'=>_("Paid"), '1'=>"Paid"),'5' => array('0'=>_("Cancelled"), '1'=>"Cancelled"),'6' => array('0'=>_("To send"), '1'=>"To send"), ), "", "s='d'  ", $dataObj->getState(), '', false), 'State', "", $this->commentsState, $this->commentsState_css, '', ' ', 'no');
+$this->fields['Billing']['State']['html'] = stdFieldRow(_("State"), selectboxCustomArray('State', array( '0' => array('0'=>_("New"), '1'=>"New"),'1' => array('0'=>_("Approved"), '1'=>"Approved"),'2' => array('0'=>_("Sent"), '1'=>"Sent"),'3' => array('0'=>_("Partial payment"), '1'=>"Partial payment"),'4' => array('0'=>_("Paid"), '1'=>"Paid"),'5' => array('0'=>_("Cancelled"), '1'=>"Cancelled"),'6' => array('0'=>_("To send"), '1'=>"To send"), ), "", "s='d'  ", $dataObj->getState(), '', false), 'State', "", $this->commentsState, $this->commentsState_css, '', ' ', 'no');
 $this->fields['Billing']['IdClient']['html'] = stdFieldRow(_("Client"), selectboxCustomArray('IdClient', $this->arrayIdClientOptions, "", "v='ID_CLIENT'  s='d'  val='".$dataObj->getIdClient()."'", $dataObj->getIdClient()), 'IdClient', "", $this->commentsIdClient, $this->commentsIdClient_css, '', ' ', 'no');
 $this->fields['Billing']['Title']['html'] = stdFieldRow(_("Title"), input('text', 'Title', htmlentities($dataObj->getTitle()), "   placeholder='".str_replace("'","&#39;",_('Title'))."' size='35'  v='TITLE' s='d' class='req'  ")."", 'Title', "", $this->commentsTitle, $this->commentsTitle_css, '', ' ', 'no');
 $this->fields['Billing']['IdProject']['html'] = stdFieldRow(_("Project"), selectboxCustomArray('IdProject', $this->arrayIdProjectOptions, _('Project'), "v='ID_PROJECT'  s='d'  val='".$dataObj->getIdProject()."'", $dataObj->getIdProject()), 'IdProject', "", $this->commentsIdProject, $this->commentsIdProject_css, '', ' ', 'no');
@@ -890,7 +890,7 @@ $this->fields['Billing']['DateDue']['html'] = stdFieldRow(_("Due date"), input('
 $this->fields['Billing']['NoteBilling']['html'] = stdFieldRow(_("Note"), textarea('NoteBilling', htmlentities($dataObj->getNoteBilling()) ,"placeholder='".str_replace("'","&#39;",_('Note'))."' cols='71' v='NOTE_BILLING' s='d'  class=' tinymce ' style='' spellcheck='false'"), 'NoteBilling', "", $this->commentsNoteBilling, $this->commentsNoteBilling_css, 'istinymce', ' ', 'no');
 $this->fields['Billing']['DatePaid']['html'] = stdFieldRow(_("Paid date"), input('date', 'DatePaid', $dataObj->getDatePaid(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'DatePaid', "", $this->commentsDatePaid, $this->commentsDatePaid_css, '', ' ', 'no');
 $this->fields['Billing']['Net']['html'] = stdFieldRow(_("Net"), input('text', 'Net', $dataObj->getNet(), "  placeholder='".str_replace("'","&#39;",_('Net'))."'  v='NET' size='5' s='d' class=''"), 'Net', "", $this->commentsNet, $this->commentsNet_css, '', ' ', 'no');
-$this->fields['Billing']['Reference']['html'] = stdFieldRow(_("Paiement Reference"), input('text', 'Reference', htmlentities($dataObj->getReference()), "   placeholder='".str_replace("'","&#39;",_('Paiement Reference'))."' size='35'  v='REFERENCE' s='d' class=''  ")."", 'Reference', "", $this->commentsReference, $this->commentsReference_css, '', ' ', 'no');
+$this->fields['Billing']['Reference']['html'] = stdFieldRow(_("Payment Reference"), input('text', 'Reference', htmlentities($dataObj->getReference()), "   placeholder='".str_replace("'","&#39;",_('Payment Reference'))."' size='35'  v='REFERENCE' s='d' class=''  ")."", 'Reference', "", $this->commentsReference, $this->commentsReference_css, '', ' ', 'no');
 
 
         $this->lockFormField(array(0=>'Gross',1=>'Tax',), $dataObj);
@@ -957,7 +957,7 @@ $this->fields['Billing']['Reference']['html'] = stdFieldRow(_("Paiement Referenc
             div(
                 ul(li(htmlLink(_('Billing'),'#ogf_Billing',' j="ogf" p="Billing" class="ui-tabs-anchor" '))
                     .li(htmlLink(_('Note'),'#ogf_note_billing',' j="ogf" class="ui-tabs-anchor" p="Billing" '))
-                    .li(htmlLink(_('Paiement'),'#ogf_date_paid',' j="ogf" class="ui-tabs-anchor" p="Billing" ')))
+                    .li(htmlLink(_('Payment'),'#ogf_date_paid',' j="ogf" class="ui-tabs-anchor" p="Billing" ')))
             ,'cntOngletBilling',' class="cntOnglet"')
         ;
         
@@ -1139,7 +1139,7 @@ $this->fields['Billing']['State']['html']
         $this->fieldsRo['Billing']['Net']['html'] = stdFieldRow(_("Net"), div( $dataObj->getNet(), 'Net_label' , "class='readonly' s='d'")
                 .input('hidden', 'Net', $dataObj->getNet(), "s='d'"), 'Net', "", $this->commentsNet, $this->commentsNet_css, 'readonly', ' ', 'no');
 
-        $this->fieldsRo['Billing']['Reference']['html'] = stdFieldRow(_("Paiement Reference"), div( $dataObj->getReference(), 'Reference_label' , "class='readonly' s='d'")
+        $this->fieldsRo['Billing']['Reference']['html'] = stdFieldRow(_("Payment Reference"), div( $dataObj->getReference(), 'Reference_label' , "class='readonly' s='d'")
                 .input('hidden', 'Reference', $dataObj->getReference(), "s='d'"), 'Reference', "", $this->commentsReference, $this->commentsReference_css, 'readonly', ' ', 'no');
 
 

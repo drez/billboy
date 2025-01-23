@@ -159,7 +159,7 @@ $table['billing'] = [
     ],
     'reference' => [
         'type' => 'VARCHAR',
-        'description' => 'Paiement Reference',
+        'description' => 'Payment Reference',
     ],
     'date_creation' => [
         'type' => 'TIMESTAMP',
@@ -431,7 +431,7 @@ $table['project'] = [
     ],
     'reference' => [
         'type' => 'VARCHAR',
-        'description' => 'Paiement Reference',
+        'description' => 'Payment Reference',
     ],
     'date_creation' => [
         'type' => 'TIMESTAMP',

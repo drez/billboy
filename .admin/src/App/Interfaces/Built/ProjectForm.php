@@ -216,7 +216,7 @@ class ProjectForm extends Project
 .th(_("State"), " th='sorted' c='State' title='" . _('State')."' ")
 .th(_("Budget"), " th='sorted' c='Budget' title='" . _('Budget')."' ")
 .th(_("Spent"), " th='sorted' c='Spent' title='" . _('Spent')."' ")
-.th(_("Paiement Reference"), " th='sorted' c='Reference' title='" . _('Paiement Reference')."' ")
+.th(_("Payment Reference"), " th='sorted' c='Reference' title='" . _('Payment Reference')."' ")
 . $this->cCmoreColsHeader;
                 if(!$this->setReadOnly){
                     $trHead .= th('&nbsp;',' class="actionrow delete" ');
@@ -775,7 +775,7 @@ $this->fields['Project']['Date']['html'] = stdFieldRow(_("Start date"), input('d
 $this->fields['Project']['State']['html'] = stdFieldRow(_("State"), selectboxCustomArray('State', array( '0' => array('0'=>_("New"), '1'=>"New"),'1' => array('0'=>_("Approved"), '1'=>"Approved"),'2' => array('0'=>_("Cancelled"), '1'=>"Cancelled"),'3' => array('0'=>_("Closed"), '1'=>"Closed"), ), _('State'), "s='d'  ", $dataObj->getState(), '', true), 'State', "", $this->commentsState, $this->commentsState_css, '', ' ', 'no');
 $this->fields['Project']['Budget']['html'] = stdFieldRow(_("Budget"), input('text', 'Budget', $dataObj->getBudget(), "  placeholder='".str_replace("'","&#39;",_('Budget'))."'  v='BUDGET' size='5' s='d' class=''"), 'Budget', "", $this->commentsBudget, $this->commentsBudget_css, '', ' ', 'no');
 $this->fields['Project']['Spent']['html'] = stdFieldRow(_("Spent"), input('text', 'Spent', $dataObj->getSpent(), "  placeholder='".str_replace("'","&#39;",_('Spent'))."'  v='SPENT' size='5' s='d' class=''"), 'Spent', "", $this->commentsSpent, $this->commentsSpent_css, '', ' ', 'no');
-$this->fields['Project']['Reference']['html'] = stdFieldRow(_("Paiement Reference"), input('text', 'Reference', htmlentities($dataObj->getReference()), "   placeholder='".str_replace("'","&#39;",_('Paiement Reference'))."' size='35'  v='REFERENCE' s='d' class=''  ")."", 'Reference', "", $this->commentsReference, $this->commentsReference_css, '', ' ', 'no');
+$this->fields['Project']['Reference']['html'] = stdFieldRow(_("Payment Reference"), input('text', 'Reference', htmlentities($dataObj->getReference()), "   placeholder='".str_replace("'","&#39;",_('Payment Reference'))."' size='35'  v='REFERENCE' s='d' class=''  ")."", 'Reference', "", $this->commentsReference, $this->commentsReference_css, '', ' ', 'no');
 
 
         $this->lockFormField(array(0=>'Spent',), $dataObj);
@@ -981,7 +981,7 @@ $this->fields['Project']['Name']['html']
         $this->fieldsRo['Project']['Spent']['html'] = stdFieldRow(_("Spent"), div( $dataObj->getSpent(), 'Spent_label' , "class='readonly' s='d'")
                 .input('hidden', 'Spent', $dataObj->getSpent(), "s='d'"), 'Spent', "", $this->commentsSpent, $this->commentsSpent_css, 'readonly', ' ', 'no');
 
-        $this->fieldsRo['Project']['Reference']['html'] = stdFieldRow(_("Paiement Reference"), div( $dataObj->getReference(), 'Reference_label' , "class='readonly' s='d'")
+        $this->fieldsRo['Project']['Reference']['html'] = stdFieldRow(_("Payment Reference"), div( $dataObj->getReference(), 'Reference_label' , "class='readonly' s='d'")
                 .input('hidden', 'Reference', $dataObj->getReference(), "s='d'"), 'Reference', "", $this->commentsReference, $this->commentsReference_css, 'readonly', ' ', 'no');
 
 

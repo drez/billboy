@@ -125,7 +125,7 @@ abstract class BaseBillingPeer
     const STATE_NEW = 'New';
     const STATE_APPROVED = 'Approved';
     const STATE_SENT = 'Sent';
-    const STATE_PARTIAL_PAIEMENT = 'Partial paiement';
+    const STATE_PARTIAL_PAYMENT = 'Partial payment';
     const STATE_PAID = 'Paid';
     const STATE_CANCELLED = 'Cancelled';
     const STATE_TO_SEND = 'To send';
@@ -187,7 +187,7 @@ abstract class BaseBillingPeer
             BillingPeer::STATE_NEW,
             BillingPeer::STATE_APPROVED,
             BillingPeer::STATE_SENT,
-            BillingPeer::STATE_PARTIAL_PAIEMENT,
+            BillingPeer::STATE_PARTIAL_PAYMENT,
             BillingPeer::STATE_PAID,
             BillingPeer::STATE_CANCELLED,
             BillingPeer::STATE_TO_SEND,

@@ -395,7 +395,7 @@ abstract class BaseProject extends BaseObject implements Persistent
     /**
      * @Field()
      * Get the [reference] column value.
-     * Paiement Reference
+     * Payment Reference
      * @return string
      */
     public function getReference()
@@ -729,7 +729,7 @@ abstract class BaseProject extends BaseObject implements Persistent
 
     /**
      * Set the value of [reference] column.
-     * Paiement Reference
+     * Payment Reference
      * @param  string $v new value
      * @return Project The current object (for fluent API support)
      */
