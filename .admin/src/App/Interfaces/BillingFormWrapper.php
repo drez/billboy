@@ -56,6 +56,10 @@ class BillingFormWrapper extends BillingForm
             $altValue['State'] = span($data->getState(), "style='color:#00c411;'");
         }
 
+        if ($data->getState() == "Partial payment") {
+            $altValue['State'] = span($data->getState(), "style='color:#c49600;'");
+        }
+
         $hook['td'] = td(
             htmlLink("<i class='ri-file-copy-2-line'></i>", "Javascript:", "class='ac-delete-link' i='" . $data->getPrimaryKey() . "' j='copyBilling' "));
     }
@@ -63,7 +67,7 @@ class BillingFormWrapper extends BillingForm
     {
 
         if (empty(array_filter($this->searchMs))) {
-            $this->searchMs['State'] = ['New', 'Sent', 'Approved'];
+            $this->searchMs['State'] = ['New', 'Sent', 'Approved', 'Partial payment'];
             $this->searchMs['Type']  = 'Bill';
         }
         $this->hookListReadyJs = "

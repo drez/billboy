@@ -227,15 +227,15 @@ class TemplateFileService
 
                         if($data['error'] == '') {
 
-                            if(!is_dir(_INSTALL_PATH.\path_dest)) {
-                                mkdir(_INSTALL_PATH.\path_dest);
-                                $fp = fopen(_INSTALL_PATH."public/file/index.php", "w");
+                            if(!is_dir(_INSTALL_PATH.'/'.$path_dest)) {
+                                mkdir(_INSTALL_PATH.'/'.$path_dest);
+                                $fp = fopen(_INSTALL_PATH.'/'."public/file/index.php", "w");
                                 fwrite($fp, '<?php header(\'Location:'._SITE_URL.'\'); ');
                                 fclose($fp);
                             }
-                            if(!is_dir(_INSTALL_PATH.$path_file)) {
-                                mkdir(_INSTALL_PATH.$path_file);
-                                $fp = fopen(_INSTALL_PATH.$path_file."/index.php", "w");
+                            if(!is_dir(_INSTALL_PATH.'/'.$path_file)) {
+                                mkdir(_INSTALL_PATH.'/'.$path_file);
+                                $fp = fopen(_INSTALL_PATH.'/'.$path_file."/index.php", "w");
                                 fwrite($fp, '<?php header(\'Location:'._SITE_URL.'\'); ');
                                 fclose($fp);
                             }
@@ -245,7 +245,7 @@ class TemplateFileService
                             if ($e->validate()) {
                                 $e->save();
                                 $data['idPk'] = $e->getPrimaryKey();
-                                copy($_FILES['file']['tmp_name'], _INSTALL_PATH.$path_file.md5($data['idPk']) . "." . $path_info["extension"] . "");
+                                copy($_FILES['file']['tmp_name'], _INSTALL_PATH.'/'.$path_file.md5($data['idPk']) . "." . $path_info["extension"] . "");
                                 $data['File'] = $path_file.md5($data['idPk']) . "." . $path_info["extension"];
 
                                 $e->setFile($data['File']);
