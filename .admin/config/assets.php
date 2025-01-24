@@ -7,6 +7,7 @@ $Assets->add('public/css/remix/remixicon.css');
 $Assets->add('public/js/index.js');
 $Assets->add('public/css/main.css');
 $Assets->add('public/css/apigoat.css');
+$Assets->add('public/css/myproject1.css');
 $Assets->add('public/js/selectbox.js');
 $Assets->add('vendor/components/jqueryui/ui/minified/jquery-ui.min.js');
 
