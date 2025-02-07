@@ -57,6 +57,10 @@ class ClientTableMap extends TableMap
         $this->addColumn('address_2', 'Address2', 'LONGVARCHAR', false, 10, null);
         $this->addColumn('address_3', 'Address3', 'LONGVARCHAR', false, 10, null);
         $this->addColumn('zip', 'Zip', 'VARCHAR', false, 12, null);
+        $this->addColumn('default_rate', 'DefaultRate', 'DECIMAL', false, 8, null);
+        $this->addForeignKey('default_user', 'DefaultUser', 'INTEGER', 'authy', 'id_authy', false, 11, null);
+        $this->addForeignKey('default_category', 'DefaultCategory', 'INTEGER', 'billing_category', 'id_billing_category', false, 11, null);
+        $this->addForeignKey('default_currency', 'DefaultCurrency', 'INTEGER', 'currency', 'id_currency', false, 11, null);
         $this->addColumn('date_creation', 'DateCreation', 'TIMESTAMP', false, null, null);
         $this->addColumn('date_modification', 'DateModification', 'TIMESTAMP', false, null, null);
         $this->addForeignKey('id_group_creation', 'IdGroupCreation', 'INTEGER', 'authy_group', 'id_authy_group', false, null, null);
@@ -83,6 +87,9 @@ class ClientTableMap extends TableMap
         $this->addValidator('address_2', 'type', 'propel.validator.TypeValidator', 'string', ('Client_Address2_type_string'));
         $this->addValidator('address_3', 'type', 'propel.validator.TypeValidator', 'string', ('Client_Address3_type_string'));
         $this->addValidator('zip', 'type', 'propel.validator.TypeValidator', 'string', ('Client_Zip_type_string'));
+        $this->addValidator('default_user', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Client_DefaultUser_match_/^(?:[0-9]*|null)$/'));
+        $this->addValidator('default_category', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Client_DefaultCategory_match_/^(?:[0-9]*|null)$/'));
+        $this->addValidator('default_currency', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Client_DefaultCurrency_match_/^(?:[0-9]*|null)$/'));
     } // initialize()
 
     /**
@@ -91,6 +98,9 @@ class ClientTableMap extends TableMap
     public function buildRelations()
     {
         $this->addRelation('Country', 'App\\Country', RelationMap::MANY_TO_ONE, array('id_country' => 'id_country', ), null, null);
+        $this->addRelation('AuthyRelatedByDefaultUser', 'App\\Authy', RelationMap::MANY_TO_ONE, array('default_user' => 'id_authy', ), null, null);
+        $this->addRelation('BillingCategory', 'App\\BillingCategory', RelationMap::MANY_TO_ONE, array('default_category' => 'id_billing_category', ), null, null);
+        $this->addRelation('Currency', 'App\\Currency', RelationMap::MANY_TO_ONE, array('default_currency' => 'id_currency', ), null, null);
         $this->addRelation('AuthyGroup', 'App\\AuthyGroup', RelationMap::MANY_TO_ONE, array('id_group_creation' => 'id_authy_group', ), null, null);
         $this->addRelation('AuthyRelatedByIdCreation', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_creation' => 'id_authy', ), null, null);
         $this->addRelation('AuthyRelatedByIdModification', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_modification' => 'id_authy', ), null, null);
@@ -111,6 +121,10 @@ class ClientTableMap extends TableMap
   'i18n_langs' => '["en_US"]',
   'set_menu_priority' => '1',
   'with_child_tables' => '["billing"]',
+  'set_child_colunms' => '{"default_user":["fullname"]}',
+  'add_tab_columns' => '{"Default":"default_rate"}',
+  'set_list_hide_columns' => '["phone_work","ext","email2","phone_mobile","website","address_1","address_2","address_3","zip","default_rate","default_user","default_category","default_currency"]',
+  'add_search_columns' => '{"Name":[["name","%val","multiple"]],"Country":[["id_country","%val","multiple"]],"Phone":[["phone","%val"]],"Email":[["email","%val"]]}',
 ),
             'add_validator' =>  array (
 ),

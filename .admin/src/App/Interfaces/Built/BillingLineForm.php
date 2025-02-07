@@ -932,7 +932,7 @@ $this->fields['BillingLine']['IdAssign']['html']
         $q = AuthyQuery::create();
 
             $q->addAsColumn('selDisplay', ''.AuthyPeer::FULLNAME.'');
-            $q->select(array('selDisplay', 'IdCreation'));
+            $q->select(array('selDisplay', 'IdAuthy'));
             $q->orderBy('selDisplay', 'ASC');
         
             if(!$array){

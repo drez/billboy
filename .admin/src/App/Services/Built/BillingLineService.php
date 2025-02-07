@@ -88,6 +88,7 @@ class BillingLineService
             case 'update':
             case 'insert':
                 $this->content = $this->saveUpdate();
+                $this->content['onReadyJs'] .= "sw_message('Saved');";
                 return $this->BuilderLayout->renderXHR($this->content);
             case 'delete':
                 $this->content = $this->deleteOne();

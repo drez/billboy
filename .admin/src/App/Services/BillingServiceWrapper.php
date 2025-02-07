@@ -20,11 +20,25 @@ class BillingServiceWrapper extends BillingService
     public function __construct($request, $response, $args)
     {
         parent::__construct($request, $response, $args);
-        $this->customActions['print'] = 'print';
-        $this->customActions['pdf']   = 'print';
-        $this->customActions['copy']  = 'copy';
+        $this->customActions['print']            = 'print';
+        $this->customActions['pdf']              = 'print';
+        $this->customActions['copy']             = 'copy';
+        $this->customActions['getClientDefault'] = 'getClientDefault';
 
         $this->Form = new BillingFormWrapper($request, $args);
+    }
+
+    public function getClientDefault($request)
+    {
+        $Client = ClientQuery::create()->findPk($request['data']['IdClient']);
+
+        return ['json' => [
+            'DefaultCurrency' => $Client->getDefaultCurrency(),
+            'DefaultCategory' => $Client->getDefaultCategory(),
+            'DefaultUser'     => $Client->getDefaultUser(),
+            'DefaultRate'     => $Client->getDefaultRate(),
+        ],
+        ];
     }
 
     public function copy($request)
@@ -32,6 +46,7 @@ class BillingServiceWrapper extends BillingService
         $Billing     = BillingQuery::create()->findPk($request['i']);
         $BillingCopy = $Billing->copy(true);
         $BillingCopy->setState('New');
+        $BillingCopy->setTitle('Copy - ' . $Billing->getTitle());
         $BillingCopy->setDate(date('Y-m-d'));
         $BillingCopy->save();
 
@@ -62,50 +77,56 @@ class BillingServiceWrapper extends BillingService
 
             if ($Template->getColor1()) {
                 $colors = style("
-                @media print {
-                    size: letter;
-                }
+@media print {
+    size: letter;
+}
 
-                .head1 {color:" . $Template->getColor1() . "; }
-                .head1 td {border-color:" . $Template->getColor1() . "; }
-                body {background: white;}
-                tr td{
-                    vertical-align: top;
-                }
-                #items table {
-                    border-collapse: separate;
-                    border-spacing: 0 1em;
-                }
+.head1 {color:" . $Template->getColor1() . "; }
+.head1 td {border-color:" . $Template->getColor1() . "; }
+body {background: white;}
+tr td{
+    vertical-align: top;
+}
+#items table {
+    border-collapse: separate;
+    border-spacing: 0 1em;
+    span b{
+        text-transform: capitalize;
+    }
+}
 
-                #items .note {
+#items .note {
 
-                }
+}
 
             ");
             }
 
             $Billing = BillingQuery::create()
                 ->leftJoin('Client')
+                ->leftJoin('Currency')
                 ->findPk($request['i']);
 
             $clientContent = div(
-                div(table(
-                    tr(
-                        td("Client", "style='width:30%;'")
-                        . td($Billing?->getClient()?->getName())
-                        , "class=''")
-                    . tr(
-                        td("Address", "style='width:30%;'")
-                        . td($Billing?->getClient()?->getAddress1()
-                            . (($Billing?->getClient()?->getAddress2()) ? "<br>" : "" . $Billing?->getClient()?->getAddress2())
-                            . (($Billing?->getClient()?->getAddress3()) ? "<br>" : "" . $Billing?->getClient()?->getAddress3())
-                        )
-                        , "class=''")
-                    . tr(
-                        td("Phone", "style='width:30%;'")
-                        . td($Billing?->getClient()?->getPhone())
-                        , "class=''")
-                ), '', "style='padding:20px;'")
+                div(
+                    table(
+                        tr(
+                            td("Client", "style='width:30%;'")
+                            . td($Billing?->getClient()?->getName())
+                            , "class=''")
+                        . tr(
+                            td("Address", "style='width:30%;'")
+                            . td($Billing?->getClient()?->getAddress1()
+                                . (($Billing?->getClient()?->getAddress2()) ? "<br>" : "" . $Billing?->getClient()?->getAddress2())
+                                . (($Billing?->getClient()?->getAddress3()) ? "<br>" : "" . $Billing?->getClient()?->getAddress3())
+                            )
+                            , "class=''")
+                        . tr(
+                            td("Phone", "style='width:30%;'")
+                            . td($Billing?->getClient()?->getPhone())
+                            , "class=''")
+                    )
+                    , '', "style='padding:20px;'")
                 , 'client', "class='no-break client'");
 
             if ($Billing->getNoteBilling()) {
@@ -175,7 +196,7 @@ class BillingServiceWrapper extends BillingService
             } else {
                 $headRow = tr(
                     td("Description")
-                    . td("Date", "style='min-width:90px;'")
+                    . td("Date", "style='min-width:110px;'")
                     . td("Qty.", "style='text-align:right;'")
                     . td("Unit price	", "style='text-align:right;'")
                     . td("Total", "style='text-align:right;'")
@@ -188,7 +209,7 @@ class BillingServiceWrapper extends BillingService
             if ($Billing->getGross2()) {
                 $currencyTotal = tr(
                     td("&nbsp;", "colspan='$colspan'")
-                    . td("Total $" . $Billing->getGrossCurrency(), "colspan='2'")
+                    . td("Total $" . $Billing->getCurrency()->getName(), "colspan='2'")
                     . td($Billing->getGross2()), "class='totalRow2'");
             }
 

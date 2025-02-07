@@ -126,6 +126,8 @@ class CostLineTableMap extends TableMap
   'set_parent_table' => 'billing',
   'set_readonly_columns' => '["total"]',
   'set_menu_priority' => '1',
+  'set_list_hide_columns' => '["invoice_no","recuring","renewal_date","quantity","amount","bill","note_billing_ligne"]',
+  'add_search_columns' => '{"Supplier":[["id_supplier","%val","multiple"]],"Invoice no":[["invoice_no","%val"]],"Date":[["spend_date","%val"]],"Title":[["title","%val"]],"Recuring":[["recuring","%val"]],"Project":[["id_project","%val"]],"Category":[["id_billing_category","%val"]]}',
 ),
             'add_validator' =>  array (
 ),

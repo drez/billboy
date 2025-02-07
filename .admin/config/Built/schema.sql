@@ -26,6 +26,10 @@ CREATE TABLE `client`
     `address_2` TEXT(10) COMMENT 'Address 2',
     `address_3` TEXT(10) COMMENT 'Address 3',
     `zip` VARCHAR(12) COMMENT 'Zip',
+    `default_rate` DECIMAL(8, 2) COMMENT 'Rate',
+    `default_user` INTEGER(11) COMMENT 'User',
+    `default_category` INTEGER(11) COMMENT 'Category',
+    `default_currency` INTEGER(11) COMMENT 'Currency',
     `date_creation` DATETIME,
     `date_modification` DATETIME,
     `id_group_creation` INTEGER,
@@ -33,19 +37,31 @@ CREATE TABLE `client`
     `id_modification` INTEGER,
     PRIMARY KEY (`id_client`),
     INDEX `client_FI_1` (`id_country`),
-    INDEX `client_FI_2` (`id_group_creation`),
-    INDEX `client_FI_3` (`id_creation`),
-    INDEX `client_FI_4` (`id_modification`),
+    INDEX `client_FI_2` (`default_user`),
+    INDEX `client_FI_3` (`default_category`),
+    INDEX `client_FI_4` (`default_currency`),
+    INDEX `client_FI_5` (`id_group_creation`),
+    INDEX `client_FI_6` (`id_creation`),
+    INDEX `client_FI_7` (`id_modification`),
     CONSTRAINT `client_FK_1`
         FOREIGN KEY (`id_country`)
         REFERENCES `country` (`id_country`),
     CONSTRAINT `client_FK_2`
+        FOREIGN KEY (`default_user`)
+        REFERENCES `authy` (`id_authy`),
+    CONSTRAINT `client_FK_3`
+        FOREIGN KEY (`default_category`)
+        REFERENCES `billing_category` (`id_billing_category`),
+    CONSTRAINT `client_FK_4`
+        FOREIGN KEY (`default_currency`)
+        REFERENCES `currency` (`id_currency`),
+    CONSTRAINT `client_FK_5`
         FOREIGN KEY (`id_group_creation`)
         REFERENCES `authy_group` (`id_authy_group`),
-    CONSTRAINT `client_FK_3`
+    CONSTRAINT `client_FK_6`
         FOREIGN KEY (`id_creation`)
         REFERENCES `authy` (`id_authy`),
-    CONSTRAINT `client_FK_4`
+    CONSTRAINT `client_FK_7`
         FOREIGN KEY (`id_modification`)
         REFERENCES `authy` (`id_authy`)
 ) ENGINE=InnoDB COMMENT='Client';
@@ -68,7 +84,8 @@ CREATE TABLE `billing`
     `date` DATE COMMENT 'Date',
     `type` TINYINT DEFAULT 1 NOT NULL COMMENT 'Type',
     `gross` DECIMAL(8, 2) COMMENT 'Gross',
-    `gross_currency` TINYINT COMMENT 'Currency',
+    `gross_currency` TINYINT,
+    `default_currency` INTEGER(11) COMMENT 'Currency',
     `gross_2` DECIMAL(8, 2) COMMENT 'Gross',
     `tax` DECIMAL(8, 2) COMMENT 'Tax',
     `date_due` DATE COMMENT 'Due date',
@@ -85,9 +102,10 @@ CREATE TABLE `billing`
     INDEX `billing_FI_1` (`id_client`),
     INDEX `billing_FI_2` (`id_project`),
     INDEX `billing_FI_3` (`id_billing_category`),
-    INDEX `billing_FI_4` (`id_group_creation`),
-    INDEX `billing_FI_5` (`id_creation`),
-    INDEX `billing_FI_6` (`id_modification`),
+    INDEX `billing_FI_4` (`default_currency`),
+    INDEX `billing_FI_5` (`id_group_creation`),
+    INDEX `billing_FI_6` (`id_creation`),
+    INDEX `billing_FI_7` (`id_modification`),
     CONSTRAINT `billing_FK_1`
         FOREIGN KEY (`id_client`)
         REFERENCES `client` (`id_client`),
@@ -98,12 +116,15 @@ CREATE TABLE `billing`
         FOREIGN KEY (`id_billing_category`)
         REFERENCES `billing_category` (`id_billing_category`),
     CONSTRAINT `billing_FK_4`
+        FOREIGN KEY (`default_currency`)
+        REFERENCES `currency` (`id_currency`),
+    CONSTRAINT `billing_FK_5`
         FOREIGN KEY (`id_group_creation`)
         REFERENCES `authy_group` (`id_authy_group`),
-    CONSTRAINT `billing_FK_5`
+    CONSTRAINT `billing_FK_6`
         FOREIGN KEY (`id_creation`)
         REFERENCES `authy` (`id_authy`),
-    CONSTRAINT `billing_FK_6`
+    CONSTRAINT `billing_FK_7`
         FOREIGN KEY (`id_modification`)
         REFERENCES `authy` (`id_authy`)
 ) ENGINE=InnoDB COMMENT='Billing';
@@ -147,7 +168,7 @@ CREATE TABLE `billing_line`
         ON DELETE CASCADE,
     CONSTRAINT `billing_line_FK_2`
         FOREIGN KEY (`id_assign`)
-        REFERENCES `authy` (`id_creation`),
+        REFERENCES `authy` (`id_authy`),
     CONSTRAINT `billing_line_FK_3`
         FOREIGN KEY (`id_project`)
         REFERENCES `project` (`id_project`),
@@ -380,6 +401,36 @@ CREATE TABLE `billing_category`
 ) ENGINE=InnoDB COMMENT='Category billing';
 
 -- ---------------------------------------------------------------------
+-- currency
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `currency`;
+
+CREATE TABLE `currency`
+(
+    `id_currency` INTEGER(10) NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(100) COMMENT 'Name',
+    `date_creation` DATETIME,
+    `date_modification` DATETIME,
+    `id_group_creation` INTEGER,
+    `id_creation` INTEGER,
+    `id_modification` INTEGER,
+    PRIMARY KEY (`id_currency`),
+    INDEX `currency_FI_1` (`id_group_creation`),
+    INDEX `currency_FI_2` (`id_creation`),
+    INDEX `currency_FI_3` (`id_modification`),
+    CONSTRAINT `currency_FK_1`
+        FOREIGN KEY (`id_group_creation`)
+        REFERENCES `authy_group` (`id_authy_group`),
+    CONSTRAINT `currency_FK_2`
+        FOREIGN KEY (`id_creation`)
+        REFERENCES `authy` (`id_authy`),
+    CONSTRAINT `currency_FK_3`
+        FOREIGN KEY (`id_modification`)
+        REFERENCES `authy` (`id_authy`)
+) ENGINE=InnoDB COMMENT='Currency';
+
+-- ---------------------------------------------------------------------
 -- supplier
 -- ---------------------------------------------------------------------
 
@@ -456,9 +507,9 @@ CREATE TABLE `authy`
     `id_modification` INTEGER,
     PRIMARY KEY (`id_authy`),
     UNIQUE INDEX `authy_U_1` (`username`),
-    INDEX `I_referenced_billing_line_FK_2_1` (`id_creation`),
     INDEX `authy_FI_1` (`id_authy_group`),
     INDEX `authy_FI_2` (`id_group_creation`),
+    INDEX `authy_FI_3` (`id_creation`),
     INDEX `authy_FI_4` (`id_modification`),
     CONSTRAINT `authy_FK_1`
         FOREIGN KEY (`id_authy_group`)

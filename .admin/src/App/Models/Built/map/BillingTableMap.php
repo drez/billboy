@@ -71,6 +71,7 @@ class BillingTableMap extends TableMap
   1 => 'AUS',
   2 => 'SGD',
 ));
+        $this->addForeignKey('default_currency', 'DefaultCurrency', 'INTEGER', 'currency', 'id_currency', false, 11, null);
         $this->addColumn('gross_2', 'Gross2', 'DECIMAL', false, 8, null);
         $this->addColumn('tax', 'Tax', 'DECIMAL', false, 8, null);
         $this->addColumn('date_due', 'DateDue', 'DATE', false, null, null);
@@ -99,6 +100,7 @@ class BillingTableMap extends TableMap
         $this->addValidator('type', 'required', 'propel.validator.RequiredValidator', '', ('Billing_Type_required'));
         $this->addValidator('type', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_Type_type_string'));
         $this->addValidator('gross_currency', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_GrossCurrency_type_string'));
+        $this->addValidator('default_currency', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Billing_DefaultCurrency_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('date_due', 'match', 'propel.validator.MatchValidator', '', ('Billing_DateDue_match'));
         $this->addValidator('note_billing', 'type', 'propel.validator.TypeValidator', 'string', ('Billing_NoteBilling_type_string'));
         $this->addValidator('date_paid', 'match', 'propel.validator.MatchValidator', '', ('Billing_DatePaid_match'));
@@ -113,6 +115,7 @@ class BillingTableMap extends TableMap
         $this->addRelation('Client', 'App\\Client', RelationMap::MANY_TO_ONE, array('id_client' => 'id_client', ), null, null);
         $this->addRelation('Project', 'App\\Project', RelationMap::MANY_TO_ONE, array('id_project' => 'id_project', ), null, null);
         $this->addRelation('BillingCategory', 'App\\BillingCategory', RelationMap::MANY_TO_ONE, array('id_billing_category' => 'id_billing_category', ), null, null);
+        $this->addRelation('Currency', 'App\\Currency', RelationMap::MANY_TO_ONE, array('default_currency' => 'id_currency', ), null, null);
         $this->addRelation('AuthyGroup', 'App\\AuthyGroup', RelationMap::MANY_TO_ONE, array('id_group_creation' => 'id_authy_group', ), null, null);
         $this->addRelation('AuthyRelatedByIdCreation', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_creation' => 'id_authy', ), null, null);
         $this->addRelation('AuthyRelatedByIdModification', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_modification' => 'id_authy', ), null, null);

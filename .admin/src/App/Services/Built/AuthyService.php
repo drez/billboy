@@ -90,6 +90,7 @@ class AuthyService
             case 'update':
             case 'insert':
                 $this->content = $this->saveUpdate();
+                $this->content['onReadyJs'] .= "sw_message('Saved');";
                 return $this->BuilderLayout->renderXHR($this->content);
             case 'delete':
                 $this->content = $this->deleteOne();
@@ -236,6 +237,9 @@ class AuthyService
         $obj = AuthyQuery::create()->findPk(json_decode($this->request['i']));
 
 
+            if($obj->countClientsRelatedByDefaultUser()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Client'. ", '', true,'User'); die( $error['onReadyJs'] );
+            }
             if($obj->countBillingLinesRelatedByIdAssign()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Entries'. ", '', true,'User'); die( $error['onReadyJs'] );
             }
@@ -292,6 +296,12 @@ class AuthyService
             }
             if($obj->countBillingCategoriesRelatedByIdModification()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Category billing'. ", '', true,'User'); die( $error['onReadyJs'] );
+            }
+            if($obj->countCurrenciesRelatedByIdCreation()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Currency'. ", '', true,'User'); die( $error['onReadyJs'] );
+            }
+            if($obj->countCurrenciesRelatedByIdModification()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Currency'. ", '', true,'User'); die( $error['onReadyJs'] );
             }
             if($obj->countSuppliersRelatedByIdCreation()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Supplier'. ", '', true,'User'); die( $error['onReadyJs'] );

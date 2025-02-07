@@ -26,6 +26,8 @@ use App\BillingCategoryQuery;
 use App\BillingLine;
 use App\BillingLineQuery;
 use App\BillingQuery;
+use App\Client;
+use App\ClientQuery;
 use App\CostLine;
 use App\CostLineQuery;
 
@@ -115,6 +117,12 @@ abstract class BaseBillingCategory extends BaseObject implements Persistent
     protected $aAuthyRelatedByIdModification;
 
     /**
+     * @var        PropelObjectCollection|Client[] Collection to store aggregation of Client objects.
+     */
+    protected $collClients;
+    protected $collClientsPartial;
+
+    /**
      * @var        PropelObjectCollection|Billing[] Collection to store aggregation of Billing objects.
      */
     protected $collBillings;
@@ -151,6 +159,12 @@ abstract class BaseBillingCategory extends BaseObject implements Persistent
      * @var        boolean
      */
     protected $alreadyInClearAllReferencesDeep = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $clientsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -597,6 +611,8 @@ abstract class BaseBillingCategory extends BaseObject implements Persistent
             $this->aAuthyGroup = null;
             $this->aAuthyRelatedByIdCreation = null;
             $this->aAuthyRelatedByIdModification = null;
+            $this->collClients = null;
+
             $this->collBillings = null;
 
             $this->collBillingLines = null;
@@ -771,6 +787,24 @@ abstract class BaseBillingCategory extends BaseObject implements Persistent
                 }
                 $affectedRows += 1;
                 $this->resetModified();
+            }
+
+            if ($this->clientsScheduledForDeletion !== null) {
+                if (!$this->clientsScheduledForDeletion->isEmpty()) {
+                    foreach ($this->clientsScheduledForDeletion as $client) {
+                        // need to save related object because we set the relation to null
+                        $client->save($con);
+                    }
+                    $this->clientsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collClients !== null) {
+                foreach ($this->collClients as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             if ($this->billingsScheduledForDeletion !== null) {
@@ -1029,6 +1063,14 @@ abstract class BaseBillingCategory extends BaseObject implements Persistent
             }
 
 
+                if ($this->collClients !== null) {
+                    foreach ($this->collClients as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
                 if ($this->collBillings !== null) {
                     foreach ($this->collBillings as $referrerFK) {
                         if (!$referrerFK->validate($columns)) {
@@ -1123,6 +1165,9 @@ abstract class BaseBillingCategory extends BaseObject implements Persistent
             }
             if (null !== $this->aAuthyRelatedByIdModification) {
                 $result['AuthyRelatedByIdModification'] = $this->aAuthyRelatedByIdModification->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collClients) {
+                $result['Clients'] = $this->collClients->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collBillings) {
                 $result['Billings'] = $this->collBillings->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -1313,6 +1358,12 @@ abstract class BaseBillingCategory extends BaseObject implements Persistent
             $copyObj->setNew(false);
             // store object hash to prevent cycle
             $this->startCopy = true;
+
+            foreach ($this->getClients() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addClient($relObj->copy($deepCopy));
+                }
+            }
 
             foreach ($this->getBillings() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1549,6 +1600,9 @@ abstract class BaseBillingCategory extends BaseObject implements Persistent
      */
     public function initRelation($relationName)
     {
+        if ('Client' == $relationName) {
+            $this->initClients();
+        }
         if ('Billing' == $relationName) {
             $this->initBillings();
         }
@@ -1558,6 +1612,333 @@ abstract class BaseBillingCategory extends BaseObject implements Persistent
         if ('CostLine' == $relationName) {
             $this->initCostLines();
         }
+    }
+
+    /**
+     * Clears out the collClients collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return BillingCategory The current object (for fluent API support)
+     * @see        addClients()
+     */
+    public function clearClients()
+    {
+        $this->collClients = null; // important to set this to null since that means it is uninitialized
+        $this->collClientsPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collClients collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialClients($v = true)
+    {
+        $this->collClientsPartial = $v;
+    }
+
+    /**
+     * Initializes the collClients collection.
+     *
+     * By default this just sets the collClients collection to an empty array (like clearcollClients());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initClients($overrideExisting = true)
+    {
+        if (null !== $this->collClients && !$overrideExisting) {
+            return;
+        }
+        $this->collClients = new PropelObjectCollection();
+        $this->collClients->setModel('Client');
+    }
+
+    /**
+     * Gets an array of Client objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this BillingCategory is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Client[] List of Client objects
+     * @throws PropelException
+     */
+    public function getClients($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collClientsPartial && !$this->isNew();
+        if (null === $this->collClients || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collClients) {
+                // return empty collection
+                $this->initClients();
+            } else {
+                $collClients = ClientQuery::create(null, $criteria)
+                    ->filterByBillingCategory($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collClientsPartial && count($collClients)) {
+                      $this->initClients(false);
+
+                      foreach ($collClients as $obj) {
+                        if (false == $this->collClients->contains($obj)) {
+                          $this->collClients->append($obj);
+                        }
+                      }
+
+                      $this->collClientsPartial = true;
+                    }
+
+                    $collClients->getInternalIterator()->rewind();
+
+                    return $collClients;
+                }
+
+                if ($partial && $this->collClients) {
+                    foreach ($this->collClients as $obj) {
+                        if ($obj->isNew()) {
+                            $collClients[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collClients = $collClients;
+                $this->collClientsPartial = false;
+            }
+        }
+
+        return $this->collClients;
+    }
+
+    /**
+     * Sets a collection of Client objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $clients A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return BillingCategory The current object (for fluent API support)
+     */
+    public function setClients(PropelCollection $clients, PropelPDO $con = null)
+    {
+        $clientsToDelete = $this->getClients(new Criteria(), $con)->diff($clients);
+
+
+        $this->clientsScheduledForDeletion = $clientsToDelete;
+
+        foreach ($clientsToDelete as $clientRemoved) {
+            $clientRemoved->setBillingCategory(null);
+        }
+
+        $this->collClients = null;
+        foreach ($clients as $client) {
+            $this->addClient($client);
+        }
+
+        $this->collClients = $clients;
+        $this->collClientsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Client objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related Client objects.
+     * @throws PropelException
+     */
+    public function countClients(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collClientsPartial && !$this->isNew();
+        if (null === $this->collClients || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collClients) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getClients());
+            }
+            $query = ClientQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByBillingCategory($this)
+                ->count($con);
+        }
+
+        return count($this->collClients);
+    }
+
+    /**
+     * Method called to associate a Client object to this object
+     * through the Client foreign key attribute.
+     *
+     * @param    Client $l Client
+     * @return BillingCategory The current object (for fluent API support)
+     */
+    public function addClient(Client $l)
+    {
+        if ($this->collClients === null) {
+            $this->initClients();
+            $this->collClientsPartial = true;
+        }
+
+        if (!in_array($l, $this->collClients->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddClient($l);
+
+            if ($this->clientsScheduledForDeletion and $this->clientsScheduledForDeletion->contains($l)) {
+                $this->clientsScheduledForDeletion->remove($this->clientsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	Client $client The client object to add.
+     */
+    protected function doAddClient($client)
+    {
+        $this->collClients[]= $client;
+        $client->setBillingCategory($this);
+    }
+
+    /**
+     * @param	Client $client The client object to remove.
+     * @return BillingCategory The current object (for fluent API support)
+     */
+    public function removeClient($client)
+    {
+        if ($this->getClients()->contains($client)) {
+            $this->collClients->remove($this->collClients->search($client));
+            if (null === $this->clientsScheduledForDeletion) {
+                $this->clientsScheduledForDeletion = clone $this->collClients;
+                $this->clientsScheduledForDeletion->clear();
+            }
+            $this->clientsScheduledForDeletion[]= $client;
+            $client->setBillingCategory(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Client[] List of Client objects
+     */
+    public function getClientsJoinCountry($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ClientQuery::create(null, $criteria);
+        $query->joinWith('Country', $join_behavior);
+
+        return $this->getClients($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Client[] List of Client objects
+     */
+    public function getClientsJoinAuthyRelatedByDefaultUser($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ClientQuery::create(null, $criteria);
+        $query->joinWith('AuthyRelatedByDefaultUser', $join_behavior);
+
+        return $this->getClients($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Client[] List of Client objects
+     */
+    public function getClientsJoinCurrency($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ClientQuery::create(null, $criteria);
+        $query->joinWith('Currency', $join_behavior);
+
+        return $this->getClients($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Client[] List of Client objects
+     */
+    public function getClientsJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ClientQuery::create(null, $criteria);
+        $query->joinWith('AuthyGroup', $join_behavior);
+
+        return $this->getClients($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Client[] List of Client objects
+     */
+    public function getClientsJoinAuthyRelatedByIdCreation($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ClientQuery::create(null, $criteria);
+        $query->joinWith('AuthyRelatedByIdCreation', $join_behavior);
+
+        return $this->getClients($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Client[] List of Client objects
+     */
+    public function getClientsJoinAuthyRelatedByIdModification($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ClientQuery::create(null, $criteria);
+        $query->joinWith('AuthyRelatedByIdModification', $join_behavior);
+
+        return $this->getClients($query, $con);
     }
 
     /**
@@ -1815,6 +2196,23 @@ abstract class BaseBillingCategory extends BaseObject implements Persistent
     {
         $query = BillingQuery::create(null, $criteria);
         $query->joinWith('Project', $join_behavior);
+
+        return $this->getBillings($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Billing[] List of Billing objects
+     */
+    public function getBillingsJoinCurrency($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingQuery::create(null, $criteria);
+        $query->joinWith('Currency', $join_behavior);
 
         return $this->getBillings($query, $con);
     }
@@ -2558,6 +2956,11 @@ abstract class BaseBillingCategory extends BaseObject implements Persistent
     {
         if ($deep && !$this->alreadyInClearAllReferencesDeep) {
             $this->alreadyInClearAllReferencesDeep = true;
+            if ($this->collClients) {
+                foreach ($this->collClients as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collBillings) {
                 foreach ($this->collBillings as $o) {
                     $o->clearAllReferences($deep);
@@ -2586,6 +2989,10 @@ abstract class BaseBillingCategory extends BaseObject implements Persistent
             $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
 
+        if ($this->collClients instanceof PropelCollection) {
+            $this->collClients->clearIterator();
+        }
+        $this->collClients = null;
         if ($this->collBillings instanceof PropelCollection) {
             $this->collBillings->clearIterator();
         }

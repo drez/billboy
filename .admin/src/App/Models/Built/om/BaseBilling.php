@@ -30,6 +30,8 @@ use App\Client;
 use App\ClientQuery;
 use App\CostLine;
 use App\CostLineQuery;
+use App\Currency;
+use App\CurrencyQuery;
 use App\PaymentLine;
 use App\PaymentLineQuery;
 use App\Project;
@@ -131,6 +133,12 @@ abstract class BaseBilling extends BaseObject implements Persistent
     protected $gross_currency;
 
     /**
+     * The value for the default_currency field.
+     * @var        int
+     */
+    protected $default_currency;
+
+    /**
      * The value for the gross_2 field.
      * @var        string
      */
@@ -216,6 +224,11 @@ abstract class BaseBilling extends BaseObject implements Persistent
      * @var        BillingCategory
      */
     protected $aBillingCategory;
+
+    /**
+     * @var        Currency
+     */
+    protected $aCurrency;
 
     /**
      * @var        AuthyGroup
@@ -477,7 +490,7 @@ abstract class BaseBilling extends BaseObject implements Persistent
     /**
      * @Field()
      * Get the [gross_currency] column value.
-     * Currency
+     *
      * @return int
      * @throws PropelException - if the stored enum key is unknown.
      */
@@ -492,6 +505,18 @@ abstract class BaseBilling extends BaseObject implements Persistent
         }
 
         return $valueSet[$this->gross_currency];
+    }
+
+    /**
+     * @Field()
+     * Get the [default_currency] column value.
+     * Currency
+     * @return int
+     */
+    public function getDefaultCurrency()
+    {
+
+        return $this->default_currency;
     }
 
     /**
@@ -990,7 +1015,7 @@ abstract class BaseBilling extends BaseObject implements Persistent
 
     /**
      * Set the value of [gross_currency] column.
-     * Currency
+     *
      * @param  int $v new value
      * @return Billing The current object (for fluent API support)
      * @throws PropelException - if the value is not accepted by this enum.
@@ -1013,6 +1038,31 @@ abstract class BaseBilling extends BaseObject implements Persistent
 
         return $this;
     } // setGrossCurrency()
+
+    /**
+     * Set the value of [default_currency] column.
+     * Currency
+     * @param  int $v new value
+     * @return Billing The current object (for fluent API support)
+     */
+    public function setDefaultCurrency($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (int) $v;
+        }
+
+        if ($this->default_currency !== $v) {
+            $this->default_currency = $v;
+            $this->modifiedColumns[] = BillingPeer::DEFAULT_CURRENCY;
+        }
+
+        if ($this->aCurrency !== null && $this->aCurrency->getIdCurrency() !== $v) {
+            $this->aCurrency = null;
+        }
+
+
+        return $this;
+    } // setDefaultCurrency()
 
     /**
      * Set the value of [gross_2] column.
@@ -1333,18 +1383,19 @@ abstract class BaseBilling extends BaseObject implements Persistent
             $this->type = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
             $this->gross = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
             $this->gross_currency = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
-            $this->gross_2 = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-            $this->tax = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-            $this->date_due = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
-            $this->note_billing = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
-            $this->date_paid = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
-            $this->net = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
-            $this->reference = ($row[$startcol + 17] !== null) ? (string) $row[$startcol + 17] : null;
-            $this->date_creation = ($row[$startcol + 18] !== null) ? (string) $row[$startcol + 18] : null;
-            $this->date_modification = ($row[$startcol + 19] !== null) ? (string) $row[$startcol + 19] : null;
-            $this->id_group_creation = ($row[$startcol + 20] !== null) ? (int) $row[$startcol + 20] : null;
-            $this->id_creation = ($row[$startcol + 21] !== null) ? (int) $row[$startcol + 21] : null;
-            $this->id_modification = ($row[$startcol + 22] !== null) ? (int) $row[$startcol + 22] : null;
+            $this->default_currency = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
+            $this->gross_2 = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+            $this->tax = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
+            $this->date_due = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
+            $this->note_billing = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
+            $this->date_paid = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
+            $this->net = ($row[$startcol + 17] !== null) ? (string) $row[$startcol + 17] : null;
+            $this->reference = ($row[$startcol + 18] !== null) ? (string) $row[$startcol + 18] : null;
+            $this->date_creation = ($row[$startcol + 19] !== null) ? (string) $row[$startcol + 19] : null;
+            $this->date_modification = ($row[$startcol + 20] !== null) ? (string) $row[$startcol + 20] : null;
+            $this->id_group_creation = ($row[$startcol + 21] !== null) ? (int) $row[$startcol + 21] : null;
+            $this->id_creation = ($row[$startcol + 22] !== null) ? (int) $row[$startcol + 22] : null;
+            $this->id_modification = ($row[$startcol + 23] !== null) ? (int) $row[$startcol + 23] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -1354,7 +1405,7 @@ abstract class BaseBilling extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 23; // 23 = BillingPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 24; // 24 = BillingPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Billing object", $e);
@@ -1385,6 +1436,9 @@ abstract class BaseBilling extends BaseObject implements Persistent
         }
         if ($this->aBillingCategory !== null && $this->id_billing_category !== $this->aBillingCategory->getIdBillingCategory()) {
             $this->aBillingCategory = null;
+        }
+        if ($this->aCurrency !== null && $this->default_currency !== $this->aCurrency->getIdCurrency()) {
+            $this->aCurrency = null;
         }
         if ($this->aAuthyGroup !== null && $this->id_group_creation !== $this->aAuthyGroup->getIdAuthyGroup()) {
             $this->aAuthyGroup = null;
@@ -1437,6 +1491,7 @@ abstract class BaseBilling extends BaseObject implements Persistent
             $this->aClient = null;
             $this->aProject = null;
             $this->aBillingCategory = null;
+            $this->aCurrency = null;
             $this->aAuthyGroup = null;
             $this->aAuthyRelatedByIdCreation = null;
             $this->aAuthyRelatedByIdModification = null;
@@ -1605,6 +1660,13 @@ abstract class BaseBilling extends BaseObject implements Persistent
                 $this->setBillingCategory($this->aBillingCategory);
             }
 
+            if ($this->aCurrency !== null) {
+                if ($this->aCurrency->isModified() || $this->aCurrency->isNew()) {
+                    $affectedRows += $this->aCurrency->save($con);
+                }
+                $this->setCurrency($this->aCurrency);
+            }
+
             if ($this->aAuthyGroup !== null) {
                 if ($this->aAuthyGroup->isModified() || $this->aAuthyGroup->isNew()) {
                     $affectedRows += $this->aAuthyGroup->save($con);
@@ -1747,6 +1809,9 @@ abstract class BaseBilling extends BaseObject implements Persistent
         if ($this->isColumnModified(BillingPeer::GROSS_CURRENCY)) {
             $modifiedColumns[':p' . $index++]  = '`gross_currency`';
         }
+        if ($this->isColumnModified(BillingPeer::DEFAULT_CURRENCY)) {
+            $modifiedColumns[':p' . $index++]  = '`default_currency`';
+        }
         if ($this->isColumnModified(BillingPeer::GROSS_2)) {
             $modifiedColumns[':p' . $index++]  = '`gross_2`';
         }
@@ -1826,6 +1891,9 @@ abstract class BaseBilling extends BaseObject implements Persistent
                         break;
                     case '`gross_currency`':
                         $stmt->bindValue($identifier, $this->gross_currency, PDO::PARAM_INT);
+                        break;
+                    case '`default_currency`':
+                        $stmt->bindValue($identifier, $this->default_currency, PDO::PARAM_INT);
                         break;
                     case '`gross_2`':
                         $stmt->bindValue($identifier, $this->gross_2, PDO::PARAM_STR);
@@ -1980,6 +2048,12 @@ abstract class BaseBilling extends BaseObject implements Persistent
                 }
             }
 
+            if ($this->aCurrency !== null) {
+                if (!$this->aCurrency->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aCurrency->getValidationFailures());
+                }
+            }
+
             if ($this->aAuthyGroup !== null) {
                 if (!$this->aAuthyGroup->validate($columns)) {
                     $failureMap = array_merge($failureMap, $this->aAuthyGroup->getValidationFailures());
@@ -2087,18 +2161,19 @@ abstract class BaseBilling extends BaseObject implements Persistent
             $keys[8] => $this->getType(),
             $keys[9] => $this->getGross(),
             $keys[10] => $this->getGrossCurrency(),
-            $keys[11] => $this->getGross2(),
-            $keys[12] => $this->getTax(),
-            $keys[13] => $this->getDateDue(),
-            $keys[14] => $this->getNoteBilling(),
-            $keys[15] => $this->getDatePaid(),
-            $keys[16] => $this->getNet(),
-            $keys[17] => $this->getReference(),
-            $keys[18] => $this->getDateCreation(),
-            $keys[19] => $this->getDateModification(),
-            $keys[20] => $this->getIdGroupCreation(),
-            $keys[21] => $this->getIdCreation(),
-            $keys[22] => $this->getIdModification(),
+            $keys[11] => $this->getDefaultCurrency(),
+            $keys[12] => $this->getGross2(),
+            $keys[13] => $this->getTax(),
+            $keys[14] => $this->getDateDue(),
+            $keys[15] => $this->getNoteBilling(),
+            $keys[16] => $this->getDatePaid(),
+            $keys[17] => $this->getNet(),
+            $keys[18] => $this->getReference(),
+            $keys[19] => $this->getDateCreation(),
+            $keys[20] => $this->getDateModification(),
+            $keys[21] => $this->getIdGroupCreation(),
+            $keys[22] => $this->getIdCreation(),
+            $keys[23] => $this->getIdModification(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -2114,6 +2189,9 @@ abstract class BaseBilling extends BaseObject implements Persistent
             }
             if (null !== $this->aBillingCategory) {
                 $result['BillingCategory'] = $this->aBillingCategory->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aCurrency) {
+                $result['Currency'] = $this->aCurrency->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aAuthyGroup) {
                 $result['AuthyGroup'] = $this->aAuthyGroup->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -2213,39 +2291,42 @@ abstract class BaseBilling extends BaseObject implements Persistent
                 $this->setGrossCurrency($value);
                 break;
             case 11:
-                $this->setGross2($value);
+                $this->setDefaultCurrency($value);
                 break;
             case 12:
-                $this->setTax($value);
+                $this->setGross2($value);
                 break;
             case 13:
-                $this->setDateDue($value);
+                $this->setTax($value);
                 break;
             case 14:
-                $this->setNoteBilling($value);
+                $this->setDateDue($value);
                 break;
             case 15:
-                $this->setDatePaid($value);
+                $this->setNoteBilling($value);
                 break;
             case 16:
-                $this->setNet($value);
+                $this->setDatePaid($value);
                 break;
             case 17:
-                $this->setReference($value);
+                $this->setNet($value);
                 break;
             case 18:
-                $this->setDateCreation($value);
+                $this->setReference($value);
                 break;
             case 19:
-                $this->setDateModification($value);
+                $this->setDateCreation($value);
                 break;
             case 20:
-                $this->setIdGroupCreation($value);
+                $this->setDateModification($value);
                 break;
             case 21:
-                $this->setIdCreation($value);
+                $this->setIdGroupCreation($value);
                 break;
             case 22:
+                $this->setIdCreation($value);
+                break;
+            case 23:
                 $this->setIdModification($value);
                 break;
         } // switch()
@@ -2283,18 +2364,19 @@ abstract class BaseBilling extends BaseObject implements Persistent
         if (array_key_exists($keys[8], $arr)) $this->setType($arr[$keys[8]]);
         if (array_key_exists($keys[9], $arr)) $this->setGross($arr[$keys[9]]);
         if (array_key_exists($keys[10], $arr)) $this->setGrossCurrency($arr[$keys[10]]);
-        if (array_key_exists($keys[11], $arr)) $this->setGross2($arr[$keys[11]]);
-        if (array_key_exists($keys[12], $arr)) $this->setTax($arr[$keys[12]]);
-        if (array_key_exists($keys[13], $arr)) $this->setDateDue($arr[$keys[13]]);
-        if (array_key_exists($keys[14], $arr)) $this->setNoteBilling($arr[$keys[14]]);
-        if (array_key_exists($keys[15], $arr)) $this->setDatePaid($arr[$keys[15]]);
-        if (array_key_exists($keys[16], $arr)) $this->setNet($arr[$keys[16]]);
-        if (array_key_exists($keys[17], $arr)) $this->setReference($arr[$keys[17]]);
-        if (array_key_exists($keys[18], $arr)) $this->setDateCreation($arr[$keys[18]]);
-        if (array_key_exists($keys[19], $arr)) $this->setDateModification($arr[$keys[19]]);
-        if (array_key_exists($keys[20], $arr)) $this->setIdGroupCreation($arr[$keys[20]]);
-        if (array_key_exists($keys[21], $arr)) $this->setIdCreation($arr[$keys[21]]);
-        if (array_key_exists($keys[22], $arr)) $this->setIdModification($arr[$keys[22]]);
+        if (array_key_exists($keys[11], $arr)) $this->setDefaultCurrency($arr[$keys[11]]);
+        if (array_key_exists($keys[12], $arr)) $this->setGross2($arr[$keys[12]]);
+        if (array_key_exists($keys[13], $arr)) $this->setTax($arr[$keys[13]]);
+        if (array_key_exists($keys[14], $arr)) $this->setDateDue($arr[$keys[14]]);
+        if (array_key_exists($keys[15], $arr)) $this->setNoteBilling($arr[$keys[15]]);
+        if (array_key_exists($keys[16], $arr)) $this->setDatePaid($arr[$keys[16]]);
+        if (array_key_exists($keys[17], $arr)) $this->setNet($arr[$keys[17]]);
+        if (array_key_exists($keys[18], $arr)) $this->setReference($arr[$keys[18]]);
+        if (array_key_exists($keys[19], $arr)) $this->setDateCreation($arr[$keys[19]]);
+        if (array_key_exists($keys[20], $arr)) $this->setDateModification($arr[$keys[20]]);
+        if (array_key_exists($keys[21], $arr)) $this->setIdGroupCreation($arr[$keys[21]]);
+        if (array_key_exists($keys[22], $arr)) $this->setIdCreation($arr[$keys[22]]);
+        if (array_key_exists($keys[23], $arr)) $this->setIdModification($arr[$keys[23]]);
     }
 
     /**
@@ -2317,6 +2399,7 @@ abstract class BaseBilling extends BaseObject implements Persistent
         if ($this->isColumnModified(BillingPeer::TYPE)) $criteria->add(BillingPeer::TYPE, $this->type);
         if ($this->isColumnModified(BillingPeer::GROSS)) $criteria->add(BillingPeer::GROSS, $this->gross);
         if ($this->isColumnModified(BillingPeer::GROSS_CURRENCY)) $criteria->add(BillingPeer::GROSS_CURRENCY, $this->gross_currency);
+        if ($this->isColumnModified(BillingPeer::DEFAULT_CURRENCY)) $criteria->add(BillingPeer::DEFAULT_CURRENCY, $this->default_currency);
         if ($this->isColumnModified(BillingPeer::GROSS_2)) $criteria->add(BillingPeer::GROSS_2, $this->gross_2);
         if ($this->isColumnModified(BillingPeer::TAX)) $criteria->add(BillingPeer::TAX, $this->tax);
         if ($this->isColumnModified(BillingPeer::DATE_DUE)) $criteria->add(BillingPeer::DATE_DUE, $this->date_due);
@@ -2402,6 +2485,7 @@ abstract class BaseBilling extends BaseObject implements Persistent
         $copyObj->setType($this->getType());
         $copyObj->setGross($this->getGross());
         $copyObj->setGrossCurrency($this->getGrossCurrency());
+        $copyObj->setDefaultCurrency($this->getDefaultCurrency());
         $copyObj->setGross2($this->getGross2());
         $copyObj->setTax($this->getTax());
         $copyObj->setDateDue($this->getDateDue());
@@ -2644,6 +2728,58 @@ abstract class BaseBilling extends BaseObject implements Persistent
         }
 
         return $this->aBillingCategory;
+    }
+
+    /**
+     * Declares an association between this object and a Currency object.
+     *
+     * @param                  Currency $v
+     * @return Billing The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setCurrency(Currency $v = null)
+    {
+        if ($v === null) {
+            $this->setDefaultCurrency(NULL);
+        } else {
+            $this->setDefaultCurrency($v->getIdCurrency());
+        }
+
+        $this->aCurrency = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the Currency object, it will not be re-added.
+        if ($v !== null) {
+            $v->addBilling($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated Currency object
+     *
+     * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
+     * @return Currency The associated Currency object.
+     * @throws PropelException
+     */
+    public function getCurrency(PropelPDO $con = null, $doQuery = true)
+    {
+        if ($this->aCurrency === null && ($this->default_currency !== null) && $doQuery) {
+            $this->aCurrency = CurrencyQuery::create()->findPk($this->default_currency, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aCurrency->addBillings($this);
+             */
+        }
+
+        return $this->aCurrency;
     }
 
     /**
@@ -3770,6 +3906,7 @@ abstract class BaseBilling extends BaseObject implements Persistent
         $this->type = null;
         $this->gross = null;
         $this->gross_currency = null;
+        $this->default_currency = null;
         $this->gross_2 = null;
         $this->tax = null;
         $this->date_due = null;
@@ -3829,6 +3966,9 @@ abstract class BaseBilling extends BaseObject implements Persistent
             if ($this->aBillingCategory instanceof Persistent) {
               $this->aBillingCategory->clearAllReferences($deep);
             }
+            if ($this->aCurrency instanceof Persistent) {
+              $this->aCurrency->clearAllReferences($deep);
+            }
             if ($this->aAuthyGroup instanceof Persistent) {
               $this->aAuthyGroup->clearAllReferences($deep);
             }
@@ -3857,6 +3997,7 @@ abstract class BaseBilling extends BaseObject implements Persistent
         $this->aClient = null;
         $this->aProject = null;
         $this->aBillingCategory = null;
+        $this->aCurrency = null;
         $this->aAuthyGroup = null;
         $this->aAuthyRelatedByIdCreation = null;
         $this->aAuthyRelatedByIdModification = null;

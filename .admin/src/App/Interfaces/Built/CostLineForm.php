@@ -128,7 +128,64 @@ class CostLineForm extends CostLine
                 ->leftJoinWith('Project')
                 #default
                 ->leftJoinWith('BillingCategory');
-                
+
+        if($this->searchMs['IdSupplier'] == '_null' || $this->searchMs['IdSupplier'] == '_null') {
+            $q->filterByIdSupplier( null );
+        } else
+        if( isset($this->searchMs['IdSupplier']) ) {
+            $criteria = \Criteria::IN;
+            $value = $this->searchMs['IdSupplier'];
+
+            $q->filterByIdSupplier($value, $criteria);
+        }
+        if( isset($this->searchMs['InvoiceNo']) ) {
+            $criteria = \Criteria::LIKE;
+
+
+            $value = $this->setCriteria($this->searchMs['InvoiceNo'], $criteria);
+
+            $q->filterByInvoiceNo($value, $criteria);
+        }
+        if( isset($this->searchMs['SpendDate']) ) {
+            $criteria = \Criteria::EQUAL;
+
+
+            $value = $this->setCriteria($this->searchMs['SpendDate'], $criteria);
+
+            $q->filterBySpendDate($value, $criteria);
+        }
+        if( isset($this->searchMs['Title']) ) {
+            $criteria = \Criteria::LIKE;
+
+
+            $value = $this->setCriteria($this->searchMs['Title'], $criteria);
+
+            $q->filterByTitle($value, $criteria);
+        }
+        if( isset($this->searchMs['Recuring']) ) {
+            $criteria = \Criteria::EQUAL;
+            $value = $this->searchMs['Recuring'];
+
+            $q->filterByRecuring($value, $criteria);
+        }
+        if($this->searchMs['IdProject'] == '_null' || $this->searchMs['IdProject'] == '_null') {
+            $q->filterByIdProject( null );
+        } else
+        if( isset($this->searchMs['IdProject']) ) {
+            $criteria = \Criteria::EQUAL;
+            $value = $this->searchMs['IdProject'];
+
+            $q->filterByIdProject($value, $criteria);
+        }
+        if($this->searchMs['IdBillingCategory'] == '_null' || $this->searchMs['IdBillingCategory'] == '_null') {
+            $q->filterByIdBillingCategory( null );
+        } else
+        if( isset($this->searchMs['IdBillingCategory']) ) {
+            $criteria = \Criteria::EQUAL;
+            $value = $this->searchMs['IdBillingCategory'];
+
+            $q->filterByIdBillingCategory($value, $criteria);
+        }
                 
         }else{
             if(json_decode($IdParent)){
@@ -209,17 +266,10 @@ class CostLineForm extends CostLine
             case 'head':
                 $trHead = th(_("Title"), " th='sorted' c='Title' title='" . _('Title')."' ")
 .th(_("Supplier"), " th='sorted' c='Supplier.Name' title='"._('Supplier.Name')."' ")
-.th(_("Invoice no."), " th='sorted' c='InvoiceNo' title='" . _('Invoice no.')."' ")
 .th(_("Project"), " th='sorted' c='Project.Name' title='"._('Project.Name')."' ")
 .th(_("Category"), " th='sorted' c='BillingCategory.Name' title='"._('BillingCategory.Name')."' ")
 .th(_("Date"), " th='sorted' c='SpendDate' title='" . _('Date')."' ")
-.th(_("Recuring"), " th='sorted' c='Recuring' title='" . _('Recuring')."' ")
-.th(_("Renewal date"), " th='sorted' c='RenewalDate' title='" . _('Renewal date')."' ")
-.th(_("Quantity"), " th='sorted' c='Quantity' title='" . _('Quantity')."' ")
-.th(_("Amount"), " th='sorted' c='Amount' title='" . _('Amount')."' ")
 .th(_("Total"), " th='sorted' c='Total' title='" . _('Total')."' ")
-.th(_("Add to bill"), " th='sorted' c='Bill' title='" . _('Add to bill')."' ")
-.th(_("Note"), " th='sorted' c='NoteBillingLigne' title='" . _('Note')."' ")
 . $this->cCmoreColsHeader;
                 if(!$this->setReadOnly){
                     $trHead .= th('&nbsp;',' class="actionrow delete" ');
@@ -238,8 +288,20 @@ class CostLineForm extends CostLine
         $this->arrayIdSupplierOptions = $this->selectBoxCostLine_IdSupplier($this, $emptyVar, $data);
         $this->arrayIdProjectOptions = $this->selectBoxCostLine_IdProject($this, $emptyVar, $data);
         $this->arrayIdBillingCategoryOptions = $this->selectBoxCostLine_IdBillingCategory($this, $emptyVar, $data);
-                
-                ;
+                $data = [];
+            
+
+            $trSearch = button(span(_("Show search")),'class="trigger-search button-link-blue"')
+
+            .div(
+                form(div(selectboxCustomArray('IdSupplier[]', $this->arrayIdSupplierOptions, 'Supplier' , "v='ID_SUPPLIER'  s='d' class='select-label js-select-label' multiple size='1'  ", $this->searchMs['IdSupplier'], '', true), '', ' class="ac-search-item multiple-select"').div(input('text', 'InvoiceNo', $this->searchMs['InvoiceNo'], '  placeholder="'._('Invoice no').'"',''),'','class="ac-search-item"').div(input('date', 'SpendDate', $this->searchMs['SpendDate'], '  j="date"  placeholder="'._('Date').'"',''),'','class="ac-search-item"').div(input('text', 'Title', $this->searchMs['Title'], '  placeholder="'._('Title').'"',''),'','class="ac-search-item"').div(selectboxCustomArray('Recuring', array( '0' => array('0'=>_("Once"), '1'=>"Once"),'1' => array('0'=>_("Monthly"), '1'=>"Monthly"),'2' => array('0'=>_("Yearly"), '1'=>"Yearly"), ), _('Recuring'), '  size="1" t="1"   ', $this->searchMs['Recuring']), '', 'class=" ac-search-item"').div(selectboxCustomArray('IdProject', $this->arrayIdProjectOptions, 'Project' , "v='ID_PROJECT'  s='d' ", $this->searchMs['IdProject'], '', true), '', ' class="ac-search-item "').div(selectboxCustomArray('IdBillingCategory', $this->arrayIdBillingCategoryOptions, 'Category' , "v='ID_BILLING_CATEGORY'  s='d' ", $this->searchMs['IdBillingCategory'], '', true), '', ' class="ac-search-item "').$this->hookListSearchTop
+                    .div(
+                       button(span(_("Search")),'id="msCostLineBt" title="'._('Search').'" class="icon search"')
+                       .button(span(_("Clear")),' title="'._('Clear search').'" id="msCostLineBtClear"')
+                       .input('hidden', 'Seq', $data['Seq'] )
+                    ,'','class="ac-search-item ac-action-buttons"')
+                    ,"id='formMsCostLine'")
+            ,"", "  class='msSearchCtnr'");;
                 return $trSearch;
 
             case 'add':
@@ -391,17 +453,10 @@ class CostLineForm extends CostLine
                 $tr .= $hook['tr_before'].tr(
                 td(span((($altValue['Title']) ? $altValue['Title'] : $data->getTitle()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Title' class=''  j='editCostLine'") . 
                 td(span((($altValue['IdSupplier']) ? $altValue['IdSupplier'] : $Supplier_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdSupplier' class=''  j='editCostLine'") . 
-                td(span((($altValue['InvoiceNo']) ? $altValue['InvoiceNo'] : $data->getInvoiceNo()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='InvoiceNo' class=''  j='editCostLine'") . 
                 td(span((($altValue['IdProject']) ? $altValue['IdProject'] : $Project_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdProject' class=''  j='editCostLine'") . 
                 td(span((($altValue['IdBillingCategory']) ? $altValue['IdBillingCategory'] : $BillingCategory_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBillingCategory' class=''  j='editCostLine'") . 
                 td(span((($altValue['SpendDate']) ? $altValue['SpendDate'] : $data->getSpendDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='SpendDate' class=''  j='editCostLine'") . 
-                td(span((($altValue['Recuring']) ? $altValue['Recuring'] : isntPo($data->getRecuring())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Recuring' class='center'  j='editCostLine'") . 
-                td(span((($altValue['RenewalDate']) ? $altValue['RenewalDate'] : $data->getRenewalDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='RenewalDate' class=''  j='editCostLine'") . 
-                td(span((($altValue['Quantity']) ? $altValue['Quantity'] : str_replace(',', '.', $data->getQuantity())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Quantity' class='right'  j='editCostLine'") . 
-                td(span((($altValue['Amount']) ? $altValue['Amount'] : str_replace(',', '.', $data->getAmount())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Amount' class='right'  j='editCostLine'") . 
-                td(span((($altValue['Total']) ? $altValue['Total'] : str_replace(',', '.', $data->getTotal())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Total' class='right'  j='editCostLine'") . 
-                td(span((($altValue['Bill']) ? $altValue['Bill'] : isntPo($data->getBill())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Bill' class='center'  j='editCostLine'") . 
-                td(span((($altValue['NoteBillingLigne']) ? $altValue['NoteBillingLigne'] : substr(strip_tags($data->getNoteBillingLigne()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='NoteBillingLigne' class=''  j='editCostLine'") . $hook['td'].$cCmoreCols.$actionCell
+                td(span((($altValue['Total']) ? $altValue['Total'] : str_replace(',', '.', $data->getTotal())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Total' class='right'  j='editCostLine'") . $hook['td'].$cCmoreCols.$actionCell
                 , " ".$hook['tr']."
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -482,6 +537,40 @@ class CostLineForm extends CostLine
             
             ."
         
+
+    $('#msCostLineBt').click(function() {
+        sw_message('".addslashes(_('Search in progress...'))."',false ,'search-progress', true);
+        $('#msCostLineBt button').attr('disabled', 'disabled');
+
+        $.post('"._SITE_URL.$this->virtualClassName."', {ui: '".$uiTabsId."', ms:$('#formMsCostLine').serialize() },  function(data){
+            $('#".$uiTabsId."').html(data);
+            $('#formMsCostLine .js-select-label').SelectBox();
+            $('#formMsCostLine input[type=text]').first().focus();
+            $('#formMsCostLine input[type=text]').first().putCursorAtEnd();
+            $('#msCostLineBt button').attr('disabled', '');
+            sw_message_remove('search-progress');
+        });
+
+        return false;
+    });
+
+    $('#formMsCostLine').keydown(function(e) {
+        if(e.which == 13) {
+            $('#msCostLineBt').click();
+        }
+    });
+
+    $('#msCostLineBtClear').bind('click', function (){
+        sw_message('".addslashes(_('Search cleared...'))."', false,'search-reset', true);
+
+        $.post('"._SITE_URL.$this->virtualClassName."', {ui: '".$uiTabsId."', ms:'clear' },  function(data){
+                $('#".$uiTabsId."').html(data);
+                $('#formMsCostLine input[type=text]:first-of-type').focus().putCursorAtEnd();
+                sw_message_remove('search-reset');
+        });
+
+        return false;
+    });
         
         
         $('#tabsContain .js-select-label').SelectBox();

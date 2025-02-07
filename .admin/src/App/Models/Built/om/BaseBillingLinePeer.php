@@ -636,7 +636,7 @@ abstract class BaseBillingLinePeer
             $con = Propel::getConnection(BillingLinePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
-        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_CREATION, $join_behavior);
+        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_AUTHY, $join_behavior);
 
         $stmt = BasePeer::doCount($criteria, $con);
 
@@ -995,7 +995,7 @@ abstract class BaseBillingLinePeer
         $startcol = BillingLinePeer::NUM_HYDRATE_COLUMNS;
         AuthyPeer::addSelectColumns($criteria);
 
-        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_CREATION, $join_behavior);
+        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_AUTHY, $join_behavior);
 
         $stmt = BasePeer::doSelect($criteria, $con);
         $results = array();
@@ -1413,7 +1413,7 @@ abstract class BaseBillingLinePeer
 
         $criteria->addJoin(BillingLinePeer::ID_BILLING, BillingPeer::ID_BILLING, $join_behavior);
 
-        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_CREATION, $join_behavior);
+        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_AUTHY, $join_behavior);
 
         $criteria->addJoin(BillingLinePeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
 
@@ -1482,7 +1482,7 @@ abstract class BaseBillingLinePeer
 
         $criteria->addJoin(BillingLinePeer::ID_BILLING, BillingPeer::ID_BILLING, $join_behavior);
 
-        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_CREATION, $join_behavior);
+        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_AUTHY, $join_behavior);
 
         $criteria->addJoin(BillingLinePeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
 
@@ -1681,7 +1681,7 @@ abstract class BaseBillingLinePeer
             $con = Propel::getConnection(BillingLinePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
-        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_CREATION, $join_behavior);
+        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_AUTHY, $join_behavior);
 
         $criteria->addJoin(BillingLinePeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
 
@@ -1801,7 +1801,7 @@ abstract class BaseBillingLinePeer
 
         $criteria->addJoin(BillingLinePeer::ID_BILLING, BillingPeer::ID_BILLING, $join_behavior);
 
-        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_CREATION, $join_behavior);
+        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_AUTHY, $join_behavior);
 
         $criteria->addJoin(BillingLinePeer::ID_BILLING_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
 
@@ -1862,7 +1862,7 @@ abstract class BaseBillingLinePeer
 
         $criteria->addJoin(BillingLinePeer::ID_BILLING, BillingPeer::ID_BILLING, $join_behavior);
 
-        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_CREATION, $join_behavior);
+        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_AUTHY, $join_behavior);
 
         $criteria->addJoin(BillingLinePeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
 
@@ -1923,7 +1923,7 @@ abstract class BaseBillingLinePeer
 
         $criteria->addJoin(BillingLinePeer::ID_BILLING, BillingPeer::ID_BILLING, $join_behavior);
 
-        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_CREATION, $join_behavior);
+        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_AUTHY, $join_behavior);
 
         $criteria->addJoin(BillingLinePeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
 
@@ -2102,7 +2102,7 @@ abstract class BaseBillingLinePeer
         AuthyPeer::addSelectColumns($criteria);
         $startcol8 = $startcol7 + AuthyPeer::NUM_HYDRATE_COLUMNS;
 
-        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_CREATION, $join_behavior);
+        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_AUTHY, $join_behavior);
 
         $criteria->addJoin(BillingLinePeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
 
@@ -2444,7 +2444,7 @@ abstract class BaseBillingLinePeer
 
         $criteria->addJoin(BillingLinePeer::ID_BILLING, BillingPeer::ID_BILLING, $join_behavior);
 
-        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_CREATION, $join_behavior);
+        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_AUTHY, $join_behavior);
 
         $criteria->addJoin(BillingLinePeer::ID_BILLING_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
 
@@ -2638,7 +2638,7 @@ abstract class BaseBillingLinePeer
 
         $criteria->addJoin(BillingLinePeer::ID_BILLING, BillingPeer::ID_BILLING, $join_behavior);
 
-        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_CREATION, $join_behavior);
+        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_AUTHY, $join_behavior);
 
         $criteria->addJoin(BillingLinePeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
 
@@ -2832,7 +2832,7 @@ abstract class BaseBillingLinePeer
 
         $criteria->addJoin(BillingLinePeer::ID_BILLING, BillingPeer::ID_BILLING, $join_behavior);
 
-        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_CREATION, $join_behavior);
+        $criteria->addJoin(BillingLinePeer::ID_ASSIGN, AuthyPeer::ID_AUTHY, $join_behavior);
 
         $criteria->addJoin(BillingLinePeer::ID_PROJECT, ProjectPeer::ID_PROJECT, $join_behavior);
 

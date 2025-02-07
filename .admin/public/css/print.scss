@@ -19,7 +19,6 @@
      page-break-after: avoid;
  }
 
- table,
  figure,
  .no-break {
      page-break-inside: avoid;
@@ -59,7 +58,7 @@ table {
 }
 
 .header{
-    padding: 20px;
+    padding: 20px 0;
 
     img{
         max-width: 220px;
@@ -99,6 +98,7 @@ table {
 tr.item td {
     padding:10px;
     font-weight: 600;
+
 }
 
 tr.item td p{
@@ -118,7 +118,7 @@ tr.item td p{
     td{
         text-align: right;
         padding: 10px;
-        font-weight: 600;
+        font-weight: bold;
         padding-bottom:0px;
     }
 }
@@ -149,4 +149,8 @@ tr.item td p{
 
 sup {
     font-size: 10px;
+}
+
+.client-header .address p{
+    line-height: normal;
 }

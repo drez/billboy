@@ -2,8 +2,19 @@
     myproject1:
     {
     "client('Client')": {
-            set_menu_priority: 1,
-            "with_child_tables": ["billing"],
+      set_menu_priority: 1,
+      "with_child_tables": ["billing"],
+      "set_child_colunms":{"default_user":["fullname"]},
+      "add_tab_columns": { "Default":"default_rate"},
+      "set_list_hide_columns":[
+        "phone_work", "ext", "email2", "phone_mobile", "website", "address_1", "address_2", "address_3", "zip"
+        "default_rate", "default_user", "default_category", "default_currency",],
+      add_search_columns:{
+          "Name": [["name", "%val", "multiple"]], 
+          "Country": [["id_country", "%val", "multiple"]], 
+          "Phone": [["phone", "%val"]], 
+          "Email": [["email", "%val"]]
+          },
 
 			"id_client()": ["primary()"],
 			"name('Name')": ["varchar(100)"],
@@ -20,6 +31,11 @@
 			"address_2('Address 2')": ["longvarchar()"],
 			"address_3('Address 3')": ["longvarchar()"],
 			"zip('Zip')": ["varchar(12)"],
+
+      "default_rate('Rate')": ["decimal(8, 2)"],
+      "default_user('User')": ["integer()","foreign(authy)",'not-required', 'default:null',"foreign:id_authy"],
+      "default_category('Category')": ["integer()","foreign(billing_category)",'not-required', 'default:null',"foreign:id_billing_category"],
+      "default_currency('Currency')": ["integer()","foreign(currency)",'not-required', 'default:null',"foreign:id_currency"],
 			
 			"validator": {
         "phone":{"unique":{"msg":"client_phone_not_unique"},
@@ -35,7 +51,13 @@
         "add_child_search_columns":{ "billing_line":{"Assigned to": [["id_assign", "%val"]]} },
         "add_tab_columns": {"Note":"note_billing", "Payment":"date_paid"},
         is_wysiwyg_colunms: ["note_billing"],
-        add_search_columns:{"Type": [["type", "%val", "multiple"]], "Client": [["id_client", "%val", "multiple"]], "Date": [["date", "%val"]], "Title": [["title", "%val"]], "State": [["state", "%val", "multiple"]],},
+        add_search_columns:{
+          "Type": [["type", "%val", "multiple"]], 
+          "Client": [["id_client", "%val", "multiple"]], 
+          "Date": [["date", "%val"]], 
+          "Title": [["title", "%val"]], 
+          "State": [["state", "%val", "multiple"]],
+        },
         "set_readonly_columns":["gross", "tax"],
         "set_list_hide_columns":["note_billing", "reference", "tax", "id_billing_category"],
         set_order_list_columns:[["date", "DESC"]],
@@ -56,7 +78,8 @@
 			//"id_project('Project')": ["integer()","foreign(project)",null,"foreign:id_project"],
 			"type('Type')": ["enum(Quote, Bill)",'required', "default:'Bill'"],
 			"gross('Gross')": ["decimal(8, 2)"],
-      "gross_currency('Currency')": ["enum( CAD, AUS, SGD)",'not-required', 'default:null'],
+      "gross_currency('')": ["enum( CAD, AUS, SGD)",'not-required', 'default:null'],
+      "default_currency('Currency')": ["integer()","foreign(currency)",'not-required', 'default:null',"foreign:id_currency"],
 			"gross_2('Gross')": ["decimal(8, 2)"],
 
 			"tax('Tax')": ["decimal(8, 2)"],
@@ -84,7 +107,7 @@
 			"id_billing_line()": ["primary()"],
 			"id_billing()": ["integer()","foreign(billing)","onDelete:cascade","foreign:id_billing"],
 			"calc_id()": ["varchar(20)"],
-			"id_assign('Assigned to')": ["integer()","foreign(authy)",'not-required', 'default:null',"foreign:id_creation"],
+			"id_assign('Assigned to')": ["integer()","foreign(authy)",'not-required', 'default:null',"foreign:id_authy"],
 			//"prod_id('Produit')": ["integer()","foreign(product)","onDelete:restrict","foreign:id_product"],
 			"id_project('Project')": ["integer()","foreign(project)",'not-required', 'default:null',"foreign:id_project"],
 			"title('Title')": ["varchar(100)"],
@@ -133,6 +156,16 @@
       "set_parent_table": 'billing',
       "set_readonly_columns":["total"],
 			set_menu_priority: 1,
+      "set_list_hide_columns":["invoice_no", "recuring", "renewal_date", "quantity", "amount", "bill", "note_billing_ligne"],
+      add_search_columns:{
+        "Supplier": [["id_supplier", "%val", "multiple"]], 
+        "Invoice no": [["invoice_no", "%val"]],
+        "Date": [["spend_date", "%val"]], 
+        "Title": [["title", "%val"]], 
+        "Recuring": [["recuring", "%val"]],
+        "Project": [["id_project", "%val"]],
+        "Category": [["id_billing_category", "%val"]],
+      },
 
 			"id_cost_line()": ["primary()"],
 			"id_billing()": ["integer()","foreign(billing)","onDelete:cascade","foreign:id_billing",'not-required', 'default:null'],
@@ -206,9 +239,16 @@
 			
 			"validator": {"amount":{"required":{"msg":"time_line_amount_required"}}},
 		},
-        "billing_category('Category billing')": {
-            set_parent_menu:"Settings",
+    "billing_category('Category billing')": {
+      set_parent_menu:"Settings",
 			"id_billing_category()": ["primary()"],
+			"name('Name')": ["varchar(100)"],
+			
+			"validator": {"name":{"required":{"msg":"name_required","value":null}}},
+		},
+    "currency('Currency')": {
+      set_parent_menu:"Settings",
+			"id_currency()": ["primary()"],
 			"name('Name')": ["varchar(100)"],
 			
 			"validator": {"name":{"required":{"msg":"name_required","value":null}}},

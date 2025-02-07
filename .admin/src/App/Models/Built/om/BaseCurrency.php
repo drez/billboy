@@ -19,33 +19,33 @@ use App\Authy;
 use App\AuthyGroup;
 use App\AuthyGroupQuery;
 use App\AuthyQuery;
+use App\Billing;
+use App\BillingQuery;
 use App\Client;
 use App\ClientQuery;
-use App\Country;
-use App\CountryPeer;
-use App\CountryQuery;
-use App\Supplier;
-use App\SupplierQuery;
+use App\Currency;
+use App\CurrencyPeer;
+use App\CurrencyQuery;
 
 /**
- * Base class that represents a row from the 'country' table.
+ * Base class that represents a row from the 'currency' table.
  *
- * Country
+ * Currency
  *
  * @package    propel.generator..om
  */
-abstract class BaseCountry extends BaseObject implements Persistent
+abstract class BaseCurrency extends BaseObject implements Persistent
 {
     /**
      * Peer class name
      */
-    const PEER = 'App\\CountryPeer';
+    const PEER = 'App\\CurrencyPeer';
 
     /**
      * The Peer class.
      * Instance provides a convenient way of calling static methods on a class
      * that calling code may not be able to identify.
-     * @var        CountryPeer
+     * @var        CurrencyPeer
      */
     protected static $peer;
 
@@ -56,40 +56,16 @@ abstract class BaseCountry extends BaseObject implements Persistent
     protected $startCopy = false;
 
     /**
-     * The value for the id_country field.
+     * The value for the id_currency field.
      * @var        int
      */
-    protected $id_country;
+    protected $id_currency;
 
     /**
      * The value for the name field.
      * @var        string
      */
     protected $name;
-
-    /**
-     * The value for the code field.
-     * @var        string
-     */
-    protected $code;
-
-    /**
-     * The value for the timezone field.
-     * @var        string
-     */
-    protected $timezone;
-
-    /**
-     * The value for the timezone_code field.
-     * @var        string
-     */
-    protected $timezone_code;
-
-    /**
-     * The value for the priority field.
-     * @var        int
-     */
-    protected $priority;
 
     /**
      * The value for the date_creation field.
@@ -143,10 +119,10 @@ abstract class BaseCountry extends BaseObject implements Persistent
     protected $collClientsPartial;
 
     /**
-     * @var        PropelObjectCollection|Supplier[] Collection to store aggregation of Supplier objects.
+     * @var        PropelObjectCollection|Billing[] Collection to store aggregation of Billing objects.
      */
-    protected $collSuppliers;
-    protected $collSuppliersPartial;
+    protected $collBillings;
+    protected $collBillingsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -178,18 +154,18 @@ abstract class BaseCountry extends BaseObject implements Persistent
      * An array of objects scheduled for deletion.
      * @var		PropelObjectCollection
      */
-    protected $suppliersScheduledForDeletion = null;
+    protected $billingsScheduledForDeletion = null;
 
     /**
      * @Field()
-     * Get the [id_country] column value.
+     * Get the [id_currency] column value.
      *
      * @return int
      */
-    public function getIdCountry()
+    public function getIdCurrency()
     {
 
-        return $this->id_country;
+        return $this->id_currency;
     }
 
     /**
@@ -202,54 +178,6 @@ abstract class BaseCountry extends BaseObject implements Persistent
     {
 
         return $this->name;
-    }
-
-    /**
-     * @Field()
-     * Get the [code] column value.
-     * Code
-     * @return string
-     */
-    public function getCode()
-    {
-
-        return $this->code;
-    }
-
-    /**
-     * @Field()
-     * Get the [timezone] column value.
-     * Timezone
-     * @return string
-     */
-    public function getTimezone()
-    {
-
-        return $this->timezone;
-    }
-
-    /**
-     * @Field()
-     * Get the [timezone_code] column value.
-     * Timezone code
-     * @return string
-     */
-    public function getTimezoneCode()
-    {
-
-        return $this->timezone_code;
-    }
-
-    /**
-     * @Field()
-     * Get the [priority] column value.
-     * Priority
-     * @return int
-     */
-    public function getPriority()
-    {
-
-        return $this->priority;
     }
 
     /**
@@ -371,31 +299,31 @@ abstract class BaseCountry extends BaseObject implements Persistent
     }
 
     /**
-     * Set the value of [id_country] column.
+     * Set the value of [id_currency] column.
      *
      * @param  int $v new value
-     * @return Country The current object (for fluent API support)
+     * @return Currency The current object (for fluent API support)
      */
-    public function setIdCountry($v)
+    public function setIdCurrency($v)
     {
         if ($v !== null && is_numeric($v)) {
             $v = (int) $v;
         }
 
-        if ($this->id_country !== $v) {
-            $this->id_country = $v;
-            $this->modifiedColumns[] = CountryPeer::ID_COUNTRY;
+        if ($this->id_currency !== $v) {
+            $this->id_currency = $v;
+            $this->modifiedColumns[] = CurrencyPeer::ID_CURRENCY;
         }
 
 
         return $this;
-    } // setIdCountry()
+    } // setIdCurrency()
 
     /**
      * Set the value of [name] column.
      * Name
      * @param  string $v new value
-     * @return Country The current object (for fluent API support)
+     * @return Currency The current object (for fluent API support)
      */
     public function setName($v)
     {
@@ -405,7 +333,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
 
         if ($this->name !== $v) {
             $this->name = $v;
-            $this->modifiedColumns[] = CountryPeer::NAME;
+            $this->modifiedColumns[] = CurrencyPeer::NAME;
         }
 
 
@@ -413,95 +341,11 @@ abstract class BaseCountry extends BaseObject implements Persistent
     } // setName()
 
     /**
-     * Set the value of [code] column.
-     * Code
-     * @param  string $v new value
-     * @return Country The current object (for fluent API support)
-     */
-    public function setCode($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->code !== $v) {
-            $this->code = $v;
-            $this->modifiedColumns[] = CountryPeer::CODE;
-        }
-
-
-        return $this;
-    } // setCode()
-
-    /**
-     * Set the value of [timezone] column.
-     * Timezone
-     * @param  string $v new value
-     * @return Country The current object (for fluent API support)
-     */
-    public function setTimezone($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->timezone !== $v) {
-            $this->timezone = $v;
-            $this->modifiedColumns[] = CountryPeer::TIMEZONE;
-        }
-
-
-        return $this;
-    } // setTimezone()
-
-    /**
-     * Set the value of [timezone_code] column.
-     * Timezone code
-     * @param  string $v new value
-     * @return Country The current object (for fluent API support)
-     */
-    public function setTimezoneCode($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->timezone_code !== $v) {
-            $this->timezone_code = $v;
-            $this->modifiedColumns[] = CountryPeer::TIMEZONE_CODE;
-        }
-
-
-        return $this;
-    } // setTimezoneCode()
-
-    /**
-     * Set the value of [priority] column.
-     * Priority
-     * @param  int $v new value
-     * @return Country The current object (for fluent API support)
-     */
-    public function setPriority($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (int) $v;
-        }
-
-        if ($this->priority !== $v) {
-            $this->priority = $v;
-            $this->modifiedColumns[] = CountryPeer::PRIORITY;
-        }
-
-
-        return $this;
-    } // setPriority()
-
-    /**
      * Sets the value of [date_creation] column to a normalized version of the date/time value specified.
      *
      * @param mixed $v string, integer (timestamp), or DateTime value.
      *               Empty strings are treated as null.
-     * @return Country The current object (for fluent API support)
+     * @return Currency The current object (for fluent API support)
      */
     public function setDateCreation($v)
     {
@@ -511,7 +355,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
             $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
             if ($currentDateAsString !== $newDateAsString) {
                 $this->date_creation = $newDateAsString;
-                $this->modifiedColumns[] = CountryPeer::DATE_CREATION;
+                $this->modifiedColumns[] = CurrencyPeer::DATE_CREATION;
             }
         } // if either are not null
 
@@ -524,7 +368,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
      *
      * @param mixed $v string, integer (timestamp), or DateTime value.
      *               Empty strings are treated as null.
-     * @return Country The current object (for fluent API support)
+     * @return Currency The current object (for fluent API support)
      */
     public function setDateModification($v)
     {
@@ -534,7 +378,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
             $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
             if ($currentDateAsString !== $newDateAsString) {
                 $this->date_modification = $newDateAsString;
-                $this->modifiedColumns[] = CountryPeer::DATE_MODIFICATION;
+                $this->modifiedColumns[] = CurrencyPeer::DATE_MODIFICATION;
             }
         } // if either are not null
 
@@ -546,7 +390,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
      * Set the value of [id_group_creation] column.
      *
      * @param  int $v new value
-     * @return Country The current object (for fluent API support)
+     * @return Currency The current object (for fluent API support)
      */
     public function setIdGroupCreation($v)
     {
@@ -556,7 +400,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
 
         if ($this->id_group_creation !== $v) {
             $this->id_group_creation = $v;
-            $this->modifiedColumns[] = CountryPeer::ID_GROUP_CREATION;
+            $this->modifiedColumns[] = CurrencyPeer::ID_GROUP_CREATION;
         }
 
         if ($this->aAuthyGroup !== null && $this->aAuthyGroup->getIdAuthyGroup() !== $v) {
@@ -571,7 +415,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
      * Set the value of [id_creation] column.
      *
      * @param  int $v new value
-     * @return Country The current object (for fluent API support)
+     * @return Currency The current object (for fluent API support)
      */
     public function setIdCreation($v)
     {
@@ -581,7 +425,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
 
         if ($this->id_creation !== $v) {
             $this->id_creation = $v;
-            $this->modifiedColumns[] = CountryPeer::ID_CREATION;
+            $this->modifiedColumns[] = CurrencyPeer::ID_CREATION;
         }
 
         if ($this->aAuthyRelatedByIdCreation !== null && $this->aAuthyRelatedByIdCreation->getIdAuthy() !== $v) {
@@ -596,7 +440,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
      * Set the value of [id_modification] column.
      *
      * @param  int $v new value
-     * @return Country The current object (for fluent API support)
+     * @return Currency The current object (for fluent API support)
      */
     public function setIdModification($v)
     {
@@ -606,7 +450,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
 
         if ($this->id_modification !== $v) {
             $this->id_modification = $v;
-            $this->modifiedColumns[] = CountryPeer::ID_MODIFICATION;
+            $this->modifiedColumns[] = CurrencyPeer::ID_MODIFICATION;
         }
 
         if ($this->aAuthyRelatedByIdModification !== null && $this->aAuthyRelatedByIdModification->getIdAuthy() !== $v) {
@@ -649,17 +493,13 @@ abstract class BaseCountry extends BaseObject implements Persistent
     {
         try {
 
-            $this->id_country = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
+            $this->id_currency = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
             $this->name = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-            $this->code = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-            $this->timezone = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-            $this->timezone_code = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-            $this->priority = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-            $this->date_creation = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-            $this->date_modification = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
-            $this->id_group_creation = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
-            $this->id_creation = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
-            $this->id_modification = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
+            $this->date_creation = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+            $this->date_modification = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+            $this->id_group_creation = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
+            $this->id_creation = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
+            $this->id_modification = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -669,10 +509,10 @@ abstract class BaseCountry extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 11; // 11 = CountryPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = CurrencyPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating Country object", $e);
+            throw new PropelException("Error populating Currency object", $e);
         }
     }
 
@@ -724,13 +564,13 @@ abstract class BaseCountry extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(CountryPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(CurrencyPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $stmt = CountryPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+        $stmt = CurrencyPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
         $row = $stmt->fetch(PDO::FETCH_NUM);
         $stmt->closeCursor();
         if (!$row) {
@@ -745,7 +585,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
             $this->aAuthyRelatedByIdModification = null;
             $this->collClients = null;
 
-            $this->collSuppliers = null;
+            $this->collBillings = null;
 
         } // if (deep)
     }
@@ -767,12 +607,12 @@ abstract class BaseCountry extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(CountryPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(CurrencyPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = CountryQuery::create()
+            $deleteQuery = CurrencyQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -810,7 +650,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(CountryPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(CurrencyPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
@@ -850,7 +690,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                CountryPeer::addInstanceToPool($this);
+                CurrencyPeer::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -919,9 +759,10 @@ abstract class BaseCountry extends BaseObject implements Persistent
 
             if ($this->clientsScheduledForDeletion !== null) {
                 if (!$this->clientsScheduledForDeletion->isEmpty()) {
-                    ClientQuery::create()
-                        ->filterByPrimaryKeys($this->clientsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
+                    foreach ($this->clientsScheduledForDeletion as $client) {
+                        // need to save related object because we set the relation to null
+                        $client->save($con);
+                    }
                     $this->clientsScheduledForDeletion = null;
                 }
             }
@@ -934,17 +775,18 @@ abstract class BaseCountry extends BaseObject implements Persistent
                 }
             }
 
-            if ($this->suppliersScheduledForDeletion !== null) {
-                if (!$this->suppliersScheduledForDeletion->isEmpty()) {
-                    SupplierQuery::create()
-                        ->filterByPrimaryKeys($this->suppliersScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->suppliersScheduledForDeletion = null;
+            if ($this->billingsScheduledForDeletion !== null) {
+                if (!$this->billingsScheduledForDeletion->isEmpty()) {
+                    foreach ($this->billingsScheduledForDeletion as $billing) {
+                        // need to save related object because we set the relation to null
+                        $billing->save($con);
+                    }
+                    $this->billingsScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collSuppliers !== null) {
-                foreach ($this->collSuppliers as $referrerFK) {
+            if ($this->collBillings !== null) {
+                foreach ($this->collBillings as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -971,48 +813,36 @@ abstract class BaseCountry extends BaseObject implements Persistent
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[] = CountryPeer::ID_COUNTRY;
-        if (null !== $this->id_country) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . CountryPeer::ID_COUNTRY . ')');
+        $this->modifiedColumns[] = CurrencyPeer::ID_CURRENCY;
+        if (null !== $this->id_currency) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . CurrencyPeer::ID_CURRENCY . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(CountryPeer::ID_COUNTRY)) {
-            $modifiedColumns[':p' . $index++]  = '`id_country`';
+        if ($this->isColumnModified(CurrencyPeer::ID_CURRENCY)) {
+            $modifiedColumns[':p' . $index++]  = '`id_currency`';
         }
-        if ($this->isColumnModified(CountryPeer::NAME)) {
+        if ($this->isColumnModified(CurrencyPeer::NAME)) {
             $modifiedColumns[':p' . $index++]  = '`name`';
         }
-        if ($this->isColumnModified(CountryPeer::CODE)) {
-            $modifiedColumns[':p' . $index++]  = '`code`';
-        }
-        if ($this->isColumnModified(CountryPeer::TIMEZONE)) {
-            $modifiedColumns[':p' . $index++]  = '`timezone`';
-        }
-        if ($this->isColumnModified(CountryPeer::TIMEZONE_CODE)) {
-            $modifiedColumns[':p' . $index++]  = '`timezone_code`';
-        }
-        if ($this->isColumnModified(CountryPeer::PRIORITY)) {
-            $modifiedColumns[':p' . $index++]  = '`priority`';
-        }
-        if ($this->isColumnModified(CountryPeer::DATE_CREATION)) {
+        if ($this->isColumnModified(CurrencyPeer::DATE_CREATION)) {
             $modifiedColumns[':p' . $index++]  = '`date_creation`';
         }
-        if ($this->isColumnModified(CountryPeer::DATE_MODIFICATION)) {
+        if ($this->isColumnModified(CurrencyPeer::DATE_MODIFICATION)) {
             $modifiedColumns[':p' . $index++]  = '`date_modification`';
         }
-        if ($this->isColumnModified(CountryPeer::ID_GROUP_CREATION)) {
+        if ($this->isColumnModified(CurrencyPeer::ID_GROUP_CREATION)) {
             $modifiedColumns[':p' . $index++]  = '`id_group_creation`';
         }
-        if ($this->isColumnModified(CountryPeer::ID_CREATION)) {
+        if ($this->isColumnModified(CurrencyPeer::ID_CREATION)) {
             $modifiedColumns[':p' . $index++]  = '`id_creation`';
         }
-        if ($this->isColumnModified(CountryPeer::ID_MODIFICATION)) {
+        if ($this->isColumnModified(CurrencyPeer::ID_MODIFICATION)) {
             $modifiedColumns[':p' . $index++]  = '`id_modification`';
         }
 
         $sql = sprintf(
-            'INSERT INTO `country` (%s) VALUES (%s)',
+            'INSERT INTO `currency` (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -1021,23 +851,11 @@ abstract class BaseCountry extends BaseObject implements Persistent
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case '`id_country`':
-                        $stmt->bindValue($identifier, $this->id_country, PDO::PARAM_INT);
+                    case '`id_currency`':
+                        $stmt->bindValue($identifier, $this->id_currency, PDO::PARAM_INT);
                         break;
                     case '`name`':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
-                        break;
-                    case '`code`':
-                        $stmt->bindValue($identifier, $this->code, PDO::PARAM_STR);
-                        break;
-                    case '`timezone`':
-                        $stmt->bindValue($identifier, $this->timezone, PDO::PARAM_STR);
-                        break;
-                    case '`timezone_code`':
-                        $stmt->bindValue($identifier, $this->timezone_code, PDO::PARAM_STR);
-                        break;
-                    case '`priority`':
-                        $stmt->bindValue($identifier, $this->priority, PDO::PARAM_INT);
                         break;
                     case '`date_creation`':
                         $stmt->bindValue($identifier, $this->date_creation, PDO::PARAM_STR);
@@ -1067,7 +885,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
         } catch (Exception $e) {
             throw new PropelException('Unable to get autoincrement id.', $e);
         }
-        $this->setIdCountry($pk);
+        $this->setIdCurrency($pk);
 
         $this->setNew(false);
     }
@@ -1172,7 +990,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
             }
 
 
-            if (($retval = CountryPeer::doValidate($this, $columns)) !== true) {
+            if (($retval = CurrencyPeer::doValidate($this, $columns)) !== true) {
                 $failureMap = array_merge($failureMap, $retval);
             }
 
@@ -1185,8 +1003,8 @@ abstract class BaseCountry extends BaseObject implements Persistent
                     }
                 }
 
-                if ($this->collSuppliers !== null) {
-                    foreach ($this->collSuppliers as $referrerFK) {
+                if ($this->collBillings !== null) {
+                    foreach ($this->collBillings as $referrerFK) {
                         if (!$referrerFK->validate($columns)) {
                             $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
                         }
@@ -1212,7 +1030,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
      */
     public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = CountryPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = CurrencyPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1235,23 +1053,19 @@ abstract class BaseCountry extends BaseObject implements Persistent
      */
     public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['Country'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['Currency'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Country'][$this->getPrimaryKey()] = true;
-        $keys = CountryPeer::getFieldNames($keyType);
+        $alreadyDumpedObjects['Currency'][$this->getPrimaryKey()] = true;
+        $keys = CurrencyPeer::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getIdCountry(),
+            $keys[0] => $this->getIdCurrency(),
             $keys[1] => $this->getName(),
-            $keys[2] => $this->getCode(),
-            $keys[3] => $this->getTimezone(),
-            $keys[4] => $this->getTimezoneCode(),
-            $keys[5] => $this->getPriority(),
-            $keys[6] => $this->getDateCreation(),
-            $keys[7] => $this->getDateModification(),
-            $keys[8] => $this->getIdGroupCreation(),
-            $keys[9] => $this->getIdCreation(),
-            $keys[10] => $this->getIdModification(),
+            $keys[2] => $this->getDateCreation(),
+            $keys[3] => $this->getDateModification(),
+            $keys[4] => $this->getIdGroupCreation(),
+            $keys[5] => $this->getIdCreation(),
+            $keys[6] => $this->getIdModification(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1271,8 +1085,8 @@ abstract class BaseCountry extends BaseObject implements Persistent
             if (null !== $this->collClients) {
                 $result['Clients'] = $this->collClients->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->collSuppliers) {
-                $result['Suppliers'] = $this->collSuppliers->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            if (null !== $this->collBillings) {
+                $result['Billings'] = $this->collBillings->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1292,7 +1106,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
      */
     public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = CountryPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = CurrencyPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 
         $this->setByPosition($pos, $value);
     }
@@ -1309,36 +1123,24 @@ abstract class BaseCountry extends BaseObject implements Persistent
     {
         switch ($pos) {
             case 0:
-                $this->setIdCountry($value);
+                $this->setIdCurrency($value);
                 break;
             case 1:
                 $this->setName($value);
                 break;
             case 2:
-                $this->setCode($value);
-                break;
-            case 3:
-                $this->setTimezone($value);
-                break;
-            case 4:
-                $this->setTimezoneCode($value);
-                break;
-            case 5:
-                $this->setPriority($value);
-                break;
-            case 6:
                 $this->setDateCreation($value);
                 break;
-            case 7:
+            case 3:
                 $this->setDateModification($value);
                 break;
-            case 8:
+            case 4:
                 $this->setIdGroupCreation($value);
                 break;
-            case 9:
+            case 5:
                 $this->setIdCreation($value);
                 break;
-            case 10:
+            case 6:
                 $this->setIdModification($value);
                 break;
         } // switch()
@@ -1363,19 +1165,15 @@ abstract class BaseCountry extends BaseObject implements Persistent
      */
     public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
     {
-        $keys = CountryPeer::getFieldNames($keyType);
+        $keys = CurrencyPeer::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setIdCountry($arr[$keys[0]]);
+        if (array_key_exists($keys[0], $arr)) $this->setIdCurrency($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setCode($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setTimezone($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setTimezoneCode($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setPriority($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setDateCreation($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setDateModification($arr[$keys[7]]);
-        if (array_key_exists($keys[8], $arr)) $this->setIdGroupCreation($arr[$keys[8]]);
-        if (array_key_exists($keys[9], $arr)) $this->setIdCreation($arr[$keys[9]]);
-        if (array_key_exists($keys[10], $arr)) $this->setIdModification($arr[$keys[10]]);
+        if (array_key_exists($keys[2], $arr)) $this->setDateCreation($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setDateModification($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setIdGroupCreation($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setIdCreation($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setIdModification($arr[$keys[6]]);
     }
 
     /**
@@ -1385,19 +1183,15 @@ abstract class BaseCountry extends BaseObject implements Persistent
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(CountryPeer::DATABASE_NAME);
+        $criteria = new Criteria(CurrencyPeer::DATABASE_NAME);
 
-        if ($this->isColumnModified(CountryPeer::ID_COUNTRY)) $criteria->add(CountryPeer::ID_COUNTRY, $this->id_country);
-        if ($this->isColumnModified(CountryPeer::NAME)) $criteria->add(CountryPeer::NAME, $this->name);
-        if ($this->isColumnModified(CountryPeer::CODE)) $criteria->add(CountryPeer::CODE, $this->code);
-        if ($this->isColumnModified(CountryPeer::TIMEZONE)) $criteria->add(CountryPeer::TIMEZONE, $this->timezone);
-        if ($this->isColumnModified(CountryPeer::TIMEZONE_CODE)) $criteria->add(CountryPeer::TIMEZONE_CODE, $this->timezone_code);
-        if ($this->isColumnModified(CountryPeer::PRIORITY)) $criteria->add(CountryPeer::PRIORITY, $this->priority);
-        if ($this->isColumnModified(CountryPeer::DATE_CREATION)) $criteria->add(CountryPeer::DATE_CREATION, $this->date_creation);
-        if ($this->isColumnModified(CountryPeer::DATE_MODIFICATION)) $criteria->add(CountryPeer::DATE_MODIFICATION, $this->date_modification);
-        if ($this->isColumnModified(CountryPeer::ID_GROUP_CREATION)) $criteria->add(CountryPeer::ID_GROUP_CREATION, $this->id_group_creation);
-        if ($this->isColumnModified(CountryPeer::ID_CREATION)) $criteria->add(CountryPeer::ID_CREATION, $this->id_creation);
-        if ($this->isColumnModified(CountryPeer::ID_MODIFICATION)) $criteria->add(CountryPeer::ID_MODIFICATION, $this->id_modification);
+        if ($this->isColumnModified(CurrencyPeer::ID_CURRENCY)) $criteria->add(CurrencyPeer::ID_CURRENCY, $this->id_currency);
+        if ($this->isColumnModified(CurrencyPeer::NAME)) $criteria->add(CurrencyPeer::NAME, $this->name);
+        if ($this->isColumnModified(CurrencyPeer::DATE_CREATION)) $criteria->add(CurrencyPeer::DATE_CREATION, $this->date_creation);
+        if ($this->isColumnModified(CurrencyPeer::DATE_MODIFICATION)) $criteria->add(CurrencyPeer::DATE_MODIFICATION, $this->date_modification);
+        if ($this->isColumnModified(CurrencyPeer::ID_GROUP_CREATION)) $criteria->add(CurrencyPeer::ID_GROUP_CREATION, $this->id_group_creation);
+        if ($this->isColumnModified(CurrencyPeer::ID_CREATION)) $criteria->add(CurrencyPeer::ID_CREATION, $this->id_creation);
+        if ($this->isColumnModified(CurrencyPeer::ID_MODIFICATION)) $criteria->add(CurrencyPeer::ID_MODIFICATION, $this->id_modification);
 
         return $criteria;
     }
@@ -1412,8 +1206,8 @@ abstract class BaseCountry extends BaseObject implements Persistent
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(CountryPeer::DATABASE_NAME);
-        $criteria->add(CountryPeer::ID_COUNTRY, $this->id_country);
+        $criteria = new Criteria(CurrencyPeer::DATABASE_NAME);
+        $criteria->add(CurrencyPeer::ID_CURRENCY, $this->id_currency);
 
         return $criteria;
     }
@@ -1424,18 +1218,18 @@ abstract class BaseCountry extends BaseObject implements Persistent
      */
     public function getPrimaryKey()
     {
-        return $this->getIdCountry();
+        return $this->getIdCurrency();
     }
 
     /**
-     * Generic method to set the primary key (id_country column).
+     * Generic method to set the primary key (id_currency column).
      *
      * @param  int $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setIdCountry($key);
+        $this->setIdCurrency($key);
     }
 
     /**
@@ -1445,7 +1239,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
     public function isPrimaryKeyNull()
     {
 
-        return null === $this->getIdCountry();
+        return null === $this->getIdCurrency();
     }
 
     /**
@@ -1454,7 +1248,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param object $copyObj An object of Country (or compatible) type.
+     * @param object $copyObj An object of Currency (or compatible) type.
      * @param boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1462,10 +1256,6 @@ abstract class BaseCountry extends BaseObject implements Persistent
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setName($this->getName());
-        $copyObj->setCode($this->getCode());
-        $copyObj->setTimezone($this->getTimezone());
-        $copyObj->setTimezoneCode($this->getTimezoneCode());
-        $copyObj->setPriority($this->getPriority());
         $copyObj->setDateCreation($this->getDateCreation());
         $copyObj->setDateModification($this->getDateModification());
         $copyObj->setIdGroupCreation($this->getIdGroupCreation());
@@ -1485,9 +1275,9 @@ abstract class BaseCountry extends BaseObject implements Persistent
                 }
             }
 
-            foreach ($this->getSuppliers() as $relObj) {
+            foreach ($this->getBillings() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addSupplier($relObj->copy($deepCopy));
+                    $copyObj->addBilling($relObj->copy($deepCopy));
                 }
             }
 
@@ -1497,7 +1287,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
 
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setIdCountry(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setIdCurrency(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1510,7 +1300,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
      * objects.
      *
      * @param boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return Country Clone of current object.
+     * @return Currency Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1530,12 +1320,12 @@ abstract class BaseCountry extends BaseObject implements Persistent
      * same instance for all member of this class. The method could therefore
      * be static, but this would prevent one from overriding the behavior.
      *
-     * @return CountryPeer
+     * @return CurrencyPeer
      */
     public function getPeer()
     {
         if (self::$peer === null) {
-            self::$peer = new CountryPeer();
+            self::$peer = new CurrencyPeer();
         }
 
         return self::$peer;
@@ -1545,7 +1335,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
      * Declares an association between this object and a AuthyGroup object.
      *
      * @param                  AuthyGroup $v
-     * @return Country The current object (for fluent API support)
+     * @return Currency The current object (for fluent API support)
      * @throws PropelException
      */
     public function setAuthyGroup(AuthyGroup $v = null)
@@ -1561,7 +1351,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the AuthyGroup object, it will not be re-added.
         if ($v !== null) {
-            $v->addCountry($this);
+            $v->addCurrency($this);
         }
 
 
@@ -1586,7 +1376,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aAuthyGroup->addCountries($this);
+                $this->aAuthyGroup->addCurrencies($this);
              */
         }
 
@@ -1597,7 +1387,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
      * Declares an association between this object and a Authy object.
      *
      * @param                  Authy $v
-     * @return Country The current object (for fluent API support)
+     * @return Currency The current object (for fluent API support)
      * @throws PropelException
      */
     public function setAuthyRelatedByIdCreation(Authy $v = null)
@@ -1613,7 +1403,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the Authy object, it will not be re-added.
         if ($v !== null) {
-            $v->addCountryRelatedByIdCreation($this);
+            $v->addCurrencyRelatedByIdCreation($this);
         }
 
 
@@ -1638,7 +1428,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aAuthyRelatedByIdCreation->addCountriesRelatedByIdCreation($this);
+                $this->aAuthyRelatedByIdCreation->addCurrenciesRelatedByIdCreation($this);
              */
         }
 
@@ -1649,7 +1439,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
      * Declares an association between this object and a Authy object.
      *
      * @param                  Authy $v
-     * @return Country The current object (for fluent API support)
+     * @return Currency The current object (for fluent API support)
      * @throws PropelException
      */
     public function setAuthyRelatedByIdModification(Authy $v = null)
@@ -1665,7 +1455,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the Authy object, it will not be re-added.
         if ($v !== null) {
-            $v->addCountryRelatedByIdModification($this);
+            $v->addCurrencyRelatedByIdModification($this);
         }
 
 
@@ -1690,7 +1480,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aAuthyRelatedByIdModification->addCountriesRelatedByIdModification($this);
+                $this->aAuthyRelatedByIdModification->addCurrenciesRelatedByIdModification($this);
              */
         }
 
@@ -1711,8 +1501,8 @@ abstract class BaseCountry extends BaseObject implements Persistent
         if ('Client' == $relationName) {
             $this->initClients();
         }
-        if ('Supplier' == $relationName) {
-            $this->initSuppliers();
+        if ('Billing' == $relationName) {
+            $this->initBillings();
         }
     }
 
@@ -1722,7 +1512,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return Country The current object (for fluent API support)
+     * @return Currency The current object (for fluent API support)
      * @see        addClients()
      */
     public function clearClients()
@@ -1770,7 +1560,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Country is new, it will return
+     * If this Currency is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param Criteria $criteria optional Criteria object to narrow the query
@@ -1787,7 +1577,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
                 $this->initClients();
             } else {
                 $collClients = ClientQuery::create(null, $criteria)
-                    ->filterByCountry($this)
+                    ->filterByCurrency($this)
                     ->find($con);
                 if (null !== $criteria) {
                     if (false !== $this->collClientsPartial && count($collClients)) {
@@ -1831,7 +1621,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
      *
      * @param PropelCollection $clients A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return Country The current object (for fluent API support)
+     * @return Currency The current object (for fluent API support)
      */
     public function setClients(PropelCollection $clients, PropelPDO $con = null)
     {
@@ -1841,7 +1631,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
         $this->clientsScheduledForDeletion = $clientsToDelete;
 
         foreach ($clientsToDelete as $clientRemoved) {
-            $clientRemoved->setCountry(null);
+            $clientRemoved->setCurrency(null);
         }
 
         $this->collClients = null;
@@ -1881,7 +1671,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
             }
 
             return $query
-                ->filterByCountry($this)
+                ->filterByCurrency($this)
                 ->count($con);
         }
 
@@ -1893,7 +1683,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
      * through the Client foreign key attribute.
      *
      * @param    Client $l Client
-     * @return Country The current object (for fluent API support)
+     * @return Currency The current object (for fluent API support)
      */
     public function addClient(Client $l)
     {
@@ -1919,12 +1709,12 @@ abstract class BaseCountry extends BaseObject implements Persistent
     protected function doAddClient($client)
     {
         $this->collClients[]= $client;
-        $client->setCountry($this);
+        $client->setCurrency($this);
     }
 
     /**
      * @param	Client $client The client object to remove.
-     * @return Country The current object (for fluent API support)
+     * @return Currency The current object (for fluent API support)
      */
     public function removeClient($client)
     {
@@ -1934,11 +1724,28 @@ abstract class BaseCountry extends BaseObject implements Persistent
                 $this->clientsScheduledForDeletion = clone $this->collClients;
                 $this->clientsScheduledForDeletion->clear();
             }
-            $this->clientsScheduledForDeletion[]= clone $client;
-            $client->setCountry(null);
+            $this->clientsScheduledForDeletion[]= $client;
+            $client->setCurrency(null);
         }
 
         return $this;
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Client[] List of Client objects
+     */
+    public function getClientsJoinCountry($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ClientQuery::create(null, $criteria);
+        $query->joinWith('Country', $join_behavior);
+
+        return $this->getClients($query, $con);
     }
 
 
@@ -1971,23 +1778,6 @@ abstract class BaseCountry extends BaseObject implements Persistent
     {
         $query = ClientQuery::create(null, $criteria);
         $query->joinWith('BillingCategory', $join_behavior);
-
-        return $this->getClients($query, $con);
-    }
-
-
-    /**
-
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|Client[] List of Client objects
-     */
-    public function getClientsJoinCurrency($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = ClientQuery::create(null, $criteria);
-        $query->joinWith('Currency', $join_behavior);
 
         return $this->getClients($query, $con);
     }
@@ -2044,36 +1834,36 @@ abstract class BaseCountry extends BaseObject implements Persistent
     }
 
     /**
-     * Clears out the collSuppliers collection
+     * Clears out the collBillings collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
-     * @return Country The current object (for fluent API support)
-     * @see        addSuppliers()
+     * @return Currency The current object (for fluent API support)
+     * @see        addBillings()
      */
-    public function clearSuppliers()
+    public function clearBillings()
     {
-        $this->collSuppliers = null; // important to set this to null since that means it is uninitialized
-        $this->collSuppliersPartial = null;
+        $this->collBillings = null; // important to set this to null since that means it is uninitialized
+        $this->collBillingsPartial = null;
 
         return $this;
     }
 
     /**
-     * reset is the collSuppliers collection loaded partially
+     * reset is the collBillings collection loaded partially
      *
      * @return void
      */
-    public function resetPartialSuppliers($v = true)
+    public function resetPartialBillings($v = true)
     {
-        $this->collSuppliersPartial = $v;
+        $this->collBillingsPartial = $v;
     }
 
     /**
-     * Initializes the collSuppliers collection.
+     * Initializes the collBillings collection.
      *
-     * By default this just sets the collSuppliers collection to an empty array (like clearcollSuppliers());
+     * By default this just sets the collBillings collection to an empty array (like clearcollBillings());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -2082,158 +1872,158 @@ abstract class BaseCountry extends BaseObject implements Persistent
      *
      * @return void
      */
-    public function initSuppliers($overrideExisting = true)
+    public function initBillings($overrideExisting = true)
     {
-        if (null !== $this->collSuppliers && !$overrideExisting) {
+        if (null !== $this->collBillings && !$overrideExisting) {
             return;
         }
-        $this->collSuppliers = new PropelObjectCollection();
-        $this->collSuppliers->setModel('Supplier');
+        $this->collBillings = new PropelObjectCollection();
+        $this->collBillings->setModel('Billing');
     }
 
     /**
-     * Gets an array of Supplier objects which contain a foreign key that references this object.
+     * Gets an array of Billing objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
      * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Country is new, it will return
+     * If this Currency is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
      * @param Criteria $criteria optional Criteria object to narrow the query
      * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     * @return PropelObjectCollection|Billing[] List of Billing objects
      * @throws PropelException
      */
-    public function getSuppliers($criteria = null, PropelPDO $con = null)
+    public function getBillings($criteria = null, PropelPDO $con = null)
     {
-        $partial = $this->collSuppliersPartial && !$this->isNew();
-        if (null === $this->collSuppliers || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collSuppliers) {
+        $partial = $this->collBillingsPartial && !$this->isNew();
+        if (null === $this->collBillings || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collBillings) {
                 // return empty collection
-                $this->initSuppliers();
+                $this->initBillings();
             } else {
-                $collSuppliers = SupplierQuery::create(null, $criteria)
-                    ->filterByCountry($this)
+                $collBillings = BillingQuery::create(null, $criteria)
+                    ->filterByCurrency($this)
                     ->find($con);
                 if (null !== $criteria) {
-                    if (false !== $this->collSuppliersPartial && count($collSuppliers)) {
-                      $this->initSuppliers(false);
+                    if (false !== $this->collBillingsPartial && count($collBillings)) {
+                      $this->initBillings(false);
 
-                      foreach ($collSuppliers as $obj) {
-                        if (false == $this->collSuppliers->contains($obj)) {
-                          $this->collSuppliers->append($obj);
+                      foreach ($collBillings as $obj) {
+                        if (false == $this->collBillings->contains($obj)) {
+                          $this->collBillings->append($obj);
                         }
                       }
 
-                      $this->collSuppliersPartial = true;
+                      $this->collBillingsPartial = true;
                     }
 
-                    $collSuppliers->getInternalIterator()->rewind();
+                    $collBillings->getInternalIterator()->rewind();
 
-                    return $collSuppliers;
+                    return $collBillings;
                 }
 
-                if ($partial && $this->collSuppliers) {
-                    foreach ($this->collSuppliers as $obj) {
+                if ($partial && $this->collBillings) {
+                    foreach ($this->collBillings as $obj) {
                         if ($obj->isNew()) {
-                            $collSuppliers[] = $obj;
+                            $collBillings[] = $obj;
                         }
                     }
                 }
 
-                $this->collSuppliers = $collSuppliers;
-                $this->collSuppliersPartial = false;
+                $this->collBillings = $collBillings;
+                $this->collBillingsPartial = false;
             }
         }
 
-        return $this->collSuppliers;
+        return $this->collBillings;
     }
 
     /**
-     * Sets a collection of Supplier objects related by a one-to-many relationship
+     * Sets a collection of Billing objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param PropelCollection $suppliers A Propel collection.
+     * @param PropelCollection $billings A Propel collection.
      * @param PropelPDO $con Optional connection object
-     * @return Country The current object (for fluent API support)
+     * @return Currency The current object (for fluent API support)
      */
-    public function setSuppliers(PropelCollection $suppliers, PropelPDO $con = null)
+    public function setBillings(PropelCollection $billings, PropelPDO $con = null)
     {
-        $suppliersToDelete = $this->getSuppliers(new Criteria(), $con)->diff($suppliers);
+        $billingsToDelete = $this->getBillings(new Criteria(), $con)->diff($billings);
 
 
-        $this->suppliersScheduledForDeletion = $suppliersToDelete;
+        $this->billingsScheduledForDeletion = $billingsToDelete;
 
-        foreach ($suppliersToDelete as $supplierRemoved) {
-            $supplierRemoved->setCountry(null);
+        foreach ($billingsToDelete as $billingRemoved) {
+            $billingRemoved->setCurrency(null);
         }
 
-        $this->collSuppliers = null;
-        foreach ($suppliers as $supplier) {
-            $this->addSupplier($supplier);
+        $this->collBillings = null;
+        foreach ($billings as $billing) {
+            $this->addBilling($billing);
         }
 
-        $this->collSuppliers = $suppliers;
-        $this->collSuppliersPartial = false;
+        $this->collBillings = $billings;
+        $this->collBillingsPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related Supplier objects.
+     * Returns the number of related Billing objects.
      *
      * @param Criteria $criteria
      * @param boolean $distinct
      * @param PropelPDO $con
-     * @return int             Count of related Supplier objects.
+     * @return int             Count of related Billing objects.
      * @throws PropelException
      */
-    public function countSuppliers(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    public function countBillings(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
     {
-        $partial = $this->collSuppliersPartial && !$this->isNew();
-        if (null === $this->collSuppliers || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collSuppliers) {
+        $partial = $this->collBillingsPartial && !$this->isNew();
+        if (null === $this->collBillings || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collBillings) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getSuppliers());
+                return count($this->getBillings());
             }
-            $query = SupplierQuery::create(null, $criteria);
+            $query = BillingQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
 
             return $query
-                ->filterByCountry($this)
+                ->filterByCurrency($this)
                 ->count($con);
         }
 
-        return count($this->collSuppliers);
+        return count($this->collBillings);
     }
 
     /**
-     * Method called to associate a Supplier object to this object
-     * through the Supplier foreign key attribute.
+     * Method called to associate a Billing object to this object
+     * through the Billing foreign key attribute.
      *
-     * @param    Supplier $l Supplier
-     * @return Country The current object (for fluent API support)
+     * @param    Billing $l Billing
+     * @return Currency The current object (for fluent API support)
      */
-    public function addSupplier(Supplier $l)
+    public function addBilling(Billing $l)
     {
-        if ($this->collSuppliers === null) {
-            $this->initSuppliers();
-            $this->collSuppliersPartial = true;
+        if ($this->collBillings === null) {
+            $this->initBillings();
+            $this->collBillingsPartial = true;
         }
 
-        if (!in_array($l, $this->collSuppliers->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddSupplier($l);
+        if (!in_array($l, $this->collBillings->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddBilling($l);
 
-            if ($this->suppliersScheduledForDeletion and $this->suppliersScheduledForDeletion->contains($l)) {
-                $this->suppliersScheduledForDeletion->remove($this->suppliersScheduledForDeletion->search($l));
+            if ($this->billingsScheduledForDeletion and $this->billingsScheduledForDeletion->contains($l)) {
+                $this->billingsScheduledForDeletion->remove($this->billingsScheduledForDeletion->search($l));
             }
         }
 
@@ -2241,28 +2031,28 @@ abstract class BaseCountry extends BaseObject implements Persistent
     }
 
     /**
-     * @param	Supplier $supplier The supplier object to add.
+     * @param	Billing $billing The billing object to add.
      */
-    protected function doAddSupplier($supplier)
+    protected function doAddBilling($billing)
     {
-        $this->collSuppliers[]= $supplier;
-        $supplier->setCountry($this);
+        $this->collBillings[]= $billing;
+        $billing->setCurrency($this);
     }
 
     /**
-     * @param	Supplier $supplier The supplier object to remove.
-     * @return Country The current object (for fluent API support)
+     * @param	Billing $billing The billing object to remove.
+     * @return Currency The current object (for fluent API support)
      */
-    public function removeSupplier($supplier)
+    public function removeBilling($billing)
     {
-        if ($this->getSuppliers()->contains($supplier)) {
-            $this->collSuppliers->remove($this->collSuppliers->search($supplier));
-            if (null === $this->suppliersScheduledForDeletion) {
-                $this->suppliersScheduledForDeletion = clone $this->collSuppliers;
-                $this->suppliersScheduledForDeletion->clear();
+        if ($this->getBillings()->contains($billing)) {
+            $this->collBillings->remove($this->collBillings->search($billing));
+            if (null === $this->billingsScheduledForDeletion) {
+                $this->billingsScheduledForDeletion = clone $this->collBillings;
+                $this->billingsScheduledForDeletion->clear();
             }
-            $this->suppliersScheduledForDeletion[]= clone $supplier;
-            $supplier->setCountry(null);
+            $this->billingsScheduledForDeletion[]= $billing;
+            $billing->setCurrency(null);
         }
 
         return $this;
@@ -2275,14 +2065,65 @@ abstract class BaseCountry extends BaseObject implements Persistent
      * @param Criteria $criteria optional Criteria object to narrow the query
      * @param PropelPDO $con optional connection object
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     * @return PropelObjectCollection|Billing[] List of Billing objects
      */
-    public function getSuppliersJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    public function getBillingsJoinClient($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
-        $query = SupplierQuery::create(null, $criteria);
+        $query = BillingQuery::create(null, $criteria);
+        $query->joinWith('Client', $join_behavior);
+
+        return $this->getBillings($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Billing[] List of Billing objects
+     */
+    public function getBillingsJoinProject($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingQuery::create(null, $criteria);
+        $query->joinWith('Project', $join_behavior);
+
+        return $this->getBillings($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Billing[] List of Billing objects
+     */
+    public function getBillingsJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingQuery::create(null, $criteria);
+        $query->joinWith('BillingCategory', $join_behavior);
+
+        return $this->getBillings($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Billing[] List of Billing objects
+     */
+    public function getBillingsJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingQuery::create(null, $criteria);
         $query->joinWith('AuthyGroup', $join_behavior);
 
-        return $this->getSuppliers($query, $con);
+        return $this->getBillings($query, $con);
     }
 
 
@@ -2292,14 +2133,14 @@ abstract class BaseCountry extends BaseObject implements Persistent
      * @param Criteria $criteria optional Criteria object to narrow the query
      * @param PropelPDO $con optional connection object
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     * @return PropelObjectCollection|Billing[] List of Billing objects
      */
-    public function getSuppliersJoinAuthyRelatedByIdCreation($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    public function getBillingsJoinAuthyRelatedByIdCreation($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
-        $query = SupplierQuery::create(null, $criteria);
+        $query = BillingQuery::create(null, $criteria);
         $query->joinWith('AuthyRelatedByIdCreation', $join_behavior);
 
-        return $this->getSuppliers($query, $con);
+        return $this->getBillings($query, $con);
     }
 
 
@@ -2309,14 +2150,14 @@ abstract class BaseCountry extends BaseObject implements Persistent
      * @param Criteria $criteria optional Criteria object to narrow the query
      * @param PropelPDO $con optional connection object
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|Supplier[] List of Supplier objects
+     * @return PropelObjectCollection|Billing[] List of Billing objects
      */
-    public function getSuppliersJoinAuthyRelatedByIdModification($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    public function getBillingsJoinAuthyRelatedByIdModification($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
-        $query = SupplierQuery::create(null, $criteria);
+        $query = BillingQuery::create(null, $criteria);
         $query->joinWith('AuthyRelatedByIdModification', $join_behavior);
 
-        return $this->getSuppliers($query, $con);
+        return $this->getBillings($query, $con);
     }
 
     /**
@@ -2324,12 +2165,8 @@ abstract class BaseCountry extends BaseObject implements Persistent
      */
     public function clear()
     {
-        $this->id_country = null;
+        $this->id_currency = null;
         $this->name = null;
-        $this->code = null;
-        $this->timezone = null;
-        $this->timezone_code = null;
-        $this->priority = null;
         $this->date_creation = null;
         $this->date_modification = null;
         $this->id_group_creation = null;
@@ -2362,8 +2199,8 @@ abstract class BaseCountry extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collSuppliers) {
-                foreach ($this->collSuppliers as $o) {
+            if ($this->collBillings) {
+                foreach ($this->collBillings as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
@@ -2384,10 +2221,10 @@ abstract class BaseCountry extends BaseObject implements Persistent
             $this->collClients->clearIterator();
         }
         $this->collClients = null;
-        if ($this->collSuppliers instanceof PropelCollection) {
-            $this->collSuppliers->clearIterator();
+        if ($this->collBillings instanceof PropelCollection) {
+            $this->collBillings->clearIterator();
         }
-        $this->collSuppliers = null;
+        $this->collBillings = null;
         $this->aAuthyGroup = null;
         $this->aAuthyRelatedByIdCreation = null;
         $this->aAuthyRelatedByIdModification = null;
@@ -2400,7 +2237,7 @@ abstract class BaseCountry extends BaseObject implements Persistent
      */
     public function __toString()
     {
-        return (string) $this->exportTo(CountryPeer::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(CurrencyPeer::DEFAULT_STRING_FORMAT);
     }
 
     /**
@@ -2418,10 +2255,10 @@ abstract class BaseCountry extends BaseObject implements Persistent
     /**
      * Mark the current object so that the update date doesn't get updated during next save
      *
-     * @return     Country The current object (for fluent API support)
+     * @return     Currency The current object (for fluent API support)
      */
     public function keepUpdateDateUnchanged(){
-        $this->modifiedColumns[] = CountryPeer::DATE_MODIFICATION;
+        $this->modifiedColumns[] = CurrencyPeer::DATE_MODIFICATION;
 
         return $this;
     }

@@ -62,6 +62,22 @@ $table['client'] = [
         'type' => 'VARCHAR',
         'description' => 'Zip',
     ],
+    'default_rate' => [
+        'type' => 'DECIMAL',
+        'description' => 'Rate',
+    ],
+    'default_user' => [
+        'type' => 'INTEGER',
+        'description' => 'User',
+    ],
+    'default_category' => [
+        'type' => 'INTEGER',
+        'description' => 'Category',
+    ],
+    'default_currency' => [
+        'type' => 'INTEGER',
+        'description' => 'Currency',
+    ],
     'date_creation' => [
         'type' => 'TIMESTAMP',
     ],
@@ -130,8 +146,10 @@ $table['billing'] = [
     ],
     'gross_currency' => [
         'type' => 'ENUM',
+    ],
+    'default_currency' => [
+        'type' => 'INTEGER',
         'description' => 'Currency',
-        'valueSet' => null,
     ],
     'gross_2' => [
         'type' => 'DECIMAL',
@@ -544,6 +562,39 @@ $table['billing_category'] = [
 
 $query['billing_category'] = [
     'select' => $table['billing_category'],
+    'filter' => [],
+    'join' => [],
+    'limit' => [],
+    'order' => [],
+    'page' => [],
+];
+$table['currency'] = [
+    'id_currency' => [
+        'type' => 'INTEGER',
+    ],
+    'name' => [
+        'type' => 'VARCHAR',
+        'description' => 'Name',
+    ],
+    'date_creation' => [
+        'type' => 'TIMESTAMP',
+    ],
+    'date_modification' => [
+        'type' => 'TIMESTAMP',
+    ],
+    'id_group_creation' => [
+        'type' => 'INTEGER',
+    ],
+    'id_creation' => [
+        'type' => 'INTEGER',
+    ],
+    'id_modification' => [
+        'type' => 'INTEGER',
+    ],
+];
+
+$query['currency'] = [
+    'select' => $table['currency'],
     'filter' => [],
     'join' => [],
     'limit' => [],
@@ -1540,6 +1591,40 @@ return [
             'request' => [
                         'type' => 'INTEGER',
                         'name' => 'id_billing_category'
+            ]
+        ],
+    ],
+    'currency[/{id}]' => [
+        'description' => 'Currency',
+        'type' => 'custom',
+        'GET' => [
+            'request' => [
+                'id' => [
+                    'type' => 'INTEGER',
+                    'name' => 'id_currency'
+                ]
+            ],
+            'response' => [
+                'data' => $table['currency']
+            ]
+        ],
+        'POST' =>  [
+            'request' => [
+                'fields' => $table['currency'],
+                'query' => $query
+            ],
+            'response' => [
+                'ids' => [],
+                'count' => []
+            ]
+        ],
+        'PATCH' =>  [
+            'request' => $table['currency']
+            ],
+        'DELETE' =>  [
+            'request' => [
+                        'type' => 'INTEGER',
+                        'name' => 'id_currency'
             ]
         ],
     ],

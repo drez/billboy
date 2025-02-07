@@ -88,6 +88,7 @@ class BillingCategoryService
             case 'update':
             case 'insert':
                 $this->content = $this->saveUpdate();
+                $this->content['onReadyJs'] .= "sw_message('Saved');";
                 return $this->BuilderLayout->renderXHR($this->content);
             case 'delete':
                 $this->content = $this->deleteOne();
@@ -170,6 +171,9 @@ class BillingCategoryService
         $obj = BillingCategoryQuery::create()->findPk(json_decode($this->request['i']));
 
 
+            if($obj->countClients()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Client'. ", '', true,'Category billing'); die( $error['onReadyJs'] );
+            }
             if($obj->countBillings()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Billing'. ", '', true,'Category billing'); die( $error['onReadyJs'] );
             }

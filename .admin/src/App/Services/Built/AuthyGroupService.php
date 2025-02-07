@@ -88,6 +88,7 @@ class AuthyGroupService
             case 'update':
             case 'insert':
                 $this->content = $this->saveUpdate();
+                $this->content['onReadyJs'] .= "sw_message('Saved');";
                 return $this->BuilderLayout->renderXHR($this->content);
             case 'delete':
                 $this->content = $this->deleteOne();
@@ -193,6 +194,9 @@ class AuthyGroupService
             }
             if($obj->countBillingCategories()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Category billing'. ", '', true,'Group'); die( $error['onReadyJs'] );
+            }
+            if($obj->countCurrencies()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Currency'. ", '', true,'Group'); die( $error['onReadyJs'] );
             }
             if($obj->countSuppliers()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Supplier'. ", '', true,'Group'); die( $error['onReadyJs'] );

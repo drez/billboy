@@ -20,12 +20,16 @@ use App\AuthyGroup;
 use App\AuthyGroupQuery;
 use App\AuthyQuery;
 use App\Billing;
+use App\BillingCategory;
+use App\BillingCategoryQuery;
 use App\BillingQuery;
 use App\Client;
 use App\ClientPeer;
 use App\ClientQuery;
 use App\Country;
 use App\CountryQuery;
+use App\Currency;
+use App\CurrencyQuery;
 use App\Project;
 use App\ProjectQuery;
 
@@ -148,6 +152,30 @@ abstract class BaseClient extends BaseObject implements Persistent
     protected $zip;
 
     /**
+     * The value for the default_rate field.
+     * @var        string
+     */
+    protected $default_rate;
+
+    /**
+     * The value for the default_user field.
+     * @var        int
+     */
+    protected $default_user;
+
+    /**
+     * The value for the default_category field.
+     * @var        int
+     */
+    protected $default_category;
+
+    /**
+     * The value for the default_currency field.
+     * @var        int
+     */
+    protected $default_currency;
+
+    /**
      * The value for the date_creation field.
      * @var        string
      */
@@ -181,6 +209,21 @@ abstract class BaseClient extends BaseObject implements Persistent
      * @var        Country
      */
     protected $aCountry;
+
+    /**
+     * @var        Authy
+     */
+    protected $aAuthyRelatedByDefaultUser;
+
+    /**
+     * @var        BillingCategory
+     */
+    protected $aBillingCategory;
+
+    /**
+     * @var        Currency
+     */
+    protected $aCurrency;
 
     /**
      * @var        AuthyGroup
@@ -419,6 +462,54 @@ abstract class BaseClient extends BaseObject implements Persistent
     {
 
         return $this->zip;
+    }
+
+    /**
+     * @Field()
+     * Get the [default_rate] column value.
+     * Rate
+     * @return string
+     */
+    public function getDefaultRate()
+    {
+
+        return $this->default_rate;
+    }
+
+    /**
+     * @Field()
+     * Get the [default_user] column value.
+     * User
+     * @return int
+     */
+    public function getDefaultUser()
+    {
+
+        return $this->default_user;
+    }
+
+    /**
+     * @Field()
+     * Get the [default_category] column value.
+     * Category
+     * @return int
+     */
+    public function getDefaultCategory()
+    {
+
+        return $this->default_category;
+    }
+
+    /**
+     * @Field()
+     * Get the [default_currency] column value.
+     * Currency
+     * @return int
+     */
+    public function getDefaultCurrency()
+    {
+
+        return $this->default_currency;
     }
 
     /**
@@ -859,6 +950,102 @@ abstract class BaseClient extends BaseObject implements Persistent
     } // setZip()
 
     /**
+     * Set the value of [default_rate] column.
+     * Rate
+     * @param  string $v new value
+     * @return Client The current object (for fluent API support)
+     */
+    public function setDefaultRate($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (string) $v;
+        }
+
+        if ($this->default_rate !== $v) {
+            $this->default_rate = $v;
+            $this->modifiedColumns[] = ClientPeer::DEFAULT_RATE;
+        }
+
+
+        return $this;
+    } // setDefaultRate()
+
+    /**
+     * Set the value of [default_user] column.
+     * User
+     * @param  int $v new value
+     * @return Client The current object (for fluent API support)
+     */
+    public function setDefaultUser($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (int) $v;
+        }
+
+        if ($this->default_user !== $v) {
+            $this->default_user = $v;
+            $this->modifiedColumns[] = ClientPeer::DEFAULT_USER;
+        }
+
+        if ($this->aAuthyRelatedByDefaultUser !== null && $this->aAuthyRelatedByDefaultUser->getIdAuthy() !== $v) {
+            $this->aAuthyRelatedByDefaultUser = null;
+        }
+
+
+        return $this;
+    } // setDefaultUser()
+
+    /**
+     * Set the value of [default_category] column.
+     * Category
+     * @param  int $v new value
+     * @return Client The current object (for fluent API support)
+     */
+    public function setDefaultCategory($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (int) $v;
+        }
+
+        if ($this->default_category !== $v) {
+            $this->default_category = $v;
+            $this->modifiedColumns[] = ClientPeer::DEFAULT_CATEGORY;
+        }
+
+        if ($this->aBillingCategory !== null && $this->aBillingCategory->getIdBillingCategory() !== $v) {
+            $this->aBillingCategory = null;
+        }
+
+
+        return $this;
+    } // setDefaultCategory()
+
+    /**
+     * Set the value of [default_currency] column.
+     * Currency
+     * @param  int $v new value
+     * @return Client The current object (for fluent API support)
+     */
+    public function setDefaultCurrency($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (int) $v;
+        }
+
+        if ($this->default_currency !== $v) {
+            $this->default_currency = $v;
+            $this->modifiedColumns[] = ClientPeer::DEFAULT_CURRENCY;
+        }
+
+        if ($this->aCurrency !== null && $this->aCurrency->getIdCurrency() !== $v) {
+            $this->aCurrency = null;
+        }
+
+
+        return $this;
+    } // setDefaultCurrency()
+
+    /**
      * Sets the value of [date_creation] column to a normalized version of the date/time value specified.
      *
      * @param mixed $v string, integer (timestamp), or DateTime value.
@@ -1026,11 +1213,15 @@ abstract class BaseClient extends BaseObject implements Persistent
             $this->address_2 = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
             $this->address_3 = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
             $this->zip = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
-            $this->date_creation = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
-            $this->date_modification = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
-            $this->id_group_creation = ($row[$startcol + 17] !== null) ? (int) $row[$startcol + 17] : null;
-            $this->id_creation = ($row[$startcol + 18] !== null) ? (int) $row[$startcol + 18] : null;
-            $this->id_modification = ($row[$startcol + 19] !== null) ? (int) $row[$startcol + 19] : null;
+            $this->default_rate = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
+            $this->default_user = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
+            $this->default_category = ($row[$startcol + 17] !== null) ? (int) $row[$startcol + 17] : null;
+            $this->default_currency = ($row[$startcol + 18] !== null) ? (int) $row[$startcol + 18] : null;
+            $this->date_creation = ($row[$startcol + 19] !== null) ? (string) $row[$startcol + 19] : null;
+            $this->date_modification = ($row[$startcol + 20] !== null) ? (string) $row[$startcol + 20] : null;
+            $this->id_group_creation = ($row[$startcol + 21] !== null) ? (int) $row[$startcol + 21] : null;
+            $this->id_creation = ($row[$startcol + 22] !== null) ? (int) $row[$startcol + 22] : null;
+            $this->id_modification = ($row[$startcol + 23] !== null) ? (int) $row[$startcol + 23] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -1040,7 +1231,7 @@ abstract class BaseClient extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 20; // 20 = ClientPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 24; // 24 = ClientPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Client object", $e);
@@ -1065,6 +1256,15 @@ abstract class BaseClient extends BaseObject implements Persistent
 
         if ($this->aCountry !== null && $this->id_country !== $this->aCountry->getIdCountry()) {
             $this->aCountry = null;
+        }
+        if ($this->aAuthyRelatedByDefaultUser !== null && $this->default_user !== $this->aAuthyRelatedByDefaultUser->getIdAuthy()) {
+            $this->aAuthyRelatedByDefaultUser = null;
+        }
+        if ($this->aBillingCategory !== null && $this->default_category !== $this->aBillingCategory->getIdBillingCategory()) {
+            $this->aBillingCategory = null;
+        }
+        if ($this->aCurrency !== null && $this->default_currency !== $this->aCurrency->getIdCurrency()) {
+            $this->aCurrency = null;
         }
         if ($this->aAuthyGroup !== null && $this->id_group_creation !== $this->aAuthyGroup->getIdAuthyGroup()) {
             $this->aAuthyGroup = null;
@@ -1115,6 +1315,9 @@ abstract class BaseClient extends BaseObject implements Persistent
         if ($deep) {  // also de-associate any related objects?
 
             $this->aCountry = null;
+            $this->aAuthyRelatedByDefaultUser = null;
+            $this->aBillingCategory = null;
+            $this->aCurrency = null;
             $this->aAuthyGroup = null;
             $this->aAuthyRelatedByIdCreation = null;
             $this->aAuthyRelatedByIdModification = null;
@@ -1267,6 +1470,27 @@ abstract class BaseClient extends BaseObject implements Persistent
                 $this->setCountry($this->aCountry);
             }
 
+            if ($this->aAuthyRelatedByDefaultUser !== null) {
+                if ($this->aAuthyRelatedByDefaultUser->isModified() || $this->aAuthyRelatedByDefaultUser->isNew()) {
+                    $affectedRows += $this->aAuthyRelatedByDefaultUser->save($con);
+                }
+                $this->setAuthyRelatedByDefaultUser($this->aAuthyRelatedByDefaultUser);
+            }
+
+            if ($this->aBillingCategory !== null) {
+                if ($this->aBillingCategory->isModified() || $this->aBillingCategory->isNew()) {
+                    $affectedRows += $this->aBillingCategory->save($con);
+                }
+                $this->setBillingCategory($this->aBillingCategory);
+            }
+
+            if ($this->aCurrency !== null) {
+                if ($this->aCurrency->isModified() || $this->aCurrency->isNew()) {
+                    $affectedRows += $this->aCurrency->save($con);
+                }
+                $this->setCurrency($this->aCurrency);
+            }
+
             if ($this->aAuthyGroup !== null) {
                 if ($this->aAuthyGroup->isModified() || $this->aAuthyGroup->isNew()) {
                     $affectedRows += $this->aAuthyGroup->save($con);
@@ -1405,6 +1629,18 @@ abstract class BaseClient extends BaseObject implements Persistent
         if ($this->isColumnModified(ClientPeer::ZIP)) {
             $modifiedColumns[':p' . $index++]  = '`zip`';
         }
+        if ($this->isColumnModified(ClientPeer::DEFAULT_RATE)) {
+            $modifiedColumns[':p' . $index++]  = '`default_rate`';
+        }
+        if ($this->isColumnModified(ClientPeer::DEFAULT_USER)) {
+            $modifiedColumns[':p' . $index++]  = '`default_user`';
+        }
+        if ($this->isColumnModified(ClientPeer::DEFAULT_CATEGORY)) {
+            $modifiedColumns[':p' . $index++]  = '`default_category`';
+        }
+        if ($this->isColumnModified(ClientPeer::DEFAULT_CURRENCY)) {
+            $modifiedColumns[':p' . $index++]  = '`default_currency`';
+        }
         if ($this->isColumnModified(ClientPeer::DATE_CREATION)) {
             $modifiedColumns[':p' . $index++]  = '`date_creation`';
         }
@@ -1475,6 +1711,18 @@ abstract class BaseClient extends BaseObject implements Persistent
                         break;
                     case '`zip`':
                         $stmt->bindValue($identifier, $this->zip, PDO::PARAM_STR);
+                        break;
+                    case '`default_rate`':
+                        $stmt->bindValue($identifier, $this->default_rate, PDO::PARAM_STR);
+                        break;
+                    case '`default_user`':
+                        $stmt->bindValue($identifier, $this->default_user, PDO::PARAM_INT);
+                        break;
+                    case '`default_category`':
+                        $stmt->bindValue($identifier, $this->default_category, PDO::PARAM_INT);
+                        break;
+                    case '`default_currency`':
+                        $stmt->bindValue($identifier, $this->default_currency, PDO::PARAM_INT);
                         break;
                     case '`date_creation`':
                         $stmt->bindValue($identifier, $this->date_creation, PDO::PARAM_STR);
@@ -1596,6 +1844,24 @@ abstract class BaseClient extends BaseObject implements Persistent
                 }
             }
 
+            if ($this->aAuthyRelatedByDefaultUser !== null) {
+                if (!$this->aAuthyRelatedByDefaultUser->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aAuthyRelatedByDefaultUser->getValidationFailures());
+                }
+            }
+
+            if ($this->aBillingCategory !== null) {
+                if (!$this->aBillingCategory->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aBillingCategory->getValidationFailures());
+                }
+            }
+
+            if ($this->aCurrency !== null) {
+                if (!$this->aCurrency->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aCurrency->getValidationFailures());
+                }
+            }
+
             if ($this->aAuthyGroup !== null) {
                 if (!$this->aAuthyGroup->validate($columns)) {
                     $failureMap = array_merge($failureMap, $this->aAuthyGroup->getValidationFailures());
@@ -1699,11 +1965,15 @@ abstract class BaseClient extends BaseObject implements Persistent
             $keys[12] => $this->getAddress2(),
             $keys[13] => $this->getAddress3(),
             $keys[14] => $this->getZip(),
-            $keys[15] => $this->getDateCreation(),
-            $keys[16] => $this->getDateModification(),
-            $keys[17] => $this->getIdGroupCreation(),
-            $keys[18] => $this->getIdCreation(),
-            $keys[19] => $this->getIdModification(),
+            $keys[15] => $this->getDefaultRate(),
+            $keys[16] => $this->getDefaultUser(),
+            $keys[17] => $this->getDefaultCategory(),
+            $keys[18] => $this->getDefaultCurrency(),
+            $keys[19] => $this->getDateCreation(),
+            $keys[20] => $this->getDateModification(),
+            $keys[21] => $this->getIdGroupCreation(),
+            $keys[22] => $this->getIdCreation(),
+            $keys[23] => $this->getIdModification(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1713,6 +1983,15 @@ abstract class BaseClient extends BaseObject implements Persistent
         if ($includeForeignObjects) {
             if (null !== $this->aCountry) {
                 $result['Country'] = $this->aCountry->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aAuthyRelatedByDefaultUser) {
+                $result['AuthyRelatedByDefaultUser'] = $this->aAuthyRelatedByDefaultUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aBillingCategory) {
+                $result['BillingCategory'] = $this->aBillingCategory->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aCurrency) {
+                $result['Currency'] = $this->aCurrency->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aAuthyGroup) {
                 $result['AuthyGroup'] = $this->aAuthyGroup->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -1809,18 +2088,30 @@ abstract class BaseClient extends BaseObject implements Persistent
                 $this->setZip($value);
                 break;
             case 15:
-                $this->setDateCreation($value);
+                $this->setDefaultRate($value);
                 break;
             case 16:
-                $this->setDateModification($value);
+                $this->setDefaultUser($value);
                 break;
             case 17:
-                $this->setIdGroupCreation($value);
+                $this->setDefaultCategory($value);
                 break;
             case 18:
-                $this->setIdCreation($value);
+                $this->setDefaultCurrency($value);
                 break;
             case 19:
+                $this->setDateCreation($value);
+                break;
+            case 20:
+                $this->setDateModification($value);
+                break;
+            case 21:
+                $this->setIdGroupCreation($value);
+                break;
+            case 22:
+                $this->setIdCreation($value);
+                break;
+            case 23:
                 $this->setIdModification($value);
                 break;
         } // switch()
@@ -1862,11 +2153,15 @@ abstract class BaseClient extends BaseObject implements Persistent
         if (array_key_exists($keys[12], $arr)) $this->setAddress2($arr[$keys[12]]);
         if (array_key_exists($keys[13], $arr)) $this->setAddress3($arr[$keys[13]]);
         if (array_key_exists($keys[14], $arr)) $this->setZip($arr[$keys[14]]);
-        if (array_key_exists($keys[15], $arr)) $this->setDateCreation($arr[$keys[15]]);
-        if (array_key_exists($keys[16], $arr)) $this->setDateModification($arr[$keys[16]]);
-        if (array_key_exists($keys[17], $arr)) $this->setIdGroupCreation($arr[$keys[17]]);
-        if (array_key_exists($keys[18], $arr)) $this->setIdCreation($arr[$keys[18]]);
-        if (array_key_exists($keys[19], $arr)) $this->setIdModification($arr[$keys[19]]);
+        if (array_key_exists($keys[15], $arr)) $this->setDefaultRate($arr[$keys[15]]);
+        if (array_key_exists($keys[16], $arr)) $this->setDefaultUser($arr[$keys[16]]);
+        if (array_key_exists($keys[17], $arr)) $this->setDefaultCategory($arr[$keys[17]]);
+        if (array_key_exists($keys[18], $arr)) $this->setDefaultCurrency($arr[$keys[18]]);
+        if (array_key_exists($keys[19], $arr)) $this->setDateCreation($arr[$keys[19]]);
+        if (array_key_exists($keys[20], $arr)) $this->setDateModification($arr[$keys[20]]);
+        if (array_key_exists($keys[21], $arr)) $this->setIdGroupCreation($arr[$keys[21]]);
+        if (array_key_exists($keys[22], $arr)) $this->setIdCreation($arr[$keys[22]]);
+        if (array_key_exists($keys[23], $arr)) $this->setIdModification($arr[$keys[23]]);
     }
 
     /**
@@ -1893,6 +2188,10 @@ abstract class BaseClient extends BaseObject implements Persistent
         if ($this->isColumnModified(ClientPeer::ADDRESS_2)) $criteria->add(ClientPeer::ADDRESS_2, $this->address_2);
         if ($this->isColumnModified(ClientPeer::ADDRESS_3)) $criteria->add(ClientPeer::ADDRESS_3, $this->address_3);
         if ($this->isColumnModified(ClientPeer::ZIP)) $criteria->add(ClientPeer::ZIP, $this->zip);
+        if ($this->isColumnModified(ClientPeer::DEFAULT_RATE)) $criteria->add(ClientPeer::DEFAULT_RATE, $this->default_rate);
+        if ($this->isColumnModified(ClientPeer::DEFAULT_USER)) $criteria->add(ClientPeer::DEFAULT_USER, $this->default_user);
+        if ($this->isColumnModified(ClientPeer::DEFAULT_CATEGORY)) $criteria->add(ClientPeer::DEFAULT_CATEGORY, $this->default_category);
+        if ($this->isColumnModified(ClientPeer::DEFAULT_CURRENCY)) $criteria->add(ClientPeer::DEFAULT_CURRENCY, $this->default_currency);
         if ($this->isColumnModified(ClientPeer::DATE_CREATION)) $criteria->add(ClientPeer::DATE_CREATION, $this->date_creation);
         if ($this->isColumnModified(ClientPeer::DATE_MODIFICATION)) $criteria->add(ClientPeer::DATE_MODIFICATION, $this->date_modification);
         if ($this->isColumnModified(ClientPeer::ID_GROUP_CREATION)) $criteria->add(ClientPeer::ID_GROUP_CREATION, $this->id_group_creation);
@@ -1975,6 +2274,10 @@ abstract class BaseClient extends BaseObject implements Persistent
         $copyObj->setAddress2($this->getAddress2());
         $copyObj->setAddress3($this->getAddress3());
         $copyObj->setZip($this->getZip());
+        $copyObj->setDefaultRate($this->getDefaultRate());
+        $copyObj->setDefaultUser($this->getDefaultUser());
+        $copyObj->setDefaultCategory($this->getDefaultCategory());
+        $copyObj->setDefaultCurrency($this->getDefaultCurrency());
         $copyObj->setDateCreation($this->getDateCreation());
         $copyObj->setDateModification($this->getDateModification());
         $copyObj->setIdGroupCreation($this->getIdGroupCreation());
@@ -2100,6 +2403,162 @@ abstract class BaseClient extends BaseObject implements Persistent
         }
 
         return $this->aCountry;
+    }
+
+    /**
+     * Declares an association between this object and a Authy object.
+     *
+     * @param                  Authy $v
+     * @return Client The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setAuthyRelatedByDefaultUser(Authy $v = null)
+    {
+        if ($v === null) {
+            $this->setDefaultUser(NULL);
+        } else {
+            $this->setDefaultUser($v->getIdAuthy());
+        }
+
+        $this->aAuthyRelatedByDefaultUser = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the Authy object, it will not be re-added.
+        if ($v !== null) {
+            $v->addClientRelatedByDefaultUser($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated Authy object
+     *
+     * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
+     * @return Authy The associated Authy object.
+     * @throws PropelException
+     */
+    public function getAuthyRelatedByDefaultUser(PropelPDO $con = null, $doQuery = true)
+    {
+        if ($this->aAuthyRelatedByDefaultUser === null && ($this->default_user !== null) && $doQuery) {
+            $this->aAuthyRelatedByDefaultUser = AuthyQuery::create()->findPk($this->default_user, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aAuthyRelatedByDefaultUser->addClientsRelatedByDefaultUser($this);
+             */
+        }
+
+        return $this->aAuthyRelatedByDefaultUser;
+    }
+
+    /**
+     * Declares an association between this object and a BillingCategory object.
+     *
+     * @param                  BillingCategory $v
+     * @return Client The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setBillingCategory(BillingCategory $v = null)
+    {
+        if ($v === null) {
+            $this->setDefaultCategory(NULL);
+        } else {
+            $this->setDefaultCategory($v->getIdBillingCategory());
+        }
+
+        $this->aBillingCategory = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the BillingCategory object, it will not be re-added.
+        if ($v !== null) {
+            $v->addClient($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated BillingCategory object
+     *
+     * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
+     * @return BillingCategory The associated BillingCategory object.
+     * @throws PropelException
+     */
+    public function getBillingCategory(PropelPDO $con = null, $doQuery = true)
+    {
+        if ($this->aBillingCategory === null && ($this->default_category !== null) && $doQuery) {
+            $this->aBillingCategory = BillingCategoryQuery::create()->findPk($this->default_category, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aBillingCategory->addClients($this);
+             */
+        }
+
+        return $this->aBillingCategory;
+    }
+
+    /**
+     * Declares an association between this object and a Currency object.
+     *
+     * @param                  Currency $v
+     * @return Client The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setCurrency(Currency $v = null)
+    {
+        if ($v === null) {
+            $this->setDefaultCurrency(NULL);
+        } else {
+            $this->setDefaultCurrency($v->getIdCurrency());
+        }
+
+        $this->aCurrency = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the Currency object, it will not be re-added.
+        if ($v !== null) {
+            $v->addClient($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated Currency object
+     *
+     * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
+     * @return Currency The associated Currency object.
+     * @throws PropelException
+     */
+    public function getCurrency(PropelPDO $con = null, $doQuery = true)
+    {
+        if ($this->aCurrency === null && ($this->default_currency !== null) && $doQuery) {
+            $this->aCurrency = CurrencyQuery::create()->findPk($this->default_currency, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aCurrency->addClients($this);
+             */
+        }
+
+        return $this->aCurrency;
     }
 
     /**
@@ -2545,6 +3004,23 @@ abstract class BaseClient extends BaseObject implements Persistent
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return PropelObjectCollection|Billing[] List of Billing objects
      */
+    public function getBillingsJoinCurrency($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingQuery::create(null, $criteria);
+        $query->joinWith('Currency', $join_behavior);
+
+        return $this->getBillings($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Billing[] List of Billing objects
+     */
     public function getBillingsJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
         $query = BillingQuery::create(null, $criteria);
@@ -2883,6 +3359,10 @@ abstract class BaseClient extends BaseObject implements Persistent
         $this->address_2 = null;
         $this->address_3 = null;
         $this->zip = null;
+        $this->default_rate = null;
+        $this->default_user = null;
+        $this->default_category = null;
+        $this->default_currency = null;
         $this->date_creation = null;
         $this->date_modification = null;
         $this->id_group_creation = null;
@@ -2923,6 +3403,15 @@ abstract class BaseClient extends BaseObject implements Persistent
             if ($this->aCountry instanceof Persistent) {
               $this->aCountry->clearAllReferences($deep);
             }
+            if ($this->aAuthyRelatedByDefaultUser instanceof Persistent) {
+              $this->aAuthyRelatedByDefaultUser->clearAllReferences($deep);
+            }
+            if ($this->aBillingCategory instanceof Persistent) {
+              $this->aBillingCategory->clearAllReferences($deep);
+            }
+            if ($this->aCurrency instanceof Persistent) {
+              $this->aCurrency->clearAllReferences($deep);
+            }
             if ($this->aAuthyGroup instanceof Persistent) {
               $this->aAuthyGroup->clearAllReferences($deep);
             }
@@ -2945,6 +3434,9 @@ abstract class BaseClient extends BaseObject implements Persistent
         }
         $this->collProjects = null;
         $this->aCountry = null;
+        $this->aAuthyRelatedByDefaultUser = null;
+        $this->aBillingCategory = null;
+        $this->aCurrency = null;
         $this->aAuthyGroup = null;
         $this->aAuthyRelatedByIdCreation = null;
         $this->aAuthyRelatedByIdModification = null;

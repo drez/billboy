@@ -1,7 +1,5 @@
 <?php
-
 namespace App;
-
 
 /**
  * Skeleton subclass for representing a services for the BillingLineForm entity.
@@ -26,16 +24,22 @@ class BillingLineFormWrapper extends BillingLineForm
      * @param array $data
      * @param BillingLine $dataObj
      * @return void
-    **/
+     **/
 
-    public function afterFormObj( array &$data, BillingLine &$dataObj)
+    public function afterFormObj(array &$data, BillingLine &$dataObj)
     {
-        $defaultAmount = (billing_default_unit_amount)?billing_default_unit_amount:'0.00';
+        $defaultAmount = (billing_default_unit_amount) ? billing_default_unit_amount : '0.00';
 
         if ($dataObj->isNew()) {
+            $Client        = $dataObj->getBilling()->getClient();
+            $defaultAmount = ($Client->getDefaultRate()) ? $Client->getDefaultRate() : $defaultAmount;
+            $defaultAssign = ($Client->getDefaultUser()) ? $Client->getDefaultUser() : null;
+
             $this->hookFormReadyJs = "
-        $('#formBillingLine #WorkDate').val('".date('Y-m-d')."');
+            console.log('$defaultAssign');
+        $('#formBillingLine #WorkDate').val('" . date('Y-m-d') . "');
         $('#formBillingLine #Amount').val('$defaultAmount');
+        $('#formBillingLine #IdAssign').val('$defaultAssign');
         $('#formBillingLine #Quantity').val('1');
             ";
         }

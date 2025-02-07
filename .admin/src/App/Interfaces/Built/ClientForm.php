@@ -124,8 +124,44 @@ class ClientForm extends Client
             $q::create()
                 
                 #required client
-                ->leftJoinWith('Country');
-                
+                ->leftJoinWith('Country')
+                #alias default
+                ->leftJoinWith('AuthyRelatedByDefaultUser a5')
+                #default
+                ->leftJoinWith('BillingCategory')
+                #default
+                ->leftJoinWith('Currency');
+
+        if( isset($this->searchMs['Name']) ) {
+            $criteria = \Criteria::IN;
+
+
+            $value = $this->setCriteria($this->searchMs['Name'], $criteria);
+
+            $q->filterByName($value, $criteria);
+        }
+        if( isset($this->searchMs['IdCountry']) ) {
+            $criteria = \Criteria::IN;
+            $value = $this->searchMs['IdCountry'];
+
+            $q->filterByIdCountry($value, $criteria);
+        }
+        if( isset($this->searchMs['Phone']) ) {
+            $criteria = \Criteria::LIKE;
+
+
+            $value = $this->setCriteria($this->searchMs['Phone'], $criteria);
+
+            $q->filterByPhone($value, $criteria);
+        }
+        if( isset($this->searchMs['Email']) ) {
+            $criteria = \Criteria::LIKE;
+
+
+            $value = $this->setCriteria($this->searchMs['Email'], $criteria);
+
+            $q->filterByEmail($value, $criteria);
+        }
                 
         }else{
             
@@ -135,7 +171,13 @@ class ClientForm extends Client
                 $q::create()
                 
                 #required client
-                ->leftJoinWith('Country');
+                ->leftJoinWith('Country')
+                #alias default
+                ->leftJoinWith('AuthyRelatedByDefaultUser a5')
+                #default
+                ->leftJoinWith('BillingCategory')
+                #default
+                ->leftJoinWith('Currency');
                 
             }
         }
@@ -189,16 +231,8 @@ class ClientForm extends Client
                 $trHead = th(_("Name"), " th='sorted' c='Name' title='" . _('Name')."' ")
 .th(_("Country"), " th='sorted' c='Country.Name' title='"._('Country.Name')."' ")
 .th(_("Phone"), " th='sorted' c='Phone' title='" . _('Phone')."' ")
-.th(_("Phone work"), " th='sorted' c='PhoneWork' title='" . _('Phone work')."' ")
-.th(_("Extension"), " th='sorted' c='Ext' title='" . _('Extension')."' ")
 .th(_("Email"), " th='sorted' c='Email' title='" . _('Email')."' ")
 .th(_("Contact"), " th='sorted' c='Contact' title='" . _('Contact')."' ")
-.th(_("Email (contact)"), " th='sorted' c='Email2' title='" . _('Email (contact)')."' ")
-.th(_("contact"), " th='sorted' c='PhoneMobile' title='" . _('contact')."' ")
-.th(_("Address 1"), " th='sorted' c='Address1' title='" . _('Address 1')."' ")
-.th(_("Address 2"), " th='sorted' c='Address2' title='" . _('Address 2')."' ")
-.th(_("Address 3"), " th='sorted' c='Address3' title='" . _('Address 3')."' ")
-.th(_("Zip"), " th='sorted' c='Zip' title='" . _('Zip')."' ")
 . $this->cCmoreColsHeader;
                 if(!$this->setReadOnly){
                     $trHead .= th('&nbsp;',' class="actionrow delete" ');
@@ -215,8 +249,23 @@ class ClientForm extends Client
             case 'search':
                 
         $this->arrayIdCountryOptions = $this->selectBoxClient_IdCountry($this, $emptyVar, $data);
-                
-                ;
+        $this->arrayDefaultUserOptions = $this->selectBoxClient_DefaultUser($this, $emptyVar, $data);
+        $this->arrayDefaultCategoryOptions = $this->selectBoxClient_DefaultCategory($this, $emptyVar, $data);
+        $this->arrayDefaultCurrencyOptions = $this->selectBoxClient_DefaultCurrency($this, $emptyVar, $data);
+                $data = [];
+            
+
+            $trSearch = button(span(_("Show search")),'class="trigger-search button-link-blue"')
+
+            .div(
+                form(div(input('text', 'Name', $this->searchMs['Name'], '  placeholder="'._('Name').'"',''),'','class="ac-search-item"').div(selectboxCustomArray('IdCountry[]', $this->arrayIdCountryOptions, 'Country' , "v='ID_COUNTRY'  s='d' class='select-label js-select-label' multiple size='1'  ", $this->searchMs['IdCountry'], '', false), '', ' class="ac-search-item multiple-select"').div(input('text', 'Phone', $this->searchMs['Phone'], '  placeholder="'._('Phone').'"',''),'','class="ac-search-item"').div(input('text', 'Email', $this->searchMs['Email'], '  placeholder="'._('Email').'"',''),'','class="ac-search-item"').$this->hookListSearchTop
+                    .div(
+                       button(span(_("Search")),'id="msClientBt" title="'._('Search').'" class="icon search"')
+                       .button(span(_("Clear")),' title="'._('Clear search').'" id="msClientBtClear"')
+                       .input('hidden', 'Seq', $data['Seq'] )
+                    ,'','class="ac-search-item ac-action-buttons"')
+                    ,"id='formMsClient'")
+            ,"", "  class='msSearchCtnr'");;
                 return $trSearch;
 
             case 'add':
@@ -271,6 +320,10 @@ class ClientForm extends Client
   'Address2' => '',
   'Address3' => '',
   'Zip' => '',
+  'DefaultRate' => '',
+  'DefaultUser' => '',
+  'DefaultCategory' => '',
+  'DefaultCurrency' => '',
   'DateCreation' => '',
   'DateModification' => '',
   'IdGroupCreation' => '',
@@ -360,16 +413,8 @@ class ClientForm extends Client
                 td(span((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editClient'") . 
                 td(span((($altValue['IdCountry']) ? $altValue['IdCountry'] : $Country_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdCountry' class=''  j='editClient'") . 
                 td(span((($altValue['Phone']) ? $altValue['Phone'] : $data->getPhone()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Phone' class=''  j='editClient'") . 
-                td(span((($altValue['PhoneWork']) ? $altValue['PhoneWork'] : $data->getPhoneWork()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='PhoneWork' class=''  j='editClient'") . 
-                td(span((($altValue['Ext']) ? $altValue['Ext'] : $data->getExt()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Ext' class=''  j='editClient'") . 
                 td(span((($altValue['Email']) ? $altValue['Email'] : $data->getEmail()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Email' class=''  j='editClient'") . 
-                td(span((($altValue['Contact']) ? $altValue['Contact'] : $data->getContact()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Contact' class=''  j='editClient'") . 
-                td(span((($altValue['Email2']) ? $altValue['Email2'] : $data->getEmail2()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Email2' class=''  j='editClient'") . 
-                td(span((($altValue['PhoneMobile']) ? $altValue['PhoneMobile'] : $data->getPhoneMobile()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='PhoneMobile' class=''  j='editClient'") . 
-                td(span((($altValue['Address1']) ? $altValue['Address1'] : substr(strip_tags($data->getAddress1()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Address1' class=''  j='editClient'") . 
-                td(span((($altValue['Address2']) ? $altValue['Address2'] : substr(strip_tags($data->getAddress2()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Address2' class=''  j='editClient'") . 
-                td(span((($altValue['Address3']) ? $altValue['Address3'] : substr(strip_tags($data->getAddress3()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Address3' class=''  j='editClient'") . 
-                td(span((($altValue['Zip']) ? $altValue['Zip'] : $data->getZip()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Zip' class=''  j='editClient'") . $hook['td'].$cCmoreCols.$actionCell
+                td(span((($altValue['Contact']) ? $altValue['Contact'] : $data->getContact()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Contact' class=''  j='editClient'") . $hook['td'].$cCmoreCols.$actionCell
                 , " ".$hook['tr']."
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -450,6 +495,40 @@ class ClientForm extends Client
             
             ."
         
+
+    $('#msClientBt').click(function() {
+        sw_message('".addslashes(_('Search in progress...'))."',false ,'search-progress', true);
+        $('#msClientBt button').attr('disabled', 'disabled');
+
+        $.post('"._SITE_URL.$this->virtualClassName."', {ui: '".$uiTabsId."', ms:$('#formMsClient').serialize() },  function(data){
+            $('#".$uiTabsId."').html(data);
+            $('#formMsClient .js-select-label').SelectBox();
+            $('#formMsClient input[type=text]').first().focus();
+            $('#formMsClient input[type=text]').first().putCursorAtEnd();
+            $('#msClientBt button').attr('disabled', '');
+            sw_message_remove('search-progress');
+        });
+
+        return false;
+    });
+
+    $('#formMsClient').keydown(function(e) {
+        if(e.which == 13) {
+            $('#msClientBt').click();
+        }
+    });
+
+    $('#msClientBtClear').bind('click', function (){
+        sw_message('".addslashes(_('Search cleared...'))."', false,'search-reset', true);
+
+        $.post('"._SITE_URL.$this->virtualClassName."', {ui: '".$uiTabsId."', ms:'clear' },  function(data){
+                $('#".$uiTabsId."').html(data);
+                $('#formMsClient input[type=text]:first-of-type').focus().putCursorAtEnd();
+                sw_message_remove('search-reset');
+        });
+
+        return false;
+    });
         
         
         $('#tabsContain .js-select-label').SelectBox();
@@ -493,6 +572,14 @@ class ClientForm extends Client
         $e->setAddress2( ($data['Address2'] == '' ) ? null : $data['Address2']);
         //integer not required
         $e->setAddress3( ($data['Address3'] == '' ) ? null : $data['Address3']);
+        //integer not required
+        $e->setDefaultRate( ($data['DefaultRate'] == '' ) ? null : $data['DefaultRate']);
+        //foreign
+        $e->setDefaultUser(( $data['DefaultUser'] == '' ) ? null : $data['DefaultUser']);
+        //foreign
+        $e->setDefaultCategory(( $data['DefaultCategory'] == '' ) ? null : $data['DefaultCategory']);
+        //foreign
+        $e->setDefaultCurrency(( $data['DefaultCurrency'] == '' ) ? null : $data['DefaultCurrency']);
         $e->setDateCreation( ($data['DateCreation'] == '' || $data['DateCreation'] == 'null' || substr($data['DateCreation'],0,10) == '-0001-11-30') ? null : $data['DateCreation'] );
         $e->setDateModification( ($data['DateModification'] == '' || $data['DateModification'] == 'null' || substr($data['DateModification'],0,10) == '-0001-11-30') ? null : $data['DateModification'] );
         //foreign
@@ -520,6 +607,18 @@ class ClientForm extends Client
 
         
         
+        if(isset($data['DefaultRate'])){
+            $e->setDefaultRate( ($data['DefaultRate'] == '' ) ? null : $data['DefaultRate']);
+        }
+        if( isset($data['DefaultUser']) ){
+            $e->setDefaultUser(( $data['DefaultUser'] == '' ) ? null : $data['DefaultUser']);
+        }
+        if( isset($data['DefaultCategory']) ){
+            $e->setDefaultCategory(( $data['DefaultCategory'] == '' ) ? null : $data['DefaultCategory']);
+        }
+        if( isset($data['DefaultCurrency']) ){
+            $e->setDefaultCurrency(( $data['DefaultCurrency'] == '' ) ? null : $data['DefaultCurrency']);
+        }
         if(isset($data['DateCreation'])){
             $e->setDateCreation( ($data['DateCreation'] == '' || $data['DateCreation'] == 'null' || substr($data['DateCreation'],0,10) == '-0001-11-30') ? null : $data['DateCreation'] );
         }
@@ -588,11 +687,17 @@ class ClientForm extends Client
                 case 'Country':
                     $data['IdCountry'] = $data['ip'];
                     break;
-                case 'AuthyGroup':
-                    $data['IdGroupCreation'] = $data['ip'];
-                    break;
                 case 'Authy':
                     $data['IdModification'] = $data['ip'];
+                    break;
+                case 'BillingCategory':
+                    $data['DefaultCategory'] = $data['ip'];
+                    break;
+                case 'Currency':
+                    $data['DefaultCurrency'] = $data['ip'];
+                    break;
+                case 'AuthyGroup':
+                    $data['IdGroupCreation'] = $data['ip'];
                     break;
             }
             $IdParent = $data['ip'];
@@ -644,6 +749,12 @@ class ClientForm extends Client
             
                 #required client
                 ->leftJoinWith('Country')
+                #alias default
+                ->leftJoinWith('AuthyRelatedByDefaultUser a5')
+                #default
+                ->leftJoinWith('BillingCategory')
+                #default
+                ->leftJoinWith('Currency')
             ;
             
 
@@ -673,9 +784,15 @@ class ClientForm extends Client
 
 
                                     ($dataObj->getCountry())?'':$dataObj->setCountry( new Country() );
+                                    ($dataObj->getAuthyRelatedByDefaultUser())?'':$dataObj->setAuthyRelatedByDefaultUser( new Authy() );
+                                    ($dataObj->getBillingCategory())?'':$dataObj->setBillingCategory( new BillingCategory() );
+                                    ($dataObj->getCurrency())?'':$dataObj->setCurrency( new Currency() );
 
         
         $this->arrayIdCountryOptions = $this->selectBoxClient_IdCountry($this, $dataObj, $data);
+        $this->arrayDefaultUserOptions = $this->selectBoxClient_DefaultUser($this, $dataObj, $data);
+        $this->arrayDefaultCategoryOptions = $this->selectBoxClient_DefaultCategory($this, $dataObj, $data);
+        $this->arrayDefaultCurrencyOptions = $this->selectBoxClient_DefaultCurrency($this, $dataObj, $data);
         
         
         
@@ -695,6 +812,10 @@ $this->fields['Client']['Address1']['html'] = stdFieldRow(_("Address 1"), textar
 $this->fields['Client']['Address2']['html'] = stdFieldRow(_("Address 2"), textarea('Address2', htmlentities($dataObj->getAddress2()) ,"placeholder='".str_replace("'","&#39;",_('Address 2'))."' cols='35' v='ADDRESS_2' s='d'  class=' ' style='' spellcheck='false'"), 'Address2', "", $this->commentsAddress2, $this->commentsAddress2_css, '', ' ', 'no');
 $this->fields['Client']['Address3']['html'] = stdFieldRow(_("Address 3"), textarea('Address3', htmlentities($dataObj->getAddress3()) ,"placeholder='".str_replace("'","&#39;",_('Address 3'))."' cols='35' v='ADDRESS_3' s='d'  class=' ' style='' spellcheck='false'"), 'Address3', "", $this->commentsAddress3, $this->commentsAddress3_css, '', ' ', 'no');
 $this->fields['Client']['Zip']['html'] = stdFieldRow(_("Zip"), input('text', 'Zip', htmlentities($dataObj->getZip()), "   placeholder='".str_replace("'","&#39;",_('Zip'))."' size='15'  v='ZIP' s='d' class=''  ")."", 'Zip', "", $this->commentsZip, $this->commentsZip_css, '', ' ', 'no');
+$this->fields['Client']['DefaultRate']['html'] = stdFieldRow(_("Rate"), input('text', 'DefaultRate', $dataObj->getDefaultRate(), "  placeholder='".str_replace("'","&#39;",_('Rate'))."'  v='DEFAULT_RATE' size='5' s='d' class=''"), 'DefaultRate', "", $this->commentsDefaultRate, $this->commentsDefaultRate_css, '', ' ', 'no');
+$this->fields['Client']['DefaultUser']['html'] = stdFieldRow(_("User"), selectboxCustomArray('DefaultUser', $this->arrayDefaultUserOptions, _('User'), "v='DEFAULT_USER'  s='d'  val='".$dataObj->getDefaultUser()."'", $dataObj->getDefaultUser()), 'DefaultUser', "", $this->commentsDefaultUser, $this->commentsDefaultUser_css, '', ' ', 'no');
+$this->fields['Client']['DefaultCategory']['html'] = stdFieldRow(_("Category"), selectboxCustomArray('DefaultCategory', $this->arrayDefaultCategoryOptions, _('Category'), "v='DEFAULT_CATEGORY'  s='d'  val='".$dataObj->getDefaultCategory()."'", $dataObj->getDefaultCategory()), 'DefaultCategory', "", $this->commentsDefaultCategory, $this->commentsDefaultCategory_css, '', ' ', 'no');
+$this->fields['Client']['DefaultCurrency']['html'] = stdFieldRow(_("Currency"), selectboxCustomArray('DefaultCurrency', $this->arrayDefaultCurrencyOptions, _('Currency'), "v='DEFAULT_CURRENCY'  s='d'  val='".$dataObj->getDefaultCurrency()."'", $dataObj->getDefaultCurrency()), 'DefaultCurrency', "", $this->commentsDefaultCurrency, $this->commentsDefaultCurrency_css, '', ' ', 'no');
 
 
         
@@ -747,7 +868,12 @@ $this->fields['Client']['Zip']['html'] = stdFieldRow(_("Zip"), input('text', 'Zi
             }
         }
         }
-        
+        $ongletf =
+            div(
+                ul(li(htmlLink(_('Client'),'#ogf_Client',' j="ogf" p="Client" class="ui-tabs-anchor" '))
+                    .li(htmlLink(_('Default'),'#ogf_default_rate',' j="ogf" class="ui-tabs-anchor" p="Client" ')))
+            ,'cntOngletClient',' class="cntOnglet"')
+        ;
         
         if(!$this->setReadOnly){
             $this->formSaveBar = div(	div( input('button', 'saveClient', _('Save'),' class="button-link-blue can-save"')
@@ -790,6 +916,7 @@ $this->fields['Client']['Zip']['html'] = stdFieldRow(_("Zip"), input('text', 'Zi
                 $this->hookFormInnerTop
                 
                 .
+                    '<div id="ogf_Client">'.
 $this->fields['Client']['Name']['html']
 .$this->fields['Client']['IdCountry']['html']
 .$this->fields['Client']['Phone']['html']
@@ -803,6 +930,11 @@ $this->fields['Client']['Name']['html']
 .$this->fields['Client']['Address2']['html']
 .$this->fields['Client']['Address3']['html']
 .$this->fields['Client']['Zip']['html']
+.'</div><div id="ogf_default_rate"  class=" ui-tabs-panel">'
+.$this->fields['Client']['DefaultRate']['html']
+.$this->fields['Client']['DefaultUser']['html']
+.$this->fields['Client']['DefaultCategory']['html']
+.$this->fields['Client']['DefaultCurrency']['html'].'</div>'
                 
                 .$this->formSaveBar
                 .$this->hookFormInnerBottom
@@ -844,7 +976,7 @@ $this->fields['Client']['Name']['html']
         $('#ui-datepicker-div').css('font-size', '12px');
         ".$this->bindEditJs."
         ".$this->SaveButtonJs."
-        
+        $('.cntOnglet').parent().tabs();
         ".$childTable['onReadyJs']."
         ".$error['onReadyJs']."
         if($('#form" . $this->virtualClassName . "').inDialog()){
@@ -909,6 +1041,18 @@ $this->fields['Client']['Name']['html']
         $this->fieldsRo['Client']['Zip']['html'] = stdFieldRow(_("Zip"), div( $dataObj->getZip(), 'Zip_label' , "class='readonly' s='d'")
                 .input('hidden', 'Zip', $dataObj->getZip(), "s='d'"), 'Zip', "", $this->commentsZip, $this->commentsZip_css, 'readonly', ' ', 'no');
 
+        $this->fieldsRo['Client']['DefaultRate']['html'] = stdFieldRow(_("Rate"), div( $dataObj->getDefaultRate(), 'DefaultRate_label' , "class='readonly' s='d'")
+                .input('hidden', 'DefaultRate', $dataObj->getDefaultRate(), "s='d'"), 'DefaultRate', "", $this->commentsDefaultRate, $this->commentsDefaultRate_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['Client']['DefaultUser']['html'] = stdFieldRow(_("User"), div( ($dataObj->getAuthyRelatedByDefaultUser())?$dataObj->getAuthyRelatedByDefaultUser()->getFullname():'', 'DefaultUser_label' , "class='readonly' s='d'")
+                .input('hidden', 'DefaultUser', $dataObj->getDefaultUser(), "s='d'"), 'DefaultUser', "", $this->commentsDefaultUser, $this->commentsDefaultUser_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['Client']['DefaultCategory']['html'] = stdFieldRow(_("Category"), div( ($dataObj->getBillingCategory())?$dataObj->getBillingCategory()->getName():'', 'DefaultCategory_label' , "class='readonly' s='d'")
+                .input('hidden', 'DefaultCategory', $dataObj->getDefaultCategory(), "s='d'"), 'DefaultCategory', "", $this->commentsDefaultCategory, $this->commentsDefaultCategory_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['Client']['DefaultCurrency']['html'] = stdFieldRow(_("Currency"), div( ($dataObj->getCurrency())?$dataObj->getCurrency()->getName():'', 'DefaultCurrency_label' , "class='readonly' s='d'")
+                .input('hidden', 'DefaultCurrency', $dataObj->getDefaultCurrency(), "s='d'"), 'DefaultCurrency', "", $this->commentsDefaultCurrency, $this->commentsDefaultCurrency_css, 'readonly', ' ', 'no');
+
 
         if($fields == 'all') {
             foreach($this->fields['Client'] as $field => $ar) {
@@ -931,6 +1075,79 @@ $this->fields['Client']['Name']['html']
         $q = CountryQuery::create();
 
             $q->select(array('Name', 'IdCountry'));
+            $q->orderBy('Name', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+
+        $arrayOpt = $pcDataO->toArray();
+
+        return assocToNum($arrayOpt , true);
+    }
+
+    /**
+     * Query for Client_DefaultUser selectBox 
+     * @param object $obj
+     * @param object $dataObj
+     * @param array $data
+    **/
+    public function selectBoxClient_DefaultUser(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+        $q = AuthyQuery::create();
+
+            $q->addAsColumn('selDisplay', ''.AuthyPeer::FULLNAME.'');
+            $q->select(array('selDisplay', 'IdAuthy'));
+            $q->orderBy('selDisplay', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+
+        $arrayOpt = $pcDataO->toArray();
+
+        return assocToNum($arrayOpt , true);
+    }
+
+    /**
+     * Query for Client_DefaultCategory selectBox 
+     * @param object $obj
+     * @param object $dataObj
+     * @param array $data
+    **/
+    public function selectBoxClient_DefaultCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+        $q = BillingCategoryQuery::create();
+
+            $q->select(array('Name', 'IdBillingCategory'));
+            $q->orderBy('Name', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+
+        $arrayOpt = $pcDataO->toArray();
+
+        return assocToNum($arrayOpt , true);
+    }
+
+    /**
+     * Query for Client_DefaultCurrency selectBox 
+     * @param object $obj
+     * @param object $dataObj
+     * @param array $data
+    **/
+    public function selectBoxClient_DefaultCurrency(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+        $q = CurrencyQuery::create();
+
+            $q->select(array('Name', 'IdCurrency'));
             $q->orderBy('Name', 'ASC');
         
             if(!$array){
@@ -1030,6 +1247,35 @@ $this->fields['Client']['Name']['html']
         $arrayOpt = $pcDataO->toArray();
 
         return assocToNum($arrayOpt , true);
+    }
+
+    /**
+     * Query for Billing_DefaultCurrency selectBox 
+     * @param object $obj
+     * @param object $dataObj
+     * @param array $data
+    **/
+    public function selectBoxBilling_DefaultCurrency(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+        $q = CurrencyQuery::create();
+
+    if(method_exists($this, 'beginSelectboxBilling_DefaultCurrency') and $array)
+        $ret = $this->beginSelectboxBilling_DefaultCurrency($q, $dataObj, $data, $obj);
+    if($ret !== false)
+            $q->select(array('Name', 'IdCurrency'));
+            $q->orderBy('Name', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+                if(function_exists('selectboxDataBilling_DefaultCurrency')){ $this->selectboxDataBilling_DefaultCurrency($pcDataO, $q); }
+
+
+        $arrayOpt = $pcDataO->toArray();
+
+        return assocToNum($arrayOpt , true);
     }	
     /**
      * function getBillingList
@@ -1058,6 +1304,7 @@ $this->fields['Client']['Name']['html']
   'Type' => '',
   'Gross' => '',
   'GrossCurrency' => '',
+  'DefaultCurrency' => '',
   'Gross2' => '',
   'Tax' => '',
   'DateDue' => '',
@@ -1153,7 +1400,9 @@ $this->fields['Client']['Name']['html']
                 #default
                 ->leftJoinWith('Project')
                 #default
-                ->leftJoinWith('BillingCategory') 
+                ->leftJoinWith('BillingCategory')
+                #default
+                ->leftJoinWith('Currency') 
             
             ->filterByIdClient( $filterKey );; 
                // Search
@@ -1198,6 +1447,7 @@ $this->fields['Client']['Name']['html']
         $this->arrayIdClientOptions = $this->selectBoxBilling_IdClient($this, $dataObj, $data);
         $this->arrayIdProjectOptions = $this->selectBoxBilling_IdProject($this, $dataObj, $data);
         $this->arrayIdBillingCategoryOptions = $this->selectBoxBilling_IdBillingCategory($this, $dataObj, $data);
+        $this->arrayDefaultCurrencyOptions = $this->selectBoxBilling_DefaultCurrency($this, $dataObj, $data);
         
         
           
@@ -1218,7 +1468,7 @@ $this->fields['Client']['Name']['html']
 .th(_("Date"), " th='sorted' c='Date' title='" . _('Date')."' " . $param['th']['Date']."")
 .th(_("Type"), " th='sorted' c='Type' title='" . _('Type')."' " . $param['th']['Type']."")
 .th(_("Gross"), " th='sorted' c='Gross' title='" . _('Gross')."' " . $param['th']['Gross']."")
-.th(_("Currency"), " th='sorted' c='GrossCurrency' title='" . _('Currency')."' " . $param['th']['GrossCurrency']."")
+.th(_("Currency"), " th='sorted' c='Currency.Name' title='"._('Currency.Name')."' " . $param['th']['DefaultCurrency']."")
 .th(_("Gross"), " th='sorted' c='Gross2' title='" . _('Gross')."' " . $param['th']['Gross2']."")
 .th(_("Due date"), " th='sorted' c='DateDue' title='" . _('Due date')."' " . $param['th']['DateDue']."")
 .th(_("Paid date"), " th='sorted' c='DatePaid' title='" . _('Paid date')."' " . $param['th']['DatePaid']."")
@@ -1261,6 +1511,10 @@ $this->fields['Client']['Name']['html']
                                     if($data->getProject()){
                                         $Project_Name = $data->getProject()->getName();
                                     }
+                                    $Currency_Name = "";
+                                    if($data->getCurrency()){
+                                        $Currency_Name = $data->getCurrency()->getName();
+                                    }
                 
                 
                 ;
@@ -1278,7 +1532,7 @@ $this->fields['Client']['Name']['html']
                 td(span((($altValue['Date']) ? $altValue['Date'] : $data->getDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class='' " . $param['Date']." j='editBilling'") . 
                 td(span((($altValue['Type']) ? $altValue['Type'] : isntPo($data->getType())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center' " . $param['Type']." j='editBilling'") . 
                 td(span((($altValue['Gross']) ? $altValue['Gross'] : str_replace(',', '.', $data->getGross())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Gross' class='right' " . $param['Gross']." j='editBilling'") . 
-                td(span((($altValue['GrossCurrency']) ? $altValue['GrossCurrency'] : isntPo($data->getGrossCurrency())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='GrossCurrency' class='center' " . $param['GrossCurrency']." j='editBilling'") . 
+                td(span((($altValue['DefaultCurrency']) ? $altValue['DefaultCurrency'] : $Currency_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DefaultCurrency' class='' " . $param['DefaultCurrency']." j='editBilling'") . 
                 td(span((($altValue['Gross2']) ? $altValue['Gross2'] : str_replace(',', '.', $data->getGross2())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Gross2' class='right' " . $param['Gross2']." j='editBilling'") . 
                 td(span((($altValue['DateDue']) ? $altValue['DateDue'] : $data->getDateDue()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DateDue' class='' " . $param['DateDue']." j='editBilling'") . 
                 td(span((($altValue['DatePaid']) ? $altValue['DatePaid'] : $data->getDatePaid()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DatePaid' class='' " . $param['DatePaid']." j='editBilling'") . 

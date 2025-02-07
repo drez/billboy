@@ -112,6 +112,14 @@ $omMap = [
         'display' => 'Category billing',
     ],
     [
+        'name' => 'Currency',
+        'desc' => 'Currencies',
+        'parent_table' => null,
+        'parent_menu' => 'Settings',
+        'child_table' => null,
+        'display' => 'Currency',
+    ],
+    [
         'name' => 'Authy',
         'desc' => 'Users',
         'parent_table' => null,

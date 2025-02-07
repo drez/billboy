@@ -106,7 +106,8 @@ class AuthyTableMap extends TableMap
         $this->addRelation('AuthyGroupRelatedByIdGroupCreation', 'App\\AuthyGroup', RelationMap::MANY_TO_ONE, array('id_group_creation' => 'id_authy_group', ), null, null);
         $this->addRelation('AuthyRelatedByIdCreation', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_creation' => 'id_authy', ), null, null);
         $this->addRelation('AuthyRelatedByIdModification', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_modification' => 'id_authy', ), null, null);
-        $this->addRelation('BillingLineRelatedByIdAssign', 'App\\BillingLine', RelationMap::ONE_TO_MANY, array('id_creation' => 'id_assign', ), null, null, 'BillingLinesRelatedByIdAssign');
+        $this->addRelation('ClientRelatedByDefaultUser', 'App\\Client', RelationMap::ONE_TO_MANY, array('id_authy' => 'default_user', ), null, null, 'ClientsRelatedByDefaultUser');
+        $this->addRelation('BillingLineRelatedByIdAssign', 'App\\BillingLine', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_assign', ), null, null, 'BillingLinesRelatedByIdAssign');
         $this->addRelation('AuthyGroupX', 'App\\AuthyGroupX', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_authy', ), null, 'CASCADE', 'AuthyGroupxes');
         $this->addRelation('AuthyLog', 'App\\AuthyLog', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_authy', ), null, 'CASCADE', 'AuthyLogs');
         $this->addRelation('ClientRelatedByIdCreation', 'App\\Client', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_creation', ), null, null, 'ClientsRelatedByIdCreation');
@@ -125,6 +126,8 @@ class AuthyTableMap extends TableMap
         $this->addRelation('TimeLineRelatedByIdModification', 'App\\TimeLine', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_modification', ), null, null, 'TimeLinesRelatedByIdModification');
         $this->addRelation('BillingCategoryRelatedByIdCreation', 'App\\BillingCategory', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_creation', ), null, null, 'BillingCategoriesRelatedByIdCreation');
         $this->addRelation('BillingCategoryRelatedByIdModification', 'App\\BillingCategory', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_modification', ), null, null, 'BillingCategoriesRelatedByIdModification');
+        $this->addRelation('CurrencyRelatedByIdCreation', 'App\\Currency', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_creation', ), null, null, 'CurrenciesRelatedByIdCreation');
+        $this->addRelation('CurrencyRelatedByIdModification', 'App\\Currency', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_modification', ), null, null, 'CurrenciesRelatedByIdModification');
         $this->addRelation('SupplierRelatedByIdCreation', 'App\\Supplier', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_creation', ), null, null, 'SuppliersRelatedByIdCreation');
         $this->addRelation('SupplierRelatedByIdModification', 'App\\Supplier', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_modification', ), null, null, 'SuppliersRelatedByIdModification');
         $this->addRelation('AuthyRelatedByIdAuthy0', 'App\\Authy', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_creation', ), null, null, 'AuthiesRelatedByIdAuthy0');

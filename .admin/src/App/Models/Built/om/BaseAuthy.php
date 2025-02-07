@@ -42,6 +42,8 @@ use App\CostLine;
 use App\CostLineQuery;
 use App\Country;
 use App\CountryQuery;
+use App\Currency;
+use App\CurrencyQuery;
 use App\MessageI18n;
 use App\MessageI18nQuery;
 use App\PaymentLine;
@@ -231,6 +233,12 @@ abstract class BaseAuthy extends BaseObject implements Persistent
     protected $aAuthyRelatedByIdModification;
 
     /**
+     * @var        PropelObjectCollection|Client[] Collection to store aggregation of Client objects.
+     */
+    protected $collClientsRelatedByDefaultUser;
+    protected $collClientsRelatedByDefaultUserPartial;
+
+    /**
      * @var        PropelObjectCollection|BillingLine[] Collection to store aggregation of BillingLine objects.
      */
     protected $collBillingLinesRelatedByIdAssign;
@@ -343,6 +351,18 @@ abstract class BaseAuthy extends BaseObject implements Persistent
      */
     protected $collBillingCategoriesRelatedByIdModification;
     protected $collBillingCategoriesRelatedByIdModificationPartial;
+
+    /**
+     * @var        PropelObjectCollection|Currency[] Collection to store aggregation of Currency objects.
+     */
+    protected $collCurrenciesRelatedByIdCreation;
+    protected $collCurrenciesRelatedByIdCreationPartial;
+
+    /**
+     * @var        PropelObjectCollection|Currency[] Collection to store aggregation of Currency objects.
+     */
+    protected $collCurrenciesRelatedByIdModification;
+    protected $collCurrenciesRelatedByIdModificationPartial;
 
     /**
      * @var        PropelObjectCollection|Supplier[] Collection to store aggregation of Supplier objects.
@@ -482,6 +502,12 @@ abstract class BaseAuthy extends BaseObject implements Persistent
      * An array of objects scheduled for deletion.
      * @var		PropelObjectCollection
      */
+    protected $clientsRelatedByDefaultUserScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
     protected $billingLinesRelatedByIdAssignScheduledForDeletion = null;
 
     /**
@@ -591,6 +617,18 @@ abstract class BaseAuthy extends BaseObject implements Persistent
      * @var		PropelObjectCollection
      */
     protected $billingCategoriesRelatedByIdModificationScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $currenciesRelatedByIdCreationScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $currenciesRelatedByIdModificationScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1700,6 +1738,8 @@ abstract class BaseAuthy extends BaseObject implements Persistent
             $this->aAuthyGroupRelatedByIdGroupCreation = null;
             $this->aAuthyRelatedByIdCreation = null;
             $this->aAuthyRelatedByIdModification = null;
+            $this->collClientsRelatedByDefaultUser = null;
+
             $this->collBillingLinesRelatedByIdAssign = null;
 
             $this->collAuthyGroupxes = null;
@@ -1737,6 +1777,10 @@ abstract class BaseAuthy extends BaseObject implements Persistent
             $this->collBillingCategoriesRelatedByIdCreation = null;
 
             $this->collBillingCategoriesRelatedByIdModification = null;
+
+            $this->collCurrenciesRelatedByIdCreation = null;
+
+            $this->collCurrenciesRelatedByIdModification = null;
 
             $this->collSuppliersRelatedByIdCreation = null;
 
@@ -1985,6 +2029,24 @@ abstract class BaseAuthy extends BaseObject implements Persistent
                 foreach ($this->collAuthyGroups as $authyGroup) {
                     if ($authyGroup->isModified()) {
                         $authyGroup->save($con);
+                    }
+                }
+            }
+
+            if ($this->clientsRelatedByDefaultUserScheduledForDeletion !== null) {
+                if (!$this->clientsRelatedByDefaultUserScheduledForDeletion->isEmpty()) {
+                    foreach ($this->clientsRelatedByDefaultUserScheduledForDeletion as $clientRelatedByDefaultUser) {
+                        // need to save related object because we set the relation to null
+                        $clientRelatedByDefaultUser->save($con);
+                    }
+                    $this->clientsRelatedByDefaultUserScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collClientsRelatedByDefaultUser !== null) {
+                foreach ($this->collClientsRelatedByDefaultUser as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
                     }
                 }
             }
@@ -2324,6 +2386,42 @@ abstract class BaseAuthy extends BaseObject implements Persistent
 
             if ($this->collBillingCategoriesRelatedByIdModification !== null) {
                 foreach ($this->collBillingCategoriesRelatedByIdModification as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->currenciesRelatedByIdCreationScheduledForDeletion !== null) {
+                if (!$this->currenciesRelatedByIdCreationScheduledForDeletion->isEmpty()) {
+                    foreach ($this->currenciesRelatedByIdCreationScheduledForDeletion as $currencyRelatedByIdCreation) {
+                        // need to save related object because we set the relation to null
+                        $currencyRelatedByIdCreation->save($con);
+                    }
+                    $this->currenciesRelatedByIdCreationScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collCurrenciesRelatedByIdCreation !== null) {
+                foreach ($this->collCurrenciesRelatedByIdCreation as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->currenciesRelatedByIdModificationScheduledForDeletion !== null) {
+                if (!$this->currenciesRelatedByIdModificationScheduledForDeletion->isEmpty()) {
+                    foreach ($this->currenciesRelatedByIdModificationScheduledForDeletion as $currencyRelatedByIdModification) {
+                        // need to save related object because we set the relation to null
+                        $currencyRelatedByIdModification->save($con);
+                    }
+                    $this->currenciesRelatedByIdModificationScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collCurrenciesRelatedByIdModification !== null) {
+                foreach ($this->collCurrenciesRelatedByIdModification as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -2957,6 +3055,14 @@ abstract class BaseAuthy extends BaseObject implements Persistent
             }
 
 
+                if ($this->collClientsRelatedByDefaultUser !== null) {
+                    foreach ($this->collClientsRelatedByDefaultUser as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
                 if ($this->collBillingLinesRelatedByIdAssign !== null) {
                     foreach ($this->collBillingLinesRelatedByIdAssign as $referrerFK) {
                         if (!$referrerFK->validate($columns)) {
@@ -3103,6 +3209,22 @@ abstract class BaseAuthy extends BaseObject implements Persistent
 
                 if ($this->collBillingCategoriesRelatedByIdModification !== null) {
                     foreach ($this->collBillingCategoriesRelatedByIdModification as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
+                if ($this->collCurrenciesRelatedByIdCreation !== null) {
+                    foreach ($this->collCurrenciesRelatedByIdCreation as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
+                if ($this->collCurrenciesRelatedByIdModification !== null) {
+                    foreach ($this->collCurrenciesRelatedByIdModification as $referrerFK) {
                         if (!$referrerFK->validate($columns)) {
                             $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
                         }
@@ -3348,6 +3470,9 @@ abstract class BaseAuthy extends BaseObject implements Persistent
             if (null !== $this->aAuthyRelatedByIdModification) {
                 $result['AuthyRelatedByIdModification'] = $this->aAuthyRelatedByIdModification->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
+            if (null !== $this->collClientsRelatedByDefaultUser) {
+                $result['ClientsRelatedByDefaultUser'] = $this->collClientsRelatedByDefaultUser->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
             if (null !== $this->collBillingLinesRelatedByIdAssign) {
                 $result['BillingLinesRelatedByIdAssign'] = $this->collBillingLinesRelatedByIdAssign->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
@@ -3404,6 +3529,12 @@ abstract class BaseAuthy extends BaseObject implements Persistent
             }
             if (null !== $this->collBillingCategoriesRelatedByIdModification) {
                 $result['BillingCategoriesRelatedByIdModification'] = $this->collBillingCategoriesRelatedByIdModification->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collCurrenciesRelatedByIdCreation) {
+                $result['CurrenciesRelatedByIdCreation'] = $this->collCurrenciesRelatedByIdCreation->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collCurrenciesRelatedByIdModification) {
+                $result['CurrenciesRelatedByIdModification'] = $this->collCurrenciesRelatedByIdModification->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collSuppliersRelatedByIdCreation) {
                 $result['SuppliersRelatedByIdCreation'] = $this->collSuppliersRelatedByIdCreation->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -3733,6 +3864,12 @@ abstract class BaseAuthy extends BaseObject implements Persistent
             // store object hash to prevent cycle
             $this->startCopy = true;
 
+            foreach ($this->getClientsRelatedByDefaultUser() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addClientRelatedByDefaultUser($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getBillingLinesRelatedByIdAssign() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addBillingLineRelatedByIdAssign($relObj->copy($deepCopy));
@@ -3844,6 +3981,18 @@ abstract class BaseAuthy extends BaseObject implements Persistent
             foreach ($this->getBillingCategoriesRelatedByIdModification() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addBillingCategoryRelatedByIdModification($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getCurrenciesRelatedByIdCreation() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addCurrencyRelatedByIdCreation($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getCurrenciesRelatedByIdModification() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addCurrencyRelatedByIdModification($relObj->copy($deepCopy));
                 }
             }
 
@@ -4230,6 +4379,9 @@ abstract class BaseAuthy extends BaseObject implements Persistent
      */
     public function initRelation($relationName)
     {
+        if ('ClientRelatedByDefaultUser' == $relationName) {
+            $this->initClientsRelatedByDefaultUser();
+        }
         if ('BillingLineRelatedByIdAssign' == $relationName) {
             $this->initBillingLinesRelatedByIdAssign();
         }
@@ -4286,6 +4438,12 @@ abstract class BaseAuthy extends BaseObject implements Persistent
         }
         if ('BillingCategoryRelatedByIdModification' == $relationName) {
             $this->initBillingCategoriesRelatedByIdModification();
+        }
+        if ('CurrencyRelatedByIdCreation' == $relationName) {
+            $this->initCurrenciesRelatedByIdCreation();
+        }
+        if ('CurrencyRelatedByIdModification' == $relationName) {
+            $this->initCurrenciesRelatedByIdModification();
         }
         if ('SupplierRelatedByIdCreation' == $relationName) {
             $this->initSuppliersRelatedByIdCreation();
@@ -4344,6 +4502,299 @@ abstract class BaseAuthy extends BaseObject implements Persistent
         if ('MessageI18nRelatedByIdModification' == $relationName) {
             $this->initMessageI18nsRelatedByIdModification();
         }
+    }
+
+    /**
+     * Clears out the collClientsRelatedByDefaultUser collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Authy The current object (for fluent API support)
+     * @see        addClientsRelatedByDefaultUser()
+     */
+    public function clearClientsRelatedByDefaultUser()
+    {
+        $this->collClientsRelatedByDefaultUser = null; // important to set this to null since that means it is uninitialized
+        $this->collClientsRelatedByDefaultUserPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collClientsRelatedByDefaultUser collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialClientsRelatedByDefaultUser($v = true)
+    {
+        $this->collClientsRelatedByDefaultUserPartial = $v;
+    }
+
+    /**
+     * Initializes the collClientsRelatedByDefaultUser collection.
+     *
+     * By default this just sets the collClientsRelatedByDefaultUser collection to an empty array (like clearcollClientsRelatedByDefaultUser());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initClientsRelatedByDefaultUser($overrideExisting = true)
+    {
+        if (null !== $this->collClientsRelatedByDefaultUser && !$overrideExisting) {
+            return;
+        }
+        $this->collClientsRelatedByDefaultUser = new PropelObjectCollection();
+        $this->collClientsRelatedByDefaultUser->setModel('Client');
+    }
+
+    /**
+     * Gets an array of Client objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Authy is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Client[] List of Client objects
+     * @throws PropelException
+     */
+    public function getClientsRelatedByDefaultUser($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collClientsRelatedByDefaultUserPartial && !$this->isNew();
+        if (null === $this->collClientsRelatedByDefaultUser || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collClientsRelatedByDefaultUser) {
+                // return empty collection
+                $this->initClientsRelatedByDefaultUser();
+            } else {
+                $collClientsRelatedByDefaultUser = ClientQuery::create(null, $criteria)
+                    ->filterByAuthyRelatedByDefaultUser($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collClientsRelatedByDefaultUserPartial && count($collClientsRelatedByDefaultUser)) {
+                      $this->initClientsRelatedByDefaultUser(false);
+
+                      foreach ($collClientsRelatedByDefaultUser as $obj) {
+                        if (false == $this->collClientsRelatedByDefaultUser->contains($obj)) {
+                          $this->collClientsRelatedByDefaultUser->append($obj);
+                        }
+                      }
+
+                      $this->collClientsRelatedByDefaultUserPartial = true;
+                    }
+
+                    $collClientsRelatedByDefaultUser->getInternalIterator()->rewind();
+
+                    return $collClientsRelatedByDefaultUser;
+                }
+
+                if ($partial && $this->collClientsRelatedByDefaultUser) {
+                    foreach ($this->collClientsRelatedByDefaultUser as $obj) {
+                        if ($obj->isNew()) {
+                            $collClientsRelatedByDefaultUser[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collClientsRelatedByDefaultUser = $collClientsRelatedByDefaultUser;
+                $this->collClientsRelatedByDefaultUserPartial = false;
+            }
+        }
+
+        return $this->collClientsRelatedByDefaultUser;
+    }
+
+    /**
+     * Sets a collection of ClientRelatedByDefaultUser objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $clientsRelatedByDefaultUser A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return Authy The current object (for fluent API support)
+     */
+    public function setClientsRelatedByDefaultUser(PropelCollection $clientsRelatedByDefaultUser, PropelPDO $con = null)
+    {
+        $clientsRelatedByDefaultUserToDelete = $this->getClientsRelatedByDefaultUser(new Criteria(), $con)->diff($clientsRelatedByDefaultUser);
+
+
+        $this->clientsRelatedByDefaultUserScheduledForDeletion = $clientsRelatedByDefaultUserToDelete;
+
+        foreach ($clientsRelatedByDefaultUserToDelete as $clientRelatedByDefaultUserRemoved) {
+            $clientRelatedByDefaultUserRemoved->setAuthyRelatedByDefaultUser(null);
+        }
+
+        $this->collClientsRelatedByDefaultUser = null;
+        foreach ($clientsRelatedByDefaultUser as $clientRelatedByDefaultUser) {
+            $this->addClientRelatedByDefaultUser($clientRelatedByDefaultUser);
+        }
+
+        $this->collClientsRelatedByDefaultUser = $clientsRelatedByDefaultUser;
+        $this->collClientsRelatedByDefaultUserPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Client objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related Client objects.
+     * @throws PropelException
+     */
+    public function countClientsRelatedByDefaultUser(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collClientsRelatedByDefaultUserPartial && !$this->isNew();
+        if (null === $this->collClientsRelatedByDefaultUser || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collClientsRelatedByDefaultUser) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getClientsRelatedByDefaultUser());
+            }
+            $query = ClientQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByAuthyRelatedByDefaultUser($this)
+                ->count($con);
+        }
+
+        return count($this->collClientsRelatedByDefaultUser);
+    }
+
+    /**
+     * Method called to associate a Client object to this object
+     * through the Client foreign key attribute.
+     *
+     * @param    Client $l Client
+     * @return Authy The current object (for fluent API support)
+     */
+    public function addClientRelatedByDefaultUser(Client $l)
+    {
+        if ($this->collClientsRelatedByDefaultUser === null) {
+            $this->initClientsRelatedByDefaultUser();
+            $this->collClientsRelatedByDefaultUserPartial = true;
+        }
+
+        if (!in_array($l, $this->collClientsRelatedByDefaultUser->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddClientRelatedByDefaultUser($l);
+
+            if ($this->clientsRelatedByDefaultUserScheduledForDeletion and $this->clientsRelatedByDefaultUserScheduledForDeletion->contains($l)) {
+                $this->clientsRelatedByDefaultUserScheduledForDeletion->remove($this->clientsRelatedByDefaultUserScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	ClientRelatedByDefaultUser $clientRelatedByDefaultUser The clientRelatedByDefaultUser object to add.
+     */
+    protected function doAddClientRelatedByDefaultUser($clientRelatedByDefaultUser)
+    {
+        $this->collClientsRelatedByDefaultUser[]= $clientRelatedByDefaultUser;
+        $clientRelatedByDefaultUser->setAuthyRelatedByDefaultUser($this);
+    }
+
+    /**
+     * @param	ClientRelatedByDefaultUser $clientRelatedByDefaultUser The clientRelatedByDefaultUser object to remove.
+     * @return Authy The current object (for fluent API support)
+     */
+    public function removeClientRelatedByDefaultUser($clientRelatedByDefaultUser)
+    {
+        if ($this->getClientsRelatedByDefaultUser()->contains($clientRelatedByDefaultUser)) {
+            $this->collClientsRelatedByDefaultUser->remove($this->collClientsRelatedByDefaultUser->search($clientRelatedByDefaultUser));
+            if (null === $this->clientsRelatedByDefaultUserScheduledForDeletion) {
+                $this->clientsRelatedByDefaultUserScheduledForDeletion = clone $this->collClientsRelatedByDefaultUser;
+                $this->clientsRelatedByDefaultUserScheduledForDeletion->clear();
+            }
+            $this->clientsRelatedByDefaultUserScheduledForDeletion[]= $clientRelatedByDefaultUser;
+            $clientRelatedByDefaultUser->setAuthyRelatedByDefaultUser(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Client[] List of Client objects
+     */
+    public function getClientsRelatedByDefaultUserJoinCountry($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ClientQuery::create(null, $criteria);
+        $query->joinWith('Country', $join_behavior);
+
+        return $this->getClientsRelatedByDefaultUser($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Client[] List of Client objects
+     */
+    public function getClientsRelatedByDefaultUserJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ClientQuery::create(null, $criteria);
+        $query->joinWith('BillingCategory', $join_behavior);
+
+        return $this->getClientsRelatedByDefaultUser($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Client[] List of Client objects
+     */
+    public function getClientsRelatedByDefaultUserJoinCurrency($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ClientQuery::create(null, $criteria);
+        $query->joinWith('Currency', $join_behavior);
+
+        return $this->getClientsRelatedByDefaultUser($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Client[] List of Client objects
+     */
+    public function getClientsRelatedByDefaultUserJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ClientQuery::create(null, $criteria);
+        $query->joinWith('AuthyGroup', $join_behavior);
+
+        return $this->getClientsRelatedByDefaultUser($query, $con);
     }
 
     /**
@@ -5360,6 +5811,40 @@ abstract class BaseAuthy extends BaseObject implements Persistent
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return PropelObjectCollection|Client[] List of Client objects
      */
+    public function getClientsRelatedByIdCreationJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ClientQuery::create(null, $criteria);
+        $query->joinWith('BillingCategory', $join_behavior);
+
+        return $this->getClientsRelatedByIdCreation($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Client[] List of Client objects
+     */
+    public function getClientsRelatedByIdCreationJoinCurrency($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ClientQuery::create(null, $criteria);
+        $query->joinWith('Currency', $join_behavior);
+
+        return $this->getClientsRelatedByIdCreation($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Client[] List of Client objects
+     */
     public function getClientsRelatedByIdCreationJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
         $query = ClientQuery::create(null, $criteria);
@@ -5606,6 +6091,40 @@ abstract class BaseAuthy extends BaseObject implements Persistent
     {
         $query = ClientQuery::create(null, $criteria);
         $query->joinWith('Country', $join_behavior);
+
+        return $this->getClientsRelatedByIdModification($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Client[] List of Client objects
+     */
+    public function getClientsRelatedByIdModificationJoinBillingCategory($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ClientQuery::create(null, $criteria);
+        $query->joinWith('BillingCategory', $join_behavior);
+
+        return $this->getClientsRelatedByIdModification($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Client[] List of Client objects
+     */
+    public function getClientsRelatedByIdModificationJoinCurrency($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ClientQuery::create(null, $criteria);
+        $query->joinWith('Currency', $join_behavior);
 
         return $this->getClientsRelatedByIdModification($query, $con);
     }
@@ -5912,6 +6431,23 @@ abstract class BaseAuthy extends BaseObject implements Persistent
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return PropelObjectCollection|Billing[] List of Billing objects
      */
+    public function getBillingsRelatedByIdCreationJoinCurrency($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingQuery::create(null, $criteria);
+        $query->joinWith('Currency', $join_behavior);
+
+        return $this->getBillingsRelatedByIdCreation($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Billing[] List of Billing objects
+     */
     public function getBillingsRelatedByIdCreationJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
         $query = BillingQuery::create(null, $criteria);
@@ -6192,6 +6728,23 @@ abstract class BaseAuthy extends BaseObject implements Persistent
     {
         $query = BillingQuery::create(null, $criteria);
         $query->joinWith('BillingCategory', $join_behavior);
+
+        return $this->getBillingsRelatedByIdModification($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Billing[] List of Billing objects
+     */
+    public function getBillingsRelatedByIdModificationJoinCurrency($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = BillingQuery::create(null, $criteria);
+        $query->joinWith('Currency', $join_behavior);
 
         return $this->getBillingsRelatedByIdModification($query, $con);
     }
@@ -9455,6 +10008,490 @@ abstract class BaseAuthy extends BaseObject implements Persistent
         $query->joinWith('AuthyGroup', $join_behavior);
 
         return $this->getBillingCategoriesRelatedByIdModification($query, $con);
+    }
+
+    /**
+     * Clears out the collCurrenciesRelatedByIdCreation collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Authy The current object (for fluent API support)
+     * @see        addCurrenciesRelatedByIdCreation()
+     */
+    public function clearCurrenciesRelatedByIdCreation()
+    {
+        $this->collCurrenciesRelatedByIdCreation = null; // important to set this to null since that means it is uninitialized
+        $this->collCurrenciesRelatedByIdCreationPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collCurrenciesRelatedByIdCreation collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialCurrenciesRelatedByIdCreation($v = true)
+    {
+        $this->collCurrenciesRelatedByIdCreationPartial = $v;
+    }
+
+    /**
+     * Initializes the collCurrenciesRelatedByIdCreation collection.
+     *
+     * By default this just sets the collCurrenciesRelatedByIdCreation collection to an empty array (like clearcollCurrenciesRelatedByIdCreation());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initCurrenciesRelatedByIdCreation($overrideExisting = true)
+    {
+        if (null !== $this->collCurrenciesRelatedByIdCreation && !$overrideExisting) {
+            return;
+        }
+        $this->collCurrenciesRelatedByIdCreation = new PropelObjectCollection();
+        $this->collCurrenciesRelatedByIdCreation->setModel('Currency');
+    }
+
+    /**
+     * Gets an array of Currency objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Authy is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Currency[] List of Currency objects
+     * @throws PropelException
+     */
+    public function getCurrenciesRelatedByIdCreation($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collCurrenciesRelatedByIdCreationPartial && !$this->isNew();
+        if (null === $this->collCurrenciesRelatedByIdCreation || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collCurrenciesRelatedByIdCreation) {
+                // return empty collection
+                $this->initCurrenciesRelatedByIdCreation();
+            } else {
+                $collCurrenciesRelatedByIdCreation = CurrencyQuery::create(null, $criteria)
+                    ->filterByAuthyRelatedByIdCreation($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collCurrenciesRelatedByIdCreationPartial && count($collCurrenciesRelatedByIdCreation)) {
+                      $this->initCurrenciesRelatedByIdCreation(false);
+
+                      foreach ($collCurrenciesRelatedByIdCreation as $obj) {
+                        if (false == $this->collCurrenciesRelatedByIdCreation->contains($obj)) {
+                          $this->collCurrenciesRelatedByIdCreation->append($obj);
+                        }
+                      }
+
+                      $this->collCurrenciesRelatedByIdCreationPartial = true;
+                    }
+
+                    $collCurrenciesRelatedByIdCreation->getInternalIterator()->rewind();
+
+                    return $collCurrenciesRelatedByIdCreation;
+                }
+
+                if ($partial && $this->collCurrenciesRelatedByIdCreation) {
+                    foreach ($this->collCurrenciesRelatedByIdCreation as $obj) {
+                        if ($obj->isNew()) {
+                            $collCurrenciesRelatedByIdCreation[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collCurrenciesRelatedByIdCreation = $collCurrenciesRelatedByIdCreation;
+                $this->collCurrenciesRelatedByIdCreationPartial = false;
+            }
+        }
+
+        return $this->collCurrenciesRelatedByIdCreation;
+    }
+
+    /**
+     * Sets a collection of CurrencyRelatedByIdCreation objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $currenciesRelatedByIdCreation A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return Authy The current object (for fluent API support)
+     */
+    public function setCurrenciesRelatedByIdCreation(PropelCollection $currenciesRelatedByIdCreation, PropelPDO $con = null)
+    {
+        $currenciesRelatedByIdCreationToDelete = $this->getCurrenciesRelatedByIdCreation(new Criteria(), $con)->diff($currenciesRelatedByIdCreation);
+
+
+        $this->currenciesRelatedByIdCreationScheduledForDeletion = $currenciesRelatedByIdCreationToDelete;
+
+        foreach ($currenciesRelatedByIdCreationToDelete as $currencyRelatedByIdCreationRemoved) {
+            $currencyRelatedByIdCreationRemoved->setAuthyRelatedByIdCreation(null);
+        }
+
+        $this->collCurrenciesRelatedByIdCreation = null;
+        foreach ($currenciesRelatedByIdCreation as $currencyRelatedByIdCreation) {
+            $this->addCurrencyRelatedByIdCreation($currencyRelatedByIdCreation);
+        }
+
+        $this->collCurrenciesRelatedByIdCreation = $currenciesRelatedByIdCreation;
+        $this->collCurrenciesRelatedByIdCreationPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Currency objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related Currency objects.
+     * @throws PropelException
+     */
+    public function countCurrenciesRelatedByIdCreation(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collCurrenciesRelatedByIdCreationPartial && !$this->isNew();
+        if (null === $this->collCurrenciesRelatedByIdCreation || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collCurrenciesRelatedByIdCreation) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getCurrenciesRelatedByIdCreation());
+            }
+            $query = CurrencyQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByAuthyRelatedByIdCreation($this)
+                ->count($con);
+        }
+
+        return count($this->collCurrenciesRelatedByIdCreation);
+    }
+
+    /**
+     * Method called to associate a Currency object to this object
+     * through the Currency foreign key attribute.
+     *
+     * @param    Currency $l Currency
+     * @return Authy The current object (for fluent API support)
+     */
+    public function addCurrencyRelatedByIdCreation(Currency $l)
+    {
+        if ($this->collCurrenciesRelatedByIdCreation === null) {
+            $this->initCurrenciesRelatedByIdCreation();
+            $this->collCurrenciesRelatedByIdCreationPartial = true;
+        }
+
+        if (!in_array($l, $this->collCurrenciesRelatedByIdCreation->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddCurrencyRelatedByIdCreation($l);
+
+            if ($this->currenciesRelatedByIdCreationScheduledForDeletion and $this->currenciesRelatedByIdCreationScheduledForDeletion->contains($l)) {
+                $this->currenciesRelatedByIdCreationScheduledForDeletion->remove($this->currenciesRelatedByIdCreationScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	CurrencyRelatedByIdCreation $currencyRelatedByIdCreation The currencyRelatedByIdCreation object to add.
+     */
+    protected function doAddCurrencyRelatedByIdCreation($currencyRelatedByIdCreation)
+    {
+        $this->collCurrenciesRelatedByIdCreation[]= $currencyRelatedByIdCreation;
+        $currencyRelatedByIdCreation->setAuthyRelatedByIdCreation($this);
+    }
+
+    /**
+     * @param	CurrencyRelatedByIdCreation $currencyRelatedByIdCreation The currencyRelatedByIdCreation object to remove.
+     * @return Authy The current object (for fluent API support)
+     */
+    public function removeCurrencyRelatedByIdCreation($currencyRelatedByIdCreation)
+    {
+        if ($this->getCurrenciesRelatedByIdCreation()->contains($currencyRelatedByIdCreation)) {
+            $this->collCurrenciesRelatedByIdCreation->remove($this->collCurrenciesRelatedByIdCreation->search($currencyRelatedByIdCreation));
+            if (null === $this->currenciesRelatedByIdCreationScheduledForDeletion) {
+                $this->currenciesRelatedByIdCreationScheduledForDeletion = clone $this->collCurrenciesRelatedByIdCreation;
+                $this->currenciesRelatedByIdCreationScheduledForDeletion->clear();
+            }
+            $this->currenciesRelatedByIdCreationScheduledForDeletion[]= $currencyRelatedByIdCreation;
+            $currencyRelatedByIdCreation->setAuthyRelatedByIdCreation(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Currency[] List of Currency objects
+     */
+    public function getCurrenciesRelatedByIdCreationJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CurrencyQuery::create(null, $criteria);
+        $query->joinWith('AuthyGroup', $join_behavior);
+
+        return $this->getCurrenciesRelatedByIdCreation($query, $con);
+    }
+
+    /**
+     * Clears out the collCurrenciesRelatedByIdModification collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Authy The current object (for fluent API support)
+     * @see        addCurrenciesRelatedByIdModification()
+     */
+    public function clearCurrenciesRelatedByIdModification()
+    {
+        $this->collCurrenciesRelatedByIdModification = null; // important to set this to null since that means it is uninitialized
+        $this->collCurrenciesRelatedByIdModificationPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collCurrenciesRelatedByIdModification collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialCurrenciesRelatedByIdModification($v = true)
+    {
+        $this->collCurrenciesRelatedByIdModificationPartial = $v;
+    }
+
+    /**
+     * Initializes the collCurrenciesRelatedByIdModification collection.
+     *
+     * By default this just sets the collCurrenciesRelatedByIdModification collection to an empty array (like clearcollCurrenciesRelatedByIdModification());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initCurrenciesRelatedByIdModification($overrideExisting = true)
+    {
+        if (null !== $this->collCurrenciesRelatedByIdModification && !$overrideExisting) {
+            return;
+        }
+        $this->collCurrenciesRelatedByIdModification = new PropelObjectCollection();
+        $this->collCurrenciesRelatedByIdModification->setModel('Currency');
+    }
+
+    /**
+     * Gets an array of Currency objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Authy is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Currency[] List of Currency objects
+     * @throws PropelException
+     */
+    public function getCurrenciesRelatedByIdModification($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collCurrenciesRelatedByIdModificationPartial && !$this->isNew();
+        if (null === $this->collCurrenciesRelatedByIdModification || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collCurrenciesRelatedByIdModification) {
+                // return empty collection
+                $this->initCurrenciesRelatedByIdModification();
+            } else {
+                $collCurrenciesRelatedByIdModification = CurrencyQuery::create(null, $criteria)
+                    ->filterByAuthyRelatedByIdModification($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collCurrenciesRelatedByIdModificationPartial && count($collCurrenciesRelatedByIdModification)) {
+                      $this->initCurrenciesRelatedByIdModification(false);
+
+                      foreach ($collCurrenciesRelatedByIdModification as $obj) {
+                        if (false == $this->collCurrenciesRelatedByIdModification->contains($obj)) {
+                          $this->collCurrenciesRelatedByIdModification->append($obj);
+                        }
+                      }
+
+                      $this->collCurrenciesRelatedByIdModificationPartial = true;
+                    }
+
+                    $collCurrenciesRelatedByIdModification->getInternalIterator()->rewind();
+
+                    return $collCurrenciesRelatedByIdModification;
+                }
+
+                if ($partial && $this->collCurrenciesRelatedByIdModification) {
+                    foreach ($this->collCurrenciesRelatedByIdModification as $obj) {
+                        if ($obj->isNew()) {
+                            $collCurrenciesRelatedByIdModification[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collCurrenciesRelatedByIdModification = $collCurrenciesRelatedByIdModification;
+                $this->collCurrenciesRelatedByIdModificationPartial = false;
+            }
+        }
+
+        return $this->collCurrenciesRelatedByIdModification;
+    }
+
+    /**
+     * Sets a collection of CurrencyRelatedByIdModification objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $currenciesRelatedByIdModification A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return Authy The current object (for fluent API support)
+     */
+    public function setCurrenciesRelatedByIdModification(PropelCollection $currenciesRelatedByIdModification, PropelPDO $con = null)
+    {
+        $currenciesRelatedByIdModificationToDelete = $this->getCurrenciesRelatedByIdModification(new Criteria(), $con)->diff($currenciesRelatedByIdModification);
+
+
+        $this->currenciesRelatedByIdModificationScheduledForDeletion = $currenciesRelatedByIdModificationToDelete;
+
+        foreach ($currenciesRelatedByIdModificationToDelete as $currencyRelatedByIdModificationRemoved) {
+            $currencyRelatedByIdModificationRemoved->setAuthyRelatedByIdModification(null);
+        }
+
+        $this->collCurrenciesRelatedByIdModification = null;
+        foreach ($currenciesRelatedByIdModification as $currencyRelatedByIdModification) {
+            $this->addCurrencyRelatedByIdModification($currencyRelatedByIdModification);
+        }
+
+        $this->collCurrenciesRelatedByIdModification = $currenciesRelatedByIdModification;
+        $this->collCurrenciesRelatedByIdModificationPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Currency objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related Currency objects.
+     * @throws PropelException
+     */
+    public function countCurrenciesRelatedByIdModification(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collCurrenciesRelatedByIdModificationPartial && !$this->isNew();
+        if (null === $this->collCurrenciesRelatedByIdModification || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collCurrenciesRelatedByIdModification) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getCurrenciesRelatedByIdModification());
+            }
+            $query = CurrencyQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByAuthyRelatedByIdModification($this)
+                ->count($con);
+        }
+
+        return count($this->collCurrenciesRelatedByIdModification);
+    }
+
+    /**
+     * Method called to associate a Currency object to this object
+     * through the Currency foreign key attribute.
+     *
+     * @param    Currency $l Currency
+     * @return Authy The current object (for fluent API support)
+     */
+    public function addCurrencyRelatedByIdModification(Currency $l)
+    {
+        if ($this->collCurrenciesRelatedByIdModification === null) {
+            $this->initCurrenciesRelatedByIdModification();
+            $this->collCurrenciesRelatedByIdModificationPartial = true;
+        }
+
+        if (!in_array($l, $this->collCurrenciesRelatedByIdModification->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddCurrencyRelatedByIdModification($l);
+
+            if ($this->currenciesRelatedByIdModificationScheduledForDeletion and $this->currenciesRelatedByIdModificationScheduledForDeletion->contains($l)) {
+                $this->currenciesRelatedByIdModificationScheduledForDeletion->remove($this->currenciesRelatedByIdModificationScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	CurrencyRelatedByIdModification $currencyRelatedByIdModification The currencyRelatedByIdModification object to add.
+     */
+    protected function doAddCurrencyRelatedByIdModification($currencyRelatedByIdModification)
+    {
+        $this->collCurrenciesRelatedByIdModification[]= $currencyRelatedByIdModification;
+        $currencyRelatedByIdModification->setAuthyRelatedByIdModification($this);
+    }
+
+    /**
+     * @param	CurrencyRelatedByIdModification $currencyRelatedByIdModification The currencyRelatedByIdModification object to remove.
+     * @return Authy The current object (for fluent API support)
+     */
+    public function removeCurrencyRelatedByIdModification($currencyRelatedByIdModification)
+    {
+        if ($this->getCurrenciesRelatedByIdModification()->contains($currencyRelatedByIdModification)) {
+            $this->collCurrenciesRelatedByIdModification->remove($this->collCurrenciesRelatedByIdModification->search($currencyRelatedByIdModification));
+            if (null === $this->currenciesRelatedByIdModificationScheduledForDeletion) {
+                $this->currenciesRelatedByIdModificationScheduledForDeletion = clone $this->collCurrenciesRelatedByIdModification;
+                $this->currenciesRelatedByIdModificationScheduledForDeletion->clear();
+            }
+            $this->currenciesRelatedByIdModificationScheduledForDeletion[]= $currencyRelatedByIdModification;
+            $currencyRelatedByIdModification->setAuthyRelatedByIdModification(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Currency[] List of Currency objects
+     */
+    public function getCurrenciesRelatedByIdModificationJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = CurrencyQuery::create(null, $criteria);
+        $query->joinWith('AuthyGroup', $join_behavior);
+
+        return $this->getCurrenciesRelatedByIdModification($query, $con);
     }
 
     /**
@@ -14239,6 +15276,11 @@ abstract class BaseAuthy extends BaseObject implements Persistent
     {
         if ($deep && !$this->alreadyInClearAllReferencesDeep) {
             $this->alreadyInClearAllReferencesDeep = true;
+            if ($this->collClientsRelatedByDefaultUser) {
+                foreach ($this->collClientsRelatedByDefaultUser as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collBillingLinesRelatedByIdAssign) {
                 foreach ($this->collBillingLinesRelatedByIdAssign as $o) {
                     $o->clearAllReferences($deep);
@@ -14331,6 +15373,16 @@ abstract class BaseAuthy extends BaseObject implements Persistent
             }
             if ($this->collBillingCategoriesRelatedByIdModification) {
                 foreach ($this->collBillingCategoriesRelatedByIdModification as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collCurrenciesRelatedByIdCreation) {
+                foreach ($this->collCurrenciesRelatedByIdCreation as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collCurrenciesRelatedByIdModification) {
+                foreach ($this->collCurrenciesRelatedByIdModification as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
@@ -14450,6 +15502,10 @@ abstract class BaseAuthy extends BaseObject implements Persistent
             $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
 
+        if ($this->collClientsRelatedByDefaultUser instanceof PropelCollection) {
+            $this->collClientsRelatedByDefaultUser->clearIterator();
+        }
+        $this->collClientsRelatedByDefaultUser = null;
         if ($this->collBillingLinesRelatedByIdAssign instanceof PropelCollection) {
             $this->collBillingLinesRelatedByIdAssign->clearIterator();
         }
@@ -14526,6 +15582,14 @@ abstract class BaseAuthy extends BaseObject implements Persistent
             $this->collBillingCategoriesRelatedByIdModification->clearIterator();
         }
         $this->collBillingCategoriesRelatedByIdModification = null;
+        if ($this->collCurrenciesRelatedByIdCreation instanceof PropelCollection) {
+            $this->collCurrenciesRelatedByIdCreation->clearIterator();
+        }
+        $this->collCurrenciesRelatedByIdCreation = null;
+        if ($this->collCurrenciesRelatedByIdModification instanceof PropelCollection) {
+            $this->collCurrenciesRelatedByIdModification->clearIterator();
+        }
+        $this->collCurrenciesRelatedByIdModification = null;
         if ($this->collSuppliersRelatedByIdCreation instanceof PropelCollection) {
             $this->collSuppliersRelatedByIdCreation->clearIterator();
         }

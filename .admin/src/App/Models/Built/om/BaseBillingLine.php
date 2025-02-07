@@ -611,7 +611,7 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
             $this->modifiedColumns[] = BillingLinePeer::ID_ASSIGN;
         }
 
-        if ($this->aAuthyRelatedByIdAssign !== null && $this->aAuthyRelatedByIdAssign->getIdCreation() !== $v) {
+        if ($this->aAuthyRelatedByIdAssign !== null && $this->aAuthyRelatedByIdAssign->getIdAuthy() !== $v) {
             $this->aAuthyRelatedByIdAssign = null;
         }
 
@@ -1010,7 +1010,7 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
         if ($this->aBilling !== null && $this->id_billing !== $this->aBilling->getIdBilling()) {
             $this->aBilling = null;
         }
-        if ($this->aAuthyRelatedByIdAssign !== null && $this->id_assign !== $this->aAuthyRelatedByIdAssign->getIdCreation()) {
+        if ($this->aAuthyRelatedByIdAssign !== null && $this->id_assign !== $this->aAuthyRelatedByIdAssign->getIdAuthy()) {
             $this->aAuthyRelatedByIdAssign = null;
         }
         if ($this->aProject !== null && $this->id_project !== $this->aProject->getIdProject()) {
@@ -2006,7 +2006,7 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
         if ($v === null) {
             $this->setIdAssign(NULL);
         } else {
-            $this->setIdAssign($v->getIdCreation());
+            $this->setIdAssign($v->getIdAuthy());
         }
 
         $this->aAuthyRelatedByIdAssign = $v;
@@ -2033,9 +2033,7 @@ abstract class BaseBillingLine extends BaseObject implements Persistent
     public function getAuthyRelatedByIdAssign(PropelPDO $con = null, $doQuery = true)
     {
         if ($this->aAuthyRelatedByIdAssign === null && ($this->id_assign !== null) && $doQuery) {
-            $this->aAuthyRelatedByIdAssign = AuthyQuery::create()
-                ->filterByBillingLineRelatedByIdAssign($this) // here
-                ->findOne($con);
+            $this->aAuthyRelatedByIdAssign = AuthyQuery::create()->findPk($this->id_assign, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be

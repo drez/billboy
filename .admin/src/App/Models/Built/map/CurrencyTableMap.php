@@ -7,7 +7,7 @@ use \TableMap;
 
 
 /**
- * This class defines the structure of the 'billing_category' table.
+ * This class defines the structure of the 'currency' table.
  *
  *
  *
@@ -18,13 +18,13 @@ use \TableMap;
  *
  * @package    propel.generator..map
  */
-class BillingCategoryTableMap extends TableMap
+class CurrencyTableMap extends TableMap
 {
 
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.map.BillingCategoryTableMap';
+    const CLASS_NAME = '.map.CurrencyTableMap';
 
     /**
      * Initialize the table attributes, columns and validators
@@ -36,13 +36,13 @@ class BillingCategoryTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('billing_category');
-        $this->setPhpName('BillingCategory');
-        $this->setClassname('App\\BillingCategory');
+        $this->setName('currency');
+        $this->setPhpName('Currency');
+        $this->setClassname('App\\Currency');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
-        $this->addPrimaryKey('id_billing_category', 'IdBillingCategory', 'INTEGER', true, 10, null);
+        $this->addPrimaryKey('id_currency', 'IdCurrency', 'INTEGER', true, 10, null);
         $this->addColumn('name', 'Name', 'VARCHAR', false, 100, null);
         $this->addColumn('date_creation', 'DateCreation', 'TIMESTAMP', false, null, null);
         $this->addColumn('date_modification', 'DateModification', 'TIMESTAMP', false, null, null);
@@ -51,9 +51,9 @@ class BillingCategoryTableMap extends TableMap
         $this->addForeignKey('id_modification', 'IdModification', 'INTEGER', 'authy', 'id_authy', false, null, null);
         // validators
         $this->addValidator('name', 'required', 'propel.validator.RequiredValidator', '', 'name_required');
-        $this->addValidator('id_billing_category', 'required', 'propel.validator.RequiredValidator', '', ('BillingCategory_IdBillingCategory_required'));
-        $this->addValidator('id_billing_category', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('BillingCategory_IdBillingCategory_match_/^(?:[0-9]*|null)$/'));
-        $this->addValidator('name', 'type', 'propel.validator.TypeValidator', 'string', ('BillingCategory_Name_type_string'));
+        $this->addValidator('id_currency', 'required', 'propel.validator.RequiredValidator', '', ('Currency_IdCurrency_required'));
+        $this->addValidator('id_currency', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Currency_IdCurrency_match_/^(?:[0-9]*|null)$/'));
+        $this->addValidator('name', 'type', 'propel.validator.TypeValidator', 'string', ('Currency_Name_type_string'));
     } // initialize()
 
     /**
@@ -64,10 +64,8 @@ class BillingCategoryTableMap extends TableMap
         $this->addRelation('AuthyGroup', 'App\\AuthyGroup', RelationMap::MANY_TO_ONE, array('id_group_creation' => 'id_authy_group', ), null, null);
         $this->addRelation('AuthyRelatedByIdCreation', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_creation' => 'id_authy', ), null, null);
         $this->addRelation('AuthyRelatedByIdModification', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_modification' => 'id_authy', ), null, null);
-        $this->addRelation('Client', 'App\\Client', RelationMap::ONE_TO_MANY, array('id_billing_category' => 'default_category', ), null, null, 'Clients');
-        $this->addRelation('Billing', 'App\\Billing', RelationMap::ONE_TO_MANY, array('id_billing_category' => 'id_billing_category', ), null, null, 'Billings');
-        $this->addRelation('BillingLine', 'App\\BillingLine', RelationMap::ONE_TO_MANY, array('id_billing_category' => 'id_billing_category', ), null, null, 'BillingLines');
-        $this->addRelation('CostLine', 'App\\CostLine', RelationMap::ONE_TO_MANY, array('id_billing_category' => 'id_billing_category', ), null, null, 'CostLines');
+        $this->addRelation('Client', 'App\\Client', RelationMap::ONE_TO_MANY, array('id_currency' => 'default_currency', ), null, null, 'Clients');
+        $this->addRelation('Billing', 'App\\Billing', RelationMap::ONE_TO_MANY, array('id_currency' => 'default_currency', ), null, null, 'Billings');
     } // buildRelations()
 
     /**
@@ -97,4 +95,4 @@ class BillingCategoryTableMap extends TableMap
         );
     } // getBehaviors()
 
-} // BillingCategoryTableMap
+} // CurrencyTableMap

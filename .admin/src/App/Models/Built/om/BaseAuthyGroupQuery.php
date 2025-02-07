@@ -25,6 +25,7 @@ use App\Client;
 use App\Config;
 use App\CostLine;
 use App\Country;
+use App\Currency;
 use App\MessageI18n;
 use App\PaymentLine;
 use App\Project;
@@ -117,6 +118,10 @@ use App\TimeLine;
  * @method AuthyGroupQuery leftJoinBillingCategory($relationAlias = null) Adds a LEFT JOIN clause to the query using the BillingCategory relation
  * @method AuthyGroupQuery rightJoinBillingCategory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BillingCategory relation
  * @method AuthyGroupQuery innerJoinBillingCategory($relationAlias = null) Adds a INNER JOIN clause to the query using the BillingCategory relation
+ *
+ * @method AuthyGroupQuery leftJoinCurrency($relationAlias = null) Adds a LEFT JOIN clause to the query using the Currency relation
+ * @method AuthyGroupQuery rightJoinCurrency($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Currency relation
+ * @method AuthyGroupQuery innerJoinCurrency($relationAlias = null) Adds a INNER JOIN clause to the query using the Currency relation
  *
  * @method AuthyGroupQuery leftJoinSupplier($relationAlias = null) Adds a LEFT JOIN clause to the query using the Supplier relation
  * @method AuthyGroupQuery rightJoinSupplier($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Supplier relation
@@ -1738,6 +1743,80 @@ abstract class BaseAuthyGroupQuery extends ModelCriteria
         return $this
             ->joinBillingCategory($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'BillingCategory', '\App\BillingCategoryQuery');
+    }
+
+    /**
+     * Filter the query by a related Currency object
+     *
+     * @param   Currency|PropelObjectCollection $currency  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 AuthyGroupQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByCurrency($currency, $comparison = null)
+    {
+        if ($currency instanceof Currency) {
+            return $this
+                ->addUsingAlias(AuthyGroupPeer::ID_AUTHY_GROUP, $currency->getIdGroupCreation(), $comparison);
+        } elseif ($currency instanceof PropelObjectCollection) {
+            return $this
+                ->useCurrencyQuery()
+                ->filterByPrimaryKeys($currency->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByCurrency() only accepts arguments of type Currency or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Currency relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return AuthyGroupQuery The current query, for fluid interface
+     */
+    public function joinCurrency($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Currency');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Currency');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Currency relation Currency object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\CurrencyQuery A secondary query class using the current class as primary query
+     */
+    public function useCurrencyQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinCurrency($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Currency', '\App\CurrencyQuery');
     }
 
     /**

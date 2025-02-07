@@ -15,10 +15,12 @@ use \PropelPDO;
 use App\Authy;
 use App\AuthyGroup;
 use App\Billing;
+use App\BillingCategory;
 use App\Client;
 use App\ClientPeer;
 use App\ClientQuery;
 use App\Country;
+use App\Currency;
 use App\Project;
 
 /**
@@ -41,6 +43,10 @@ use App\Project;
  * @method ClientQuery orderByAddress2($order = Criteria::ASC) Order by the address_2 column
  * @method ClientQuery orderByAddress3($order = Criteria::ASC) Order by the address_3 column
  * @method ClientQuery orderByZip($order = Criteria::ASC) Order by the zip column
+ * @method ClientQuery orderByDefaultRate($order = Criteria::ASC) Order by the default_rate column
+ * @method ClientQuery orderByDefaultUser($order = Criteria::ASC) Order by the default_user column
+ * @method ClientQuery orderByDefaultCategory($order = Criteria::ASC) Order by the default_category column
+ * @method ClientQuery orderByDefaultCurrency($order = Criteria::ASC) Order by the default_currency column
  * @method ClientQuery orderByDateCreation($order = Criteria::ASC) Order by the date_creation column
  * @method ClientQuery orderByDateModification($order = Criteria::ASC) Order by the date_modification column
  * @method ClientQuery orderByIdGroupCreation($order = Criteria::ASC) Order by the id_group_creation column
@@ -62,6 +68,10 @@ use App\Project;
  * @method ClientQuery groupByAddress2() Group by the address_2 column
  * @method ClientQuery groupByAddress3() Group by the address_3 column
  * @method ClientQuery groupByZip() Group by the zip column
+ * @method ClientQuery groupByDefaultRate() Group by the default_rate column
+ * @method ClientQuery groupByDefaultUser() Group by the default_user column
+ * @method ClientQuery groupByDefaultCategory() Group by the default_category column
+ * @method ClientQuery groupByDefaultCurrency() Group by the default_currency column
  * @method ClientQuery groupByDateCreation() Group by the date_creation column
  * @method ClientQuery groupByDateModification() Group by the date_modification column
  * @method ClientQuery groupByIdGroupCreation() Group by the id_group_creation column
@@ -75,6 +85,18 @@ use App\Project;
  * @method ClientQuery leftJoinCountry($relationAlias = null) Adds a LEFT JOIN clause to the query using the Country relation
  * @method ClientQuery rightJoinCountry($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Country relation
  * @method ClientQuery innerJoinCountry($relationAlias = null) Adds a INNER JOIN clause to the query using the Country relation
+ *
+ * @method ClientQuery leftJoinAuthyRelatedByDefaultUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the AuthyRelatedByDefaultUser relation
+ * @method ClientQuery rightJoinAuthyRelatedByDefaultUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AuthyRelatedByDefaultUser relation
+ * @method ClientQuery innerJoinAuthyRelatedByDefaultUser($relationAlias = null) Adds a INNER JOIN clause to the query using the AuthyRelatedByDefaultUser relation
+ *
+ * @method ClientQuery leftJoinBillingCategory($relationAlias = null) Adds a LEFT JOIN clause to the query using the BillingCategory relation
+ * @method ClientQuery rightJoinBillingCategory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BillingCategory relation
+ * @method ClientQuery innerJoinBillingCategory($relationAlias = null) Adds a INNER JOIN clause to the query using the BillingCategory relation
+ *
+ * @method ClientQuery leftJoinCurrency($relationAlias = null) Adds a LEFT JOIN clause to the query using the Currency relation
+ * @method ClientQuery rightJoinCurrency($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Currency relation
+ * @method ClientQuery innerJoinCurrency($relationAlias = null) Adds a INNER JOIN clause to the query using the Currency relation
  *
  * @method ClientQuery leftJoinAuthyGroup($relationAlias = null) Adds a LEFT JOIN clause to the query using the AuthyGroup relation
  * @method ClientQuery rightJoinAuthyGroup($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AuthyGroup relation
@@ -113,6 +135,10 @@ use App\Project;
  * @method Client findOneByAddress2(string $address_2) Return the first Client filtered by the address_2 column
  * @method Client findOneByAddress3(string $address_3) Return the first Client filtered by the address_3 column
  * @method Client findOneByZip(string $zip) Return the first Client filtered by the zip column
+ * @method Client findOneByDefaultRate(string $default_rate) Return the first Client filtered by the default_rate column
+ * @method Client findOneByDefaultUser(int $default_user) Return the first Client filtered by the default_user column
+ * @method Client findOneByDefaultCategory(int $default_category) Return the first Client filtered by the default_category column
+ * @method Client findOneByDefaultCurrency(int $default_currency) Return the first Client filtered by the default_currency column
  * @method Client findOneByDateCreation(string $date_creation) Return the first Client filtered by the date_creation column
  * @method Client findOneByDateModification(string $date_modification) Return the first Client filtered by the date_modification column
  * @method Client findOneByIdGroupCreation(int $id_group_creation) Return the first Client filtered by the id_group_creation column
@@ -134,6 +160,10 @@ use App\Project;
  * @method array findByAddress2(string $address_2) Return Client objects filtered by the address_2 column
  * @method array findByAddress3(string $address_3) Return Client objects filtered by the address_3 column
  * @method array findByZip(string $zip) Return Client objects filtered by the zip column
+ * @method array findByDefaultRate(string $default_rate) Return Client objects filtered by the default_rate column
+ * @method array findByDefaultUser(int $default_user) Return Client objects filtered by the default_user column
+ * @method array findByDefaultCategory(int $default_category) Return Client objects filtered by the default_category column
+ * @method array findByDefaultCurrency(int $default_currency) Return Client objects filtered by the default_currency column
  * @method array findByDateCreation(string $date_creation) Return Client objects filtered by the date_creation column
  * @method array findByDateModification(string $date_modification) Return Client objects filtered by the date_modification column
  * @method array findByIdGroupCreation(int $id_group_creation) Return Client objects filtered by the id_group_creation column
@@ -247,7 +277,7 @@ abstract class BaseClientQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_client`, `name`, `id_country`, `phone`, `phone_work`, `ext`, `email`, `contact`, `email2`, `phone_mobile`, `website`, `address_1`, `address_2`, `address_3`, `zip`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `client` WHERE `id_client` = :p0';
+        $sql = 'SELECT `id_client`, `name`, `id_country`, `phone`, `phone_work`, `ext`, `email`, `contact`, `email2`, `phone_mobile`, `website`, `address_1`, `address_2`, `address_3`, `zip`, `default_rate`, `default_user`, `default_category`, `default_currency`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `client` WHERE `id_client` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -803,6 +833,180 @@ abstract class BaseClientQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the default_rate column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDefaultRate(1234); // WHERE default_rate = 1234
+     * $query->filterByDefaultRate(array(12, 34)); // WHERE default_rate IN (12, 34)
+     * $query->filterByDefaultRate(array('min' => 12)); // WHERE default_rate >= 12
+     * $query->filterByDefaultRate(array('max' => 12)); // WHERE default_rate <= 12
+     * </code>
+     *
+     * @param     mixed $defaultRate The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ClientQuery The current query, for fluid interface
+     */
+    public function filterByDefaultRate($defaultRate = null, $comparison = null)
+    {
+        if (is_array($defaultRate)) {
+            $useMinMax = false;
+            if (isset($defaultRate['min'])) {
+                $this->addUsingAlias(ClientPeer::DEFAULT_RATE, $defaultRate['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($defaultRate['max'])) {
+                $this->addUsingAlias(ClientPeer::DEFAULT_RATE, $defaultRate['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ClientPeer::DEFAULT_RATE, $defaultRate, $comparison);
+    }
+
+    /**
+     * Filter the query on the default_user column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDefaultUser(1234); // WHERE default_user = 1234
+     * $query->filterByDefaultUser(array(12, 34)); // WHERE default_user IN (12, 34)
+     * $query->filterByDefaultUser(array('min' => 12)); // WHERE default_user >= 12
+     * $query->filterByDefaultUser(array('max' => 12)); // WHERE default_user <= 12
+     * </code>
+     *
+     * @see       filterByAuthyRelatedByDefaultUser()
+     *
+     * @param     mixed $defaultUser The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ClientQuery The current query, for fluid interface
+     */
+    public function filterByDefaultUser($defaultUser = null, $comparison = null)
+    {
+        if (is_array($defaultUser)) {
+            $useMinMax = false;
+            if (isset($defaultUser['min'])) {
+                $this->addUsingAlias(ClientPeer::DEFAULT_USER, $defaultUser['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($defaultUser['max'])) {
+                $this->addUsingAlias(ClientPeer::DEFAULT_USER, $defaultUser['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ClientPeer::DEFAULT_USER, $defaultUser, $comparison);
+    }
+
+    /**
+     * Filter the query on the default_category column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDefaultCategory(1234); // WHERE default_category = 1234
+     * $query->filterByDefaultCategory(array(12, 34)); // WHERE default_category IN (12, 34)
+     * $query->filterByDefaultCategory(array('min' => 12)); // WHERE default_category >= 12
+     * $query->filterByDefaultCategory(array('max' => 12)); // WHERE default_category <= 12
+     * </code>
+     *
+     * @see       filterByBillingCategory()
+     *
+     * @param     mixed $defaultCategory The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ClientQuery The current query, for fluid interface
+     */
+    public function filterByDefaultCategory($defaultCategory = null, $comparison = null)
+    {
+        if (is_array($defaultCategory)) {
+            $useMinMax = false;
+            if (isset($defaultCategory['min'])) {
+                $this->addUsingAlias(ClientPeer::DEFAULT_CATEGORY, $defaultCategory['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($defaultCategory['max'])) {
+                $this->addUsingAlias(ClientPeer::DEFAULT_CATEGORY, $defaultCategory['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ClientPeer::DEFAULT_CATEGORY, $defaultCategory, $comparison);
+    }
+
+    /**
+     * Filter the query on the default_currency column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDefaultCurrency(1234); // WHERE default_currency = 1234
+     * $query->filterByDefaultCurrency(array(12, 34)); // WHERE default_currency IN (12, 34)
+     * $query->filterByDefaultCurrency(array('min' => 12)); // WHERE default_currency >= 12
+     * $query->filterByDefaultCurrency(array('max' => 12)); // WHERE default_currency <= 12
+     * </code>
+     *
+     * @see       filterByCurrency()
+     *
+     * @param     mixed $defaultCurrency The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ClientQuery The current query, for fluid interface
+     */
+    public function filterByDefaultCurrency($defaultCurrency = null, $comparison = null)
+    {
+        if (is_array($defaultCurrency)) {
+            $useMinMax = false;
+            if (isset($defaultCurrency['min'])) {
+                $this->addUsingAlias(ClientPeer::DEFAULT_CURRENCY, $defaultCurrency['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($defaultCurrency['max'])) {
+                $this->addUsingAlias(ClientPeer::DEFAULT_CURRENCY, $defaultCurrency['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ClientPeer::DEFAULT_CURRENCY, $defaultCurrency, $comparison);
+    }
+
+    /**
      * Filter the query on the date_creation column
      *
      * Example usage:
@@ -1094,6 +1298,234 @@ abstract class BaseClientQuery extends ModelCriteria
         return $this
             ->joinCountry($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Country', '\App\CountryQuery');
+    }
+
+    /**
+     * Filter the query by a related Authy object
+     *
+     * @param   Authy|PropelObjectCollection $authy The related object(s) to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 ClientQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByAuthyRelatedByDefaultUser($authy, $comparison = null)
+    {
+        if ($authy instanceof Authy) {
+            return $this
+                ->addUsingAlias(ClientPeer::DEFAULT_USER, $authy->getIdAuthy(), $comparison);
+        } elseif ($authy instanceof PropelObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(ClientPeer::DEFAULT_USER, $authy->toKeyValue('PrimaryKey', 'IdAuthy'), $comparison);
+        } else {
+            throw new PropelException('filterByAuthyRelatedByDefaultUser() only accepts arguments of type Authy or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the AuthyRelatedByDefaultUser relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ClientQuery The current query, for fluid interface
+     */
+    public function joinAuthyRelatedByDefaultUser($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('AuthyRelatedByDefaultUser');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'AuthyRelatedByDefaultUser');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the AuthyRelatedByDefaultUser relation Authy object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\AuthyQuery A secondary query class using the current class as primary query
+     */
+    public function useAuthyRelatedByDefaultUserQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinAuthyRelatedByDefaultUser($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'AuthyRelatedByDefaultUser', '\App\AuthyQuery');
+    }
+
+    /**
+     * Filter the query by a related BillingCategory object
+     *
+     * @param   BillingCategory|PropelObjectCollection $billingCategory The related object(s) to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 ClientQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByBillingCategory($billingCategory, $comparison = null)
+    {
+        if ($billingCategory instanceof BillingCategory) {
+            return $this
+                ->addUsingAlias(ClientPeer::DEFAULT_CATEGORY, $billingCategory->getIdBillingCategory(), $comparison);
+        } elseif ($billingCategory instanceof PropelObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(ClientPeer::DEFAULT_CATEGORY, $billingCategory->toKeyValue('PrimaryKey', 'IdBillingCategory'), $comparison);
+        } else {
+            throw new PropelException('filterByBillingCategory() only accepts arguments of type BillingCategory or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the BillingCategory relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ClientQuery The current query, for fluid interface
+     */
+    public function joinBillingCategory($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('BillingCategory');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'BillingCategory');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the BillingCategory relation BillingCategory object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\BillingCategoryQuery A secondary query class using the current class as primary query
+     */
+    public function useBillingCategoryQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinBillingCategory($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'BillingCategory', '\App\BillingCategoryQuery');
+    }
+
+    /**
+     * Filter the query by a related Currency object
+     *
+     * @param   Currency|PropelObjectCollection $currency The related object(s) to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 ClientQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByCurrency($currency, $comparison = null)
+    {
+        if ($currency instanceof Currency) {
+            return $this
+                ->addUsingAlias(ClientPeer::DEFAULT_CURRENCY, $currency->getIdCurrency(), $comparison);
+        } elseif ($currency instanceof PropelObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(ClientPeer::DEFAULT_CURRENCY, $currency->toKeyValue('PrimaryKey', 'IdCurrency'), $comparison);
+        } else {
+            throw new PropelException('filterByCurrency() only accepts arguments of type Currency or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Currency relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ClientQuery The current query, for fluid interface
+     */
+    public function joinCurrency($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Currency');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Currency');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Currency relation Currency object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\CurrencyQuery A secondary query class using the current class as primary query
+     */
+    public function useCurrencyQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinCurrency($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Currency', '\App\CurrencyQuery');
     }
 
     /**

@@ -11,9 +11,11 @@ use \PropelException;
 use \PropelPDO;
 use App\AuthyGroupPeer;
 use App\AuthyPeer;
+use App\BillingCategoryPeer;
 use App\Client;
 use App\ClientPeer;
 use App\CountryPeer;
+use App\CurrencyPeer;
 use App\map\ClientTableMap;
 
 /**
@@ -39,13 +41,13 @@ abstract class BaseClientPeer
     const TM_CLASS = 'App\\map\\ClientTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 20;
+    const NUM_COLUMNS = 24;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 20;
+    const NUM_HYDRATE_COLUMNS = 24;
 
     /** the column name for the id_client field */
     const ID_CLIENT = 'client.id_client';
@@ -92,6 +94,18 @@ abstract class BaseClientPeer
     /** the column name for the zip field */
     const ZIP = 'client.zip';
 
+    /** the column name for the default_rate field */
+    const DEFAULT_RATE = 'client.default_rate';
+
+    /** the column name for the default_user field */
+    const DEFAULT_USER = 'client.default_user';
+
+    /** the column name for the default_category field */
+    const DEFAULT_CATEGORY = 'client.default_category';
+
+    /** the column name for the default_currency field */
+    const DEFAULT_CURRENCY = 'client.default_currency';
+
     /** the column name for the date_creation field */
     const DATE_CREATION = 'client.date_creation';
 
@@ -126,12 +140,12 @@ abstract class BaseClientPeer
      * e.g. ClientPeer::$fieldNames[ClientPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('IdClient', 'Name', 'IdCountry', 'Phone', 'PhoneWork', 'Ext', 'Email', 'Contact', 'Email2', 'PhoneMobile', 'Website', 'Address1', 'Address2', 'Address3', 'Zip', 'DateCreation', 'DateModification', 'IdGroupCreation', 'IdCreation', 'IdModification', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idClient', 'name', 'idCountry', 'phone', 'phoneWork', 'ext', 'email', 'contact', 'email2', 'phoneMobile', 'website', 'address1', 'address2', 'address3', 'zip', 'dateCreation', 'dateModification', 'idGroupCreation', 'idCreation', 'idModification', ),
-        BasePeer::TYPE_COLNAME => array (ClientPeer::ID_CLIENT, ClientPeer::NAME, ClientPeer::ID_COUNTRY, ClientPeer::PHONE, ClientPeer::PHONE_WORK, ClientPeer::EXT, ClientPeer::EMAIL, ClientPeer::CONTACT, ClientPeer::EMAIL2, ClientPeer::PHONE_MOBILE, ClientPeer::WEBSITE, ClientPeer::ADDRESS_1, ClientPeer::ADDRESS_2, ClientPeer::ADDRESS_3, ClientPeer::ZIP, ClientPeer::DATE_CREATION, ClientPeer::DATE_MODIFICATION, ClientPeer::ID_GROUP_CREATION, ClientPeer::ID_CREATION, ClientPeer::ID_MODIFICATION, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_CLIENT', 'NAME', 'ID_COUNTRY', 'PHONE', 'PHONE_WORK', 'EXT', 'EMAIL', 'CONTACT', 'EMAIL2', 'PHONE_MOBILE', 'WEBSITE', 'ADDRESS_1', 'ADDRESS_2', 'ADDRESS_3', 'ZIP', 'DATE_CREATION', 'DATE_MODIFICATION', 'ID_GROUP_CREATION', 'ID_CREATION', 'ID_MODIFICATION', ),
-        BasePeer::TYPE_FIELDNAME => array ('id_client', 'name', 'id_country', 'phone', 'phone_work', 'ext', 'email', 'contact', 'email2', 'phone_mobile', 'website', 'address_1', 'address_2', 'address_3', 'zip', 'date_creation', 'date_modification', 'id_group_creation', 'id_creation', 'id_modification', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, )
+        BasePeer::TYPE_PHPNAME => array ('IdClient', 'Name', 'IdCountry', 'Phone', 'PhoneWork', 'Ext', 'Email', 'Contact', 'Email2', 'PhoneMobile', 'Website', 'Address1', 'Address2', 'Address3', 'Zip', 'DefaultRate', 'DefaultUser', 'DefaultCategory', 'DefaultCurrency', 'DateCreation', 'DateModification', 'IdGroupCreation', 'IdCreation', 'IdModification', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idClient', 'name', 'idCountry', 'phone', 'phoneWork', 'ext', 'email', 'contact', 'email2', 'phoneMobile', 'website', 'address1', 'address2', 'address3', 'zip', 'defaultRate', 'defaultUser', 'defaultCategory', 'defaultCurrency', 'dateCreation', 'dateModification', 'idGroupCreation', 'idCreation', 'idModification', ),
+        BasePeer::TYPE_COLNAME => array (ClientPeer::ID_CLIENT, ClientPeer::NAME, ClientPeer::ID_COUNTRY, ClientPeer::PHONE, ClientPeer::PHONE_WORK, ClientPeer::EXT, ClientPeer::EMAIL, ClientPeer::CONTACT, ClientPeer::EMAIL2, ClientPeer::PHONE_MOBILE, ClientPeer::WEBSITE, ClientPeer::ADDRESS_1, ClientPeer::ADDRESS_2, ClientPeer::ADDRESS_3, ClientPeer::ZIP, ClientPeer::DEFAULT_RATE, ClientPeer::DEFAULT_USER, ClientPeer::DEFAULT_CATEGORY, ClientPeer::DEFAULT_CURRENCY, ClientPeer::DATE_CREATION, ClientPeer::DATE_MODIFICATION, ClientPeer::ID_GROUP_CREATION, ClientPeer::ID_CREATION, ClientPeer::ID_MODIFICATION, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_CLIENT', 'NAME', 'ID_COUNTRY', 'PHONE', 'PHONE_WORK', 'EXT', 'EMAIL', 'CONTACT', 'EMAIL2', 'PHONE_MOBILE', 'WEBSITE', 'ADDRESS_1', 'ADDRESS_2', 'ADDRESS_3', 'ZIP', 'DEFAULT_RATE', 'DEFAULT_USER', 'DEFAULT_CATEGORY', 'DEFAULT_CURRENCY', 'DATE_CREATION', 'DATE_MODIFICATION', 'ID_GROUP_CREATION', 'ID_CREATION', 'ID_MODIFICATION', ),
+        BasePeer::TYPE_FIELDNAME => array ('id_client', 'name', 'id_country', 'phone', 'phone_work', 'ext', 'email', 'contact', 'email2', 'phone_mobile', 'website', 'address_1', 'address_2', 'address_3', 'zip', 'default_rate', 'default_user', 'default_category', 'default_currency', 'date_creation', 'date_modification', 'id_group_creation', 'id_creation', 'id_modification', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, )
     );
 
     /**
@@ -141,12 +155,12 @@ abstract class BaseClientPeer
      * e.g. ClientPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('IdClient' => 0, 'Name' => 1, 'IdCountry' => 2, 'Phone' => 3, 'PhoneWork' => 4, 'Ext' => 5, 'Email' => 6, 'Contact' => 7, 'Email2' => 8, 'PhoneMobile' => 9, 'Website' => 10, 'Address1' => 11, 'Address2' => 12, 'Address3' => 13, 'Zip' => 14, 'DateCreation' => 15, 'DateModification' => 16, 'IdGroupCreation' => 17, 'IdCreation' => 18, 'IdModification' => 19, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idClient' => 0, 'name' => 1, 'idCountry' => 2, 'phone' => 3, 'phoneWork' => 4, 'ext' => 5, 'email' => 6, 'contact' => 7, 'email2' => 8, 'phoneMobile' => 9, 'website' => 10, 'address1' => 11, 'address2' => 12, 'address3' => 13, 'zip' => 14, 'dateCreation' => 15, 'dateModification' => 16, 'idGroupCreation' => 17, 'idCreation' => 18, 'idModification' => 19, ),
-        BasePeer::TYPE_COLNAME => array (ClientPeer::ID_CLIENT => 0, ClientPeer::NAME => 1, ClientPeer::ID_COUNTRY => 2, ClientPeer::PHONE => 3, ClientPeer::PHONE_WORK => 4, ClientPeer::EXT => 5, ClientPeer::EMAIL => 6, ClientPeer::CONTACT => 7, ClientPeer::EMAIL2 => 8, ClientPeer::PHONE_MOBILE => 9, ClientPeer::WEBSITE => 10, ClientPeer::ADDRESS_1 => 11, ClientPeer::ADDRESS_2 => 12, ClientPeer::ADDRESS_3 => 13, ClientPeer::ZIP => 14, ClientPeer::DATE_CREATION => 15, ClientPeer::DATE_MODIFICATION => 16, ClientPeer::ID_GROUP_CREATION => 17, ClientPeer::ID_CREATION => 18, ClientPeer::ID_MODIFICATION => 19, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_CLIENT' => 0, 'NAME' => 1, 'ID_COUNTRY' => 2, 'PHONE' => 3, 'PHONE_WORK' => 4, 'EXT' => 5, 'EMAIL' => 6, 'CONTACT' => 7, 'EMAIL2' => 8, 'PHONE_MOBILE' => 9, 'WEBSITE' => 10, 'ADDRESS_1' => 11, 'ADDRESS_2' => 12, 'ADDRESS_3' => 13, 'ZIP' => 14, 'DATE_CREATION' => 15, 'DATE_MODIFICATION' => 16, 'ID_GROUP_CREATION' => 17, 'ID_CREATION' => 18, 'ID_MODIFICATION' => 19, ),
-        BasePeer::TYPE_FIELDNAME => array ('id_client' => 0, 'name' => 1, 'id_country' => 2, 'phone' => 3, 'phone_work' => 4, 'ext' => 5, 'email' => 6, 'contact' => 7, 'email2' => 8, 'phone_mobile' => 9, 'website' => 10, 'address_1' => 11, 'address_2' => 12, 'address_3' => 13, 'zip' => 14, 'date_creation' => 15, 'date_modification' => 16, 'id_group_creation' => 17, 'id_creation' => 18, 'id_modification' => 19, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, )
+        BasePeer::TYPE_PHPNAME => array ('IdClient' => 0, 'Name' => 1, 'IdCountry' => 2, 'Phone' => 3, 'PhoneWork' => 4, 'Ext' => 5, 'Email' => 6, 'Contact' => 7, 'Email2' => 8, 'PhoneMobile' => 9, 'Website' => 10, 'Address1' => 11, 'Address2' => 12, 'Address3' => 13, 'Zip' => 14, 'DefaultRate' => 15, 'DefaultUser' => 16, 'DefaultCategory' => 17, 'DefaultCurrency' => 18, 'DateCreation' => 19, 'DateModification' => 20, 'IdGroupCreation' => 21, 'IdCreation' => 22, 'IdModification' => 23, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idClient' => 0, 'name' => 1, 'idCountry' => 2, 'phone' => 3, 'phoneWork' => 4, 'ext' => 5, 'email' => 6, 'contact' => 7, 'email2' => 8, 'phoneMobile' => 9, 'website' => 10, 'address1' => 11, 'address2' => 12, 'address3' => 13, 'zip' => 14, 'defaultRate' => 15, 'defaultUser' => 16, 'defaultCategory' => 17, 'defaultCurrency' => 18, 'dateCreation' => 19, 'dateModification' => 20, 'idGroupCreation' => 21, 'idCreation' => 22, 'idModification' => 23, ),
+        BasePeer::TYPE_COLNAME => array (ClientPeer::ID_CLIENT => 0, ClientPeer::NAME => 1, ClientPeer::ID_COUNTRY => 2, ClientPeer::PHONE => 3, ClientPeer::PHONE_WORK => 4, ClientPeer::EXT => 5, ClientPeer::EMAIL => 6, ClientPeer::CONTACT => 7, ClientPeer::EMAIL2 => 8, ClientPeer::PHONE_MOBILE => 9, ClientPeer::WEBSITE => 10, ClientPeer::ADDRESS_1 => 11, ClientPeer::ADDRESS_2 => 12, ClientPeer::ADDRESS_3 => 13, ClientPeer::ZIP => 14, ClientPeer::DEFAULT_RATE => 15, ClientPeer::DEFAULT_USER => 16, ClientPeer::DEFAULT_CATEGORY => 17, ClientPeer::DEFAULT_CURRENCY => 18, ClientPeer::DATE_CREATION => 19, ClientPeer::DATE_MODIFICATION => 20, ClientPeer::ID_GROUP_CREATION => 21, ClientPeer::ID_CREATION => 22, ClientPeer::ID_MODIFICATION => 23, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_CLIENT' => 0, 'NAME' => 1, 'ID_COUNTRY' => 2, 'PHONE' => 3, 'PHONE_WORK' => 4, 'EXT' => 5, 'EMAIL' => 6, 'CONTACT' => 7, 'EMAIL2' => 8, 'PHONE_MOBILE' => 9, 'WEBSITE' => 10, 'ADDRESS_1' => 11, 'ADDRESS_2' => 12, 'ADDRESS_3' => 13, 'ZIP' => 14, 'DEFAULT_RATE' => 15, 'DEFAULT_USER' => 16, 'DEFAULT_CATEGORY' => 17, 'DEFAULT_CURRENCY' => 18, 'DATE_CREATION' => 19, 'DATE_MODIFICATION' => 20, 'ID_GROUP_CREATION' => 21, 'ID_CREATION' => 22, 'ID_MODIFICATION' => 23, ),
+        BasePeer::TYPE_FIELDNAME => array ('id_client' => 0, 'name' => 1, 'id_country' => 2, 'phone' => 3, 'phone_work' => 4, 'ext' => 5, 'email' => 6, 'contact' => 7, 'email2' => 8, 'phone_mobile' => 9, 'website' => 10, 'address_1' => 11, 'address_2' => 12, 'address_3' => 13, 'zip' => 14, 'default_rate' => 15, 'default_user' => 16, 'default_category' => 17, 'default_currency' => 18, 'date_creation' => 19, 'date_modification' => 20, 'id_group_creation' => 21, 'id_creation' => 22, 'id_modification' => 23, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, )
     );
 
     /**
@@ -235,6 +249,10 @@ abstract class BaseClientPeer
             $criteria->addSelectColumn(ClientPeer::ADDRESS_2);
             $criteria->addSelectColumn(ClientPeer::ADDRESS_3);
             $criteria->addSelectColumn(ClientPeer::ZIP);
+            $criteria->addSelectColumn(ClientPeer::DEFAULT_RATE);
+            $criteria->addSelectColumn(ClientPeer::DEFAULT_USER);
+            $criteria->addSelectColumn(ClientPeer::DEFAULT_CATEGORY);
+            $criteria->addSelectColumn(ClientPeer::DEFAULT_CURRENCY);
             $criteria->addSelectColumn(ClientPeer::DATE_CREATION);
             $criteria->addSelectColumn(ClientPeer::DATE_MODIFICATION);
             $criteria->addSelectColumn(ClientPeer::ID_GROUP_CREATION);
@@ -256,6 +274,10 @@ abstract class BaseClientPeer
             $criteria->addSelectColumn($alias . '.address_2');
             $criteria->addSelectColumn($alias . '.address_3');
             $criteria->addSelectColumn($alias . '.zip');
+            $criteria->addSelectColumn($alias . '.default_rate');
+            $criteria->addSelectColumn($alias . '.default_user');
+            $criteria->addSelectColumn($alias . '.default_category');
+            $criteria->addSelectColumn($alias . '.default_currency');
             $criteria->addSelectColumn($alias . '.date_creation');
             $criteria->addSelectColumn($alias . '.date_modification');
             $criteria->addSelectColumn($alias . '.id_group_creation');
@@ -614,6 +636,159 @@ abstract class BaseClientPeer
 
 
     /**
+     * Returns the number of rows matching criteria, joining the related AuthyRelatedByDefaultUser table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinAuthyRelatedByDefaultUser(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(ClientPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            ClientPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+
+        // Set the correct dbName
+        $criteria->setDbName(ClientPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(ClientPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(ClientPeer::DEFAULT_USER, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related BillingCategory table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinBillingCategory(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(ClientPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            ClientPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+
+        // Set the correct dbName
+        $criteria->setDbName(ClientPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(ClientPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related Currency table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinCurrency(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(ClientPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            ClientPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+
+        // Set the correct dbName
+        $criteria->setDbName(ClientPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(ClientPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CURRENCY, CurrencyPeer::ID_CURRENCY, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
      * Returns the number of rows matching criteria, joining the related AuthyGroup table
      *
      * @param      Criteria $criteria
@@ -821,6 +996,207 @@ abstract class BaseClientPeer
                 } // if obj2 already loaded
 
                 // Add the $obj1 (Client) to $obj2 (Country)
+                $obj2->addClient($obj1);
+
+            } // if joined row was not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Selects a collection of Client objects pre-filled with their Authy objects.
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Client objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinAuthyRelatedByDefaultUser(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(ClientPeer::DATABASE_NAME);
+        }
+
+        ClientPeer::addSelectColumns($criteria);
+        $startcol = ClientPeer::NUM_HYDRATE_COLUMNS;
+        AuthyPeer::addSelectColumns($criteria);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_USER, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = ClientPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ClientPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+
+                $cls = ClientPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                ClientPeer::addInstanceToPool($obj1, $key1);
+            } // if $obj1 already loaded
+
+            $key2 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol);
+            if ($key2 !== null) {
+                $obj2 = AuthyPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = AuthyPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol);
+                    AuthyPeer::addInstanceToPool($obj2, $key2);
+                } // if obj2 already loaded
+
+                // Add the $obj1 (Client) to $obj2 (Authy)
+                $obj2->addClientRelatedByDefaultUser($obj1);
+
+            } // if joined row was not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Selects a collection of Client objects pre-filled with their BillingCategory objects.
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Client objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinBillingCategory(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(ClientPeer::DATABASE_NAME);
+        }
+
+        ClientPeer::addSelectColumns($criteria);
+        $startcol = ClientPeer::NUM_HYDRATE_COLUMNS;
+        BillingCategoryPeer::addSelectColumns($criteria);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = ClientPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ClientPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+
+                $cls = ClientPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                ClientPeer::addInstanceToPool($obj1, $key1);
+            } // if $obj1 already loaded
+
+            $key2 = BillingCategoryPeer::getPrimaryKeyHashFromRow($row, $startcol);
+            if ($key2 !== null) {
+                $obj2 = BillingCategoryPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = BillingCategoryPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol);
+                    BillingCategoryPeer::addInstanceToPool($obj2, $key2);
+                } // if obj2 already loaded
+
+                // Add the $obj1 (Client) to $obj2 (BillingCategory)
+                $obj2->addClient($obj1);
+
+            } // if joined row was not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Selects a collection of Client objects pre-filled with their Currency objects.
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Client objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinCurrency(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(ClientPeer::DATABASE_NAME);
+        }
+
+        ClientPeer::addSelectColumns($criteria);
+        $startcol = ClientPeer::NUM_HYDRATE_COLUMNS;
+        CurrencyPeer::addSelectColumns($criteria);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CURRENCY, CurrencyPeer::ID_CURRENCY, $join_behavior);
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = ClientPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ClientPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+
+                $cls = ClientPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                ClientPeer::addInstanceToPool($obj1, $key1);
+            } // if $obj1 already loaded
+
+            $key2 = CurrencyPeer::getPrimaryKeyHashFromRow($row, $startcol);
+            if ($key2 !== null) {
+                $obj2 = CurrencyPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = CurrencyPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol);
+                    CurrencyPeer::addInstanceToPool($obj2, $key2);
+                } // if obj2 already loaded
+
+                // Add the $obj1 (Client) to $obj2 (Currency)
                 $obj2->addClient($obj1);
 
             } // if joined row was not null
@@ -1072,6 +1448,12 @@ abstract class BaseClientPeer
 
         $criteria->addJoin(ClientPeer::ID_COUNTRY, CountryPeer::ID_COUNTRY, $join_behavior);
 
+        $criteria->addJoin(ClientPeer::DEFAULT_USER, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CURRENCY, CurrencyPeer::ID_CURRENCY, $join_behavior);
+
         $criteria->addJoin(ClientPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
         $criteria->addJoin(ClientPeer::ID_CREATION, AuthyPeer::ID_AUTHY, $join_behavior);
@@ -1115,16 +1497,31 @@ abstract class BaseClientPeer
         CountryPeer::addSelectColumns($criteria);
         $startcol3 = $startcol2 + CountryPeer::NUM_HYDRATE_COLUMNS;
 
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
+        BillingCategoryPeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + BillingCategoryPeer::NUM_HYDRATE_COLUMNS;
+
+        CurrencyPeer::addSelectColumns($criteria);
+        $startcol6 = $startcol5 + CurrencyPeer::NUM_HYDRATE_COLUMNS;
+
         AuthyGroupPeer::addSelectColumns($criteria);
-        $startcol4 = $startcol3 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+        $startcol7 = $startcol6 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
 
         AuthyPeer::addSelectColumns($criteria);
-        $startcol5 = $startcol4 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+        $startcol8 = $startcol7 + AuthyPeer::NUM_HYDRATE_COLUMNS;
 
         AuthyPeer::addSelectColumns($criteria);
-        $startcol6 = $startcol5 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+        $startcol9 = $startcol8 + AuthyPeer::NUM_HYDRATE_COLUMNS;
 
         $criteria->addJoin(ClientPeer::ID_COUNTRY, CountryPeer::ID_COUNTRY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_USER, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CURRENCY, CurrencyPeer::ID_CURRENCY, $join_behavior);
 
         $criteria->addJoin(ClientPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
@@ -1167,58 +1564,112 @@ abstract class BaseClientPeer
                 $obj2->addClient($obj1);
             } // if joined row not null
 
-            // Add objects for joined AuthyGroup rows
+            // Add objects for joined Authy rows
 
-            $key3 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+            $key3 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol3);
             if ($key3 !== null) {
-                $obj3 = AuthyGroupPeer::getInstanceFromPool($key3);
+                $obj3 = AuthyPeer::getInstanceFromPool($key3);
                 if (!$obj3) {
 
-                    $cls = AuthyGroupPeer::getOMClass();
+                    $cls = AuthyPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
-                    AuthyGroupPeer::addInstanceToPool($obj3, $key3);
+                    AuthyPeer::addInstanceToPool($obj3, $key3);
                 } // if obj3 loaded
 
-                // Add the $obj1 (Client) to the collection in $obj3 (AuthyGroup)
-                $obj3->addClient($obj1);
+                // Add the $obj1 (Client) to the collection in $obj3 (Authy)
+                $obj3->addClientRelatedByDefaultUser($obj1);
             } // if joined row not null
 
-            // Add objects for joined Authy rows
+            // Add objects for joined BillingCategory rows
 
-            $key4 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+            $key4 = BillingCategoryPeer::getPrimaryKeyHashFromRow($row, $startcol4);
             if ($key4 !== null) {
-                $obj4 = AuthyPeer::getInstanceFromPool($key4);
+                $obj4 = BillingCategoryPeer::getInstanceFromPool($key4);
                 if (!$obj4) {
 
-                    $cls = AuthyPeer::getOMClass();
+                    $cls = BillingCategoryPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
-                    AuthyPeer::addInstanceToPool($obj4, $key4);
+                    BillingCategoryPeer::addInstanceToPool($obj4, $key4);
                 } // if obj4 loaded
 
-                // Add the $obj1 (Client) to the collection in $obj4 (Authy)
-                $obj4->addClientRelatedByIdCreation($obj1);
+                // Add the $obj1 (Client) to the collection in $obj4 (BillingCategory)
+                $obj4->addClient($obj1);
+            } // if joined row not null
+
+            // Add objects for joined Currency rows
+
+            $key5 = CurrencyPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+            if ($key5 !== null) {
+                $obj5 = CurrencyPeer::getInstanceFromPool($key5);
+                if (!$obj5) {
+
+                    $cls = CurrencyPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    CurrencyPeer::addInstanceToPool($obj5, $key5);
+                } // if obj5 loaded
+
+                // Add the $obj1 (Client) to the collection in $obj5 (Currency)
+                $obj5->addClient($obj1);
+            } // if joined row not null
+
+            // Add objects for joined AuthyGroup rows
+
+            $key6 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+            if ($key6 !== null) {
+                $obj6 = AuthyGroupPeer::getInstanceFromPool($key6);
+                if (!$obj6) {
+
+                    $cls = AuthyGroupPeer::getOMClass();
+
+                    $obj6 = new $cls();
+                    $obj6->hydrate($row, $startcol6);
+                    AuthyGroupPeer::addInstanceToPool($obj6, $key6);
+                } // if obj6 loaded
+
+                // Add the $obj1 (Client) to the collection in $obj6 (AuthyGroup)
+                $obj6->addClient($obj1);
             } // if joined row not null
 
             // Add objects for joined Authy rows
 
-            $key5 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol5);
-            if ($key5 !== null) {
-                $obj5 = AuthyPeer::getInstanceFromPool($key5);
-                if (!$obj5) {
+            $key7 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+            if ($key7 !== null) {
+                $obj7 = AuthyPeer::getInstanceFromPool($key7);
+                if (!$obj7) {
 
                     $cls = AuthyPeer::getOMClass();
 
-                    $obj5 = new $cls();
-                    $obj5->hydrate($row, $startcol5);
-                    AuthyPeer::addInstanceToPool($obj5, $key5);
-                } // if obj5 loaded
+                    $obj7 = new $cls();
+                    $obj7->hydrate($row, $startcol7);
+                    AuthyPeer::addInstanceToPool($obj7, $key7);
+                } // if obj7 loaded
 
-                // Add the $obj1 (Client) to the collection in $obj5 (Authy)
-                $obj5->addClientRelatedByIdModification($obj1);
+                // Add the $obj1 (Client) to the collection in $obj7 (Authy)
+                $obj7->addClientRelatedByIdCreation($obj1);
+            } // if joined row not null
+
+            // Add objects for joined Authy rows
+
+            $key8 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol8);
+            if ($key8 !== null) {
+                $obj8 = AuthyPeer::getInstanceFromPool($key8);
+                if (!$obj8) {
+
+                    $cls = AuthyPeer::getOMClass();
+
+                    $obj8 = new $cls();
+                    $obj8->hydrate($row, $startcol8);
+                    AuthyPeer::addInstanceToPool($obj8, $key8);
+                } // if obj8 loaded
+
+                // Add the $obj1 (Client) to the collection in $obj8 (Authy)
+                $obj8->addClientRelatedByIdModification($obj1);
             } // if joined row not null
 
             $results[] = $obj1;
@@ -1264,6 +1715,191 @@ abstract class BaseClientPeer
         if ($con === null) {
             $con = Propel::getConnection(ClientPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
+
+        $criteria->addJoin(ClientPeer::DEFAULT_USER, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CURRENCY, CurrencyPeer::ID_CURRENCY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::ID_CREATION, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::ID_MODIFICATION, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related AuthyRelatedByDefaultUser table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinAllExceptAuthyRelatedByDefaultUser(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(ClientPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            ClientPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY should not affect count
+
+        // Set the correct dbName
+        $criteria->setDbName(ClientPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(ClientPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(ClientPeer::ID_COUNTRY, CountryPeer::ID_COUNTRY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CURRENCY, CurrencyPeer::ID_CURRENCY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related BillingCategory table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinAllExceptBillingCategory(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(ClientPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            ClientPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY should not affect count
+
+        // Set the correct dbName
+        $criteria->setDbName(ClientPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(ClientPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(ClientPeer::ID_COUNTRY, CountryPeer::ID_COUNTRY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_USER, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CURRENCY, CurrencyPeer::ID_CURRENCY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::ID_CREATION, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::ID_MODIFICATION, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related Currency table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinAllExceptCurrency(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(ClientPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            ClientPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY should not affect count
+
+        // Set the correct dbName
+        $criteria->setDbName(ClientPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(ClientPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(ClientPeer::ID_COUNTRY, CountryPeer::ID_COUNTRY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_USER, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
 
         $criteria->addJoin(ClientPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
@@ -1322,6 +1958,12 @@ abstract class BaseClientPeer
 
         $criteria->addJoin(ClientPeer::ID_COUNTRY, CountryPeer::ID_COUNTRY, $join_behavior);
 
+        $criteria->addJoin(ClientPeer::DEFAULT_USER, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CURRENCY, CurrencyPeer::ID_CURRENCY, $join_behavior);
+
         $criteria->addJoin(ClientPeer::ID_CREATION, AuthyPeer::ID_AUTHY, $join_behavior);
 
         $criteria->addJoin(ClientPeer::ID_MODIFICATION, AuthyPeer::ID_AUTHY, $join_behavior);
@@ -1377,6 +2019,10 @@ abstract class BaseClientPeer
 
         $criteria->addJoin(ClientPeer::ID_COUNTRY, CountryPeer::ID_COUNTRY, $join_behavior);
 
+        $criteria->addJoin(ClientPeer::DEFAULT_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CURRENCY, CurrencyPeer::ID_CURRENCY, $join_behavior);
+
         $criteria->addJoin(ClientPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -1430,6 +2076,10 @@ abstract class BaseClientPeer
 
         $criteria->addJoin(ClientPeer::ID_COUNTRY, CountryPeer::ID_COUNTRY, $join_behavior);
 
+        $criteria->addJoin(ClientPeer::DEFAULT_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CURRENCY, CurrencyPeer::ID_CURRENCY, $join_behavior);
+
         $criteria->addJoin(ClientPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -1469,14 +2119,29 @@ abstract class BaseClientPeer
         ClientPeer::addSelectColumns($criteria);
         $startcol2 = ClientPeer::NUM_HYDRATE_COLUMNS;
 
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol3 = $startcol2 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
+        BillingCategoryPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + BillingCategoryPeer::NUM_HYDRATE_COLUMNS;
+
+        CurrencyPeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + CurrencyPeer::NUM_HYDRATE_COLUMNS;
+
         AuthyGroupPeer::addSelectColumns($criteria);
-        $startcol3 = $startcol2 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+        $startcol6 = $startcol5 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
 
         AuthyPeer::addSelectColumns($criteria);
-        $startcol4 = $startcol3 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+        $startcol7 = $startcol6 + AuthyPeer::NUM_HYDRATE_COLUMNS;
 
         AuthyPeer::addSelectColumns($criteria);
-        $startcol5 = $startcol4 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+        $startcol8 = $startcol7 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
+        $criteria->addJoin(ClientPeer::DEFAULT_USER, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CURRENCY, CurrencyPeer::ID_CURRENCY, $join_behavior);
 
         $criteria->addJoin(ClientPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
@@ -1502,21 +2167,361 @@ abstract class BaseClientPeer
                 ClientPeer::addInstanceToPool($obj1, $key1);
             } // if obj1 already loaded
 
-                // Add objects for joined AuthyGroup rows
+                // Add objects for joined Authy rows
 
-                $key2 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+                $key2 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol2);
                 if ($key2 !== null) {
-                    $obj2 = AuthyGroupPeer::getInstanceFromPool($key2);
+                    $obj2 = AuthyPeer::getInstanceFromPool($key2);
                     if (!$obj2) {
 
-                        $cls = AuthyGroupPeer::getOMClass();
+                        $cls = AuthyPeer::getOMClass();
 
                     $obj2 = new $cls();
                     $obj2->hydrate($row, $startcol2);
-                    AuthyGroupPeer::addInstanceToPool($obj2, $key2);
+                    AuthyPeer::addInstanceToPool($obj2, $key2);
                 } // if $obj2 already loaded
 
-                // Add the $obj1 (Client) to the collection in $obj2 (AuthyGroup)
+                // Add the $obj1 (Client) to the collection in $obj2 (Authy)
+                $obj2->addClientRelatedByDefaultUser($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined BillingCategory rows
+
+                $key3 = BillingCategoryPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+                if ($key3 !== null) {
+                    $obj3 = BillingCategoryPeer::getInstanceFromPool($key3);
+                    if (!$obj3) {
+
+                        $cls = BillingCategoryPeer::getOMClass();
+
+                    $obj3 = new $cls();
+                    $obj3->hydrate($row, $startcol3);
+                    BillingCategoryPeer::addInstanceToPool($obj3, $key3);
+                } // if $obj3 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj3 (BillingCategory)
+                $obj3->addClient($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Currency rows
+
+                $key4 = CurrencyPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+                if ($key4 !== null) {
+                    $obj4 = CurrencyPeer::getInstanceFromPool($key4);
+                    if (!$obj4) {
+
+                        $cls = CurrencyPeer::getOMClass();
+
+                    $obj4 = new $cls();
+                    $obj4->hydrate($row, $startcol4);
+                    CurrencyPeer::addInstanceToPool($obj4, $key4);
+                } // if $obj4 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj4 (Currency)
+                $obj4->addClient($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined AuthyGroup rows
+
+                $key5 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                if ($key5 !== null) {
+                    $obj5 = AuthyGroupPeer::getInstanceFromPool($key5);
+                    if (!$obj5) {
+
+                        $cls = AuthyGroupPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    AuthyGroupPeer::addInstanceToPool($obj5, $key5);
+                } // if $obj5 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj5 (AuthyGroup)
+                $obj5->addClient($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Authy rows
+
+                $key6 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+                if ($key6 !== null) {
+                    $obj6 = AuthyPeer::getInstanceFromPool($key6);
+                    if (!$obj6) {
+
+                        $cls = AuthyPeer::getOMClass();
+
+                    $obj6 = new $cls();
+                    $obj6->hydrate($row, $startcol6);
+                    AuthyPeer::addInstanceToPool($obj6, $key6);
+                } // if $obj6 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj6 (Authy)
+                $obj6->addClientRelatedByIdCreation($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Authy rows
+
+                $key7 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+                if ($key7 !== null) {
+                    $obj7 = AuthyPeer::getInstanceFromPool($key7);
+                    if (!$obj7) {
+
+                        $cls = AuthyPeer::getOMClass();
+
+                    $obj7 = new $cls();
+                    $obj7->hydrate($row, $startcol7);
+                    AuthyPeer::addInstanceToPool($obj7, $key7);
+                } // if $obj7 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj7 (Authy)
+                $obj7->addClientRelatedByIdModification($obj1);
+
+            } // if joined row is not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Selects a collection of Client objects pre-filled with all related objects except AuthyRelatedByDefaultUser.
+     *
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Client objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinAllExceptAuthyRelatedByDefaultUser(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        // $criteria->getDbName() will return the same object if not set to another value
+        // so == check is okay and faster
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(ClientPeer::DATABASE_NAME);
+        }
+
+        ClientPeer::addSelectColumns($criteria);
+        $startcol2 = ClientPeer::NUM_HYDRATE_COLUMNS;
+
+        CountryPeer::addSelectColumns($criteria);
+        $startcol3 = $startcol2 + CountryPeer::NUM_HYDRATE_COLUMNS;
+
+        BillingCategoryPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + BillingCategoryPeer::NUM_HYDRATE_COLUMNS;
+
+        CurrencyPeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + CurrencyPeer::NUM_HYDRATE_COLUMNS;
+
+        AuthyGroupPeer::addSelectColumns($criteria);
+        $startcol6 = $startcol5 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+
+        $criteria->addJoin(ClientPeer::ID_COUNTRY, CountryPeer::ID_COUNTRY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CURRENCY, CurrencyPeer::ID_CURRENCY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
+
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = ClientPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ClientPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+                $cls = ClientPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                ClientPeer::addInstanceToPool($obj1, $key1);
+            } // if obj1 already loaded
+
+                // Add objects for joined Country rows
+
+                $key2 = CountryPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+                if ($key2 !== null) {
+                    $obj2 = CountryPeer::getInstanceFromPool($key2);
+                    if (!$obj2) {
+
+                        $cls = CountryPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol2);
+                    CountryPeer::addInstanceToPool($obj2, $key2);
+                } // if $obj2 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj2 (Country)
+                $obj2->addClient($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined BillingCategory rows
+
+                $key3 = BillingCategoryPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+                if ($key3 !== null) {
+                    $obj3 = BillingCategoryPeer::getInstanceFromPool($key3);
+                    if (!$obj3) {
+
+                        $cls = BillingCategoryPeer::getOMClass();
+
+                    $obj3 = new $cls();
+                    $obj3->hydrate($row, $startcol3);
+                    BillingCategoryPeer::addInstanceToPool($obj3, $key3);
+                } // if $obj3 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj3 (BillingCategory)
+                $obj3->addClient($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Currency rows
+
+                $key4 = CurrencyPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+                if ($key4 !== null) {
+                    $obj4 = CurrencyPeer::getInstanceFromPool($key4);
+                    if (!$obj4) {
+
+                        $cls = CurrencyPeer::getOMClass();
+
+                    $obj4 = new $cls();
+                    $obj4->hydrate($row, $startcol4);
+                    CurrencyPeer::addInstanceToPool($obj4, $key4);
+                } // if $obj4 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj4 (Currency)
+                $obj4->addClient($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined AuthyGroup rows
+
+                $key5 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                if ($key5 !== null) {
+                    $obj5 = AuthyGroupPeer::getInstanceFromPool($key5);
+                    if (!$obj5) {
+
+                        $cls = AuthyGroupPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    AuthyGroupPeer::addInstanceToPool($obj5, $key5);
+                } // if $obj5 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj5 (AuthyGroup)
+                $obj5->addClient($obj1);
+
+            } // if joined row is not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Selects a collection of Client objects pre-filled with all related objects except BillingCategory.
+     *
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Client objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinAllExceptBillingCategory(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        // $criteria->getDbName() will return the same object if not set to another value
+        // so == check is okay and faster
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(ClientPeer::DATABASE_NAME);
+        }
+
+        ClientPeer::addSelectColumns($criteria);
+        $startcol2 = ClientPeer::NUM_HYDRATE_COLUMNS;
+
+        CountryPeer::addSelectColumns($criteria);
+        $startcol3 = $startcol2 + CountryPeer::NUM_HYDRATE_COLUMNS;
+
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
+        CurrencyPeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + CurrencyPeer::NUM_HYDRATE_COLUMNS;
+
+        AuthyGroupPeer::addSelectColumns($criteria);
+        $startcol6 = $startcol5 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol7 = $startcol6 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol8 = $startcol7 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
+        $criteria->addJoin(ClientPeer::ID_COUNTRY, CountryPeer::ID_COUNTRY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_USER, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CURRENCY, CurrencyPeer::ID_CURRENCY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::ID_CREATION, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::ID_MODIFICATION, AuthyPeer::ID_AUTHY, $join_behavior);
+
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = ClientPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ClientPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+                $cls = ClientPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                ClientPeer::addInstanceToPool($obj1, $key1);
+            } // if obj1 already loaded
+
+                // Add objects for joined Country rows
+
+                $key2 = CountryPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+                if ($key2 !== null) {
+                    $obj2 = CountryPeer::getInstanceFromPool($key2);
+                    if (!$obj2) {
+
+                        $cls = CountryPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol2);
+                    CountryPeer::addInstanceToPool($obj2, $key2);
+                } // if $obj2 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj2 (Country)
                 $obj2->addClient($obj1);
 
             } // if joined row is not null
@@ -1536,26 +2541,277 @@ abstract class BaseClientPeer
                 } // if $obj3 already loaded
 
                 // Add the $obj1 (Client) to the collection in $obj3 (Authy)
-                $obj3->addClientRelatedByIdCreation($obj1);
+                $obj3->addClientRelatedByDefaultUser($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Currency rows
+
+                $key4 = CurrencyPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+                if ($key4 !== null) {
+                    $obj4 = CurrencyPeer::getInstanceFromPool($key4);
+                    if (!$obj4) {
+
+                        $cls = CurrencyPeer::getOMClass();
+
+                    $obj4 = new $cls();
+                    $obj4->hydrate($row, $startcol4);
+                    CurrencyPeer::addInstanceToPool($obj4, $key4);
+                } // if $obj4 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj4 (Currency)
+                $obj4->addClient($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined AuthyGroup rows
+
+                $key5 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                if ($key5 !== null) {
+                    $obj5 = AuthyGroupPeer::getInstanceFromPool($key5);
+                    if (!$obj5) {
+
+                        $cls = AuthyGroupPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    AuthyGroupPeer::addInstanceToPool($obj5, $key5);
+                } // if $obj5 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj5 (AuthyGroup)
+                $obj5->addClient($obj1);
 
             } // if joined row is not null
 
                 // Add objects for joined Authy rows
 
-                $key4 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol4);
-                if ($key4 !== null) {
-                    $obj4 = AuthyPeer::getInstanceFromPool($key4);
-                    if (!$obj4) {
+                $key6 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+                if ($key6 !== null) {
+                    $obj6 = AuthyPeer::getInstanceFromPool($key6);
+                    if (!$obj6) {
 
                         $cls = AuthyPeer::getOMClass();
 
+                    $obj6 = new $cls();
+                    $obj6->hydrate($row, $startcol6);
+                    AuthyPeer::addInstanceToPool($obj6, $key6);
+                } // if $obj6 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj6 (Authy)
+                $obj6->addClientRelatedByIdCreation($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Authy rows
+
+                $key7 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+                if ($key7 !== null) {
+                    $obj7 = AuthyPeer::getInstanceFromPool($key7);
+                    if (!$obj7) {
+
+                        $cls = AuthyPeer::getOMClass();
+
+                    $obj7 = new $cls();
+                    $obj7->hydrate($row, $startcol7);
+                    AuthyPeer::addInstanceToPool($obj7, $key7);
+                } // if $obj7 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj7 (Authy)
+                $obj7->addClientRelatedByIdModification($obj1);
+
+            } // if joined row is not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Selects a collection of Client objects pre-filled with all related objects except Currency.
+     *
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Client objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinAllExceptCurrency(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        // $criteria->getDbName() will return the same object if not set to another value
+        // so == check is okay and faster
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(ClientPeer::DATABASE_NAME);
+        }
+
+        ClientPeer::addSelectColumns($criteria);
+        $startcol2 = ClientPeer::NUM_HYDRATE_COLUMNS;
+
+        CountryPeer::addSelectColumns($criteria);
+        $startcol3 = $startcol2 + CountryPeer::NUM_HYDRATE_COLUMNS;
+
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
+        BillingCategoryPeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + BillingCategoryPeer::NUM_HYDRATE_COLUMNS;
+
+        AuthyGroupPeer::addSelectColumns($criteria);
+        $startcol6 = $startcol5 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol7 = $startcol6 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol8 = $startcol7 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
+        $criteria->addJoin(ClientPeer::ID_COUNTRY, CountryPeer::ID_COUNTRY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_USER, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::ID_CREATION, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::ID_MODIFICATION, AuthyPeer::ID_AUTHY, $join_behavior);
+
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = ClientPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ClientPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+                $cls = ClientPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                ClientPeer::addInstanceToPool($obj1, $key1);
+            } // if obj1 already loaded
+
+                // Add objects for joined Country rows
+
+                $key2 = CountryPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+                if ($key2 !== null) {
+                    $obj2 = CountryPeer::getInstanceFromPool($key2);
+                    if (!$obj2) {
+
+                        $cls = CountryPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol2);
+                    CountryPeer::addInstanceToPool($obj2, $key2);
+                } // if $obj2 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj2 (Country)
+                $obj2->addClient($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Authy rows
+
+                $key3 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+                if ($key3 !== null) {
+                    $obj3 = AuthyPeer::getInstanceFromPool($key3);
+                    if (!$obj3) {
+
+                        $cls = AuthyPeer::getOMClass();
+
+                    $obj3 = new $cls();
+                    $obj3->hydrate($row, $startcol3);
+                    AuthyPeer::addInstanceToPool($obj3, $key3);
+                } // if $obj3 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj3 (Authy)
+                $obj3->addClientRelatedByDefaultUser($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined BillingCategory rows
+
+                $key4 = BillingCategoryPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+                if ($key4 !== null) {
+                    $obj4 = BillingCategoryPeer::getInstanceFromPool($key4);
+                    if (!$obj4) {
+
+                        $cls = BillingCategoryPeer::getOMClass();
+
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
-                    AuthyPeer::addInstanceToPool($obj4, $key4);
+                    BillingCategoryPeer::addInstanceToPool($obj4, $key4);
                 } // if $obj4 already loaded
 
-                // Add the $obj1 (Client) to the collection in $obj4 (Authy)
-                $obj4->addClientRelatedByIdModification($obj1);
+                // Add the $obj1 (Client) to the collection in $obj4 (BillingCategory)
+                $obj4->addClient($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined AuthyGroup rows
+
+                $key5 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                if ($key5 !== null) {
+                    $obj5 = AuthyGroupPeer::getInstanceFromPool($key5);
+                    if (!$obj5) {
+
+                        $cls = AuthyGroupPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    AuthyGroupPeer::addInstanceToPool($obj5, $key5);
+                } // if $obj5 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj5 (AuthyGroup)
+                $obj5->addClient($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Authy rows
+
+                $key6 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+                if ($key6 !== null) {
+                    $obj6 = AuthyPeer::getInstanceFromPool($key6);
+                    if (!$obj6) {
+
+                        $cls = AuthyPeer::getOMClass();
+
+                    $obj6 = new $cls();
+                    $obj6->hydrate($row, $startcol6);
+                    AuthyPeer::addInstanceToPool($obj6, $key6);
+                } // if $obj6 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj6 (Authy)
+                $obj6->addClientRelatedByIdCreation($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Authy rows
+
+                $key7 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+                if ($key7 !== null) {
+                    $obj7 = AuthyPeer::getInstanceFromPool($key7);
+                    if (!$obj7) {
+
+                        $cls = AuthyPeer::getOMClass();
+
+                    $obj7 = new $cls();
+                    $obj7->hydrate($row, $startcol7);
+                    AuthyPeer::addInstanceToPool($obj7, $key7);
+                } // if $obj7 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj7 (Authy)
+                $obj7->addClientRelatedByIdModification($obj1);
 
             } // if joined row is not null
 
@@ -1597,10 +2853,25 @@ abstract class BaseClientPeer
         AuthyPeer::addSelectColumns($criteria);
         $startcol4 = $startcol3 + AuthyPeer::NUM_HYDRATE_COLUMNS;
 
+        BillingCategoryPeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + BillingCategoryPeer::NUM_HYDRATE_COLUMNS;
+
+        CurrencyPeer::addSelectColumns($criteria);
+        $startcol6 = $startcol5 + CurrencyPeer::NUM_HYDRATE_COLUMNS;
+
         AuthyPeer::addSelectColumns($criteria);
-        $startcol5 = $startcol4 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+        $startcol7 = $startcol6 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol8 = $startcol7 + AuthyPeer::NUM_HYDRATE_COLUMNS;
 
         $criteria->addJoin(ClientPeer::ID_COUNTRY, CountryPeer::ID_COUNTRY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_USER, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CURRENCY, CurrencyPeer::ID_CURRENCY, $join_behavior);
 
         $criteria->addJoin(ClientPeer::ID_CREATION, AuthyPeer::ID_AUTHY, $join_behavior);
 
@@ -1658,26 +2929,83 @@ abstract class BaseClientPeer
                 } // if $obj3 already loaded
 
                 // Add the $obj1 (Client) to the collection in $obj3 (Authy)
-                $obj3->addClientRelatedByIdCreation($obj1);
+                $obj3->addClientRelatedByDefaultUser($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined BillingCategory rows
+
+                $key4 = BillingCategoryPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+                if ($key4 !== null) {
+                    $obj4 = BillingCategoryPeer::getInstanceFromPool($key4);
+                    if (!$obj4) {
+
+                        $cls = BillingCategoryPeer::getOMClass();
+
+                    $obj4 = new $cls();
+                    $obj4->hydrate($row, $startcol4);
+                    BillingCategoryPeer::addInstanceToPool($obj4, $key4);
+                } // if $obj4 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj4 (BillingCategory)
+                $obj4->addClient($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Currency rows
+
+                $key5 = CurrencyPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                if ($key5 !== null) {
+                    $obj5 = CurrencyPeer::getInstanceFromPool($key5);
+                    if (!$obj5) {
+
+                        $cls = CurrencyPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    CurrencyPeer::addInstanceToPool($obj5, $key5);
+                } // if $obj5 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj5 (Currency)
+                $obj5->addClient($obj1);
 
             } // if joined row is not null
 
                 // Add objects for joined Authy rows
 
-                $key4 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol4);
-                if ($key4 !== null) {
-                    $obj4 = AuthyPeer::getInstanceFromPool($key4);
-                    if (!$obj4) {
+                $key6 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+                if ($key6 !== null) {
+                    $obj6 = AuthyPeer::getInstanceFromPool($key6);
+                    if (!$obj6) {
 
                         $cls = AuthyPeer::getOMClass();
 
-                    $obj4 = new $cls();
-                    $obj4->hydrate($row, $startcol4);
-                    AuthyPeer::addInstanceToPool($obj4, $key4);
-                } // if $obj4 already loaded
+                    $obj6 = new $cls();
+                    $obj6->hydrate($row, $startcol6);
+                    AuthyPeer::addInstanceToPool($obj6, $key6);
+                } // if $obj6 already loaded
 
-                // Add the $obj1 (Client) to the collection in $obj4 (Authy)
-                $obj4->addClientRelatedByIdModification($obj1);
+                // Add the $obj1 (Client) to the collection in $obj6 (Authy)
+                $obj6->addClientRelatedByIdCreation($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Authy rows
+
+                $key7 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol7);
+                if ($key7 !== null) {
+                    $obj7 = AuthyPeer::getInstanceFromPool($key7);
+                    if (!$obj7) {
+
+                        $cls = AuthyPeer::getOMClass();
+
+                    $obj7 = new $cls();
+                    $obj7->hydrate($row, $startcol7);
+                    AuthyPeer::addInstanceToPool($obj7, $key7);
+                } // if $obj7 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj7 (Authy)
+                $obj7->addClientRelatedByIdModification($obj1);
 
             } // if joined row is not null
 
@@ -1716,10 +3044,20 @@ abstract class BaseClientPeer
         CountryPeer::addSelectColumns($criteria);
         $startcol3 = $startcol2 + CountryPeer::NUM_HYDRATE_COLUMNS;
 
+        BillingCategoryPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + BillingCategoryPeer::NUM_HYDRATE_COLUMNS;
+
+        CurrencyPeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + CurrencyPeer::NUM_HYDRATE_COLUMNS;
+
         AuthyGroupPeer::addSelectColumns($criteria);
-        $startcol4 = $startcol3 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+        $startcol6 = $startcol5 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
 
         $criteria->addJoin(ClientPeer::ID_COUNTRY, CountryPeer::ID_COUNTRY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CURRENCY, CurrencyPeer::ID_CURRENCY, $join_behavior);
 
         $criteria->addJoin(ClientPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
@@ -1760,22 +3098,60 @@ abstract class BaseClientPeer
 
             } // if joined row is not null
 
-                // Add objects for joined AuthyGroup rows
+                // Add objects for joined BillingCategory rows
 
-                $key3 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+                $key3 = BillingCategoryPeer::getPrimaryKeyHashFromRow($row, $startcol3);
                 if ($key3 !== null) {
-                    $obj3 = AuthyGroupPeer::getInstanceFromPool($key3);
+                    $obj3 = BillingCategoryPeer::getInstanceFromPool($key3);
                     if (!$obj3) {
 
-                        $cls = AuthyGroupPeer::getOMClass();
+                        $cls = BillingCategoryPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
-                    AuthyGroupPeer::addInstanceToPool($obj3, $key3);
+                    BillingCategoryPeer::addInstanceToPool($obj3, $key3);
                 } // if $obj3 already loaded
 
-                // Add the $obj1 (Client) to the collection in $obj3 (AuthyGroup)
+                // Add the $obj1 (Client) to the collection in $obj3 (BillingCategory)
                 $obj3->addClient($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Currency rows
+
+                $key4 = CurrencyPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+                if ($key4 !== null) {
+                    $obj4 = CurrencyPeer::getInstanceFromPool($key4);
+                    if (!$obj4) {
+
+                        $cls = CurrencyPeer::getOMClass();
+
+                    $obj4 = new $cls();
+                    $obj4->hydrate($row, $startcol4);
+                    CurrencyPeer::addInstanceToPool($obj4, $key4);
+                } // if $obj4 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj4 (Currency)
+                $obj4->addClient($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined AuthyGroup rows
+
+                $key5 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                if ($key5 !== null) {
+                    $obj5 = AuthyGroupPeer::getInstanceFromPool($key5);
+                    if (!$obj5) {
+
+                        $cls = AuthyGroupPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    AuthyGroupPeer::addInstanceToPool($obj5, $key5);
+                } // if $obj5 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj5 (AuthyGroup)
+                $obj5->addClient($obj1);
 
             } // if joined row is not null
 
@@ -1814,10 +3190,20 @@ abstract class BaseClientPeer
         CountryPeer::addSelectColumns($criteria);
         $startcol3 = $startcol2 + CountryPeer::NUM_HYDRATE_COLUMNS;
 
+        BillingCategoryPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + BillingCategoryPeer::NUM_HYDRATE_COLUMNS;
+
+        CurrencyPeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + CurrencyPeer::NUM_HYDRATE_COLUMNS;
+
         AuthyGroupPeer::addSelectColumns($criteria);
-        $startcol4 = $startcol3 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+        $startcol6 = $startcol5 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
 
         $criteria->addJoin(ClientPeer::ID_COUNTRY, CountryPeer::ID_COUNTRY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CATEGORY, BillingCategoryPeer::ID_BILLING_CATEGORY, $join_behavior);
+
+        $criteria->addJoin(ClientPeer::DEFAULT_CURRENCY, CurrencyPeer::ID_CURRENCY, $join_behavior);
 
         $criteria->addJoin(ClientPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
@@ -1858,22 +3244,60 @@ abstract class BaseClientPeer
 
             } // if joined row is not null
 
-                // Add objects for joined AuthyGroup rows
+                // Add objects for joined BillingCategory rows
 
-                $key3 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+                $key3 = BillingCategoryPeer::getPrimaryKeyHashFromRow($row, $startcol3);
                 if ($key3 !== null) {
-                    $obj3 = AuthyGroupPeer::getInstanceFromPool($key3);
+                    $obj3 = BillingCategoryPeer::getInstanceFromPool($key3);
                     if (!$obj3) {
 
-                        $cls = AuthyGroupPeer::getOMClass();
+                        $cls = BillingCategoryPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
-                    AuthyGroupPeer::addInstanceToPool($obj3, $key3);
+                    BillingCategoryPeer::addInstanceToPool($obj3, $key3);
                 } // if $obj3 already loaded
 
-                // Add the $obj1 (Client) to the collection in $obj3 (AuthyGroup)
+                // Add the $obj1 (Client) to the collection in $obj3 (BillingCategory)
                 $obj3->addClient($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Currency rows
+
+                $key4 = CurrencyPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+                if ($key4 !== null) {
+                    $obj4 = CurrencyPeer::getInstanceFromPool($key4);
+                    if (!$obj4) {
+
+                        $cls = CurrencyPeer::getOMClass();
+
+                    $obj4 = new $cls();
+                    $obj4->hydrate($row, $startcol4);
+                    CurrencyPeer::addInstanceToPool($obj4, $key4);
+                } // if $obj4 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj4 (Currency)
+                $obj4->addClient($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined AuthyGroup rows
+
+                $key5 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                if ($key5 !== null) {
+                    $obj5 = AuthyGroupPeer::getInstanceFromPool($key5);
+                    if (!$obj5) {
+
+                        $cls = AuthyGroupPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    AuthyGroupPeer::addInstanceToPool($obj5, $key5);
+                } // if $obj5 already loaded
+
+                // Add the $obj1 (Client) to the collection in $obj5 (AuthyGroup)
+                $obj5->addClient($obj1);
 
             } // if joined row is not null
 
@@ -2173,6 +3597,15 @@ abstract class BaseClientPeer
 
         if ($obj->isNew() || $obj->isColumnModified(ClientPeer::ZIP))
             $columns[ClientPeer::ZIP] = $obj->getZip();
+
+        if ($obj->isNew() || $obj->isColumnModified(ClientPeer::DEFAULT_USER))
+            $columns[ClientPeer::DEFAULT_USER] = $obj->getDefaultUser();
+
+        if ($obj->isNew() || $obj->isColumnModified(ClientPeer::DEFAULT_CATEGORY))
+            $columns[ClientPeer::DEFAULT_CATEGORY] = $obj->getDefaultCategory();
+
+        if ($obj->isNew() || $obj->isColumnModified(ClientPeer::DEFAULT_CURRENCY))
+            $columns[ClientPeer::DEFAULT_CURRENCY] = $obj->getDefaultCurrency();
 
         }
 

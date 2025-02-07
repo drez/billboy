@@ -45,7 +45,7 @@ class BillingLineTableMap extends TableMap
         $this->addPrimaryKey('id_billing_line', 'IdBillingLine', 'INTEGER', true, 10, null);
         $this->addForeignKey('id_billing', 'IdBilling', 'INTEGER', 'billing', 'id_billing', true, 11, null);
         $this->addColumn('calc_id', 'CalcId', 'VARCHAR', false, 20, null);
-        $this->addForeignKey('id_assign', 'IdAssign', 'INTEGER', 'authy', 'id_creation', false, 11, null);
+        $this->addForeignKey('id_assign', 'IdAssign', 'INTEGER', 'authy', 'id_authy', false, 11, null);
         $this->addForeignKey('id_project', 'IdProject', 'INTEGER', 'project', 'id_project', false, 11, null);
         $this->addColumn('title', 'Title', 'VARCHAR', false, 100, null);
         $this->addColumn('work_date', 'WorkDate', 'DATE', false, null, null);
@@ -83,7 +83,7 @@ class BillingLineTableMap extends TableMap
     public function buildRelations()
     {
         $this->addRelation('Billing', 'App\\Billing', RelationMap::MANY_TO_ONE, array('id_billing' => 'id_billing', ), 'CASCADE', null);
-        $this->addRelation('AuthyRelatedByIdAssign', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_assign' => 'id_creation', ), null, null);
+        $this->addRelation('AuthyRelatedByIdAssign', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_assign' => 'id_authy', ), null, null);
         $this->addRelation('Project', 'App\\Project', RelationMap::MANY_TO_ONE, array('id_project' => 'id_project', ), null, null);
         $this->addRelation('BillingCategory', 'App\\BillingCategory', RelationMap::MANY_TO_ONE, array('id_billing_category' => 'id_billing_category', ), null, null);
         $this->addRelation('AuthyGroup', 'App\\AuthyGroup', RelationMap::MANY_TO_ONE, array('id_group_creation' => 'id_authy_group', ), null, null);

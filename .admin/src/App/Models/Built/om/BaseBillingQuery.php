@@ -21,6 +21,7 @@ use App\BillingPeer;
 use App\BillingQuery;
 use App\Client;
 use App\CostLine;
+use App\Currency;
 use App\PaymentLine;
 use App\Project;
 
@@ -40,6 +41,7 @@ use App\Project;
  * @method BillingQuery orderByType($order = Criteria::ASC) Order by the type column
  * @method BillingQuery orderByGross($order = Criteria::ASC) Order by the gross column
  * @method BillingQuery orderByGrossCurrency($order = Criteria::ASC) Order by the gross_currency column
+ * @method BillingQuery orderByDefaultCurrency($order = Criteria::ASC) Order by the default_currency column
  * @method BillingQuery orderByGross2($order = Criteria::ASC) Order by the gross_2 column
  * @method BillingQuery orderByTax($order = Criteria::ASC) Order by the tax column
  * @method BillingQuery orderByDateDue($order = Criteria::ASC) Order by the date_due column
@@ -64,6 +66,7 @@ use App\Project;
  * @method BillingQuery groupByType() Group by the type column
  * @method BillingQuery groupByGross() Group by the gross column
  * @method BillingQuery groupByGrossCurrency() Group by the gross_currency column
+ * @method BillingQuery groupByDefaultCurrency() Group by the default_currency column
  * @method BillingQuery groupByGross2() Group by the gross_2 column
  * @method BillingQuery groupByTax() Group by the tax column
  * @method BillingQuery groupByDateDue() Group by the date_due column
@@ -92,6 +95,10 @@ use App\Project;
  * @method BillingQuery leftJoinBillingCategory($relationAlias = null) Adds a LEFT JOIN clause to the query using the BillingCategory relation
  * @method BillingQuery rightJoinBillingCategory($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BillingCategory relation
  * @method BillingQuery innerJoinBillingCategory($relationAlias = null) Adds a INNER JOIN clause to the query using the BillingCategory relation
+ *
+ * @method BillingQuery leftJoinCurrency($relationAlias = null) Adds a LEFT JOIN clause to the query using the Currency relation
+ * @method BillingQuery rightJoinCurrency($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Currency relation
+ * @method BillingQuery innerJoinCurrency($relationAlias = null) Adds a INNER JOIN clause to the query using the Currency relation
  *
  * @method BillingQuery leftJoinAuthyGroup($relationAlias = null) Adds a LEFT JOIN clause to the query using the AuthyGroup relation
  * @method BillingQuery rightJoinAuthyGroup($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AuthyGroup relation
@@ -130,6 +137,7 @@ use App\Project;
  * @method Billing findOneByType(int $type) Return the first Billing filtered by the type column
  * @method Billing findOneByGross(string $gross) Return the first Billing filtered by the gross column
  * @method Billing findOneByGrossCurrency(int $gross_currency) Return the first Billing filtered by the gross_currency column
+ * @method Billing findOneByDefaultCurrency(int $default_currency) Return the first Billing filtered by the default_currency column
  * @method Billing findOneByGross2(string $gross_2) Return the first Billing filtered by the gross_2 column
  * @method Billing findOneByTax(string $tax) Return the first Billing filtered by the tax column
  * @method Billing findOneByDateDue(string $date_due) Return the first Billing filtered by the date_due column
@@ -154,6 +162,7 @@ use App\Project;
  * @method array findByType(int $type) Return Billing objects filtered by the type column
  * @method array findByGross(string $gross) Return Billing objects filtered by the gross column
  * @method array findByGrossCurrency(int $gross_currency) Return Billing objects filtered by the gross_currency column
+ * @method array findByDefaultCurrency(int $default_currency) Return Billing objects filtered by the default_currency column
  * @method array findByGross2(string $gross_2) Return Billing objects filtered by the gross_2 column
  * @method array findByTax(string $tax) Return Billing objects filtered by the tax column
  * @method array findByDateDue(string $date_due) Return Billing objects filtered by the date_due column
@@ -274,7 +283,7 @@ abstract class BaseBillingQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_billing`, `calc_id`, `state`, `id_client`, `title`, `id_project`, `id_billing_category`, `date`, `type`, `gross`, `gross_currency`, `gross_2`, `tax`, `date_due`, `note_billing`, `date_paid`, `net`, `reference`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `billing` WHERE `id_billing` = :p0';
+        $sql = 'SELECT `id_billing`, `calc_id`, `state`, `id_client`, `title`, `id_project`, `id_billing_category`, `date`, `type`, `gross`, `gross_currency`, `default_currency`, `gross_2`, `tax`, `date_due`, `note_billing`, `date_paid`, `net`, `reference`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `billing` WHERE `id_billing` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -762,6 +771,50 @@ abstract class BaseBillingQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(BillingPeer::GROSS_CURRENCY, $grossCurrency, $comparison);
+    }
+
+    /**
+     * Filter the query on the default_currency column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDefaultCurrency(1234); // WHERE default_currency = 1234
+     * $query->filterByDefaultCurrency(array(12, 34)); // WHERE default_currency IN (12, 34)
+     * $query->filterByDefaultCurrency(array('min' => 12)); // WHERE default_currency >= 12
+     * $query->filterByDefaultCurrency(array('max' => 12)); // WHERE default_currency <= 12
+     * </code>
+     *
+     * @see       filterByCurrency()
+     *
+     * @param     mixed $defaultCurrency The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return BillingQuery The current query, for fluid interface
+     */
+    public function filterByDefaultCurrency($defaultCurrency = null, $comparison = null)
+    {
+        if (is_array($defaultCurrency)) {
+            $useMinMax = false;
+            if (isset($defaultCurrency['min'])) {
+                $this->addUsingAlias(BillingPeer::DEFAULT_CURRENCY, $defaultCurrency['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($defaultCurrency['max'])) {
+                $this->addUsingAlias(BillingPeer::DEFAULT_CURRENCY, $defaultCurrency['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(BillingPeer::DEFAULT_CURRENCY, $defaultCurrency, $comparison);
     }
 
     /**
@@ -1478,6 +1531,82 @@ abstract class BaseBillingQuery extends ModelCriteria
         return $this
             ->joinBillingCategory($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'BillingCategory', '\App\BillingCategoryQuery');
+    }
+
+    /**
+     * Filter the query by a related Currency object
+     *
+     * @param   Currency|PropelObjectCollection $currency The related object(s) to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 BillingQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByCurrency($currency, $comparison = null)
+    {
+        if ($currency instanceof Currency) {
+            return $this
+                ->addUsingAlias(BillingPeer::DEFAULT_CURRENCY, $currency->getIdCurrency(), $comparison);
+        } elseif ($currency instanceof PropelObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(BillingPeer::DEFAULT_CURRENCY, $currency->toKeyValue('PrimaryKey', 'IdCurrency'), $comparison);
+        } else {
+            throw new PropelException('filterByCurrency() only accepts arguments of type Currency or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Currency relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return BillingQuery The current query, for fluid interface
+     */
+    public function joinCurrency($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Currency');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Currency');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Currency relation Currency object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\CurrencyQuery A secondary query class using the current class as primary query
+     */
+    public function useCurrencyQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinCurrency($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Currency', '\App\CurrencyQuery');
     }
 
     /**

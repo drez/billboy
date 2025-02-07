@@ -95,6 +95,12 @@ return [
         'parent_menu' => 'Settings',
     ],
     [
+        'name' => 'Currency',
+        'desc' => 'Currencies',
+        'index' => 0,
+        'parent_menu' => 'Settings',
+    ],
+    [
         'name' => 'Template',
         'desc' => 'Templates',
         'index' => 0,

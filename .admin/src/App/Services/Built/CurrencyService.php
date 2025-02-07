@@ -17,7 +17,7 @@ use ApiGoat\Api\ApiResponse;
 use ApiGoat\Api\Api;
 
 
-class TimeLineService
+class CurrencyService
 {
 
     /**
@@ -121,7 +121,7 @@ class TimeLineService
     public function getApiResponse()
     {
         $this->body = ['status' => 'failure', 'errors' => ['Unknown method'], 'data' => null, 'messages' => null];
-        $Api = new Api('TimeLine', $this);
+        $Api = new Api('Currency', $this);
 
         if (isset($this->customActions[$this->request['a']]) && method_exists($this, $this->customActions[$this->request['a']])) {
             $callable = $this->customActions[$this->request['a']];
@@ -168,9 +168,15 @@ class TimeLineService
         $error = [];
         $messages = '';
 
-        $obj = TimeLineQuery::create()->findPk(json_decode($this->request['i']));
+        $obj = CurrencyQuery::create()->findPk(json_decode($this->request['i']));
 
 
+            if($obj->countClients()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Client'. ", '', true,'Currency'); die( $error['onReadyJs'] );
+            }
+            if($obj->countBillings()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Billing'. ", '', true,'Currency'); die( $error['onReadyJs'] );
+            }
         if (method_exists($this, 'beforeDelete')){ $this->beforeDelete($obj, $this->request, $error, $messages);}
         $obj->delete();
 
@@ -188,15 +194,15 @@ class TimeLineService
         $extValidationErr = false;
         parse_str ($this->request['d'], $data );
 
-        $data['i'] = ( $data['IdCostLine'] ) ? $data['IdCostLine'] : $this->request['i'];
+        $data['i'] = ( $data['IdCurrency'] ) ? $data['IdCurrency'] : $this->request['i'];
         $data['ip'] = urldecode($this->request['data']['ip']);
         $data['pc'] = urldecode($this->request['data']['pc']);
-        $this->TimeLine['request'] = $this->request;
+        $this->Currency['request'] = $this->request;
 
         if(!empty($data['i'])) {
             ## Save
             if (method_exists($this, 'beforeSave')){ $this->beforeSave($this, $data, false, $messages, $extValidationErr, $error);}
-            $e = $this->Form->setUpdateDefaultsTimeLine($data);
+            $e = $this->Form->setUpdateDefaultsCurrency($data);
 
 
             if ($e->validate() && !$extValidationErr) {
@@ -212,14 +218,14 @@ class TimeLineService
             ## Create
             if (method_exists($this, 'beforeSave')){ $this->beforeSave($this, $data, true, $messages, $extValidationErr, $error);}
 
-            $e = $this->Form->setCreateDefaultsTimeLine($data);
+            $e = $this->Form->setCreateDefaultsCurrency($data);
 
             if ($e->validate() && !$extValidationErr) {
                 $e->save();
                 $this->request['i'] = json_encode($e->getPrimaryKey());
                 if (method_exists($this, 'afterSave')){ $this->afterSave($e, $data, true, $messages, $extValidationErr, $error);}
 
-                $data['IdProject'] = json_encode($e->getIdProject());
+
             }else{
                 $PropelErrorHandler = new PropelErrorHandler($e, $this->request['data']['ui'],_('Form field'), $extValidationErr, $this->virtualClassName);
                 $error = $PropelErrorHandler->getValidationErrors();
@@ -238,14 +244,9 @@ class TimeLineService
     */
     private function edit()
     {
-        $this->TimeLine['request'] = $this->request;
-        $this->TimeLine['parentId'] = $this->request['data']['ip'];
+        $this->Currency['request'] = $this->request;
+        $this->Currency['parentId'] = $this->request['data']['ip'];
 
-            if($this->request['data']['ip']){
-                $relData['IdProject'] = $this->request['data']['ip'];
-                $relData['ip'] = json_decode($this->request['data']['ip']);
-                $relData['pc'] = $this->request['data']['pc'];
-            }
 
         $relData = $this->request;
         $output = $this->Form->getEditForm($this->request['i'], $this->request['ui'], $relData, '', $this->request['data']['je'], $this->request['data']['jet']);

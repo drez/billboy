@@ -27,6 +27,7 @@ use App\Client;
 use App\Config;
 use App\CostLine;
 use App\Country;
+use App\Currency;
 use App\MessageI18n;
 use App\PaymentLine;
 use App\Project;
@@ -101,6 +102,10 @@ use App\TimeLine;
  * @method AuthyQuery leftJoinAuthyRelatedByIdModification($relationAlias = null) Adds a LEFT JOIN clause to the query using the AuthyRelatedByIdModification relation
  * @method AuthyQuery rightJoinAuthyRelatedByIdModification($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AuthyRelatedByIdModification relation
  * @method AuthyQuery innerJoinAuthyRelatedByIdModification($relationAlias = null) Adds a INNER JOIN clause to the query using the AuthyRelatedByIdModification relation
+ *
+ * @method AuthyQuery leftJoinClientRelatedByDefaultUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the ClientRelatedByDefaultUser relation
+ * @method AuthyQuery rightJoinClientRelatedByDefaultUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ClientRelatedByDefaultUser relation
+ * @method AuthyQuery innerJoinClientRelatedByDefaultUser($relationAlias = null) Adds a INNER JOIN clause to the query using the ClientRelatedByDefaultUser relation
  *
  * @method AuthyQuery leftJoinBillingLineRelatedByIdAssign($relationAlias = null) Adds a LEFT JOIN clause to the query using the BillingLineRelatedByIdAssign relation
  * @method AuthyQuery rightJoinBillingLineRelatedByIdAssign($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BillingLineRelatedByIdAssign relation
@@ -177,6 +182,14 @@ use App\TimeLine;
  * @method AuthyQuery leftJoinBillingCategoryRelatedByIdModification($relationAlias = null) Adds a LEFT JOIN clause to the query using the BillingCategoryRelatedByIdModification relation
  * @method AuthyQuery rightJoinBillingCategoryRelatedByIdModification($relationAlias = null) Adds a RIGHT JOIN clause to the query using the BillingCategoryRelatedByIdModification relation
  * @method AuthyQuery innerJoinBillingCategoryRelatedByIdModification($relationAlias = null) Adds a INNER JOIN clause to the query using the BillingCategoryRelatedByIdModification relation
+ *
+ * @method AuthyQuery leftJoinCurrencyRelatedByIdCreation($relationAlias = null) Adds a LEFT JOIN clause to the query using the CurrencyRelatedByIdCreation relation
+ * @method AuthyQuery rightJoinCurrencyRelatedByIdCreation($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CurrencyRelatedByIdCreation relation
+ * @method AuthyQuery innerJoinCurrencyRelatedByIdCreation($relationAlias = null) Adds a INNER JOIN clause to the query using the CurrencyRelatedByIdCreation relation
+ *
+ * @method AuthyQuery leftJoinCurrencyRelatedByIdModification($relationAlias = null) Adds a LEFT JOIN clause to the query using the CurrencyRelatedByIdModification relation
+ * @method AuthyQuery rightJoinCurrencyRelatedByIdModification($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CurrencyRelatedByIdModification relation
+ * @method AuthyQuery innerJoinCurrencyRelatedByIdModification($relationAlias = null) Adds a INNER JOIN clause to the query using the CurrencyRelatedByIdModification relation
  *
  * @method AuthyQuery leftJoinSupplierRelatedByIdCreation($relationAlias = null) Adds a LEFT JOIN clause to the query using the SupplierRelatedByIdCreation relation
  * @method AuthyQuery rightJoinSupplierRelatedByIdCreation($relationAlias = null) Adds a RIGHT JOIN clause to the query using the SupplierRelatedByIdCreation relation
@@ -1491,6 +1504,80 @@ abstract class BaseAuthyQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related Client object
+     *
+     * @param   Client|PropelObjectCollection $client  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 AuthyQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByClientRelatedByDefaultUser($client, $comparison = null)
+    {
+        if ($client instanceof Client) {
+            return $this
+                ->addUsingAlias(AuthyPeer::ID_AUTHY, $client->getDefaultUser(), $comparison);
+        } elseif ($client instanceof PropelObjectCollection) {
+            return $this
+                ->useClientRelatedByDefaultUserQuery()
+                ->filterByPrimaryKeys($client->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByClientRelatedByDefaultUser() only accepts arguments of type Client or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ClientRelatedByDefaultUser relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return AuthyQuery The current query, for fluid interface
+     */
+    public function joinClientRelatedByDefaultUser($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ClientRelatedByDefaultUser');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ClientRelatedByDefaultUser');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ClientRelatedByDefaultUser relation Client object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\ClientQuery A secondary query class using the current class as primary query
+     */
+    public function useClientRelatedByDefaultUserQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinClientRelatedByDefaultUser($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ClientRelatedByDefaultUser', '\App\ClientQuery');
+    }
+
+    /**
      * Filter the query by a related BillingLine object
      *
      * @param   BillingLine|PropelObjectCollection $billingLine  the related object to use as filter
@@ -1503,7 +1590,7 @@ abstract class BaseAuthyQuery extends ModelCriteria
     {
         if ($billingLine instanceof BillingLine) {
             return $this
-                ->addUsingAlias(AuthyPeer::ID_CREATION, $billingLine->getIdAssign(), $comparison);
+                ->addUsingAlias(AuthyPeer::ID_AUTHY, $billingLine->getIdAssign(), $comparison);
         } elseif ($billingLine instanceof PropelObjectCollection) {
             return $this
                 ->useBillingLineRelatedByIdAssignQuery()
@@ -2894,6 +2981,154 @@ abstract class BaseAuthyQuery extends ModelCriteria
         return $this
             ->joinBillingCategoryRelatedByIdModification($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'BillingCategoryRelatedByIdModification', '\App\BillingCategoryQuery');
+    }
+
+    /**
+     * Filter the query by a related Currency object
+     *
+     * @param   Currency|PropelObjectCollection $currency  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 AuthyQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByCurrencyRelatedByIdCreation($currency, $comparison = null)
+    {
+        if ($currency instanceof Currency) {
+            return $this
+                ->addUsingAlias(AuthyPeer::ID_AUTHY, $currency->getIdCreation(), $comparison);
+        } elseif ($currency instanceof PropelObjectCollection) {
+            return $this
+                ->useCurrencyRelatedByIdCreationQuery()
+                ->filterByPrimaryKeys($currency->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByCurrencyRelatedByIdCreation() only accepts arguments of type Currency or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the CurrencyRelatedByIdCreation relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return AuthyQuery The current query, for fluid interface
+     */
+    public function joinCurrencyRelatedByIdCreation($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('CurrencyRelatedByIdCreation');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'CurrencyRelatedByIdCreation');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the CurrencyRelatedByIdCreation relation Currency object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\CurrencyQuery A secondary query class using the current class as primary query
+     */
+    public function useCurrencyRelatedByIdCreationQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinCurrencyRelatedByIdCreation($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'CurrencyRelatedByIdCreation', '\App\CurrencyQuery');
+    }
+
+    /**
+     * Filter the query by a related Currency object
+     *
+     * @param   Currency|PropelObjectCollection $currency  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 AuthyQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByCurrencyRelatedByIdModification($currency, $comparison = null)
+    {
+        if ($currency instanceof Currency) {
+            return $this
+                ->addUsingAlias(AuthyPeer::ID_AUTHY, $currency->getIdModification(), $comparison);
+        } elseif ($currency instanceof PropelObjectCollection) {
+            return $this
+                ->useCurrencyRelatedByIdModificationQuery()
+                ->filterByPrimaryKeys($currency->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByCurrencyRelatedByIdModification() only accepts arguments of type Currency or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the CurrencyRelatedByIdModification relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return AuthyQuery The current query, for fluid interface
+     */
+    public function joinCurrencyRelatedByIdModification($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('CurrencyRelatedByIdModification');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'CurrencyRelatedByIdModification');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the CurrencyRelatedByIdModification relation Currency object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\CurrencyQuery A secondary query class using the current class as primary query
+     */
+    public function useCurrencyRelatedByIdModificationQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinCurrencyRelatedByIdModification($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'CurrencyRelatedByIdModification', '\App\CurrencyQuery');
     }
 
     /**

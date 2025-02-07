@@ -28,16 +28,33 @@ class BillingFormWrapper extends BillingForm
 
     public function afterFormObj(array $data, Billing &$dataObj)
     {
-        if (is_null($dataObj->getDate())) {
+        if ($dataObj->isNew()) {
             $this->hookFormReadyJs = "
+        $('#IdClient').on('change', (e)=>{
+            $.post('" . _SITE_URL . "Billing/getClientDefault', {IdClient:$('#IdClient').val()}, (data)=>{
+                if(data?.json){
+                    $('#formBilling #DefaultCurrency').val(data.json?.DefaultCurrency);
+                    $('#formBilling #IdBillingCategory').val(data.json?.DefaultCategory);
+                }
+            }, 'json');
+        });
+            ";
+        }
+
+        if (is_null($dataObj->getDate())) {
+            $this->hookFormReadyJs .= "
         $('#formBilling #Date').val('" . date('Y-m-d') . "');
             ";
         }
 
-        $this->hookFormReadyJs = "
+        $this->hookFormReadyJs .= "
             $('.sw-header .default-controls').append( $('<a>').html('Print').addClass('button-link-blue header-controls').attr('href', 'Javascript:;').attr('id', 'billPrint') );
             $('#billPrint').click(()=>{
                 window.open('" . _SITE_URL . "Billing/print/'+$('#formBilling #idPk').val(), 'BillingPrint');
+            });
+            $('.sw-header .default-controls').append( $('<a>').html('Pdf').addClass('button-link-blue header-controls').attr('href', 'Javascript:;').attr('id', 'billPdf') );
+            $('#billPdf').click(()=>{
+                window.open('" . _SITE_URL . "Billing/pdf/'+$('#formBilling #idPk').val(), '_blank')
             });
         ";
     }

@@ -1112,14 +1112,14 @@ abstract class BaseBillingLineQuery extends ModelCriteria
     {
         if ($authy instanceof Authy) {
             return $this
-                ->addUsingAlias(BillingLinePeer::ID_ASSIGN, $authy->getIdCreation(), $comparison);
+                ->addUsingAlias(BillingLinePeer::ID_ASSIGN, $authy->getIdAuthy(), $comparison);
         } elseif ($authy instanceof PropelObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(BillingLinePeer::ID_ASSIGN, $authy->toKeyValue('PrimaryKey', 'IdCreation'), $comparison);
+                ->addUsingAlias(BillingLinePeer::ID_ASSIGN, $authy->toKeyValue('PrimaryKey', 'IdAuthy'), $comparison);
         } else {
             throw new PropelException('filterByAuthyRelatedByIdAssign() only accepts arguments of type Authy or PropelCollection');
         }

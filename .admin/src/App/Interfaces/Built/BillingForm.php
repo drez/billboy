@@ -128,7 +128,9 @@ class BillingForm extends Billing
                 #default
                 ->leftJoinWith('Project')
                 #default
-                ->leftJoinWith('BillingCategory');
+                ->leftJoinWith('BillingCategory')
+                #default
+                ->leftJoinWith('Currency');
 
         if( isset($this->searchMs['Type']) ) {
             $criteria = \Criteria::IN;
@@ -177,6 +179,8 @@ class BillingForm extends Billing
                 ->leftJoinWith('Project')
                 #default
                 ->leftJoinWith('BillingCategory')
+                #default
+                ->leftJoinWith('Currency')
                             
 
                             ->paginate($page, $maxPerPage);
@@ -191,7 +195,9 @@ class BillingForm extends Billing
                 #default
                 ->leftJoinWith('Project')
                 #default
-                ->leftJoinWith('BillingCategory');
+                ->leftJoinWith('BillingCategory')
+                #default
+                ->leftJoinWith('Currency');
                 
             }
         }
@@ -249,7 +255,7 @@ class BillingForm extends Billing
 .th(_("Date"), " th='sorted' c='Date' title='" . _('Date')."' ")
 .th(_("Type"), " th='sorted' c='Type' title='" . _('Type')."' ")
 .th(_("Gross"), " th='sorted' c='Gross' title='" . _('Gross')."' ")
-.th(_("Currency"), " th='sorted' c='GrossCurrency' title='" . _('Currency')."' ")
+.th(_("Currency"), " th='sorted' c='Currency.Name' title='"._('Currency.Name')."' ")
 .th(_("Gross"), " th='sorted' c='Gross2' title='" . _('Gross')."' ")
 .th(_("Due date"), " th='sorted' c='DateDue' title='" . _('Due date')."' ")
 .th(_("Paid date"), " th='sorted' c='DatePaid' title='" . _('Paid date')."' ")
@@ -272,6 +278,7 @@ class BillingForm extends Billing
         $this->arrayIdClientOptions = $this->selectBoxBilling_IdClient($this, $emptyVar, $data);
         $this->arrayIdProjectOptions = $this->selectBoxBilling_IdProject($this, $emptyVar, $data);
         $this->arrayIdBillingCategoryOptions = $this->selectBoxBilling_IdBillingCategory($this, $emptyVar, $data);
+        $this->arrayDefaultCurrencyOptions = $this->selectBoxBilling_DefaultCurrency($this, $emptyVar, $data);
                 $data = [];
             
 
@@ -336,6 +343,7 @@ class BillingForm extends Billing
   'Type' => '',
   'Gross' => '',
   'GrossCurrency' => '',
+  'DefaultCurrency' => '',
   'Gross2' => '',
   'Tax' => '',
   'DateDue' => '',
@@ -433,6 +441,10 @@ $total[11] += $data->getNet();
                                     if($data->getProject()){
                                         $Project_Name = $data->getProject()->getName();
                                     }
+                                    $Currency_Name = "";
+                                    if($data->getCurrency()){
+                                        $Currency_Name = $data->getCurrency()->getName();
+                                    }
                 if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                 
 
@@ -446,7 +458,7 @@ $total[11] += $data->getNet();
                 td(span((($altValue['Date']) ? $altValue['Date'] : $data->getDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class=''  j='editBilling'") . 
                 td(span((($altValue['Type']) ? $altValue['Type'] : isntPo($data->getType())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editBilling'") . 
                 td(span((($altValue['Gross']) ? $altValue['Gross'] : str_replace(',', '.', $data->getGross())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Gross' class='right'  j='editBilling'") . 
-                td(span((($altValue['GrossCurrency']) ? $altValue['GrossCurrency'] : isntPo($data->getGrossCurrency())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='GrossCurrency' class='center'  j='editBilling'") . 
+                td(span((($altValue['DefaultCurrency']) ? $altValue['DefaultCurrency'] : $Currency_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DefaultCurrency' class=''  j='editBilling'") . 
                 td(span((($altValue['Gross2']) ? $altValue['Gross2'] : str_replace(',', '.', $data->getGross2())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Gross2' class='right'  j='editBilling'") . 
                 td(span((($altValue['DateDue']) ? $altValue['DateDue'] : $data->getDateDue()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DateDue' class=''  j='editBilling'") . 
                 td(span((($altValue['DatePaid']) ? $altValue['DatePaid'] : $data->getDatePaid()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DatePaid' class=''  j='editBilling'") . 
@@ -617,6 +629,8 @@ $total[11] += $data->getNet();
         //integer not required
         $e->setGross( ($data['Gross'] == '' ) ? null : $data['Gross']);
         $e->setGrossCurrency(($data['GrossCurrency'] == '' ) ? null : $data['GrossCurrency']);
+        //foreign
+        $e->setDefaultCurrency(( $data['DefaultCurrency'] == '' ) ? null : $data['DefaultCurrency']);
         //integer not required
         $e->setGross2( ($data['Gross2'] == '' ) ? null : $data['Gross2']);
         //integer not required
@@ -675,6 +689,9 @@ $total[11] += $data->getNet();
         }
         if(isset($data['GrossCurrency'])){
             $e->setGrossCurrency(($data['GrossCurrency'] == '' ) ? null : $data['GrossCurrency']);
+        }
+        if( isset($data['DefaultCurrency']) ){
+            $e->setDefaultCurrency(( $data['DefaultCurrency'] == '' ) ? null : $data['DefaultCurrency']);
         }
         if(isset($data['Gross2'])){
             $e->setGross2( ($data['Gross2'] == '' ) ? null : $data['Gross2']);
@@ -765,6 +782,9 @@ $total[11] += $data->getNet();
                 case 'BillingCategory':
                     $data['IdBillingCategory'] = $data['ip'];
                     break;
+                case 'Currency':
+                    $data['DefaultCurrency'] = $data['ip'];
+                    break;
                 case 'AuthyGroup':
                     $data['IdGroupCreation'] = $data['ip'];
                     break;
@@ -825,6 +845,8 @@ $total[11] += $data->getNet();
                 ->leftJoinWith('Project')
                 #default
                 ->leftJoinWith('BillingCategory')
+                #default
+                ->leftJoinWith('Currency')
             ;
             
 
@@ -856,11 +878,13 @@ $total[11] += $data->getNet();
                                     ($dataObj->getClient())?'':$dataObj->setClient( new Client() );
                                     ($dataObj->getProject())?'':$dataObj->setProject( new Project() );
                                     ($dataObj->getBillingCategory())?'':$dataObj->setBillingCategory( new BillingCategory() );
+                                    ($dataObj->getCurrency())?'':$dataObj->setCurrency( new Currency() );
 
         
         $this->arrayIdClientOptions = $this->selectBoxBilling_IdClient($this, $dataObj, $data);
         $this->arrayIdProjectOptions = $this->selectBoxBilling_IdProject($this, $dataObj, $data);
         $this->arrayIdBillingCategoryOptions = $this->selectBoxBilling_IdBillingCategory($this, $dataObj, $data);
+        $this->arrayDefaultCurrencyOptions = $this->selectBoxBilling_DefaultCurrency($this, $dataObj, $data);
         
         
         
@@ -875,7 +899,7 @@ $this->fields['Billing']['IdBillingCategory']['html'] = stdFieldRow(_("Category"
 $this->fields['Billing']['Date']['html'] = stdFieldRow(_("Date"), input('date', 'Date', $dataObj->getDate(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'Date', "", $this->commentsDate, $this->commentsDate_css, '', ' ', 'no');
 $this->fields['Billing']['Type']['html'] = stdFieldRow(_("Type"), selectboxCustomArray('Type', array( '0' => array('0'=>_("Quote"), '1'=>"Quote"),'1' => array('0'=>_("Bill"), '1'=>"Bill"), ), "", "s='d'  ", $dataObj->getType(), '', false), 'Type', "", $this->commentsType, $this->commentsType_css, '', ' ', 'no');
 $this->fields['Billing']['Gross']['html'] = stdFieldRow(_("Gross"), input('text', 'Gross', $dataObj->getGross(), "  placeholder='".str_replace("'","&#39;",_('Gross'))."'  v='GROSS' size='5' s='d' class=''"), 'Gross', "", $this->commentsGross, $this->commentsGross_css, '', ' ', 'no');
-$this->fields['Billing']['GrossCurrency']['html'] = stdFieldRow(_("Currency"), selectboxCustomArray('GrossCurrency', array( '0' => array('0'=>_("CAD"), '1'=>"CAD"),'1' => array('0'=>_("AUS"), '1'=>"AUS"),'2' => array('0'=>_("SGD"), '1'=>"SGD"), ), _('Currency'), "s='d'  ", $dataObj->getGrossCurrency(), '', true), 'GrossCurrency', "", $this->commentsGrossCurrency, $this->commentsGrossCurrency_css, '', ' ', 'no');
+$this->fields['Billing']['DefaultCurrency']['html'] = stdFieldRow(_("Currency"), selectboxCustomArray('DefaultCurrency', $this->arrayDefaultCurrencyOptions, _('Currency'), "v='DEFAULT_CURRENCY'  s='d'  val='".$dataObj->getDefaultCurrency()."'", $dataObj->getDefaultCurrency()), 'DefaultCurrency', "", $this->commentsDefaultCurrency, $this->commentsDefaultCurrency_css, '', ' ', 'no');
 $this->fields['Billing']['Gross2']['html'] = stdFieldRow(_("Gross"), input('text', 'Gross2', $dataObj->getGross2(), "  placeholder='".str_replace("'","&#39;",_('Gross'))."'  v='GROSS_2' size='5' s='d' class=''"), 'Gross2', "", $this->commentsGross2, $this->commentsGross2_css, '', ' ', 'no');
 $this->fields['Billing']['Tax']['html'] = stdFieldRow(_("Tax"), input('text', 'Tax', $dataObj->getTax(), "  placeholder='".str_replace("'","&#39;",_('Tax'))."'  v='TAX' size='5' s='d' class=''"), 'Tax', "", $this->commentsTax, $this->commentsTax_css, '', ' ', 'no');
 $this->fields['Billing']['DateDue']['html'] = stdFieldRow(_("Due date"), input('date', 'DateDue', $dataObj->getDateDue(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'DateDue', "", $this->commentsDateDue, $this->commentsDateDue_css, '', ' ', 'no');
@@ -1003,7 +1027,7 @@ $this->fields['Billing']['State']['html']
 .$this->fields['Billing']['Date']['html']
 .$this->fields['Billing']['Type']['html']
 .$this->fields['Billing']['Gross']['html']
-.$this->fields['Billing']['GrossCurrency']['html']
+.$this->fields['Billing']['DefaultCurrency']['html']
 .$this->fields['Billing']['Gross2']['html']
 .$this->fields['Billing']['Tax']['html']
 .$this->fields['Billing']['DateDue']['html']
@@ -1110,8 +1134,8 @@ $this->fields['Billing']['State']['html']
         $this->fieldsRo['Billing']['Gross']['html'] = stdFieldRow(_("Gross"), div( $dataObj->getGross(), 'Gross_label' , "class='readonly' s='d'")
                 .input('hidden', 'Gross', $dataObj->getGross(), "s='d'"), 'Gross', "", $this->commentsGross, $this->commentsGross_css, 'readonly', ' ', 'no');
 
-        $this->fieldsRo['Billing']['GrossCurrency']['html'] = stdFieldRow(_("Currency"), div( $dataObj->getGrossCurrency(), 'GrossCurrency_label' , "class='readonly' s='d'")
-                .input('hidden', 'GrossCurrency', $dataObj->getGrossCurrency(), "s='d'"), 'GrossCurrency', "", $this->commentsGrossCurrency, $this->commentsGrossCurrency_css, 'readonly', ' ', 'no');
+        $this->fieldsRo['Billing']['DefaultCurrency']['html'] = stdFieldRow(_("Currency"), div( ($dataObj->getCurrency())?$dataObj->getCurrency()->getName():'', 'DefaultCurrency_label' , "class='readonly' s='d'")
+                .input('hidden', 'DefaultCurrency', $dataObj->getDefaultCurrency(), "s='d'"), 'DefaultCurrency', "", $this->commentsDefaultCurrency, $this->commentsDefaultCurrency_css, 'readonly', ' ', 'no');
 
         $this->fieldsRo['Billing']['Gross2']['html'] = stdFieldRow(_("Gross"), div( $dataObj->getGross2(), 'Gross2_label' , "class='readonly' s='d'")
                 .input('hidden', 'Gross2', $dataObj->getGross2(), "s='d'"), 'Gross2', "", $this->commentsGross2, $this->commentsGross2_css, 'readonly', ' ', 'no');
@@ -1219,6 +1243,30 @@ $this->fields['Billing']['State']['html']
     }
 
     /**
+     * Query for Billing_DefaultCurrency selectBox 
+     * @param object $obj
+     * @param object $dataObj
+     * @param array $data
+    **/
+    public function selectBoxBilling_DefaultCurrency(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+        $q = CurrencyQuery::create();
+
+            $q->select(array('Name', 'IdCurrency'));
+            $q->orderBy('Name', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+
+        $arrayOpt = $pcDataO->toArray();
+
+        return assocToNum($arrayOpt , true);
+    }
+
+    /**
      * Query for BillingLine_IdAssign selectBox 
      * @param object $obj
      * @param object $dataObj
@@ -1231,7 +1279,7 @@ $this->fields['Billing']['State']['html']
         $ret = $this->beginSelectboxBillingLine_IdAssign($q, $dataObj, $data, $obj);
     if($ret !== false)
             $q->addAsColumn('selDisplay', ''.AuthyPeer::FULLNAME.'');
-            $q->select(array('selDisplay', 'IdCreation'));
+            $q->select(array('selDisplay', 'IdAuthy'));
             $q->orderBy('selDisplay', 'ASC');
         
             if(!$array){
@@ -1983,17 +2031,10 @@ $this->fields['Billing']['State']['html']
 
         $header = tr( th(_("Title"), " th='sorted' c='Title' title='" . _('Title')."' " . $param['th']['Title']."")
 .th(_("Supplier"), " th='sorted' c='Supplier.Name' title='"._('Supplier.Name')."' " . $param['th']['IdSupplier']."")
-.th(_("Invoice no."), " th='sorted' c='InvoiceNo' title='" . _('Invoice no.')."' " . $param['th']['InvoiceNo']."")
 .th(_("Project"), " th='sorted' c='Project.Name' title='"._('Project.Name')."' " . $param['th']['IdProject']."")
 .th(_("Category"), " th='sorted' c='BillingCategory.Name' title='"._('BillingCategory.Name')."' " . $param['th']['IdBillingCategory']."")
 .th(_("Date"), " th='sorted' c='SpendDate' title='" . _('Date')."' " . $param['th']['SpendDate']."")
-.th(_("Recuring"), " th='sorted' c='Recuring' title='" . _('Recuring')."' " . $param['th']['Recuring']."")
-.th(_("Renewal date"), " th='sorted' c='RenewalDate' title='" . _('Renewal date')."' " . $param['th']['RenewalDate']."")
-.th(_("Quantity"), " th='sorted' c='Quantity' title='" . _('Quantity')."' " . $param['th']['Quantity']."")
-.th(_("Amount"), " th='sorted' c='Amount' title='" . _('Amount')."' " . $param['th']['Amount']."")
 .th(_("Total"), " th='sorted' c='Total' title='" . _('Total')."' " . $param['th']['Total']."")
-.th(_("Add to bill"), " th='sorted' c='Bill' title='" . _('Add to bill')."' " . $param['th']['Bill']."")
-.th(_("Note"), " th='sorted' c='NoteBillingLigne' title='" . _('Note')."' " . $param['th']['NoteBillingLigne']."")
 .'' . $actionRowHeader, " ln='CostLine' class=''");
 
         
@@ -2048,17 +2089,10 @@ $this->fields['Billing']['State']['html']
                             
                 td(span((($altValue['Title']) ? $altValue['Title'] : $data->getTitle()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Title' class='' " . $param['Title']." j='editCostLine'") . 
                 td(span((($altValue['IdSupplier']) ? $altValue['IdSupplier'] : $Supplier_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdSupplier' class='' " . $param['IdSupplier']." j='editCostLine'") . 
-                td(span((($altValue['InvoiceNo']) ? $altValue['InvoiceNo'] : $data->getInvoiceNo()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='InvoiceNo' class='' " . $param['InvoiceNo']." j='editCostLine'") . 
                 td(span((($altValue['IdProject']) ? $altValue['IdProject'] : $Project_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdProject' class='' " . $param['IdProject']." j='editCostLine'") . 
                 td(span((($altValue['IdBillingCategory']) ? $altValue['IdBillingCategory'] : $BillingCategory_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBillingCategory' class='' " . $param['IdBillingCategory']." j='editCostLine'") . 
                 td(span((($altValue['SpendDate']) ? $altValue['SpendDate'] : $data->getSpendDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='SpendDate' class='' " . $param['SpendDate']." j='editCostLine'") . 
-                td(span((($altValue['Recuring']) ? $altValue['Recuring'] : isntPo($data->getRecuring())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Recuring' class='center' " . $param['Recuring']." j='editCostLine'") . 
-                td(span((($altValue['RenewalDate']) ? $altValue['RenewalDate'] : $data->getRenewalDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='RenewalDate' class='' " . $param['RenewalDate']." j='editCostLine'") . 
-                td(span((($altValue['Quantity']) ? $altValue['Quantity'] : str_replace(',', '.', $data->getQuantity())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Quantity' class='right' " . $param['Quantity']." j='editCostLine'") . 
-                td(span((($altValue['Amount']) ? $altValue['Amount'] : str_replace(',', '.', $data->getAmount())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Amount' class='right' " . $param['Amount']." j='editCostLine'") . 
                 td(span((($altValue['Total']) ? $altValue['Total'] : str_replace(',', '.', $data->getTotal())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Total' class='right' " . $param['Total']." j='editCostLine'") . 
-                td(span((($altValue['Bill']) ? $altValue['Bill'] : isntPo($data->getBill())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Bill' class='center' " . $param['Bill']." j='editCostLine'") . 
-                td(span((($altValue['NoteBillingLigne']) ? $altValue['NoteBillingLigne'] : substr(strip_tags($data->getNoteBillingLigne()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='NoteBillingLigne' class='' " . $param['NoteBillingLigne']." j='editCostLine'") . 
                             (isset($hookListColumnsCostLine)?$hookListColumnsCostLine:'').
                             $actionRow
                         ,"id='CostLineRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='CostLine' ".$param['tr']." ")
