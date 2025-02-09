@@ -213,7 +213,7 @@ class MessageForm extends Message
             $trSearch = button(span(_("Show search")),'class="trigger-search button-link-blue"')
 
             .div(
-                form(div(input('text', 'Label', $this->searchMs['Label'], '  placeholder="'._('Label').'"',''),'','class="ac-search-item"').$this->hookListSearchTop
+                form(div(input('text', 'Label', $this->searchMs['Label'], '  title="'._('Label').'" placeholder="'._('Label').'"',''),'','class="ac-search-item"').$this->hookListSearchTop
                     .div(
                        button(span(_("Search")),'id="msMessageBt" title="'._('Search').'" class="icon search"')
                        .button(span(_("Clear")),' title="'._('Clear search').'" id="msMessageBtClear"')

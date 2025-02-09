@@ -141,7 +141,7 @@ class BillingTableMap extends TableMap
   'add_child_search_columns' => '{"billing_line":{"Assigned to":[["id_assign","%val"]]}}',
   'add_tab_columns' => '{"Note":"note_billing","Payment":"date_paid"}',
   'is_wysiwyg_colunms' => '["note_billing"]',
-  'add_search_columns' => '{"Type":[["type","%val","multiple"]],"Client":[["id_client","%val","multiple"]],"Date":[["date","%val"]],"Title":[["title","%val"]],"State":[["state","%val","multiple"]]}',
+  'add_search_columns' => '{"Type":[["type","%val","multiple"]],"Client":[["id_client","%val","multiple"]],"Date":[["date","%val"]],"Title":[["title","%val"]],"State":[["state","%val","multiple"]],"Date before":[["date","%val","LE"]],"Date after":[["date","%val","GE"]]}',
   'set_readonly_columns' => '["gross","tax"]',
   'set_list_hide_columns' => '["note_billing","reference","tax","id_billing_category"]',
   'set_order_list_columns' => '[["date","DESC"]]',

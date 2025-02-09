@@ -57,6 +57,8 @@
           "Date": [["date", "%val"]], 
           "Title": [["title", "%val"]], 
           "State": [["state", "%val", "multiple"]],
+          "Date before": [["date", "%val", "LE"]], 
+          "Date after": [["date", "%val", "GE"]],
         },
         "set_readonly_columns":["gross", "tax"],
         "set_list_hide_columns":["note_billing", "reference", "tax", "id_billing_category"],

@@ -631,7 +631,7 @@ class ApiLogForm extends ApiLog
         
         
 $this->fields['ApiLog']['IdApiRbac']['html'] = stdFieldRow(_("Rule"), selectboxCustomArray('IdApiRbac', $this->arrayIdApiRbacOptions, "", "v='ID_API_RBAC'  s='d'  val='".$dataObj->getIdApiRbac()."'", $dataObj->getIdApiRbac()), 'IdApiRbac', "", $this->commentsIdApiRbac, $this->commentsIdApiRbac_css, '', ' ', 'no');
-$this->fields['ApiLog']['Time']['html'] = stdFieldRow(_("Time"), input('text', 'Time', $dataObj->getTime(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD hh:mm:ss' size='30'  s='d' class='req'"), 'Time', "", $this->commentsTime, $this->commentsTime_css, '', ' ', 'no');
+$this->fields['ApiLog']['Time']['html'] = stdFieldRow(_("Time"), input('text', 'Time', $dataObj->getTime(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD hh:mm:ss' size='30'  s='d' class='req' title='Time'"), 'Time', "", $this->commentsTime, $this->commentsTime_css, '', ' ', 'no');
 
 
         

@@ -166,6 +166,24 @@ class BillingForm extends Billing
 
             $q->filterByState($value, $criteria);
         }
+        if( isset($this->searchMs['Date_max']) ) {
+            $criteria = \Criteria::EQUAL;
+
+
+            $value = $this->setCriteria($this->searchMs['Date_max'], $criteria);
+
+            $q
+                                            ->filterByDate(array('max' => $this->searchMs['Date_max']));
+        }
+        if( isset($this->searchMs['Date_min']) ) {
+            $criteria = \Criteria::EQUAL;
+
+
+            $value = $this->setCriteria($this->searchMs['Date_min'], $criteria);
+
+            $q
+                                            ->filterByDate(array('min' => $this->searchMs['Date_min']));
+        }
                 
         }else{
             if(json_decode($IdParent)){
@@ -285,7 +303,7 @@ class BillingForm extends Billing
             $trSearch = button(span(_("Show search")),'class="trigger-search button-link-blue"')
 
             .div(
-                form(div(selectboxCustomArray('Type[]', array( '0' => array('0'=>_("Quote"), '1'=>"Quote"),'1' => array('0'=>_("Bill"), '1'=>"Bill"), ), _('Type'), '  size="1" t="1"   multiple  ', $this->searchMs['Type']), '', 'class="multiple-select ac-search-item"').div(selectboxCustomArray('IdClient[]', $this->arrayIdClientOptions, 'Client' , "v='ID_CLIENT'  s='d' class='select-label js-select-label' multiple size='1'  ", $this->searchMs['IdClient'], '', false), '', ' class="ac-search-item multiple-select"').div(input('date', 'Date', $this->searchMs['Date'], '  j="date"  placeholder="'._('Date').'"',''),'','class="ac-search-item"').div(input('text', 'Title', $this->searchMs['Title'], '  placeholder="'._('Title').'"',''),'','class="ac-search-item"').div(selectboxCustomArray('State[]', array( '0' => array('0'=>_("New"), '1'=>"New"),'1' => array('0'=>_("Approved"), '1'=>"Approved"),'2' => array('0'=>_("Sent"), '1'=>"Sent"),'3' => array('0'=>_("Partial payment"), '1'=>"Partial payment"),'4' => array('0'=>_("Paid"), '1'=>"Paid"),'5' => array('0'=>_("Cancelled"), '1'=>"Cancelled"),'6' => array('0'=>_("To send"), '1'=>"To send"), ), _('State'), '  size="1" t="1"   multiple  ', $this->searchMs['State']), '', 'class="multiple-select ac-search-item"').$this->hookListSearchTop
+                form(div(selectboxCustomArray('Type[]', array( '0' => array('0'=>_("Quote"), '1'=>"Quote"),'1' => array('0'=>_("Bill"), '1'=>"Bill"), ), _('Type'), '  size="1" t="1"   multiple  ', $this->searchMs['Type']), '', 'class="multiple-select ac-search-item"  title="'._('Type').'"').div(selectboxCustomArray('IdClient[]', $this->arrayIdClientOptions, 'Client' , "v='ID_CLIENT'  s='d' class='select-label js-select-label' multiple size='1'  ", $this->searchMs['IdClient'], '', false), '', ' class="ac-search-item multiple-select"').div(input('date', 'Date', $this->searchMs['Date'], '  j="date"  title="'._('Date').'" placeholder="'._('Date').'"',''),'','class="ac-search-item"').div(input('text', 'Title', $this->searchMs['Title'], '  title="'._('Title').'" placeholder="'._('Title').'"',''),'','class="ac-search-item"').div(selectboxCustomArray('State[]', array( '0' => array('0'=>_("New"), '1'=>"New"),'1' => array('0'=>_("Approved"), '1'=>"Approved"),'2' => array('0'=>_("Sent"), '1'=>"Sent"),'3' => array('0'=>_("Partial payment"), '1'=>"Partial payment"),'4' => array('0'=>_("Paid"), '1'=>"Paid"),'5' => array('0'=>_("Cancelled"), '1'=>"Cancelled"),'6' => array('0'=>_("To send"), '1'=>"To send"), ), _('State'), '  size="1" t="1"   multiple  ', $this->searchMs['State']), '', 'class="multiple-select ac-search-item"  title="'._('State').'"').div(input('date', 'Date_max', $this->searchMs['Date_max'], '  j="date"  title="'._('Date before').'"  placeholder="'._('Date before').'"','Date_max'),'','class="ac-search-item"').div(input('date', 'Date_min', $this->searchMs['Date_min'], '  j="date"  title="'._('Date after').'"  placeholder="'._('Date after').'"','Date_min'),'','class="ac-search-item"').$this->hookListSearchTop
                     .div(
                        button(span(_("Search")),'id="msBillingBt" title="'._('Search').'" class="icon search"')
                        .button(span(_("Clear")),' title="'._('Clear search').'" id="msBillingBtClear"')
@@ -896,15 +914,15 @@ $this->fields['Billing']['IdClient']['html'] = stdFieldRow(_("Client"), selectbo
 $this->fields['Billing']['Title']['html'] = stdFieldRow(_("Title"), input('text', 'Title', htmlentities($dataObj->getTitle()), "   placeholder='".str_replace("'","&#39;",_('Title'))."' size='35'  v='TITLE' s='d' class='req'  ")."", 'Title', "", $this->commentsTitle, $this->commentsTitle_css, '', ' ', 'no');
 $this->fields['Billing']['IdProject']['html'] = stdFieldRow(_("Project"), selectboxCustomArray('IdProject', $this->arrayIdProjectOptions, _('Project'), "v='ID_PROJECT'  s='d'  val='".$dataObj->getIdProject()."'", $dataObj->getIdProject()), 'IdProject', "", $this->commentsIdProject, $this->commentsIdProject_css, '', ' ', 'no');
 $this->fields['Billing']['IdBillingCategory']['html'] = stdFieldRow(_("Category"), selectboxCustomArray('IdBillingCategory', $this->arrayIdBillingCategoryOptions, _('Category'), "v='ID_BILLING_CATEGORY'  s='d'  val='".$dataObj->getIdBillingCategory()."'", $dataObj->getIdBillingCategory()), 'IdBillingCategory', "", $this->commentsIdBillingCategory, $this->commentsIdBillingCategory_css, '', ' ', 'no');
-$this->fields['Billing']['Date']['html'] = stdFieldRow(_("Date"), input('date', 'Date', $dataObj->getDate(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'Date', "", $this->commentsDate, $this->commentsDate_css, '', ' ', 'no');
+$this->fields['Billing']['Date']['html'] = stdFieldRow(_("Date"), input('date', 'Date', $dataObj->getDate(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class='' title='Date'"), 'Date', "", $this->commentsDate, $this->commentsDate_css, '', ' ', 'no');
 $this->fields['Billing']['Type']['html'] = stdFieldRow(_("Type"), selectboxCustomArray('Type', array( '0' => array('0'=>_("Quote"), '1'=>"Quote"),'1' => array('0'=>_("Bill"), '1'=>"Bill"), ), "", "s='d'  ", $dataObj->getType(), '', false), 'Type', "", $this->commentsType, $this->commentsType_css, '', ' ', 'no');
 $this->fields['Billing']['Gross']['html'] = stdFieldRow(_("Gross"), input('text', 'Gross', $dataObj->getGross(), "  placeholder='".str_replace("'","&#39;",_('Gross'))."'  v='GROSS' size='5' s='d' class=''"), 'Gross', "", $this->commentsGross, $this->commentsGross_css, '', ' ', 'no');
 $this->fields['Billing']['DefaultCurrency']['html'] = stdFieldRow(_("Currency"), selectboxCustomArray('DefaultCurrency', $this->arrayDefaultCurrencyOptions, _('Currency'), "v='DEFAULT_CURRENCY'  s='d'  val='".$dataObj->getDefaultCurrency()."'", $dataObj->getDefaultCurrency()), 'DefaultCurrency', "", $this->commentsDefaultCurrency, $this->commentsDefaultCurrency_css, '', ' ', 'no');
 $this->fields['Billing']['Gross2']['html'] = stdFieldRow(_("Gross"), input('text', 'Gross2', $dataObj->getGross2(), "  placeholder='".str_replace("'","&#39;",_('Gross'))."'  v='GROSS_2' size='5' s='d' class=''"), 'Gross2', "", $this->commentsGross2, $this->commentsGross2_css, '', ' ', 'no');
 $this->fields['Billing']['Tax']['html'] = stdFieldRow(_("Tax"), input('text', 'Tax', $dataObj->getTax(), "  placeholder='".str_replace("'","&#39;",_('Tax'))."'  v='TAX' size='5' s='d' class=''"), 'Tax', "", $this->commentsTax, $this->commentsTax_css, '', ' ', 'no');
-$this->fields['Billing']['DateDue']['html'] = stdFieldRow(_("Due date"), input('date', 'DateDue', $dataObj->getDateDue(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'DateDue', "", $this->commentsDateDue, $this->commentsDateDue_css, '', ' ', 'no');
+$this->fields['Billing']['DateDue']['html'] = stdFieldRow(_("Due date"), input('date', 'DateDue', $dataObj->getDateDue(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class='' title='Due date'"), 'DateDue', "", $this->commentsDateDue, $this->commentsDateDue_css, '', ' ', 'no');
 $this->fields['Billing']['NoteBilling']['html'] = stdFieldRow(_("Note"), textarea('NoteBilling', htmlentities($dataObj->getNoteBilling()) ,"placeholder='".str_replace("'","&#39;",_('Note'))."' cols='71' v='NOTE_BILLING' s='d'  class=' tinymce ' style='' spellcheck='false'"), 'NoteBilling', "", $this->commentsNoteBilling, $this->commentsNoteBilling_css, 'istinymce', ' ', 'no');
-$this->fields['Billing']['DatePaid']['html'] = stdFieldRow(_("Paid date"), input('date', 'DatePaid', $dataObj->getDatePaid(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'DatePaid', "", $this->commentsDatePaid, $this->commentsDatePaid_css, '', ' ', 'no');
+$this->fields['Billing']['DatePaid']['html'] = stdFieldRow(_("Paid date"), input('date', 'DatePaid', $dataObj->getDatePaid(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class='' title='Paid date'"), 'DatePaid', "", $this->commentsDatePaid, $this->commentsDatePaid_css, '', ' ', 'no');
 $this->fields['Billing']['Net']['html'] = stdFieldRow(_("Net"), input('text', 'Net', $dataObj->getNet(), "  placeholder='".str_replace("'","&#39;",_('Net'))."'  v='NET' size='5' s='d' class=''"), 'Net', "", $this->commentsNet, $this->commentsNet_css, '', ' ', 'no');
 $this->fields['Billing']['Reference']['html'] = stdFieldRow(_("Payment Reference"), input('text', 'Reference', htmlentities($dataObj->getReference()), "   placeholder='".str_replace("'","&#39;",_('Payment Reference'))."' size='35'  v='REFERENCE' s='d' class=''  ")."", 'Reference', "", $this->commentsReference, $this->commentsReference_css, '', ' ', 'no');
 

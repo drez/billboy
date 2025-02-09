@@ -234,7 +234,7 @@ class ApiRbacForm extends ApiRbac
             $trSearch = button(span(_("Show search")),'class="trigger-search button-link-blue"')
 
             .div(
-                form(div(selectboxCustomArray('Scope', array( '0' => array('0'=>_("Private"), '1'=>"Private"),'1' => array('0'=>_("Public"), '1'=>"Public"), ), _('Scope'), '  size="1" t="1"   ', $this->searchMs['Scope']), '', 'class=" ac-search-item"').div(input('text', 'Model', $this->searchMs['Model'], '  placeholder="'._('Model').'"',''),'','class="ac-search-item"').div(input('text', 'Action', $this->searchMs['Action'], '  placeholder="'._('Action').'"',''),'','class="ac-search-item"').$this->hookListSearchTop
+                form(div(selectboxCustomArray('Scope', array( '0' => array('0'=>_("Private"), '1'=>"Private"),'1' => array('0'=>_("Public"), '1'=>"Public"), ), _('Scope'), '  size="1" t="1"   ', $this->searchMs['Scope']), '', 'class=" ac-search-item"  title="'._('Scope').'"').div(input('text', 'Model', $this->searchMs['Model'], '  title="'._('Model').'" placeholder="'._('Model').'"',''),'','class="ac-search-item"').div(input('text', 'Action', $this->searchMs['Action'], '  title="'._('Action').'" placeholder="'._('Action').'"',''),'','class="ac-search-item"').$this->hookListSearchTop
                     .div(
                        button(span(_("Search")),'id="msApiRbacBt" title="'._('Search').'" class="icon search"')
                        .button(span(_("Clear")),' title="'._('Clear search').'" id="msApiRbacBtClear"')
@@ -745,7 +745,7 @@ class ApiRbacForm extends ApiRbac
         
         
         
-$this->fields['ApiRbac']['DateCreation']['html'] = stdFieldRow(_("Date"), input('date', 'DateCreation', $dataObj->getDateCreation(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'DateCreation', "", $this->commentsDateCreation, $this->commentsDateCreation_css, '', ' ', 'no');
+$this->fields['ApiRbac']['DateCreation']['html'] = stdFieldRow(_("Date"), input('date', 'DateCreation', $dataObj->getDateCreation(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class='' title='Date'"), 'DateCreation', "", $this->commentsDateCreation, $this->commentsDateCreation_css, '', ' ', 'no');
 $this->fields['ApiRbac']['Description']['html'] = stdFieldRow(_("Description"), textarea('Description', htmlentities($dataObj->getDescription()) ,"placeholder='".str_replace("'","&#39;",_('Description'))."' cols='71' v='DESCRIPTION' s='d'  class=' ' style='' spellcheck='false'"), 'Description', "", $this->commentsDescription, $this->commentsDescription_css, '', ' ', 'no');
 $this->fields['ApiRbac']['Model']['html'] = stdFieldRow(_("Model"), input('text', 'Model', htmlentities($dataObj->getModel()), "   placeholder='".str_replace("'","&#39;",_('Model'))."' size='69'  v='MODEL' s='d' class='req'  ")."", 'Model', "", $this->commentsModel, $this->commentsModel_css, '', ' ', 'no');
 $this->fields['ApiRbac']['Action']['html'] = stdFieldRow(_("Action"), input('text', 'Action', htmlentities($dataObj->getAction()), "   placeholder='".str_replace("'","&#39;",_('Action'))."' size='69'  v='ACTION' s='d' class=''  ")."", 'Action', "", $this->commentsAction, $this->commentsAction_css, '', ' ', 'no');

@@ -671,7 +671,7 @@ class PaymentLineForm extends PaymentLine
         
         
 $this->fields['PaymentLine']['IdBilling']['html'] = stdFieldRow(_("Bill"), selectboxCustomArray('IdBilling', $this->arrayIdBillingOptions, _('Bill'), "v='ID_BILLING'  s='d'  val='".$dataObj->getIdBilling()."'", $dataObj->getIdBilling()), 'IdBilling', "", $this->commentsIdBilling, $this->commentsIdBilling_css, '', ' ', 'no');
-$this->fields['PaymentLine']['Date']['html'] = stdFieldRow(_("Date"), input('date', 'Date', $dataObj->getDate(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class=''"), 'Date', "", $this->commentsDate, $this->commentsDate_css, '', ' ', 'no');
+$this->fields['PaymentLine']['Date']['html'] = stdFieldRow(_("Date"), input('date', 'Date', $dataObj->getDate(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD' size='10'  s='d' class='' title='Date'"), 'Date', "", $this->commentsDate, $this->commentsDate_css, '', ' ', 'no');
 $this->fields['PaymentLine']['Note']['html'] = stdFieldRow(_("Note"), textarea('Note', htmlentities($dataObj->getNote()) ,"placeholder='".str_replace("'","&#39;",_('Note'))."' cols='71' v='NOTE' s='d'  class=' ' style='' spellcheck='false'"), 'Note', "", $this->commentsNote, $this->commentsNote_css, '', ' ', 'no');
 $this->fields['PaymentLine']['Amount']['html'] = stdFieldRow(_("Amount"), input('text', 'Amount', $dataObj->getAmount(), "  placeholder='".str_replace("'","&#39;",_('Amount'))."'  v='AMOUNT' size='5' s='d' class=''"), 'Amount', "", $this->commentsAmount, $this->commentsAmount_css, '', ' ', 'no');
 

@@ -258,7 +258,7 @@ class ClientForm extends Client
             $trSearch = button(span(_("Show search")),'class="trigger-search button-link-blue"')
 
             .div(
-                form(div(input('text', 'Name', $this->searchMs['Name'], '  placeholder="'._('Name').'"',''),'','class="ac-search-item"').div(selectboxCustomArray('IdCountry[]', $this->arrayIdCountryOptions, 'Country' , "v='ID_COUNTRY'  s='d' class='select-label js-select-label' multiple size='1'  ", $this->searchMs['IdCountry'], '', false), '', ' class="ac-search-item multiple-select"').div(input('text', 'Phone', $this->searchMs['Phone'], '  placeholder="'._('Phone').'"',''),'','class="ac-search-item"').div(input('text', 'Email', $this->searchMs['Email'], '  placeholder="'._('Email').'"',''),'','class="ac-search-item"').$this->hookListSearchTop
+                form(div(input('text', 'Name', $this->searchMs['Name'], '  title="'._('Name').'" placeholder="'._('Name').'"',''),'','class="ac-search-item"').div(selectboxCustomArray('IdCountry[]', $this->arrayIdCountryOptions, 'Country' , "v='ID_COUNTRY'  s='d' class='select-label js-select-label' multiple size='1'  ", $this->searchMs['IdCountry'], '', false), '', ' class="ac-search-item multiple-select"').div(input('text', 'Phone', $this->searchMs['Phone'], '  title="'._('Phone').'" placeholder="'._('Phone').'"',''),'','class="ac-search-item"').div(input('text', 'Email', $this->searchMs['Email'], '  title="'._('Email').'" placeholder="'._('Email').'"',''),'','class="ac-search-item"').$this->hookListSearchTop
                     .div(
                        button(span(_("Search")),'id="msClientBt" title="'._('Search').'" class="icon search"')
                        .button(span(_("Clear")),' title="'._('Clear search').'" id="msClientBtClear"')

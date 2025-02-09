@@ -214,7 +214,7 @@ class TemplateForm extends Template
             $trSearch = button(span(_("Show search")),'class="trigger-search button-link-blue"')
 
             .div(
-                form(div(input('text', 'Name', $this->searchMs['Name'], '  placeholder="'._('Name').'"',''),'','class="ac-search-item"').$this->hookListSearchTop
+                form(div(input('text', 'Name', $this->searchMs['Name'], '  title="'._('Name').'" placeholder="'._('Name').'"',''),'','class="ac-search-item"').$this->hookListSearchTop
                     .div(
                        button(span(_("Search")),'id="msTemplateBt" title="'._('Search').'" class="icon search"')
                        .button(span(_("Clear")),' title="'._('Clear search').'" id="msTemplateBtClear"')

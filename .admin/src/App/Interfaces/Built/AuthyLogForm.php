@@ -626,7 +626,7 @@ class AuthyLogForm extends AuthyLog
         
         
         
-$this->fields['AuthyLog']['Timestamp']['html'] = stdFieldRow(_("Date"), input('text', 'Timestamp', $dataObj->getTimestamp(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD hh:mm:ss' size='30'  s='d' class=''"), 'Timestamp', "", $this->commentsTimestamp, $this->commentsTimestamp_css, '', ' ', 'no');
+$this->fields['AuthyLog']['Timestamp']['html'] = stdFieldRow(_("Date"), input('text', 'Timestamp', $dataObj->getTimestamp(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD hh:mm:ss' size='30'  s='d' class='' title='Date'"), 'Timestamp', "", $this->commentsTimestamp, $this->commentsTimestamp_css, '', ' ', 'no');
 $this->fields['AuthyLog']['Login']['html'] = stdFieldRow(_("Username"), input('text', 'Login', htmlentities($dataObj->getLogin()), "   placeholder='".str_replace("'","&#39;",_('Username'))."' size='35'  v='LOGIN' s='d' class='req'  ")."", 'Login', "", $this->commentsLogin, $this->commentsLogin_css, '', ' ', 'no');
 $this->fields['AuthyLog']['Ip']['html'] = stdFieldRow(_("Ip"), input('text', 'Ip', htmlentities($dataObj->getIp()), "   placeholder='".str_replace("'","&#39;",_('Ip'))."' size='15'  v='IP' s='d' class='req'  ")."", 'Ip', "", $this->commentsIp, $this->commentsIp_css, '', ' ', 'no');
 $this->fields['AuthyLog']['Count']['html'] = stdFieldRow(_("Count"), input('number', 'Count', $dataObj->getCount(), " step='1' placeholder='".str_replace("'","&#39;",_('Count'))."' v='COUNT' size='0' s='d' class=''"), 'Count', "", $this->commentsCount, $this->commentsCount_css, '', ' ', 'no');
