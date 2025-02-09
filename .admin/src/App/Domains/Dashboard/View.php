@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Domains\Dashboard;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -21,8 +20,8 @@ class View
      */
     function __construct(Request | null $request = null, array | null $args = null)
     {
-        $this->request = $request;
-        $this->args = $args;
+        $this->request    = $request;
+        $this->args       = $args;
         $this->model_name = 'DashboardView';
 
         //$this::createBreakdownRevenueTable();
@@ -31,26 +30,26 @@ class View
     {
 
         # Set the range
-        $this->args['query']['Date'] = empty($this->args['query']['Date']) ? date('Y-m-d', strtotime("1 Year ago")) : $this->args['query']['Date'];
+        $this->args['query']['Date']     = empty($this->args['query']['Date']) ? date('Y-m-d', strtotime("1 Year ago")) : $this->args['query']['Date'];
         $this->args['query']['Interval'] = empty($this->args['query']['Interval']) ? 'Month' : $this->args['query']['Interval'];
 
-        $revenuData = $this->getRevenuCategoryBreakdown();
+        $revenuData    = $this->getRevenuCategoryBreakdown();
         $chartCategory = $this->generateBarChart($revenuData, 'Category', "Income categories", ['borderColor' => '#53B56D', 'backgroundColor' => '#5FD37E']);
 
-        $revenuData = $this->getQuoteBreakdown('Quot', $this->args['query']['Date'], 'Month');
+        $revenuData      = $this->getQuoteBreakdown('Quot', $this->args['query']['Date'], 'Month');
         $chartMonthQuote = $this->generateLineChart($revenuData, 'Quote', "Monthly Quotes",
             ['Cancelled' => ['borderColor' => '#D33D3D', 'backgroundColor' => '#d45e5e'],
-                'New' => ['borderColor' => '#D1BF23', 'backgroundColor' => '#D3C95F'],
+                'New'        => ['borderColor' => '#D1BF23', 'backgroundColor' => '#D3C95F'],
             ]
             , $this->args['query']['Interval']);
 
-        $revenuData = $this->getRevenuBreakdown('Unpa', $this->args['query']['Date'], 'Month');
+        $revenuData       = $this->getRevenuBreakdown('Unpa', $this->args['query']['Date'], 'Month');
         $chartMonthUnpaid = $this->generateBarChart($revenuData[$this->args['query']['Interval']], 'Unpaid ', "Monthly UNPAID revenues (" . \number_format($revenuData['Total'], 0) . "$)", ['borderColor' => '#D33D3D', 'backgroundColor' => '#d45e5e']);
 
-        $revenuData = $this->getExpenseBreakdown($this->args['query']['Date'], 'Month');
+        $revenuData        = $this->getExpenseBreakdown($this->args['query']['Date'], 'Month');
         $chartMonthExpense = $this->generateBarChart($revenuData[$this->args['query']['Interval']], 'Expense', "Monthly expenses (" . \number_format($revenuData['Total'], 0) . "$)", ['borderColor' => '#C15838', 'backgroundColor' => '#D3613D']);
 
-        $revenuData = $this->getRevenuBreakdown('Open', $this->args['query']['Date'], 'Month');
+        $revenuData     = $this->getRevenuBreakdown('Open', $this->args['query']['Date'], 'Month');
         $chartMonthOpen = $this->generateBarChart($revenuData[$this->args['query']['Interval']], 'Open', "Monthly OPEN revenues (" . \number_format($revenuData['Total'], 0) . "$)", ['borderColor' => '#3C75D8', 'backgroundColor' => '#5E8AD6']);
 
         $revenuData = $this->getRevenuBreakdown('Paid', $this->args['query']['Date'], 'Month');
@@ -95,7 +94,7 @@ $('#msRefresh').click(()=>{
 });
 JS;
 
-        $return['onReadyJs'] = $chartCategory['onReadyJs'] . $chartMonth['onReadyJs'] . $chartMonthOpen['onReadyJs'] . $chartMonthExpense['onReadyJs'] . $chartMonthUnpaid['onReadyJs'] . $chartMonthQuote['onReadyJs'] . $readyJs;
+        $return['onReadyJs'] = $readyJs. $chartCategory['onReadyJs'] . $chartMonth['onReadyJs'] . $chartMonthOpen['onReadyJs'] . $chartMonthExpense['onReadyJs'] . $chartMonthUnpaid['onReadyJs'] . $chartMonthQuote['onReadyJs'];
         return $return;
     }
 
@@ -120,7 +119,6 @@ JS;
         $out['onReadyJs'] = <<<JS
 ctx = document.getElementById('{$name}Chart');
 
-
 new Chart(ctx, {
 	type: 'line',
 	data: {
@@ -135,6 +133,8 @@ new Chart(ctx, {
 		}
 	}
 });
+
+
 JS;
         $out['html'] = div("<canvas id='" . $name . "Chart' class='dashboardChart'></canvas>");
         return $out;
@@ -144,7 +144,7 @@ JS;
     {
 
         $labels = json_encode($data['key']);
-        $data = json_encode($data['data']);
+        $data   = json_encode($data['data']);
 
         $out['onReadyJs'] = <<<JS
 ctx = document.getElementById('{$name}Chart');
@@ -167,8 +167,9 @@ new Chart(ctx, {
 				beginAtZero: true
 			}
 		}
-	}
-});
+    }
+}
+);
 JS;
         $out['html'] = div("<canvas id='" . $name . "Chart' class='dashboardChart'></canvas>");
         return $out;
@@ -204,20 +205,20 @@ JS;
         $quotes['Cancelled'] = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($quotes as $state => $data) {
-            $next = 0;
-            $beakD = [];
+            $next              = 0;
+            $beakD             = [];
             $dataset['labels'] = [];
-            $total = 0;
+            $total             = 0;
             for ($i = 1; $i < 13; $i++) {
-                $date = strtotime("+$i month ", strtotime($startdate));
-                $year = date('Y', $date);
+                $date  = strtotime("+$i month ", strtotime($startdate));
+                $year  = date('Y', $date);
                 $month = date('F', $date);
-                $week = date('W', $date);
-                $sum = $data[$next];
+                $week  = date('W', $date);
+                $sum   = $data[$next];
 
-                if (!empty($sum['Year']) && $sum['Year'] == $year && !empty($sum['Month'])) {
+                if (! empty($sum['Year']) && $sum['Year'] == $year && ! empty($sum['Month'])) {
 
-                    if (!empty($sum['Month']) && $sum['Month'] == $month && empty($sum['Week'])) {
+                    if (! empty($sum['Month']) && $sum['Month'] == $month && empty($sum['Week'])) {
                         $beakD[] = $sum['Total'];
                         $next++;
                         $total += $sum['Total'];
@@ -231,7 +232,7 @@ JS;
                 }
                 $dataset['labels'][] = $year . ' / ' . $month;
             }
-            $dataset[$state] = $beakD;
+            $dataset[$state]          = $beakD;
             $dataset['total'][$state] = $total;
 
         }
@@ -242,20 +243,20 @@ JS;
     private function getRevenuCategoryBreakdown()
     {
         $beakD = [];
-        $sql = "SELECT t.*, bc.name FROM `tmp_breakdown_revenue_category` t
+        $sql   = "SELECT t.*, bc.name FROM `tmp_breakdown_revenue_category` t
 		LEFT JOIN billing_category bc ON (Category = bc.id_billing_category)";
 
         $conn = \Propel::getConnection(_DATA_SRC);
         $stmt = $conn->prepare($sql);
         $stmt->execute();
-        $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $data     = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $rowCount = $stmt->rowCount();
-        $total = $data[$rowCount - 1]['Total'];
+        $total    = $data[$rowCount - 1]['Total'];
 
         $count = 1;
         foreach ($data as $entry) {
             if ($count != $rowCount) {
-                $beakD['key'][] = ((!empty($entry['name'])) ? $entry['name'] : "Uncategorized") . " " . number_format($entry['Total'] / $total * 100, 0) . "%";
+                $beakD['key'][]  = ((! empty($entry['name'])) ? $entry['name'] : "Uncategorized") . " " . number_format($entry['Total'] / $total * 100, 0) . "%";
                 $beakD['data'][] = $entry['Total'];
                 $count++;
             }
@@ -270,7 +271,7 @@ JS;
         $enddate = date('Y-m-d', strtotime("next year", strtotime($startdate)));
 
         $beakD = [];
-        $sql = "SELECT * FROM `tmp_breakdown_expense`
+        $sql   = "SELECT * FROM `tmp_breakdown_expense`
 						WHERE  `Date` > '$startdate' AND `Date` < '$enddate'
 						AND `Month` is not null and `Week` is null
 						ORDER BY `Date` ASC";
@@ -282,15 +283,15 @@ JS;
 
         $next = 0;
         for ($i = 1; $i < 13; $i++) {
-            $date = strtotime("+$i month ", strtotime($startdate));
-            $year = date('Y', $date);
+            $date  = strtotime("+$i month ", strtotime($startdate));
+            $year  = date('Y', $date);
             $month = date('F', $date);
-            $sum = $data[$next];
+            $sum   = $data[$next];
 
-            if (!empty($sum['Year']) && $sum['Year'] == $year && !empty($sum['Month'])) {
+            if (! empty($sum['Year']) && $sum['Year'] == $year && ! empty($sum['Month'])) {
                 $beakD['Month']['key'][] = $year . ' / ' . $month;
 
-                if (!empty($sum['Month']) && $sum['Month'] == $month && empty($sum['Week'])) {
+                if (! empty($sum['Month']) && $sum['Month'] == $month && empty($sum['Week'])) {
                     $beakD['Month']['data'][] = $sum['Total'];
                     $beakD['Total'] += $sum['Total'];
                     $next++;
@@ -298,13 +299,13 @@ JS;
                     $beakD['Month']['data'][] = 0;
                 }
 
-            } elseif (!empty($sum['Year']) && empty($sum['Month'])) {
-                $beakD['Year']['key'][] = $sum['Year'];
+            } elseif (! empty($sum['Year']) && empty($sum['Month'])) {
+                $beakD['Year']['key'][]  = $sum['Year'];
                 $beakD['Year']['data'][] = $sum['Total'];
                 $next++;
 
             } else {
-                $beakD['Month']['key'][] = $year . ' / ' . $month;
+                $beakD['Month']['key'][]  = $year . ' / ' . $month;
                 $beakD['Month']['data'][] = 0;
             }
         }
@@ -317,7 +318,14 @@ JS;
         $enddate = date('Y-m-d', strtotime("next year", strtotime($startdate)));
 
         $beakD = [];
-        $sql = "SELECT * FROM `tmp_breakdown_revenue`
+
+        $totals = $this->getRevenuTotal($pos, $startdate);
+        $beakD['Year']['key'][]  = "...";
+        $beakD['Year']['data'][] = $totals;
+        $beakD['Month']['key'][]  = "...";
+        $beakD['Month']['data'][] = $totals;
+        
+        $sql   = "SELECT * FROM `tmp_breakdown_revenue`
 						WHERE `Pos` = '$pos' AND `Date` > '$startdate' AND `Date` < '$enddate'
 						AND `Month` is not null and `Week` is null
 						ORDER BY `Date` ASC";
@@ -327,19 +335,20 @@ JS;
         $stmt->execute();
         $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
+        
         $next = 0;
 
-        for ($i = 1; $i < 13; $i++) {
-            $date = strtotime("+$i month ", strtotime($startdate));
-            $year = date('Y', $date);
+        for ($i = 0; $i < 12; $i++) {
+            $date  = strtotime("+$i month ", strtotime($startdate));
+            $year  = date('Y', $date);
             $month = date('F', $date);
 
             $sum = $data[$next];
 
-            if (!empty($sum['Year']) && $sum['Year'] == $year && !empty($sum['Month'])) {
+            if (! empty($sum['Year']) && $sum['Year'] == $year && ! empty($sum['Month'])) {
                 $beakD['Month']['key'][] = $year . ' / ' . $month;
 
-                if (!empty($sum['Month']) && $sum['Month'] == $month && empty($sum['Week'])) {
+                if (! empty($sum['Month']) && $sum['Month'] == $month && empty($sum['Week'])) {
                     $beakD['Month']['data'][] = $sum['Total'];
                     $beakD['Total'] += $sum['Total'];
                     $next++;
@@ -347,19 +356,35 @@ JS;
                     $beakD['Month']['data'][] = 0;
                 }
 
-            } elseif (!empty($sum['Year']) && empty($sum['Month'])) {
-                $beakD['Year']['key'][] = $sum['Year'];
+            } elseif (! empty($sum['Year']) && empty($sum['Month'])) {
+                $beakD['Year']['key'][]  = $sum['Year'];
                 $beakD['Year']['data'][] = $sum['Total'];
                 $next++;
 
             } else {
-                $beakD['Month']['key'][] = $year . ' / ' . $month;
+                $beakD['Month']['key'][]  = $year . ' / ' . $month;
                 $beakD['Month']['data'][] = 0;
             }
         }
-        //}
+
+        
 
         return $beakD;
+    }
+
+    private function getRevenuTotal($pos, $startdate){
+        $sql   = "SELECT  SUM(`Total`) as 'all' FROM `tmp_breakdown_revenue`
+						WHERE `Pos` = '$pos' AND `Date` < '$startdate'
+						AND `Month` is not null and `Week` is null
+						";
+
+        $conn = \Propel::getConnection(_DATA_SRC);
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        print_r($data);
+        return $data[0]['all'];
     }
 
     /**
@@ -372,7 +397,7 @@ JS;
     {
         $conn = \Propel::getConnection(_DATA_SRC);
 
-        $sql = "DROP TABLE IF EXISTS `tmp_breakdown_revenue`";
+        $sql  = "DROP TABLE IF EXISTS `tmp_breakdown_revenue`";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
@@ -426,11 +451,11 @@ JS;
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
-        $sql = "INSERT INTO `tmp_breakdown_revenue`  (`Pos`, `Date`, `state`, `Year`, `Month`, `Week`, `Total`) VALUES ('Time', now(), 0, NULL, NULL, NULL, NULL);";
+        $sql  = "INSERT INTO `tmp_breakdown_revenue`  (`Pos`, `Date`, `state`, `Year`, `Month`, `Week`, `Total`) VALUES ('Time', now(), 0, NULL, NULL, NULL, NULL);";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
-        $sql = "DROP TABLE IF EXISTS `tmp_breakdown_revenue_category`";
+        $sql  = "DROP TABLE IF EXISTS `tmp_breakdown_revenue_category`";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
@@ -446,7 +471,7 @@ JS;
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
-        $sql = "DROP TABLE IF EXISTS `tmp_breakdown_expense`";
+        $sql  = "DROP TABLE IF EXISTS `tmp_breakdown_expense`";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
