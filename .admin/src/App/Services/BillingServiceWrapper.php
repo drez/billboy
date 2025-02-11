@@ -58,6 +58,9 @@ class BillingServiceWrapper extends BillingService
 
     public function print($request)
     {
+        $currency_code = defined('default_currency_code') ? default_currency_code : 'USD';
+        $currency_symbol = defined('default_currency_symbol') ? default_currency_symbol : '$';
+
         $q = TemplateQuery::create()->filterByName('Print Billing Header')->orderBy('DateCreation', 'DESC');
         if ($request['query']['IdTemplate']) {
             $q->filterByIdTemplate($request['query']['IdTemplate']);
@@ -219,7 +222,7 @@ tr td{
                     . $items
                     . tr(
                         td("&nbsp;", "colspan='$colspan'")
-                        . td("<sup>1,2,3</sup> Total \$USD", "colspan='2'")
+                        . td("<sup>1,2,3</sup> Total $currency_symbol".$currency_code, "colspan='2'")
                         . td($total)
                         , "class='totalRow'")
                     . $currencyTotal

@@ -383,7 +383,7 @@ JS;
         $stmt->execute();
         $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        print_r($data);
+        //print_r($data);
         return $data[0]['all'];
     }
 
