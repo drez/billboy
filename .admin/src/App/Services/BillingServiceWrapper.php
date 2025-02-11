@@ -230,10 +230,11 @@ tr td{
 
                 , "items");
 
+            $currency_name = defined('default_currency_name') ? default_currency_name : 'USD';
             $disclaimer = div(
                 ul(
                     li("All quotes are valid for a period of 1 month.")
-                    . li("All amounts are in <b>US dollars</b> unless otherwise stated.")
+                    . li("All amounts are in <b>$currency_name</b> unless otherwise stated.")
                     . li("Payment is due within 30 days. Service may be suspended if the account becomes delinquent after this period.")
                     . li("Any additional work requested that is not included in the original brief will be quoted separately and added to the final invoice.")
                     . li("Recurring payments for hosting or other services will be billed annually on December 31.")
