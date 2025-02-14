@@ -9,6 +9,7 @@ class View
 {
 
     public $request;
+    public $override = false;
     public $args;
     private $entities = [];
 
@@ -20,6 +21,7 @@ class View
      */
     function __construct(Request | null $request = null, array | null $args = null)
     {
+        $this->override    = true;
         $this->request    = $request;
         $this->args       = $args;
         $this->model_name = 'DashboardView';
