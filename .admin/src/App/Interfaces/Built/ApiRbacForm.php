@@ -520,7 +520,7 @@ class ApiRbacForm extends ApiRbac
         
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
-        $return['js'] .= " ";
+        $return['js'] .= "";
         return $return;
     }
     /*
@@ -788,14 +788,17 @@ $this->fields['ApiRbac']['Count']['html'] = stdFieldRow(_("Used count"), input('
 
             if($ChildOnglet){
                 $childTable['onReadyJs'] ="
-                     $('[j=conglet_ApiRbac]').bind('click', function (data){
-                         pp = $(this).attr('p');
-                         $('#cntApiRbacChild').html( $('<img>').attr('src', '"._SITE_URL."public/img/Ellipsis-3.9s-200px.svg') );
-                         $.get('"._SITE_URL."ApiRbac/'+pp+'/'+$(this).attr('ip'), { ui: pp+'Table', 'pui':'".$uiTabsId."', pc:'".$data['pc']."'}, function(data){
+                    $('[j=conglet_ApiRbac]').bind('click', function (data){
+                        pp = $(this).attr('p');
+                        $('#cntApiRbacChild').html( $('<img>').attr('src', '"._SITE_URL."public/img/Ellipsis-3.9s-200px.svg') );
+                        $.get('"._SITE_URL."ApiRbac/'+pp+'/'+$(this).attr('ip'), { ui: pp+'Table', 'pui':'".$uiTabsId."', pc:'".$data['pc']."'}, function(data){
                             $('#cntApiRbacChild').html(data);
                             $('[j=conglet_ApiRbac]').parent().attr('class','ui-state-default');
                             $('[j=conglet_ApiRbac][p='+pp+']').parent().attr('class',' ui-state-default ui-state-active');
-                         });
+                        }).fail(function(data) {
+                            $('#cntAssetChild').html('Error: try again or contact your administrator.');
+                            console.log(data);
+                        });;
                     });
                 ";
                 if($_SESSION['mem']['ApiRbac']['child']['list'][$dataObj->$getLocalKey()]){
@@ -890,7 +893,7 @@ $this->fields['ApiRbac']['DateCreation']['html']
 
         $return['data'] .= $data;
         $return['js'] .= $childTable['js']
-        . $this->hookFormIncludeJs."
+        . script($this->hookFormIncludeJs) ."
         ";
 
         $return['onReadyJs'] =
@@ -976,6 +979,7 @@ $this->fields['ApiRbac']['DateCreation']['html']
      * @param array $data
     **/
     public function selectBoxApiLog_IdApiRbac(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = ApiRbacQuery::create();
 
     if(method_exists($this, 'beginSelectboxApiLog_IdApiRbac') and $array)
@@ -991,13 +995,20 @@ $this->fields['ApiRbac']['DateCreation']['html']
                 $pcDataO = $q->find();
             }
 
-                if(function_exists('selectboxDataApiLog_IdApiRbac')){ $this->selectboxDataApiLog_IdApiRbac($pcDataO, $q); }
+            if(method_exists($this, 'selectboxDataApiLog_IdApiRbac')){ 
+                $this->selectboxDataApiLog_IdApiRbac($pcDataO, $q, $override); 
+            }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }	
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}	
     /**
      * function getApiLogList
      * @param string $IdApiRbac
@@ -1137,13 +1148,15 @@ $this->fields['ApiRbac']['DateCreation']['html']
         
             //custom hook
             if (method_exists($this, 'beforeChildSearchApiLog')){ $this->beforeChildSearchApiLog($q);}
-        $this->queryObj = $q;
+        $this->queryObjApiLog = $q;
         
         $pmpoData =$q->paginate($search['page'], $maxPerPage);
         $resultsCount = $pmpoData->getNbResults();
         
-            //custom hook
-            if (method_exists($this, 'beforeChildListApiLog')){ $this->beforeChildListApiLog($q, $filterKey, $param);}
+        //custom hook
+        if (method_exists($this, 'beforeChildListApiLog')){
+            $this->beforeChildListApiLog();
+        }
          
         #options building
         
@@ -1168,6 +1181,7 @@ $this->fields['ApiRbac']['DateCreation']['html']
         
 
         $i=0;
+        $tr = '';
         if( $pmpoData->isEmpty() ){
             $tr .= tr(	td(p(span(_("No API log found")),'class="no-results"'), "style='font-size:16px;' t='empty' ln='ApiLog' colspan='100%' "));
             
@@ -1177,9 +1191,6 @@ $this->fields['ApiRbac']['DateCreation']['html']
                 $this->listActionCellApiLog = '';
                 $actionRow = '';
                 
-            // custom hooks
-            if (method_exists($this, 'startChildListRowApiLog')){ $this->startChildListRowApiLog($altValue, $data, $i, $param, $this, $hookListColumnsApiLog, $actionRow);}
-            
                 
                 
                 if($_SESSION[_AUTH_VAR]->hasRights('ApiLog', 'd')){
@@ -1211,18 +1222,24 @@ $this->fields['ApiRbac']['DateCreation']['html']
                 
                 
                 
+                // custom hooks
+                if (method_exists($this, 'beforeListTrApiLog')){ 
+                    $this->beforeListTrApiLog($altValue, $data, $i, $param, $actionRow);
+                }
+                
                 $tr .= $param['tr_before'].
                         tr(
-                            (isset($hookListColumnsApiLogFirst)?$hookListColumnsApiLogFirst:'').
+                            (isset($this->hookListColumnsApiLogFirst)?$this->hookListColumnsApiLogFirst:'').
                             
                 td(span((($altValue['IdApiRbac']) ? $altValue['IdApiRbac'] : $altValue['ApiRbac_Model']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdApiRbac' class='' " . $param['IdApiRbac']." j='editApiLog'") . td(span($altValue['ApiRbac_Action'].""), " c='ApiRbac__Action' j='editApiLog' i='".json_encode($data->getPrimaryKey())."'").
                             td(span($altValue['ApiRbac_Query'].""), " c='ApiRbac__Query' j='editApiLog' i='".json_encode($data->getPrimaryKey())."'").
                             
                 td(span((($altValue['Time']) ? $altValue['Time'] : $data->getTime()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Time' class='' " . $param['Time']." j='editApiLog'") . 
-                            (isset($hookListColumnsApiLog)?$hookListColumnsApiLog:'').
+                            (isset($this->hookListColumnsApiLog)?$this->hookListColumnsApiLog:'').
                             $actionRow
-                        ,"id='ApiLogRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='ApiLog' ".$param['tr']." ")
-                        .$param['tr_after'];
+                            .$param['tr_after']
+                        ,"id='ApiLogRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='ApiLog' ".$param['tr']." ");
+                        
                 
                 $i++;
             }

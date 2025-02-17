@@ -492,7 +492,7 @@ class TemplateForm extends Template
         
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
-        $return['js'] .= " ";
+        $return['js'] .= "";
         return $return;
     }
     /*
@@ -747,14 +747,17 @@ $this->fields['Template']['Body']['html'] = stdFieldRow(_("Body"), textarea('Bod
 
             if($ChildOnglet){
                 $childTable['onReadyJs'] ="
-                     $('[j=conglet_Template]').bind('click', function (data){
-                         pp = $(this).attr('p');
-                         $('#cntTemplateChild').html( $('<img>').attr('src', '"._SITE_URL."public/img/Ellipsis-3.9s-200px.svg') );
-                         $.get('"._SITE_URL."Template/'+pp+'/'+$(this).attr('ip'), { ui: pp+'Table', 'pui':'".$uiTabsId."', pc:'".$data['pc']."'}, function(data){
+                    $('[j=conglet_Template]').bind('click', function (data){
+                        pp = $(this).attr('p');
+                        $('#cntTemplateChild').html( $('<img>').attr('src', '"._SITE_URL."public/img/Ellipsis-3.9s-200px.svg') );
+                        $.get('"._SITE_URL."Template/'+pp+'/'+$(this).attr('ip'), { ui: pp+'Table', 'pui':'".$uiTabsId."', pc:'".$data['pc']."'}, function(data){
                             $('#cntTemplateChild').html(data);
                             $('[j=conglet_Template]').parent().attr('class','ui-state-default');
                             $('[j=conglet_Template][p='+pp+']').parent().attr('class',' ui-state-default ui-state-active');
-                         });
+                        }).fail(function(data) {
+                            $('#cntAssetChild').html('Error: try again or contact your administrator.');
+                            console.log(data);
+                        });;
                     });
                 ";
                 if($_SESSION['mem']['Template']['child']['list'][$dataObj->$getLocalKey()]){
@@ -846,7 +849,7 @@ $this->fields['Template']['Name']['html']
 
         $return['data'] .= $data;
         $return['js'] .= $childTable['js']
-        . $this->hookFormIncludeJs."
+        . script($this->hookFormIncludeJs) ."
         ";
 
         $return['onReadyJs'] =
@@ -1063,13 +1066,15 @@ $this->fields['Template']['Name']['html']
         
             //custom hook
             if (method_exists($this, 'beforeChildSearchTemplateFile')){ $this->beforeChildSearchTemplateFile($q);}
-        $this->queryObj = $q;
+        $this->queryObjTemplateFile = $q;
         
         $pmpoData =$q->paginate($search['page'], $maxPerPage);
         $resultsCount = $pmpoData->getNbResults();
         
-            //custom hook
-            if (method_exists($this, 'beforeChildListTemplateFile')){ $this->beforeChildListTemplateFile($q, $filterKey, $param);}
+        //custom hook
+        if (method_exists($this, 'beforeChildListTemplateFile')){
+            $this->beforeChildListTemplateFile();
+        }
          
         #options building
         
@@ -1093,6 +1098,7 @@ $this->fields['Template']['Name']['html']
         
 
         $i=0;
+        $tr = '';
         if( $pmpoData->isEmpty() ){
             $tr .= tr(	td(p(span(_("No File found")),'class="no-results"'), "style='font-size:16px;' t='empty' ln='TemplateFile' colspan='100%' "));
             
@@ -1102,9 +1108,6 @@ $this->fields['Template']['Name']['html']
                 $this->listActionCellTemplateFile = '';
                 $actionRow = '';
                 
-            // custom hooks
-            if (method_exists($this, 'startChildListRowTemplateFile')){ $this->startChildListRowTemplateFile($altValue, $data, $i, $param, $this, $hookListColumnsTemplateFile, $actionRow);}
-            
                 
                 
                 if($_SESSION[_AUTH_VAR]->hasRights('TemplateFile', 'd')){
@@ -1127,18 +1130,24 @@ $this->fields['Template']['Name']['html']
                 
                 
                 
+                // custom hooks
+                if (method_exists($this, 'beforeListTrTemplateFile')){ 
+                    $this->beforeListTrTemplateFile($altValue, $data, $i, $param, $actionRow);
+                }
+                
                 $tr .= $param['tr_before'].
                         tr(
-                            (isset($hookListColumnsTemplateFileFirst)?$hookListColumnsTemplateFileFirst:'').
+                            (isset($this->hookListColumnsTemplateFileFirst)?$this->hookListColumnsTemplateFileFirst:'').
                             
                 td(span((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class='' " . $param['Name']." j='editTemplateFile'") . 
                 td(span((($altValue['File']) ? $altValue['File'] : $data->getFile()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='File' class='' " . $param['File']." j='editTemplateFile'") . 
-                            (isset($hookListColumnsTemplateFile)?$hookListColumnsTemplateFile:'')
+                            (isset($this->hookListColumnsTemplateFile)?$this->hookListColumnsTemplateFile:'')
                 .td(htmlLink(span(addslashes(_('To editor'))),'javascript:', " class='button-link-blue' data-clipboard-text='"._SITE_URL.$data->getFile()."' title='Click to copy me.' i='".$data->getPrimaryKey()."'  j='copy_link' "))
                 .
                             $actionRow
-                        ,"id='TemplateFileRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='TemplateFile' ".$param['tr']." ")
-                        .$param['tr_after'];
+                            .$param['tr_after']
+                        ,"id='TemplateFileRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='TemplateFile' ".$param['tr']." ");
+                        
                 
                 $i++;
             }

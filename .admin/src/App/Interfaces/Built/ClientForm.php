@@ -549,7 +549,7 @@ class ClientForm extends Client
         
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
-        $return['js'] .= " ";
+        $return['js'] .= "";
         return $return;
     }
     /*
@@ -849,14 +849,17 @@ $this->fields['Client']['DefaultCurrency']['html'] = stdFieldRow(_("Currency"), 
 
             if($ChildOnglet){
                 $childTable['onReadyJs'] ="
-                     $('[j=conglet_Client]').bind('click', function (data){
-                         pp = $(this).attr('p');
-                         $('#cntClientChild').html( $('<img>').attr('src', '"._SITE_URL."public/img/Ellipsis-3.9s-200px.svg') );
-                         $.get('"._SITE_URL."Client/'+pp+'/'+$(this).attr('ip'), { ui: pp+'Table', 'pui':'".$uiTabsId."', pc:'".$data['pc']."'}, function(data){
+                    $('[j=conglet_Client]').bind('click', function (data){
+                        pp = $(this).attr('p');
+                        $('#cntClientChild').html( $('<img>').attr('src', '"._SITE_URL."public/img/Ellipsis-3.9s-200px.svg') );
+                        $.get('"._SITE_URL."Client/'+pp+'/'+$(this).attr('ip'), { ui: pp+'Table', 'pui':'".$uiTabsId."', pc:'".$data['pc']."'}, function(data){
                             $('#cntClientChild').html(data);
                             $('[j=conglet_Client]').parent().attr('class','ui-state-default');
                             $('[j=conglet_Client][p='+pp+']').parent().attr('class',' ui-state-default ui-state-active');
-                         });
+                        }).fail(function(data) {
+                            $('#cntAssetChild').html('Error: try again or contact your administrator.');
+                            console.log(data);
+                        });;
                     });
                 ";
                 if($_SESSION['mem']['Client']['child']['list'][$dataObj->$getLocalKey()]){
@@ -965,7 +968,7 @@ $this->fields['Client']['Name']['html']
 
         $return['data'] .= $data;
         $return['js'] .= $childTable['js']
-        . $this->hookFormIncludeJs."
+        . script($this->hookFormIncludeJs) ."
         ";
 
         $return['onReadyJs'] =
@@ -1072,6 +1075,7 @@ $this->fields['Client']['Name']['html']
      * @param array $data
     **/
     public function selectBoxClient_IdCountry(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = CountryQuery::create();
 
             $q->select(array('Name', 'IdCountry'));
@@ -1084,10 +1088,15 @@ $this->fields['Client']['Name']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for Client_DefaultUser selectBox 
@@ -1096,6 +1105,7 @@ $this->fields['Client']['Name']['html']
      * @param array $data
     **/
     public function selectBoxClient_DefaultUser(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = AuthyQuery::create();
 
             $q->addAsColumn('selDisplay', ''.AuthyPeer::FULLNAME.'');
@@ -1109,10 +1119,15 @@ $this->fields['Client']['Name']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for Client_DefaultCategory selectBox 
@@ -1121,6 +1136,7 @@ $this->fields['Client']['Name']['html']
      * @param array $data
     **/
     public function selectBoxClient_DefaultCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = BillingCategoryQuery::create();
 
             $q->select(array('Name', 'IdBillingCategory'));
@@ -1133,10 +1149,15 @@ $this->fields['Client']['Name']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for Client_DefaultCurrency selectBox 
@@ -1145,6 +1166,7 @@ $this->fields['Client']['Name']['html']
      * @param array $data
     **/
     public function selectBoxClient_DefaultCurrency(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = CurrencyQuery::create();
 
             $q->select(array('Name', 'IdCurrency'));
@@ -1157,10 +1179,15 @@ $this->fields['Client']['Name']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for Billing_IdClient selectBox 
@@ -1169,6 +1196,7 @@ $this->fields['Client']['Name']['html']
      * @param array $data
     **/
     public function selectBoxBilling_IdClient(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = ClientQuery::create();
 
     if(method_exists($this, 'beginSelectboxBilling_IdClient') and $array)
@@ -1183,13 +1211,20 @@ $this->fields['Client']['Name']['html']
                 $pcDataO = $q->find();
             }
 
-                if(function_exists('selectboxDataBilling_IdClient')){ $this->selectboxDataBilling_IdClient($pcDataO, $q); }
+            if(method_exists($this, 'selectboxDataBilling_IdClient')){ 
+                $this->selectboxDataBilling_IdClient($pcDataO, $q, $override); 
+            }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for Billing_IdProject selectBox 
@@ -1198,6 +1233,7 @@ $this->fields['Client']['Name']['html']
      * @param array $data
     **/
     public function selectBoxBilling_IdProject(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = ProjectQuery::create();
 
     if(method_exists($this, 'beginSelectboxBilling_IdProject') and $array)
@@ -1212,13 +1248,20 @@ $this->fields['Client']['Name']['html']
                 $pcDataO = $q->find();
             }
 
-                if(function_exists('selectboxDataBilling_IdProject')){ $this->selectboxDataBilling_IdProject($pcDataO, $q); }
+            if(method_exists($this, 'selectboxDataBilling_IdProject')){ 
+                $this->selectboxDataBilling_IdProject($pcDataO, $q, $override); 
+            }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for Billing_IdBillingCategory selectBox 
@@ -1227,6 +1270,7 @@ $this->fields['Client']['Name']['html']
      * @param array $data
     **/
     public function selectBoxBilling_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = BillingCategoryQuery::create();
 
     if(method_exists($this, 'beginSelectboxBilling_IdBillingCategory') and $array)
@@ -1241,13 +1285,20 @@ $this->fields['Client']['Name']['html']
                 $pcDataO = $q->find();
             }
 
-                if(function_exists('selectboxDataBilling_IdBillingCategory')){ $this->selectboxDataBilling_IdBillingCategory($pcDataO, $q); }
+            if(method_exists($this, 'selectboxDataBilling_IdBillingCategory')){ 
+                $this->selectboxDataBilling_IdBillingCategory($pcDataO, $q, $override); 
+            }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for Billing_DefaultCurrency selectBox 
@@ -1256,6 +1307,7 @@ $this->fields['Client']['Name']['html']
      * @param array $data
     **/
     public function selectBoxBilling_DefaultCurrency(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = CurrencyQuery::create();
 
     if(method_exists($this, 'beginSelectboxBilling_DefaultCurrency') and $array)
@@ -1270,13 +1322,20 @@ $this->fields['Client']['Name']['html']
                 $pcDataO = $q->find();
             }
 
-                if(function_exists('selectboxDataBilling_DefaultCurrency')){ $this->selectboxDataBilling_DefaultCurrency($pcDataO, $q); }
+            if(method_exists($this, 'selectboxDataBilling_DefaultCurrency')){ 
+                $this->selectboxDataBilling_DefaultCurrency($pcDataO, $q, $override); 
+            }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }	
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}	
     /**
      * function getBillingList
      * @param string $IdClient
@@ -1434,13 +1493,15 @@ $this->fields['Client']['Name']['html']
         
             //custom hook
             if (method_exists($this, 'beforeChildSearchBilling')){ $this->beforeChildSearchBilling($q);}
-        $this->queryObj = $q;
+        $this->queryObjBilling = $q;
         
         $pmpoData =$q->paginate($search['page'], $maxPerPage);
         $resultsCount = $pmpoData->getNbResults();
         
-            //custom hook
-            if (method_exists($this, 'beforeChildListBilling')){ $this->beforeChildListBilling($q, $filterKey, $param);}
+        //custom hook
+        if (method_exists($this, 'beforeChildListBilling')){
+            $this->beforeChildListBilling();
+        }
          
         #options building
         
@@ -1478,6 +1539,7 @@ $this->fields['Client']['Name']['html']
         
 
         $i=0;
+        $tr = '';
         if( $pmpoData->isEmpty() ){
             $tr .= tr(	td(p(span(_("No Billing found")),'class="no-results"'), "style='font-size:16px;' t='empty' ln='Billing' colspan='100%' "));
             
@@ -1487,9 +1549,6 @@ $this->fields['Client']['Name']['html']
                 $this->listActionCellBilling = '';
                 $actionRow = '';
                 
-            // custom hooks
-            if (method_exists($this, 'startChildListRowBilling')){ $this->startChildListRowBilling($altValue, $data, $i, $param, $this, $hookListColumnsBilling, $actionRow);}
-            
                 
                 
                 if($_SESSION[_AUTH_VAR]->hasRights('Billing', 'd')){
@@ -1521,9 +1580,14 @@ $this->fields['Client']['Name']['html']
                 
                 
                 
+                // custom hooks
+                if (method_exists($this, 'beforeListTrBilling')){ 
+                    $this->beforeListTrBilling($altValue, $data, $i, $param, $actionRow);
+                }
+                
                 $tr .= $param['tr_before'].
                         tr(
-                            (isset($hookListColumnsBillingFirst)?$hookListColumnsBillingFirst:'').
+                            (isset($this->hookListColumnsBillingFirst)?$this->hookListColumnsBillingFirst:'').
                             
                 td(span((($altValue['State']) ? $altValue['State'] : isntPo($data->getState())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='State' class='center' " . $param['State']." j='editBilling'") . 
                 td(span((($altValue['IdClient']) ? $altValue['IdClient'] : $Client_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdClient' class='' " . $param['IdClient']." j='editBilling'") . 
@@ -1537,10 +1601,11 @@ $this->fields['Client']['Name']['html']
                 td(span((($altValue['DateDue']) ? $altValue['DateDue'] : $data->getDateDue()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DateDue' class='' " . $param['DateDue']." j='editBilling'") . 
                 td(span((($altValue['DatePaid']) ? $altValue['DatePaid'] : $data->getDatePaid()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DatePaid' class='' " . $param['DatePaid']." j='editBilling'") . 
                 td(span((($altValue['Net']) ? $altValue['Net'] : str_replace(',', '.', $data->getNet())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Net' class='right' " . $param['Net']." j='editBilling'") . 
-                            (isset($hookListColumnsBilling)?$hookListColumnsBilling:'').
+                            (isset($this->hookListColumnsBilling)?$this->hookListColumnsBilling:'').
                             $actionRow
-                        ,"id='BillingRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='Billing' ".$param['tr']." ")
-                        .$param['tr_after'];
+                            .$param['tr_after']
+                        ,"id='BillingRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='Billing' ".$param['tr']." ");
+                        
                 
                 $i++;
             }

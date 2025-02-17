@@ -453,7 +453,7 @@ class PaymentLineForm extends PaymentLine
         
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
-        $return['js'] .= " ";
+        $return['js'] .= "";
         return $return;
     }
     /*
@@ -752,7 +752,7 @@ $this->fields['PaymentLine']['IdBilling']['html']
 
         $return['data'] .= $data;
         $return['js'] .= $childTable['js']
-        . $this->hookFormIncludeJs."
+        . script($this->hookFormIncludeJs) ."
         ";
 
         $return['onReadyJs'] =
@@ -820,6 +820,7 @@ $this->fields['PaymentLine']['IdBilling']['html']
      * @param array $data
     **/
     public function selectBoxPaymentLine_IdBilling(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = BillingQuery::create();
 
             $q->filterByType('Bill' );
@@ -835,8 +836,13 @@ $this->fields['PaymentLine']['IdBilling']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 }

@@ -470,7 +470,7 @@ class SupplierForm extends Supplier
         
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
-        $return['js'] .= " ";
+        $return['js'] .= "";
         return $return;
     }
     /*
@@ -728,14 +728,17 @@ $this->fields['Supplier']['Zip']['html'] = stdFieldRow(_("Zip"), input('text', '
 
             if($ChildOnglet){
                 $childTable['onReadyJs'] ="
-                     $('[j=conglet_Supplier]').bind('click', function (data){
-                         pp = $(this).attr('p');
-                         $('#cntSupplierChild').html( $('<img>').attr('src', '"._SITE_URL."public/img/Ellipsis-3.9s-200px.svg') );
-                         $.get('"._SITE_URL."Supplier/'+pp+'/'+$(this).attr('ip'), { ui: pp+'Table', 'pui':'".$uiTabsId."', pc:'".$data['pc']."'}, function(data){
+                    $('[j=conglet_Supplier]').bind('click', function (data){
+                        pp = $(this).attr('p');
+                        $('#cntSupplierChild').html( $('<img>').attr('src', '"._SITE_URL."public/img/Ellipsis-3.9s-200px.svg') );
+                        $.get('"._SITE_URL."Supplier/'+pp+'/'+$(this).attr('ip'), { ui: pp+'Table', 'pui':'".$uiTabsId."', pc:'".$data['pc']."'}, function(data){
                             $('#cntSupplierChild').html(data);
                             $('[j=conglet_Supplier]').parent().attr('class','ui-state-default');
                             $('[j=conglet_Supplier][p='+pp+']').parent().attr('class',' ui-state-default ui-state-active');
-                         });
+                        }).fail(function(data) {
+                            $('#cntAssetChild').html('Error: try again or contact your administrator.');
+                            console.log(data);
+                        });;
                     });
                 ";
                 if($_SESSION['mem']['Supplier']['child']['list'][$dataObj->$getLocalKey()]){
@@ -833,7 +836,7 @@ $this->fields['Supplier']['Name']['html']
 
         $return['data'] .= $data;
         $return['js'] .= $childTable['js']
-        . $this->hookFormIncludeJs."
+        . script($this->hookFormIncludeJs) ."
         ";
 
         $return['onReadyJs'] =
@@ -928,6 +931,7 @@ $this->fields['Supplier']['Name']['html']
      * @param array $data
     **/
     public function selectBoxSupplier_IdCountry(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = CountryQuery::create();
 
             $q->select(array('Name', 'IdCountry'));
@@ -940,10 +944,15 @@ $this->fields['Supplier']['Name']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for CostLine_IdSupplier selectBox 
@@ -952,6 +961,7 @@ $this->fields['Supplier']['Name']['html']
      * @param array $data
     **/
     public function selectBoxCostLine_IdSupplier(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = SupplierQuery::create();
 
     if(method_exists($this, 'beginSelectboxCostLine_IdSupplier') and $array)
@@ -966,13 +976,20 @@ $this->fields['Supplier']['Name']['html']
                 $pcDataO = $q->find();
             }
 
-                if(function_exists('selectboxDataCostLine_IdSupplier')){ $this->selectboxDataCostLine_IdSupplier($pcDataO, $q); }
+            if(method_exists($this, 'selectboxDataCostLine_IdSupplier')){ 
+                $this->selectboxDataCostLine_IdSupplier($pcDataO, $q, $override); 
+            }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for CostLine_IdProject selectBox 
@@ -981,6 +998,7 @@ $this->fields['Supplier']['Name']['html']
      * @param array $data
     **/
     public function selectBoxCostLine_IdProject(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = ProjectQuery::create();
 
     if(method_exists($this, 'beginSelectboxCostLine_IdProject') and $array)
@@ -995,13 +1013,20 @@ $this->fields['Supplier']['Name']['html']
                 $pcDataO = $q->find();
             }
 
-                if(function_exists('selectboxDataCostLine_IdProject')){ $this->selectboxDataCostLine_IdProject($pcDataO, $q); }
+            if(method_exists($this, 'selectboxDataCostLine_IdProject')){ 
+                $this->selectboxDataCostLine_IdProject($pcDataO, $q, $override); 
+            }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for CostLine_IdBillingCategory selectBox 
@@ -1010,6 +1035,7 @@ $this->fields['Supplier']['Name']['html']
      * @param array $data
     **/
     public function selectBoxCostLine_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = BillingCategoryQuery::create();
 
     if(method_exists($this, 'beginSelectboxCostLine_IdBillingCategory') and $array)
@@ -1024,13 +1050,20 @@ $this->fields['Supplier']['Name']['html']
                 $pcDataO = $q->find();
             }
 
-                if(function_exists('selectboxDataCostLine_IdBillingCategory')){ $this->selectboxDataCostLine_IdBillingCategory($pcDataO, $q); }
+            if(method_exists($this, 'selectboxDataCostLine_IdBillingCategory')){ 
+                $this->selectboxDataCostLine_IdBillingCategory($pcDataO, $q, $override); 
+            }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }	
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}	
     /**
      * function getCostLineList
      * @param string $IdSupplier
@@ -1191,13 +1224,15 @@ $this->fields['Supplier']['Name']['html']
         
             //custom hook
             if (method_exists($this, 'beforeChildSearchCostLine')){ $this->beforeChildSearchCostLine($q);}
-        $this->queryObj = $q;
+        $this->queryObjCostLine = $q;
         
         $pmpoData =$q->paginate($search['page'], $maxPerPage);
         $resultsCount = $pmpoData->getNbResults();
         
-            //custom hook
-            if (method_exists($this, 'beforeChildListCostLine')){ $this->beforeChildListCostLine($q, $filterKey, $param);}
+        //custom hook
+        if (method_exists($this, 'beforeChildListCostLine')){
+            $this->beforeChildListCostLine();
+        }
          
         #options building
         
@@ -1228,6 +1263,7 @@ $this->fields['Supplier']['Name']['html']
         
 
         $i=0;
+        $tr = '';
         if( $pmpoData->isEmpty() ){
             $tr .= tr(	td(p(span(_("No Expense found")),'class="no-results"'), "style='font-size:16px;' t='empty' ln='CostLine' colspan='100%' "));
             
@@ -1237,9 +1273,6 @@ $this->fields['Supplier']['Name']['html']
                 $this->listActionCellCostLine = '';
                 $actionRow = '';
                 
-            // custom hooks
-            if (method_exists($this, 'startChildListRowCostLine')){ $this->startChildListRowCostLine($altValue, $data, $i, $param, $this, $hookListColumnsCostLine, $actionRow);}
-            
                 
                 
                 if($_SESSION[_AUTH_VAR]->hasRights('CostLine', 'd')){
@@ -1271,9 +1304,14 @@ $this->fields['Supplier']['Name']['html']
                 
                 
                 
+                // custom hooks
+                if (method_exists($this, 'beforeListTrCostLine')){ 
+                    $this->beforeListTrCostLine($altValue, $data, $i, $param, $actionRow);
+                }
+                
                 $tr .= $param['tr_before'].
                         tr(
-                            (isset($hookListColumnsCostLineFirst)?$hookListColumnsCostLineFirst:'').
+                            (isset($this->hookListColumnsCostLineFirst)?$this->hookListColumnsCostLineFirst:'').
                             
                 td(span((($altValue['Title']) ? $altValue['Title'] : $data->getTitle()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Title' class='' " . $param['Title']." j='editCostLine'") . 
                 td(span((($altValue['IdSupplier']) ? $altValue['IdSupplier'] : $Supplier_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdSupplier' class='' " . $param['IdSupplier']." j='editCostLine'") . 
@@ -1281,10 +1319,11 @@ $this->fields['Supplier']['Name']['html']
                 td(span((($altValue['IdBillingCategory']) ? $altValue['IdBillingCategory'] : $BillingCategory_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBillingCategory' class='' " . $param['IdBillingCategory']." j='editCostLine'") . 
                 td(span((($altValue['SpendDate']) ? $altValue['SpendDate'] : $data->getSpendDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='SpendDate' class='' " . $param['SpendDate']." j='editCostLine'") . 
                 td(span((($altValue['Total']) ? $altValue['Total'] : str_replace(',', '.', $data->getTotal())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Total' class='right' " . $param['Total']." j='editCostLine'") . 
-                            (isset($hookListColumnsCostLine)?$hookListColumnsCostLine:'').
+                            (isset($this->hookListColumnsCostLine)?$this->hookListColumnsCostLine:'').
                             $actionRow
-                        ,"id='CostLineRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='CostLine' ".$param['tr']." ")
-                        .$param['tr_after'];
+                            .$param['tr_after']
+                        ,"id='CostLineRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='CostLine' ".$param['tr']." ");
+                        
                 
                 $i++;
             }

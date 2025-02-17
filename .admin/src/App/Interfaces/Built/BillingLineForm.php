@@ -495,7 +495,7 @@ class BillingLineForm extends BillingLine
         
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
-        $return['js'] .= " ";
+        $return['js'] .= "";
         return $return;
     }
     /*
@@ -840,7 +840,7 @@ $this->fields['BillingLine']['IdAssign']['html']
 
         $return['data'] .= $data;
         $return['js'] .= $childTable['js']
-        . $this->hookFormIncludeJs."
+        . script($this->hookFormIncludeJs) ."
         ";
 
         $return['onReadyJs'] =
@@ -929,6 +929,7 @@ $this->fields['BillingLine']['IdAssign']['html']
      * @param array $data
     **/
     public function selectBoxBillingLine_IdAssign(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = AuthyQuery::create();
 
             $q->addAsColumn('selDisplay', ''.AuthyPeer::FULLNAME.'');
@@ -942,10 +943,15 @@ $this->fields['BillingLine']['IdAssign']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for BillingLine_IdProject selectBox 
@@ -954,6 +960,7 @@ $this->fields['BillingLine']['IdAssign']['html']
      * @param array $data
     **/
     public function selectBoxBillingLine_IdProject(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = ProjectQuery::create();
 
             $q->filterByIdClient($dataObj->getBilling()->getIdClient() );
@@ -967,10 +974,15 @@ $this->fields['BillingLine']['IdAssign']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for BillingLine_IdBillingCategory selectBox 
@@ -979,6 +991,7 @@ $this->fields['BillingLine']['IdAssign']['html']
      * @param array $data
     **/
     public function selectBoxBillingLine_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = BillingCategoryQuery::create();
 
             $q->select(array('Name', 'IdBillingCategory'));
@@ -991,8 +1004,13 @@ $this->fields['BillingLine']['IdAssign']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 }

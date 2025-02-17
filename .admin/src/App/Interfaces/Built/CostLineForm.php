@@ -591,7 +591,7 @@ class CostLineForm extends CostLine
         
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
-        $return['js'] .= " ";
+        $return['js'] .= "";
         return $return;
     }
     /*
@@ -961,7 +961,7 @@ $this->fields['CostLine']['Title']['html']
 
         $return['data'] .= $data;
         $return['js'] .= $childTable['js']
-        . $this->hookFormIncludeJs."
+        . script($this->hookFormIncludeJs) ."
         ";
 
         $return['onReadyJs'] =
@@ -1056,6 +1056,7 @@ $this->fields['CostLine']['Title']['html']
      * @param array $data
     **/
     public function selectBoxCostLine_IdSupplier(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = SupplierQuery::create();
 
             $q->select(array('Name', 'IdSupplier'));
@@ -1068,10 +1069,15 @@ $this->fields['CostLine']['Title']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for CostLine_IdProject selectBox 
@@ -1080,6 +1086,7 @@ $this->fields['CostLine']['Title']['html']
      * @param array $data
     **/
     public function selectBoxCostLine_IdProject(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = ProjectQuery::create();
 
             $q->select(array('Name', 'IdProject'));
@@ -1092,10 +1099,15 @@ $this->fields['CostLine']['Title']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for CostLine_IdBillingCategory selectBox 
@@ -1104,6 +1116,7 @@ $this->fields['CostLine']['Title']['html']
      * @param array $data
     **/
     public function selectBoxCostLine_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = BillingCategoryQuery::create();
 
             $q->select(array('Name', 'IdBillingCategory'));
@@ -1116,8 +1129,13 @@ $this->fields['CostLine']['Title']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 }

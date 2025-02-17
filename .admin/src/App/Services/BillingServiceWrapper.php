@@ -22,8 +22,10 @@ class BillingServiceWrapper extends BillingService
         parent::__construct($request, $response, $args);
         $this->customActions['print']            = 'print';
         $this->customActions['pdf']              = 'print';
+        $this->customActions['pdflist']              = 'printList';
         $this->customActions['copy']             = 'copy';
         $this->customActions['getClientDefault'] = 'getClientDefault';
+        
 
         $this->Form = new BillingFormWrapper($request, $args);
     }
@@ -56,10 +58,106 @@ class BillingServiceWrapper extends BillingService
         return $BuilderReturn->return();
     }
 
-    public function print($request)
-    {
+    public function printList(){
+        $BillingForm = new BillingForm($this->request, []);
+        $BillingForm->searchMs = array_filter($this->request['query'], fn($value) => !empty($value) && $value !== '' && $value[0] !== '');
+        $Billings = $BillingForm->getListSearch();
+        $hasCurrencies = false;
+
+        foreach($Billings->find() as $Billing){
+            if($Billing->getCurrency()){
+                $currencyGross = td($Billing->getGross2(), "style='text-align:right;'");
+                $hasCurrencies = $Billing->getCurrency()->getName();
+            }else{
+                $currencyGross = td("");
+            }
+
+             $items .= tr(
+                td(span(b($Billing->getTitle())))
+                . td($Billing->getState(), "class='note'")
+                . td($Billing->getDate())
+                . td($Billing->getGross(), "style='text-align:right;'")
+                . td(($Billing->getNet())?$Billing->getNet():'0.00', "style='text-align:right;'")
+                .$currencyGross
+                , "class='' style='background-color:#f0f0f0;'")
+                .tr(td($Billing->getNoteBilling(), " style='
+                    padding-left: 50px;
+                    padding-top: 0px;
+                    padding-bottom: 20px;'"), "colspan='6'");
+
+            $total = bcadd($total, $Billing->getGross(), 2);
+            $totalCur2 = bcadd($totalCur2, $Billing->getGross2(), 2);
+            $totalPaid = bcadd($totalPaid, $Billing->getNet(), 2);
+
+            $lastBilling = $Billing;
+        }
+
         $currency_code = defined('default_currency_code') ? default_currency_code : 'USD';
         $currency_symbol = defined('default_currency_symbol') ? default_currency_symbol : '$';
+
+        $this->request['action'] = 'pdf';
+        [$header, $colors, $clientContent, $Billing, $billingNote, $css] = $this->getPrintHead($this->request);
+
+        $CurrencyHead = ($hasCurrencies) ? td("Total $hasCurrencies") : "";
+
+        $headRow = tr(
+                    td("Description")
+                    . td("State.", "style=''")
+                    . td("Date", "style='min-width: 110px;'")
+                    . td("Total<sup>1,2</sup>", "style='text-align:right;'")
+                    . td("Total Paid<sup>1,2</sup>", "style='text-align:right;'")
+                    .$CurrencyHead
+                    ,
+                    "class='head1' "
+                );
+
+        $TotalCurrency = ($hasCurrencies) ? td($hasCurrencies." ".$totalCur2) : "";
+        $out = docType()
+            . htmlTag(
+                htmlHeader("Account state", $css)
+                . body(
+                    loadjs(_SITE_URL . 'vendor/components/jquery/jquery.min.js')
+                    . loadjs(_SITE_URL . 'public/js/selectbox.js')
+                    . $colors
+                    . div(
+                        $header
+                        . $clientContent
+                        . $billingNote
+                        . div(
+                    table(
+                        $headRow
+                                . $items
+                                . tr(
+                                    td("&nbsp;", "colspan=''")
+                                    . td("Total ","colspan='2'")
+                                    . td($currency_code." ".$total)
+                                    . td($currency_code." ".$totalPaid)
+                                    .$TotalCurrency
+                                , "class='totalRow' style='background-color:#f0f0f0;'")
+                                .tr(
+                                    td("Due", "colspan='3' style='border: 1px solid black;border-width: 1px 0 0 0;'")
+                                    .td($currency_code." ".($total-$totalPaid), "colspan='2' style='border: 1px solid black;border-width: 1px 0 0 0;'")
+                                    .td("&nbsp;", "colspan='1' style='border: 1px solid black;border-width: 1px 0 0 0;'")
+                                , "class='totalRow'")
+                                )
+
+                            , "items", "style=''")
+                        ,
+                        "main",
+                        "class='print' style='height:100%'"
+                    )
+                , "style='height:100%'")
+            );
+
+        sendPdf($out, "Statement " . $lastBilling?->getClient()?->getName() . ".pdf");
+
+        //$out = script("window.close();");
+
+        return ['html' => $out];
+    }
+
+    public function getPrintHead($request){
+        
 
         $q = TemplateQuery::create()->filterByName('Print Billing Header')->orderBy('DateCreation', 'DESC');
         if ($request['query']['IdTemplate']) {
@@ -68,18 +166,17 @@ class BillingServiceWrapper extends BillingService
 
         $Template = $q->findOne();
 
-        if ($Template) {
-            $headerContent = $Template->getBody();
+        $headerContent = $Template->getBody();
 
-            $header = div(
-                $headerContent
-                ,
-                "header",
-                "class='header'"
-            );
+        $header = div(
+            $headerContent
+            ,
+            "header",
+            "class='header'"
+        );
 
-            if ($Template->getColor1()) {
-                $colors = style("
+        if ($Template->getColor1()) {
+            $colors = style("
 @media print {
     size: letter;
 }
@@ -100,12 +197,11 @@ tr td{
 
 #items .note {
 
-}
+}");
+        }
 
-            ");
-            }
-
-            $Billing = BillingQuery::create()
+        if($request['i']){
+             $Billing = BillingQuery::create()
                 ->leftJoin('Client')
                 ->leftJoin('Currency')
                 ->findPk($request['i']);
@@ -141,6 +237,31 @@ tr td{
                     $Billing->getNoteBilling()
                     , 'details', "class='billingDetails'");
             }
+        }
+
+        if ($request['action'] == 'pdf') {
+            $cssStyle = file_get_contents(_BASE_DIR . "public/css/main.css");
+            $cssStyle .= file_get_contents(_BASE_DIR . "public/css/print.css");
+            $cssStyle .= file_get_contents(_BASE_DIR . "public/css/apigoat.css");
+            $css = style($cssStyle);
+        } else {
+            $css = loadcss(_SITE_URL . 'public/css/main.css')
+            . loadcss(_SITE_URL . 'public/css/apigoat.css')
+            . loadCss(_SITE_URL . "public/css/print.css");
+        }
+       
+
+        return [$header, $colors, $clientContent, $Billing, $billingNote, $css ];
+    }
+
+    public function print($request)
+    {
+        $currency_code = defined('default_currency_code') ? default_currency_code : 'USD';
+        $currency_symbol = defined('default_currency_symbol') ? default_currency_symbol : '$';
+
+        [$header, $colors, $clientContent, $Billing, $billingNote, $css] = $this->getPrintHead($request);
+
+        if ($clientContent) {
 
             $q = BillingLineQuery::create()->filterByIdBilling($request['i']);
 
@@ -288,17 +409,6 @@ tr td{
 
                         , '', "class='divStdform ui-tabs ui-widget ui-widget-content ui-corner-all '")
                     , "filters", "class='mainForm' ");
-            }
-
-            if ($request['action'] == 'pdf') {
-                $cssStyle = file_get_contents(_BASE_DIR . "public/css/main.css");
-                $cssStyle .= file_get_contents(_BASE_DIR . "public/css/print.css");
-                $cssStyle .= file_get_contents(_BASE_DIR . "public/css/apigoat.css");
-                $css = style($cssStyle);
-            } else {
-                $css = loadcss(_SITE_URL . 'public/css/main.css')
-                . loadcss(_SITE_URL . 'public/css/apigoat.css')
-                . loadCss(_SITE_URL . "public/css/print.css");
             }
 
             $content =

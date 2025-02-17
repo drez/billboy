@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-
+use ApiGoat\Handlers\BuilderReturn;
 
 /**
  * Skeleton subclass for representing a services for the BillingLineService entity.
@@ -20,7 +20,29 @@ class BillingLineServiceWrapper extends BillingLineService
     {
         parent::__construct($request, $response, $args);
 
+        $this->customActions['copyBillingLine'] = 'copyBillingLine';
+
         $this->Form = new BillingLineFormWrapper($request, $args);
+    }
+
+    public function copyBillingLine($request){
+        $Billing     = BillingLineQuery::create()->findPk($request['i']);
+        $BillingCopy = $Billing->copy(true);
+        $BillingCopy->setTitle('Copy - ' . $Billing->getTitle());
+        $BillingCopy->setWorkDate(date('Y-m-d', strtotime('+1 month', strtotime($BillingCopy->getWorkDate()))));
+        $BillingCopy->save();
+
+        $this->request['ui'] = "BillingLineTable";
+        $this->request['jet'] = "refreshChild";
+        $this->request['pui'] = "tabsContain";
+        $this->request['pc'] = "Billing";
+        $this->request['data']['tp'] = "BillingLine";
+        $this->request['data']['pc'] = "Billing";
+        $this->request['data']['no_close'] = "yes";
+        $this->request['data']['ip']= $BillingCopy->getIdBilling();
+        $BuilderReturn           = new BuilderReturn($this->request);
+        $BuilderReturn->setReturnFunction('update_return');
+        return $BuilderReturn->return();
     }
 
     public function beforeSave(BillingLineService $Class, array &$data, bool $isNew, string|null &$messages, array|false &$extValidationErr, $error)

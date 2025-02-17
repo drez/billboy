@@ -427,7 +427,7 @@ class AuthyGroupXForm extends AuthyGroupX
         
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
-        $return['js'] .= " ";
+        $return['js'] .= "";
         return $return;
     }
     /*
@@ -683,7 +683,7 @@ $this->fields['AuthyGroupX']['IdAuthyGroup']['html']
 
         $return['data'] .= $data;
         $return['js'] .= $childTable['js']
-        . $this->hookFormIncludeJs."
+        . script($this->hookFormIncludeJs) ."
         ";
 
         $return['onReadyJs'] =
@@ -742,6 +742,7 @@ $this->fields['AuthyGroupX']['IdAuthyGroup']['html']
      * @param array $data
     **/
     public function selectBoxAuthyGroupX_IdAuthyGroup(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = AuthyGroupQuery::create();
 
             $q->select(array('Name', 'IdAuthyGroup'));
@@ -754,8 +755,13 @@ $this->fields['AuthyGroupX']['IdAuthyGroup']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 }

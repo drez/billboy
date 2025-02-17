@@ -441,7 +441,7 @@ class ApiLogForm extends ApiLog
         
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
-        $return['js'] .= " ";
+        $return['js'] .= "";
         return $return;
     }
     /*
@@ -631,7 +631,7 @@ class ApiLogForm extends ApiLog
         
         
 $this->fields['ApiLog']['IdApiRbac']['html'] = stdFieldRow(_("Rule"), selectboxCustomArray('IdApiRbac', $this->arrayIdApiRbacOptions, "", "v='ID_API_RBAC'  s='d'  val='".$dataObj->getIdApiRbac()."'", $dataObj->getIdApiRbac()), 'IdApiRbac', "", $this->commentsIdApiRbac, $this->commentsIdApiRbac_css, '', ' ', 'no');
-$this->fields['ApiLog']['Time']['html'] = stdFieldRow(_("Time"), input('text', 'Time', $dataObj->getTime(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD hh:mm:ss' size='30'  s='d' class='req' title='Time'"), 'Time', "", $this->commentsTime, $this->commentsTime_css, '', ' ', 'no');
+$this->fields['ApiLog']['Time']['html'] = stdFieldRow(_("Time"), input('datetime-local', 'Time', $dataObj->getTime(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD hh:mm:ss' size='30'  s='d' class='req' title='Time'"), 'Time', "", $this->commentsTime, $this->commentsTime_css, '', ' ', 'no');
 
 
         
@@ -708,7 +708,7 @@ $this->fields['ApiLog']['IdApiRbac']['html']
 
         $return['data'] .= $data;
         $return['js'] .= $childTable['js']
-        . $this->hookFormIncludeJs."
+        . script($this->hookFormIncludeJs) ."
         ";
 
         $return['onReadyJs'] =
@@ -770,6 +770,7 @@ $this->fields['ApiLog']['IdApiRbac']['html']
      * @param array $data
     **/
     public function selectBoxApiLog_IdApiRbac(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = ApiRbacQuery::create();
 
             $q->addAsColumn('selDisplay', 'CONCAT_WS ( ", ", '.ApiRbacPeer::MODEL.', '.ApiRbacPeer::ACTION.', '.ApiRbacPeer::QUERY.' )');
@@ -783,8 +784,13 @@ $this->fields['ApiLog']['IdApiRbac']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 }

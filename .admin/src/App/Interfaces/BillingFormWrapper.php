@@ -87,13 +87,33 @@ class BillingFormWrapper extends BillingForm
             $this->searchMs['State'] = ['New', 'Sent', 'Approved', 'Partial payment'];
             $this->searchMs['Type']  = 'Bill';
         }
+
         $this->hookListReadyJs = "
             $('[j=copyBilling]').click((e)=>{
                 $.post('" . _SITE_URL . $this->virtualClassName . "/copy/'+$(e.currentTarget).attr('i'), {ui:'list'}, (data)=>{
                     $('body').append(data);
                 });
             });
+           $('.sw-header .custom-controls').append( $('<a>').html('Print').addClass('button-link-blue header-controls').attr('href', 'Javascript:;').attr('id', 'billList') );
+            $('#billList').click(()=>{
+                window.open('" . _SITE_URL . "Billing/pdflist/?'+$('#formMsBilling').serialize(), '_blank');
+            });
         ";
+    }
+
+    public function beforeListTrBillingLine($altValue, $data, $i, &$param, &$actionRow){
+        $param['tr_after'] = 
+            td(htmlLink("<i class='ri-file-copy-2-line'></i>", "Javascript:", "class='ac-delete-link' i='" . $data->getPrimaryKey() . "' j='copyBillingLine' "));
+    }  
+
+    public function beforeChildListBillingLine(){
+        $this->hookListReadyJsFirstBillingLine .= " 
+            $('[j=copyBillingLine]').click( (e)=>{
+                $.post('" . _SITE_URL . "BillingLine/copyBillingLine/'+$(e.currentTarget).attr('i'), {ui:'cntBillingLinedivChild'}, (data)=>{
+                    $('#body').append(data);
+                });
+            });
+            ";
     }
 
 }

@@ -613,7 +613,7 @@ class AuthyForm extends Authy
         
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
-        $return['js'] .= " ";
+        $return['js'] .= "";
         return $return;
     }
     /*
@@ -964,14 +964,17 @@ $this->fields['Authy']['RightsOwner']['html'] = stdFieldRow(_("Rights owner"), $
 
             if($ChildOnglet){
                 $childTable['onReadyJs'] ="
-                     $('[j=conglet_Authy]').bind('click', function (data){
-                         pp = $(this).attr('p');
-                         $('#cntAuthyChild').html( $('<img>').attr('src', '"._SITE_URL."public/img/Ellipsis-3.9s-200px.svg') );
-                         $.get('"._SITE_URL."Authy/'+pp+'/'+$(this).attr('ip'), { ui: pp+'Table', 'pui':'".$uiTabsId."', pc:'".$data['pc']."'}, function(data){
+                    $('[j=conglet_Authy]').bind('click', function (data){
+                        pp = $(this).attr('p');
+                        $('#cntAuthyChild').html( $('<img>').attr('src', '"._SITE_URL."public/img/Ellipsis-3.9s-200px.svg') );
+                        $.get('"._SITE_URL."Authy/'+pp+'/'+$(this).attr('ip'), { ui: pp+'Table', 'pui':'".$uiTabsId."', pc:'".$data['pc']."'}, function(data){
                             $('#cntAuthyChild').html(data);
                             $('[j=conglet_Authy]').parent().attr('class','ui-state-default');
                             $('[j=conglet_Authy][p='+pp+']').parent().attr('class',' ui-state-default ui-state-active');
-                         });
+                        }).fail(function(data) {
+                            $('#cntAssetChild').html('Error: try again or contact your administrator.');
+                            console.log(data);
+                        });;
                     });
                 ";
                 if($_SESSION['mem']['Authy']['child']['list'][$dataObj->$getLocalKey()]){
@@ -1073,7 +1076,7 @@ $this->fields['Authy']['Username']['html']
 
         $return['data'] .= $data;
         $return['js'] .= $childTable['js']
-        . $this->hookFormIncludeJs."
+        . script($this->hookFormIncludeJs) ."
         ";
 
         $return['onReadyJs'] =
@@ -1189,6 +1192,7 @@ $('.cntOnglet').parent().tabs();
      * @param array $data
     **/
     public function selectBoxAuthy_IdAuthyGroup(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = AuthyGroupQuery::create();
 
             $q->select(array('Name', 'IdAuthyGroup'));
@@ -1201,10 +1205,15 @@ $('.cntOnglet').parent().tabs();
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for AuthyGroupX_IdAuthyGroup selectBox 
@@ -1213,6 +1222,7 @@ $('.cntOnglet').parent().tabs();
      * @param array $data
     **/
     public function selectBoxAuthyGroupX_IdAuthyGroup(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = AuthyGroupQuery::create();
 
     if(method_exists($this, 'beginSelectboxAuthyGroupX_IdAuthyGroup') and $array)
@@ -1227,13 +1237,20 @@ $('.cntOnglet').parent().tabs();
                 $pcDataO = $q->find();
             }
 
-                if(function_exists('selectboxDataAuthyGroupX_IdAuthyGroup')){ $this->selectboxDataAuthyGroupX_IdAuthyGroup($pcDataO, $q); }
+            if(method_exists($this, 'selectboxDataAuthyGroupX_IdAuthyGroup')){ 
+                $this->selectboxDataAuthyGroupX_IdAuthyGroup($pcDataO, $q, $override); 
+            }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }	
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}	
     /**
      * function getAuthyGroupXList
      * @param string $IdAuthy
@@ -1366,7 +1383,12 @@ $('.cntOnglet').parent().tabs();
         
             //custom hook
             if (method_exists($this, 'beforeChildSearchAuthyGroupX')){ $this->beforeChildSearchAuthyGroupX($q);}
-        $this->queryObj = $q;
+        $this->queryObjAuthyGroupX = $q;
+        
+        //custom hook
+        if (method_exists($this, 'beforeChildListAuthyGroupX')){
+            $this->beforeChildListAuthyGroupX();
+        }
         
         $pmpoData = $q->paginate( $search['page'], $maxPerPage );
         $resultsCount = $pmpoData->getNbResults();
@@ -1393,6 +1415,7 @@ $('.cntOnglet').parent().tabs();
         
 
         $i=0;
+        $tr = '';
         if( $pmpoData->isEmpty() ){
             $tr .= tr(	td(p(span(_("No Group found")),'class="no-results"'), "style='font-size:16px;' t='empty' ln='AuthyGroupX' colspan='100%' "));
             
@@ -1402,9 +1425,6 @@ $('.cntOnglet').parent().tabs();
                 $this->listActionCellAuthyGroupX = '';
                 $actionRow = '';
                 
-            // custom hooks
-            if (method_exists($this, 'startChildListRowAuthyGroupX')){ $this->startChildListRowAuthyGroupX($altValue, $data, $i, $param, $this, $hookListColumnsAuthyGroupX, $actionRow);}
-            
                 
                 
             $checkboxPk = array(intval($IdAuthy), ($data->getAuthyGroup()) ? $data->getAuthyGroup()->getPrimaryKey():0 );
@@ -1438,15 +1458,21 @@ $('.cntOnglet').parent().tabs();
                 
                 
                 
+                // custom hooks
+                if (method_exists($this, 'beforeListTrAuthyGroupX')){ 
+                    $this->beforeListTrAuthyGroupX($altValue, $data, $i, $param, $actionRow);
+                }
+                
                 $tr .= $param['tr_before'].
                         tr(
-                            (isset($hookListColumnsAuthyGroupXFirst)?$hookListColumnsAuthyGroupXFirst:'').
+                            (isset($this->hookListColumnsAuthyGroupXFirst)?$this->hookListColumnsAuthyGroupXFirst:'').
                             
                 td(span((($altValue['IdAuthyGroup']) ? $altValue['IdAuthyGroup'] : $AuthyGroup_Name) ?? ''." "), " crPk = '".(($data->getAuthyGroup())?$data->getAuthyGroup()->getIdAuthyGroup():0)."' i='" . json_encode($data->getPrimaryKey()) . "' c='IdAuthyGroup' class='' " . $param['IdAuthyGroup']." j='editAuthyGroupX'") . 
-                            (isset($hookListColumnsAuthyGroupX)?$hookListColumnsAuthyGroupX:'').
+                            (isset($this->hookListColumnsAuthyGroupX)?$this->hookListColumnsAuthyGroupX:'').
                             $actionRow
-                        ,"id='AuthyGroupXRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='AuthyGroupX' ".$param['tr']." ")
-                        .$param['tr_after'];
+                            .$param['tr_after']
+                        ,"id='AuthyGroupXRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='AuthyGroupX' ".$param['tr']." ");
+                        
                 
                 $i++;
             }
@@ -1697,13 +1723,15 @@ $('.cntOnglet').parent().tabs();
         
             //custom hook
             if (method_exists($this, 'beforeChildSearchAuthyLog')){ $this->beforeChildSearchAuthyLog($q);}
-        $this->queryObj = $q;
+        $this->queryObjAuthyLog = $q;
         
         $pmpoData =$q->paginate($search['page'], $maxPerPage);
         $resultsCount = $pmpoData->getNbResults();
         
-            //custom hook
-            if (method_exists($this, 'beforeChildListAuthyLog')){ $this->beforeChildListAuthyLog($q, $filterKey, $param);}
+        //custom hook
+        if (method_exists($this, 'beforeChildListAuthyLog')){
+            $this->beforeChildListAuthyLog();
+        }
          
         #options building
         
@@ -1729,6 +1757,7 @@ $('.cntOnglet').parent().tabs();
         
 
         $i=0;
+        $tr = '';
         if( $pmpoData->isEmpty() ){
             $tr .= tr(	td(p(span(_("No Login log found")),'class="no-results"'), "style='font-size:16px;' t='empty' ln='AuthyLog' colspan='100%' "));
             
@@ -1738,9 +1767,6 @@ $('.cntOnglet').parent().tabs();
                 $this->listActionCellAuthyLog = '';
                 $actionRow = '';
                 
-            // custom hooks
-            if (method_exists($this, 'startChildListRowAuthyLog')){ $this->startChildListRowAuthyLog($altValue, $data, $i, $param, $this, $hookListColumnsAuthyLog, $actionRow);}
-            
                 
                 
                 if($_SESSION[_AUTH_VAR]->hasRights('AuthyLog', 'd')){
@@ -1760,18 +1786,24 @@ $('.cntOnglet').parent().tabs();
                 
                 
                 
+                // custom hooks
+                if (method_exists($this, 'beforeListTrAuthyLog')){ 
+                    $this->beforeListTrAuthyLog($altValue, $data, $i, $param, $actionRow);
+                }
+                
                 $tr .= $param['tr_before'].
                         tr(
-                            (isset($hookListColumnsAuthyLogFirst)?$hookListColumnsAuthyLogFirst:'').
+                            (isset($this->hookListColumnsAuthyLogFirst)?$this->hookListColumnsAuthyLogFirst:'').
                             
                 td(span((($altValue['Timestamp']) ? $altValue['Timestamp'] : $data->getTimestamp()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Timestamp' class='' " . $param['Timestamp']." j='editAuthyLog'") . 
                 td(span((($altValue['Login']) ? $altValue['Login'] : $data->getLogin()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Login' class='' " . $param['Login']." j='editAuthyLog'") . 
                 td(span((($altValue['Ip']) ? $altValue['Ip'] : $data->getIp()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Ip' class='' " . $param['Ip']." j='editAuthyLog'") . 
                 td(span((($altValue['Count']) ? $altValue['Count'] : $data->getCount()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Count' class='' " . $param['Count']." j='editAuthyLog'") . 
-                            (isset($hookListColumnsAuthyLog)?$hookListColumnsAuthyLog:'').
+                            (isset($this->hookListColumnsAuthyLog)?$this->hookListColumnsAuthyLog:'').
                             $actionRow
-                        ,"id='AuthyLogRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='AuthyLog' ".$param['tr']." ")
-                        .$param['tr_after'];
+                            .$param['tr_after']
+                        ,"id='AuthyLogRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='AuthyLog' ".$param['tr']." ");
+                        
                 
                 $i++;
             }

@@ -615,7 +615,7 @@ $total[11] += $data->getNet();
         
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
-        $return['js'] .= " ";
+        $return['js'] .= "";
         return $return;
     }
     /*
@@ -968,14 +968,17 @@ $this->fields['Billing']['Reference']['html'] = stdFieldRow(_("Payment Reference
 
             if($ChildOnglet){
                 $childTable['onReadyJs'] ="
-                     $('[j=conglet_Billing]').bind('click', function (data){
-                         pp = $(this).attr('p');
-                         $('#cntBillingChild').html( $('<img>').attr('src', '"._SITE_URL."public/img/Ellipsis-3.9s-200px.svg') );
-                         $.get('"._SITE_URL."Billing/'+pp+'/'+$(this).attr('ip'), { ui: pp+'Table', 'pui':'".$uiTabsId."', pc:'".$data['pc']."'}, function(data){
+                    $('[j=conglet_Billing]').bind('click', function (data){
+                        pp = $(this).attr('p');
+                        $('#cntBillingChild').html( $('<img>').attr('src', '"._SITE_URL."public/img/Ellipsis-3.9s-200px.svg') );
+                        $.get('"._SITE_URL."Billing/'+pp+'/'+$(this).attr('ip'), { ui: pp+'Table', 'pui':'".$uiTabsId."', pc:'".$data['pc']."'}, function(data){
                             $('#cntBillingChild').html(data);
                             $('[j=conglet_Billing]').parent().attr('class','ui-state-default');
                             $('[j=conglet_Billing][p='+pp+']').parent().attr('class',' ui-state-default ui-state-active');
-                         });
+                        }).fail(function(data) {
+                            $('#cntAssetChild').html('Error: try again or contact your administrator.');
+                            console.log(data);
+                        });;
                     });
                 ";
                 if($_SESSION['mem']['Billing']['child']['list'][$dataObj->$getLocalKey()]){
@@ -1085,7 +1088,7 @@ $this->fields['Billing']['State']['html']
 
         $return['data'] .= $data;
         $return['js'] .= $childTable['js']
-        . $this->hookFormIncludeJs."
+        . script($this->hookFormIncludeJs) ."
         ";
 
         $return['onReadyJs'] =
@@ -1195,6 +1198,7 @@ $this->fields['Billing']['State']['html']
      * @param array $data
     **/
     public function selectBoxBilling_IdClient(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = ClientQuery::create();
 
             $q->select(array('Name', 'IdClient'));
@@ -1207,10 +1211,15 @@ $this->fields['Billing']['State']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for Billing_IdProject selectBox 
@@ -1219,6 +1228,7 @@ $this->fields['Billing']['State']['html']
      * @param array $data
     **/
     public function selectBoxBilling_IdProject(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = ProjectQuery::create();
 
             $q->select(array('Name', 'IdProject'));
@@ -1231,10 +1241,15 @@ $this->fields['Billing']['State']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for Billing_IdBillingCategory selectBox 
@@ -1243,6 +1258,7 @@ $this->fields['Billing']['State']['html']
      * @param array $data
     **/
     public function selectBoxBilling_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = BillingCategoryQuery::create();
 
             $q->select(array('Name', 'IdBillingCategory'));
@@ -1255,10 +1271,15 @@ $this->fields['Billing']['State']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for Billing_DefaultCurrency selectBox 
@@ -1267,6 +1288,7 @@ $this->fields['Billing']['State']['html']
      * @param array $data
     **/
     public function selectBoxBilling_DefaultCurrency(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = CurrencyQuery::create();
 
             $q->select(array('Name', 'IdCurrency'));
@@ -1279,10 +1301,15 @@ $this->fields['Billing']['State']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for BillingLine_IdAssign selectBox 
@@ -1291,6 +1318,7 @@ $this->fields['Billing']['State']['html']
      * @param array $data
     **/
     public function selectBoxBillingLine_IdAssign(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = AuthyQuery::create();
 
     if(method_exists($this, 'beginSelectboxBillingLine_IdAssign') and $array)
@@ -1306,13 +1334,20 @@ $this->fields['Billing']['State']['html']
                 $pcDataO = $q->find();
             }
 
-                if(function_exists('selectboxDataBillingLine_IdAssign')){ $this->selectboxDataBillingLine_IdAssign($pcDataO, $q); }
+            if(method_exists($this, 'selectboxDataBillingLine_IdAssign')){ 
+                $this->selectboxDataBillingLine_IdAssign($pcDataO, $q, $override); 
+            }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for BillingLine_IdProject selectBox 
@@ -1321,6 +1356,7 @@ $this->fields['Billing']['State']['html']
      * @param array $data
     **/
     public function selectBoxBillingLine_IdProject(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = ProjectQuery::create();
 
     if(method_exists($this, 'beginSelectboxBillingLine_IdProject') and $array)
@@ -1335,13 +1371,20 @@ $this->fields['Billing']['State']['html']
                 $pcDataO = $q->find();
             }
 
-                if(function_exists('selectboxDataBillingLine_IdProject')){ $this->selectboxDataBillingLine_IdProject($pcDataO, $q); }
+            if(method_exists($this, 'selectboxDataBillingLine_IdProject')){ 
+                $this->selectboxDataBillingLine_IdProject($pcDataO, $q, $override); 
+            }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for BillingLine_IdBillingCategory selectBox 
@@ -1350,6 +1393,7 @@ $this->fields['Billing']['State']['html']
      * @param array $data
     **/
     public function selectBoxBillingLine_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = BillingCategoryQuery::create();
 
     if(method_exists($this, 'beginSelectboxBillingLine_IdBillingCategory') and $array)
@@ -1364,13 +1408,20 @@ $this->fields['Billing']['State']['html']
                 $pcDataO = $q->find();
             }
 
-                if(function_exists('selectboxDataBillingLine_IdBillingCategory')){ $this->selectboxDataBillingLine_IdBillingCategory($pcDataO, $q); }
+            if(method_exists($this, 'selectboxDataBillingLine_IdBillingCategory')){ 
+                $this->selectboxDataBillingLine_IdBillingCategory($pcDataO, $q, $override); 
+            }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }	
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}	
     /**
      * function getBillingLineList
      * @param string $IdBilling
@@ -1541,13 +1592,15 @@ $this->fields['Billing']['State']['html']
         
             //custom hook
             if (method_exists($this, 'beforeChildSearchBillingLine')){ $this->beforeChildSearchBillingLine($q);}
-        $this->queryObj = $q;
+        $this->queryObjBillingLine = $q;
         
         $pmpoData =$q->paginate($search['page'], $maxPerPage);
         $resultsCount = $pmpoData->getNbResults();
         
-            //custom hook
-            if (method_exists($this, 'beforeChildListBillingLine')){ $this->beforeChildListBillingLine($q, $filterKey, $param);}
+        //custom hook
+        if (method_exists($this, 'beforeChildListBillingLine')){
+            $this->beforeChildListBillingLine();
+        }
          
         #options building
         
@@ -1592,6 +1645,7 @@ $this->fields['Billing']['State']['html']
         
 
         $i=0;
+        $tr = '';
         if( $pmpoData->isEmpty() ){
             $tr .= tr(	td(p(span(_("No Entries found")),'class="no-results"'), "style='font-size:16px;' t='empty' ln='BillingLine' colspan='100%' "));
             
@@ -1601,9 +1655,6 @@ $this->fields['Billing']['State']['html']
                 $this->listActionCellBillingLine = '';
                 $actionRow = '';
                 
-            // custom hooks
-            if (method_exists($this, 'startChildListRowBillingLine')){ $this->startChildListRowBillingLine($altValue, $data, $i, $param, $this, $hookListColumnsBillingLine, $actionRow);}
-            
                 
                 
                 if($_SESSION[_AUTH_VAR]->hasRights('BillingLine', 'd')){
@@ -1635,9 +1686,14 @@ $this->fields['Billing']['State']['html']
                 
                 
                 
+                // custom hooks
+                if (method_exists($this, 'beforeListTrBillingLine')){ 
+                    $this->beforeListTrBillingLine($altValue, $data, $i, $param, $actionRow);
+                }
+                
                 $tr .= $param['tr_before'].
                         tr(
-                            (isset($hookListColumnsBillingLineFirst)?$hookListColumnsBillingLineFirst:'').
+                            (isset($this->hookListColumnsBillingLineFirst)?$this->hookListColumnsBillingLineFirst:'').
                             
                 td(span((($altValue['IdAssign']) ? $altValue['IdAssign'] : $altValue['AuthyRelatedByIdAssign_Fullname']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdAssign' class='' " . $param['IdAssign']." j='editBillingLine'") . 
                 td(span((($altValue['IdProject']) ? $altValue['IdProject'] : $Project_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdProject' class='' " . $param['IdProject']." j='editBillingLine'") . 
@@ -1648,10 +1704,11 @@ $this->fields['Billing']['State']['html']
                 td(span((($altValue['Total']) ? $altValue['Total'] : str_replace(',', '.', $data->getTotal())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Total' class='right' " . $param['Total']." j='editBillingLine'") . 
                 td(span((($altValue['IdBillingCategory']) ? $altValue['IdBillingCategory'] : $BillingCategory_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBillingCategory' class='' " . $param['IdBillingCategory']." j='editBillingLine'") . 
                 td(span((($altValue['NoteBillingLigne']) ? $altValue['NoteBillingLigne'] : substr(strip_tags($data->getNoteBillingLigne()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='NoteBillingLigne' class='' " . $param['NoteBillingLigne']." j='editBillingLine'") . 
-                            (isset($hookListColumnsBillingLine)?$hookListColumnsBillingLine:'').
+                            (isset($this->hookListColumnsBillingLine)?$this->hookListColumnsBillingLine:'').
                             $actionRow
-                        ,"id='BillingLineRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='BillingLine' ".$param['tr']." ")
-                        .$param['tr_after'];
+                            .$param['tr_after']
+                        ,"id='BillingLineRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='BillingLine' ".$param['tr']." ");
+                        
                     $total[6] += $data->getTotal();
 
                 $i++;
@@ -1782,6 +1839,7 @@ $this->fields['Billing']['State']['html']
      * @param array $data
     **/
     public function selectBoxCostLine_IdSupplier(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = SupplierQuery::create();
 
     if(method_exists($this, 'beginSelectboxCostLine_IdSupplier') and $array)
@@ -1796,13 +1854,20 @@ $this->fields['Billing']['State']['html']
                 $pcDataO = $q->find();
             }
 
-                if(function_exists('selectboxDataCostLine_IdSupplier')){ $this->selectboxDataCostLine_IdSupplier($pcDataO, $q); }
+            if(method_exists($this, 'selectboxDataCostLine_IdSupplier')){ 
+                $this->selectboxDataCostLine_IdSupplier($pcDataO, $q, $override); 
+            }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for CostLine_IdProject selectBox 
@@ -1811,6 +1876,7 @@ $this->fields['Billing']['State']['html']
      * @param array $data
     **/
     public function selectBoxCostLine_IdProject(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = ProjectQuery::create();
 
     if(method_exists($this, 'beginSelectboxCostLine_IdProject') and $array)
@@ -1825,13 +1891,20 @@ $this->fields['Billing']['State']['html']
                 $pcDataO = $q->find();
             }
 
-                if(function_exists('selectboxDataCostLine_IdProject')){ $this->selectboxDataCostLine_IdProject($pcDataO, $q); }
+            if(method_exists($this, 'selectboxDataCostLine_IdProject')){ 
+                $this->selectboxDataCostLine_IdProject($pcDataO, $q, $override); 
+            }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for CostLine_IdBillingCategory selectBox 
@@ -1840,6 +1913,7 @@ $this->fields['Billing']['State']['html']
      * @param array $data
     **/
     public function selectBoxCostLine_IdBillingCategory(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = BillingCategoryQuery::create();
 
     if(method_exists($this, 'beginSelectboxCostLine_IdBillingCategory') and $array)
@@ -1854,13 +1928,20 @@ $this->fields['Billing']['State']['html']
                 $pcDataO = $q->find();
             }
 
-                if(function_exists('selectboxDataCostLine_IdBillingCategory')){ $this->selectboxDataCostLine_IdBillingCategory($pcDataO, $q); }
+            if(method_exists($this, 'selectboxDataCostLine_IdBillingCategory')){ 
+                $this->selectboxDataCostLine_IdBillingCategory($pcDataO, $q, $override); 
+            }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }	
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}	
     /**
      * function getCostLineList
      * @param string $IdBilling
@@ -2021,13 +2102,15 @@ $this->fields['Billing']['State']['html']
         
             //custom hook
             if (method_exists($this, 'beforeChildSearchCostLine')){ $this->beforeChildSearchCostLine($q);}
-        $this->queryObj = $q;
+        $this->queryObjCostLine = $q;
         
         $pmpoData =$q->paginate($search['page'], $maxPerPage);
         $resultsCount = $pmpoData->getNbResults();
         
-            //custom hook
-            if (method_exists($this, 'beforeChildListCostLine')){ $this->beforeChildListCostLine($q, $filterKey, $param);}
+        //custom hook
+        if (method_exists($this, 'beforeChildListCostLine')){
+            $this->beforeChildListCostLine();
+        }
          
         #options building
         
@@ -2058,6 +2141,7 @@ $this->fields['Billing']['State']['html']
         
 
         $i=0;
+        $tr = '';
         if( $pmpoData->isEmpty() ){
             $tr .= tr(	td(p(span(_("No Expense found")),'class="no-results"'), "style='font-size:16px;' t='empty' ln='CostLine' colspan='100%' "));
             
@@ -2067,9 +2151,6 @@ $this->fields['Billing']['State']['html']
                 $this->listActionCellCostLine = '';
                 $actionRow = '';
                 
-            // custom hooks
-            if (method_exists($this, 'startChildListRowCostLine')){ $this->startChildListRowCostLine($altValue, $data, $i, $param, $this, $hookListColumnsCostLine, $actionRow);}
-            
                 
                 
                 if($_SESSION[_AUTH_VAR]->hasRights('CostLine', 'd')){
@@ -2101,9 +2182,14 @@ $this->fields['Billing']['State']['html']
                 
                 
                 
+                // custom hooks
+                if (method_exists($this, 'beforeListTrCostLine')){ 
+                    $this->beforeListTrCostLine($altValue, $data, $i, $param, $actionRow);
+                }
+                
                 $tr .= $param['tr_before'].
                         tr(
-                            (isset($hookListColumnsCostLineFirst)?$hookListColumnsCostLineFirst:'').
+                            (isset($this->hookListColumnsCostLineFirst)?$this->hookListColumnsCostLineFirst:'').
                             
                 td(span((($altValue['Title']) ? $altValue['Title'] : $data->getTitle()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Title' class='' " . $param['Title']." j='editCostLine'") . 
                 td(span((($altValue['IdSupplier']) ? $altValue['IdSupplier'] : $Supplier_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdSupplier' class='' " . $param['IdSupplier']." j='editCostLine'") . 
@@ -2111,10 +2197,11 @@ $this->fields['Billing']['State']['html']
                 td(span((($altValue['IdBillingCategory']) ? $altValue['IdBillingCategory'] : $BillingCategory_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBillingCategory' class='' " . $param['IdBillingCategory']." j='editCostLine'") . 
                 td(span((($altValue['SpendDate']) ? $altValue['SpendDate'] : $data->getSpendDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='SpendDate' class='' " . $param['SpendDate']." j='editCostLine'") . 
                 td(span((($altValue['Total']) ? $altValue['Total'] : str_replace(',', '.', $data->getTotal())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Total' class='right' " . $param['Total']." j='editCostLine'") . 
-                            (isset($hookListColumnsCostLine)?$hookListColumnsCostLine:'').
+                            (isset($this->hookListColumnsCostLine)?$this->hookListColumnsCostLine:'').
                             $actionRow
-                        ,"id='CostLineRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='CostLine' ".$param['tr']." ")
-                        .$param['tr_after'];
+                            .$param['tr_after']
+                        ,"id='CostLineRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='CostLine' ".$param['tr']." ");
+                        
                 
                 $i++;
             }
@@ -2205,6 +2292,7 @@ $this->fields['Billing']['State']['html']
      * @param array $data
     **/
     public function selectBoxPaymentLine_IdBilling(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = BillingQuery::create();
 
     if(method_exists($this, 'beginSelectboxPaymentLine_IdBilling') and $array)
@@ -2221,13 +2309,20 @@ $this->fields['Billing']['State']['html']
                 $pcDataO = $q->find();
             }
 
-                if(function_exists('selectboxDataPaymentLine_IdBilling')){ $this->selectboxDataPaymentLine_IdBilling($pcDataO, $q); }
+            if(method_exists($this, 'selectboxDataPaymentLine_IdBilling')){ 
+                $this->selectboxDataPaymentLine_IdBilling($pcDataO, $q, $override); 
+            }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }	
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}	
     /**
      * function getPaymentLineList
      * @param string $IdBilling
@@ -2374,13 +2469,15 @@ $this->fields['Billing']['State']['html']
         
             //custom hook
             if (method_exists($this, 'beforeChildSearchPaymentLine')){ $this->beforeChildSearchPaymentLine($q);}
-        $this->queryObj = $q;
+        $this->queryObjPaymentLine = $q;
         
         $pmpoData =$q->paginate($search['page'], $maxPerPage);
         $resultsCount = $pmpoData->getNbResults();
         
-            //custom hook
-            if (method_exists($this, 'beforeChildListPaymentLine')){ $this->beforeChildListPaymentLine($q, $filterKey, $param);}
+        //custom hook
+        if (method_exists($this, 'beforeChildListPaymentLine')){
+            $this->beforeChildListPaymentLine();
+        }
          
         #options building
         
@@ -2407,6 +2504,7 @@ $this->fields['Billing']['State']['html']
         
 
         $i=0;
+        $tr = '';
         if( $pmpoData->isEmpty() ){
             $tr .= tr(	td(p(span(_("No Payment entry found")),'class="no-results"'), "style='font-size:16px;' t='empty' ln='PaymentLine' colspan='100%' "));
             
@@ -2416,9 +2514,6 @@ $this->fields['Billing']['State']['html']
                 $this->listActionCellPaymentLine = '';
                 $actionRow = '';
                 
-            // custom hooks
-            if (method_exists($this, 'startChildListRowPaymentLine')){ $this->startChildListRowPaymentLine($altValue, $data, $i, $param, $this, $hookListColumnsPaymentLine, $actionRow);}
-            
                 
                 
                 if($_SESSION[_AUTH_VAR]->hasRights('PaymentLine', 'd')){
@@ -2443,18 +2538,24 @@ $this->fields['Billing']['State']['html']
                 
                 
                 
+                // custom hooks
+                if (method_exists($this, 'beforeListTrPaymentLine')){ 
+                    $this->beforeListTrPaymentLine($altValue, $data, $i, $param, $actionRow);
+                }
+                
                 $tr .= $param['tr_before'].
                         tr(
-                            (isset($hookListColumnsPaymentLineFirst)?$hookListColumnsPaymentLineFirst:'').
+                            (isset($this->hookListColumnsPaymentLineFirst)?$this->hookListColumnsPaymentLineFirst:'').
                             
                 td(span((($altValue['IdBilling']) ? $altValue['IdBilling'] : $altValue['Billing_Client_Name']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdBilling' class='' " . $param['IdBilling']." j='editPaymentLine'") . 
                 td(span((($altValue['Date']) ? $altValue['Date'] : $data->getDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class='' " . $param['Date']." j='editPaymentLine'") . 
                 td(span((($altValue['Note']) ? $altValue['Note'] : substr(strip_tags($data->getNote()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Note' class='' " . $param['Note']." j='editPaymentLine'") . 
                 td(span((($altValue['Amount']) ? $altValue['Amount'] : str_replace(',', '.', $data->getAmount())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Amount' class='right' " . $param['Amount']." j='editPaymentLine'") . 
-                            (isset($hookListColumnsPaymentLine)?$hookListColumnsPaymentLine:'').
+                            (isset($this->hookListColumnsPaymentLine)?$this->hookListColumnsPaymentLine:'').
                             $actionRow
-                        ,"id='PaymentLineRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='PaymentLine' ".$param['tr']." ")
-                        .$param['tr_after'];
+                            .$param['tr_after']
+                        ,"id='PaymentLineRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='PaymentLine' ".$param['tr']." ");
+                        
                 
                 $i++;
             }
